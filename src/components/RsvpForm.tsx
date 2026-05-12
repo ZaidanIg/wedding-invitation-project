@@ -1,0 +1,154 @@
+'use client';
+
+import { useState } from 'react';
+import { showToast } from '@/components/ui/Toast';
+import { Heart, Send, Check, X } from 'lucide-react';
+
+interface RsvpFormProps {
+  slug: string;
+}
+
+export default function RsvpForm({ slug }: RsvpFormProps) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [attendees, setAttendees] = useState(1);
+  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING' | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!status || !name.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`/api/invitations/${slug}/rsvp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim() || undefined,
+          rsvpStatus: status,
+          message: message.trim() || undefined,
+          attendees,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to submit');
+      setIsSubmitted(true);
+      showToast('success', 'RSVP submitted successfully!');
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Something went wrong';
+      showToast('error', msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isSubmitted) {
+    return (
+      <div className="text-center py-8">
+        <div className="inline-flex p-3 rounded-full bg-emerald-100 mb-4">
+          <Check className="h-6 w-6 text-emerald-600" />
+        </div>
+        <h3 className="text-lg font-display font-semibold text-stone-800 mb-2">Thank You!</h3>
+        <p className="text-sm text-stone-500">Your RSVP has been recorded.</p>
+      </div>
+    );
+  }
+
+  const inputClass =
+    'w-full px-4 py-3 text-sm bg-white border border-stone-200 rounded-xl text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-400/30 focus:border-stone-400 transition-all duration-200';
+  const labelClass = 'block text-xs font-semibold uppercase tracking-wider text-stone-500 mb-1.5';
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Attendance selection */}
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={() => setStatus('ATTENDING')}
+          className={`p-3.5 rounded-xl border text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+            status === 'ATTENDING'
+              ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+              : 'bg-white border-stone-200 text-stone-500 hover:border-stone-300'
+          }`}
+        >
+          <Heart className="h-4 w-4" /> Attending
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatus('NOT_ATTENDING')}
+          className={`p-3.5 rounded-xl border text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+            status === 'NOT_ATTENDING'
+              ? 'bg-red-50 border-red-300 text-red-600'
+              : 'bg-white border-stone-200 text-stone-500 hover:border-stone-300'
+          }`}
+        >
+          <X className="h-4 w-4" /> Can&apos;t Make It
+        </button>
+      </div>
+
+      <div>
+        <label className={labelClass}>Your Name *</label>
+        <input
+          className={inputClass}
+          placeholder="Enter your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+      </div>
+
+      <div>
+        <label className={labelClass}>Email (Optional)</label>
+        <input
+          className={inputClass}
+          type="email"
+          placeholder="your@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
+      {status === 'ATTENDING' && (
+        <div>
+          <label className={labelClass}>Number of Guests</label>
+          <input
+            className={inputClass}
+            type="number"
+            min={1}
+            max={10}
+            value={attendees}
+            onChange={(e) => setAttendees(parseInt(e.target.value) || 1)}
+          />
+        </div>
+      )}
+
+      <div>
+        <label className={labelClass}>Message for the Couple (Optional)</label>
+        <textarea
+          className={`${inputClass} resize-none`}
+          placeholder="Share your wishes..."
+          rows={3}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={isSubmitting || !status || !name.trim()}
+        className="w-full flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold uppercase tracking-widest bg-stone-800 text-[#f5f0eb] rounded-xl hover:bg-stone-700 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        {isSubmitting ? (
+          <div className="h-4 w-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+        ) : (
+          <Send className="h-4 w-4" />
+        )}
+        {isSubmitting ? 'Submitting...' : 'Submit RSVP'}
+      </button>
+    </form>
+  );
+}
