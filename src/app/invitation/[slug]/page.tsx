@@ -41,7 +41,7 @@ export default async function InvitationPage({ params }: PageProps) {
     eventDate: invitation.eventDate.toISOString(),
     createdAt: invitation.createdAt.toISOString(),
     updatedAt: invitation.updatedAt.toISOString(),
-    guests: invitation.guests.map((g) => ({
+    guests: (invitation.guests || []).map((g: any) => ({
       ...g,
       createdAt: g.createdAt.toISOString(),
       updatedAt: g.updatedAt.toISOString(),
