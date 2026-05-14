@@ -21,7 +21,7 @@ export default function ThemePreviewModal({ layout, onClose, themeName }: ThemeP
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#1c1c1c]/90 backdrop-blur-sm"
+        className="fixed inset-0 z-[100] flex justify-center md:items-center p-4 bg-[#1c1c1c]/90 backdrop-blur-sm overflow-y-auto"
         onClick={onClose}
       >
         <motion.div
@@ -29,7 +29,7 @@ export default function ThemePreviewModal({ layout, onClose, themeName }: ThemeP
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative bg-[#f7f4ed] w-full max-w-4xl h-[90vh] rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl"
+          className="relative bg-[#f7f4ed] w-full max-w-4xl h-fit max-h-[90vh] md:h-[90vh] rounded-3xl overflow-y-auto md:overflow-hidden flex flex-col md:flex-row shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Left Side: Information */}
@@ -80,7 +80,7 @@ export default function ThemePreviewModal({ layout, onClose, themeName }: ThemeP
           </div>
 
           {/* Right Side: Phone Preview */}
-          <div className="w-full md:w-1/2 bg-[#fcfbf8] relative flex items-center justify-center overflow-hidden py-12">
+          <div className="w-full md:w-1/2 bg-[#fcfbf8] relative flex items-center justify-center overflow-visible md:overflow-hidden py-12">
             <div className="relative w-[320px] h-[650px] md:w-[375px] md:h-[760px] transform scale-[0.85] md:scale-100 transition-transform">
               <div className="absolute inset-0 border-[12px] border-[#1c1c1c] rounded-[3.5rem] overflow-hidden shadow-2xl bg-white ring-1 ring-black/10">
                 <ThemeMiniPreview layout={layout} isInteractable={true} scale={1} hideNotch={true} />

@@ -90,7 +90,7 @@ export default function ThemeMiniPreview({ layout, isInteractable = false, scale
         style={{ transform: `scale(${scale})` }}
       >
         <div className={`absolute inset-0 overflow-hidden bg-white ${isInteractable ? '' : 'border-[12px] border-[#1c1c1c] rounded-[3.5rem] shadow-2xl ring-1 ring-black/5'}`}>
-          <div className="w-full h-full overflow-y-auto no-scrollbar">
+          <div className="w-full h-full overflow-y-auto">
             {renderLayout()}
           </div>
         </div>
