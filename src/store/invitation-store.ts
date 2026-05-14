@@ -47,6 +47,7 @@ const initialState: FormWizardState = {
       { id: '3', year: '2024', title: 'The Proposal', description: 'Under the starry night, I asked the most important question of my life.' },
     ],
     digitalGifts: [],
+    quotes: '',
   },
   stylePreferences: {
     tone: 'formal' as Tone,

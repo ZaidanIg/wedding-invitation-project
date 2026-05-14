@@ -16,6 +16,7 @@ import {
   DigitalGiftSection,
   LoveStorySection,
   GuestWelcome,
+  QuotesSection,
 } from './shared';
 
 interface LayoutProps {
@@ -259,6 +260,9 @@ export default function RoyalBlue({ invitation }: LayoutProps) {
           </div>
         </section>
       )}
+
+      {/* Quotes */}
+      <QuotesSection text={invitation.quotes || ''} bgColor="bg-slate-50" textColor="text-blue-900" />
 
       {/* Closing */}
       <section className="py-14 px-8 bg-[#e8f0fe] text-center">

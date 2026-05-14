@@ -15,6 +15,7 @@ import {
   DigitalGiftSection,
   LoveStorySection,
   GuestWelcome,
+  QuotesSection,
 } from './shared';
 
 interface LayoutProps {
@@ -240,6 +241,9 @@ export default function RoseGarden({ invitation }: LayoutProps) {
           </div>
         </section>
       )}
+
+      {/* Quotes */}
+      <QuotesSection text={invitation.quotes || ''} bgColor="bg-white" textColor="text-rose-900" />
 
       {/* Closing */}
       <section className="py-14 px-8 bg-[#fdf2f4] text-center">

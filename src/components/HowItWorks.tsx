@@ -64,7 +64,7 @@ export default function HowItWorks() {
         <div className="mt-32 grid grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10 border-t border-[#eceae4] pt-20">
           {[
             'RSVP Tracking',
-            'Digital Gift (Angpao)',
+            'Digital Gift',
             'Google Maps Integration',
             'Music & Gallery',
             'Custom Domain',

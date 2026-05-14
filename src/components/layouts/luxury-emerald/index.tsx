@@ -5,7 +5,7 @@ import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send } from 'lucide-
 import type { Invitation } from '@/types';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
-import { AnimatedSection, CountdownTimer, resolvePhotos, formatEventDate, getMapsUrl, IconMapper, WaveDivider, ParallaxImage, ParallaxSection, PhotoCarousel, LoveStorySection, DigitalGiftSection } from '../shared';
+import { AnimatedSection, CountdownTimer, resolvePhotos, formatEventDate, getMapsUrl, IconMapper, WaveDivider, ParallaxImage, ParallaxSection, PhotoCarousel, LoveStorySection, DigitalGiftSection, QuotesSection } from '../shared';
 import {
   GoldParticles,
   CoverPage,
@@ -263,6 +263,9 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
           <WishesSection slug={invitation.slug} guests={invitation.guests || []} />
         </AnimatedSection>
       </section>
+
+      {/* ═══ QUOTES ═══ */}
+      <QuotesSection text={invitation.quotes || ''} bgColor="bg-[#faf7f0]" textColor="text-[#042f2e]" />
 
       {/* ═══ CLOSING ═══ */}
       <section className="py-24 px-8 bg-[#042f2e] text-center relative overflow-hidden">

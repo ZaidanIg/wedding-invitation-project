@@ -143,6 +143,8 @@ export default function InvitationForm() {
           musicUrl: store.stylePreferences.musicUrl === 'custom' ? '' : store.stylePreferences.musicUrl,
           schedule: store.eventDetails.schedule,
           loveStory: store.eventDetails.loveStory,
+          digitalGifts: store.eventDetails.digitalGifts,
+          quotes: store.eventDetails.quotes,
         }),
       });
 
@@ -600,7 +602,7 @@ export default function InvitationForm() {
                     >
                       <div className="text-center mb-8">
                         <h2 className="text-2xl font-display font-bold text-[#1c1c1c]">Kado Digital</h2>
-                        <p className="text-sm text-[#5f5f5d] mt-1">Opsional: Tambahkan informasi rekening untuk kado digital (Angpao)</p>
+                        <p className="text-sm text-[#5f5f5d] mt-1">Opsional: Tambahkan informasi rekening untuk kado digital</p>
                       </div>
                       <div className="flex justify-end">
                         <Button
@@ -928,13 +930,26 @@ export default function InvitationForm() {
 
                 <Textarea
                   label="Catatan Tambahan (Opsional)"
-                  placeholder="Misal: Ayat Al-Quran tertentu, kutipan kutipan kata mutiara, dress code, dll..."
+                  placeholder="Misal: Ayat Al-Quran tertentu, dress code, dll..."
                   rows={3}
                   value={store.stylePreferences.additionalNotes}
                   onChange={(e) =>
                     store.setStylePreferences({
                       ...store.stylePreferences,
                       additionalNotes: e.target.value,
+                    })
+                  }
+                />
+
+                <Textarea
+                  label="Quotes / Kata Mutiara"
+                  placeholder="Masukkan kutipan favorit Anda yang akan tampil di bagian akhir undangan..."
+                  rows={3}
+                  value={store.eventDetails.quotes}
+                  onChange={(e) =>
+                    store.setEventDetails({
+                      ...store.eventDetails,
+                      quotes: e.target.value,
                     })
                   }
                 />

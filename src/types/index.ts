@@ -181,6 +181,7 @@ export interface FormWizardState {
     schedule: ScheduleItem[];
     loveStory: LoveStoryItem[];
     digitalGifts: any[];
+    quotes: string;
   };
   stylePreferences: {
     tone: Tone;

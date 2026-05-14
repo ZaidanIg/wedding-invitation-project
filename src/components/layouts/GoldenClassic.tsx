@@ -16,6 +16,7 @@ import {
   LoveStorySection,
   DigitalGiftSection,
   GuestWelcome,
+  QuotesSection,
 } from './shared';
 
 interface LayoutProps {
@@ -225,6 +226,9 @@ export default function GoldenClassic({ invitation }: LayoutProps) {
           </div>
         </section>
       )}
+
+      {/* Quotes */}
+      <QuotesSection text={invitation.quotes || ''} bgColor="bg-stone-50" textColor="text-[#D4AF37]" />
 
       {/* Closing */}
       <section className="py-16 px-8 bg-zinc-900 text-white text-center relative overflow-hidden">

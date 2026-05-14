@@ -15,6 +15,7 @@ import {
   ParallaxImage,
   DigitalGiftSection,
   LoveStorySection,
+  QuotesSection,
   GuestWelcome,
   TornEdgeTop,
   TornEdgeBottom,
@@ -218,6 +219,9 @@ export default function ElegantCream({ invitation }: LayoutProps) {
           </div>
         </section>
       )}
+
+      {/* Quotes */}
+      <QuotesSection text={invitation.quotes || ''} bgColor="#fcfbf8" textColor="text-stone-800" />
 
       {/* Closing */}
       <section className="py-14 px-8 bg-[#f5f0eb] text-center">
