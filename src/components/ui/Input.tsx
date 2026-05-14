@@ -19,11 +19,11 @@ export default function Input({
   const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-sm font-medium text-foreground/80"
+          className="block text-[13px] font-bold uppercase tracking-wider text-[#1c1c1c]/70"
         >
           {label}
         </label>
@@ -31,23 +31,24 @@ export default function Input({
       <input
         id={inputId}
         className={`
-          w-full px-4 py-2.5 rounded-xl
-          bg-white/5 backdrop-blur-sm
-          border border-white/10
-          text-foreground placeholder:text-foreground/30
-          transition-all duration-200
-          focus:outline-none focus:ring-2 focus:ring-rose-400/50 focus:border-rose-400/50
-          hover:border-white/20
-          ${error ? 'border-red-400/50 focus:ring-red-400/50' : ''}
+          w-full px-4 py-3 rounded-xl
+          bg-white
+          border border-[#eceae4]
+          text-[#1c1c1c] placeholder:text-[#1c1c1c]/40
+          transition-all duration-500 ease-out
+          focus:outline-none focus:ring-4 focus:ring-highlight/5 focus:border-highlight/40
+          hover:border-highlight/20
+          shadow-[0_2px_4px_rgba(0,0,0,0.02)]
+          ${error ? 'border-red-400 focus:ring-red-400/5 focus:border-red-400' : ''}
           ${className}
         `}
         {...props}
       />
       {error && (
-        <p className="text-xs text-red-400">{error}</p>
+        <p className="text-[11px] font-medium text-red-500 mt-1">{error}</p>
       )}
       {helperText && !error && (
-        <p className="text-xs text-foreground/40">{helperText}</p>
+        <p className="text-[11px] text-[#5f5f5d] mt-1">{helperText}</p>
       )}
     </div>
   );

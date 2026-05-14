@@ -11,19 +11,19 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<string, string> = {
   primary:
-    'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 hover:from-rose-600 hover:to-pink-700',
+    'bg-[#1c1c1c] text-[#fcfbf8] shadow-inset hover:opacity-95',
   secondary:
-    'bg-white/10 backdrop-blur-sm border border-white/20 text-foreground hover:bg-white/20',
+    'bg-[#fcfbf8] border border-[#eceae4] text-[#1c1c1c] hover:bg-[#1c1c1c]/5',
   ghost:
-    'text-foreground hover:bg-white/10',
+    'text-[#1c1c1c] hover:bg-[#1c1c1c]/5',
   destructive:
-    'bg-red-500/90 text-white hover:bg-red-600',
+    'bg-red-600 text-[#fcfbf8] hover:bg-red-700',
 };
 
 const sizeClasses: Record<string, string> = {
-  sm: 'px-3 py-1.5 text-sm rounded-lg',
-  md: 'px-5 py-2.5 text-sm rounded-xl',
-  lg: 'px-8 py-3.5 text-base rounded-xl',
+  sm: 'px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg',
+  md: 'px-6 py-3 text-sm font-bold uppercase tracking-wider rounded-lg',
+  lg: 'px-10 py-4 text-base font-bold uppercase tracking-wider rounded-lg',
 };
 
 export default function Button({
@@ -40,7 +40,7 @@ export default function Button({
       className={`
         inline-flex items-center justify-center gap-2
         font-medium transition-all duration-300 ease-out
-        focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2 focus:ring-offset-transparent
+        focus:outline-none focus:ring-2 focus:ring-[#1c1c1c]/20 focus:ring-offset-2 focus:ring-offset-transparent
         disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
         transform hover:scale-[1.02] active:scale-[0.98]
         ${variantClasses[variant]}

@@ -18,6 +18,9 @@ export async function POST(request: Request, { params }: RouteParams) {
   try {
     const { id } = await params;
     const body = await request.json();
+    
+    console.log('[RSVP POST] Received for id/slug:', id);
+    console.log('[RSVP POST] Request body:', body);
 
     // Validate input
     const validation = validateRsvp(body);

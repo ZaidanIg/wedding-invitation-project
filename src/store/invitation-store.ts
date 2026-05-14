@@ -25,7 +25,9 @@ const initialState: FormWizardState = {
   step: 1,
   coupleDetails: {
     groomName: '',
+    groomParents: '',
     brideName: '',
+    brideParents: '',
   },
   eventDetails: {
     eventDate: '',
@@ -39,6 +41,12 @@ const initialState: FormWizardState = {
       { id: '4', time: '12:00', label: 'Dinner', icon: 'calendar' },
       { id: '5', time: '14:00', label: 'Party', icon: 'music' },
     ],
+    loveStory: [
+      { id: '1', year: '2020', title: 'First Meet', description: 'When our eyes first met, and the world seemed to stand still.' },
+      { id: '2', year: '2022', title: 'First Date', description: 'A nervous evening filled with laughter and the start of something beautiful.' },
+      { id: '3', year: '2024', title: 'The Proposal', description: 'Under the starry night, I asked the most important question of my life.' },
+    ],
+    digitalGifts: [],
   },
   stylePreferences: {
     tone: 'formal' as Tone,

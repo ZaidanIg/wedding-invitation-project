@@ -11,6 +11,10 @@ import {
   formatEventDate,
   getMapsUrl,
   IconMapper,
+  CurvedDivider,
+  DigitalGiftSection,
+  LoveStorySection,
+  GuestWelcome,
 } from './shared';
 
 interface LayoutProps {
@@ -74,6 +78,9 @@ export default function RoseGarden({ invitation }: LayoutProps) {
             <span className="block text-4xl sm:text-5xl font-display font-bold text-white drop-shadow-lg">{invitation.brideName}</span>
           </h1>
           <p className="text-sm text-pink-200/70 mt-4 tracking-widest animate-fade-in-up" style={{ animationDelay: '600ms', animationFillMode: 'both' }}>{formattedDate}</p>
+          
+          <GuestWelcome />
+
           <div className="mt-8 animate-bounce" style={{ animationDelay: '1.5s' }}>
             <ChevronDown className="h-6 w-6 text-pink-200/50 mx-auto" />
           </div>
@@ -81,7 +88,7 @@ export default function RoseGarden({ invitation }: LayoutProps) {
       </section>
 
       {/* Countdown */}
-      <section className="py-14 px-6 text-center bg-[#fdf2f4]">
+      <section className="py-14 px-4 sm:px-6 text-center bg-[#fdf2f4]">
         <AnimatedSection>
           <FloralBorder />
           <p className="text-xs uppercase tracking-[0.25em] text-pink-400 mb-8 mt-2">Counting the days</p>
@@ -96,6 +103,32 @@ export default function RoseGarden({ invitation }: LayoutProps) {
             <span className="text-xs uppercase tracking-widest text-pink-500">{monthName}</span>
           </div>
         </AnimatedSection>
+      </section>
+
+      {/* The Couple Profile */}
+      <section className="py-14 px-8 bg-[#fdf2f4] text-center">
+        <AnimatedSection><FloralBorder /></AnimatedSection>
+        <div className="grid grid-cols-1 gap-14 mt-10">
+          {/* Groom */}
+          <AnimatedSection animation="left">
+            <div className="flex flex-col items-center">
+              <ArchPhoto src={heroPhoto} className="w-32 h-40 mb-4 border-2 border-pink-200" />
+              <h3 className="text-2xl font-display font-bold text-rose-800">{invitation.groomName}</h3>
+              <p className="text-[10px] text-pink-400 uppercase tracking-widest mt-2">Putra tercinta dari</p>
+              <p className="text-sm text-rose-950/70 italic font-serif mt-1">{invitation.groomParents || 'Bapak & Ibu'}</p>
+            </div>
+          </AnimatedSection>
+
+          {/* Bride */}
+          <AnimatedSection animation="right">
+            <div className="flex flex-col items-center">
+              <ArchPhoto src={photo2} className="w-32 h-40 mb-4 border-2 border-pink-200" />
+              <h3 className="text-2xl font-display font-bold text-rose-800">{invitation.brideName}</h3>
+              <p className="text-[10px] text-pink-400 uppercase tracking-widest mt-2">Putri tercinta dari</p>
+              <p className="text-sm text-rose-950/70 italic font-serif mt-1">{invitation.brideParents || 'Bapak & Ibu'}</p>
+            </div>
+          </AnimatedSection>
+        </div>
       </section>
 
       {/* Arch photo + Greeting */}
@@ -177,6 +210,17 @@ export default function RoseGarden({ invitation }: LayoutProps) {
           </div>
         </AnimatedSection>
       </section>
+
+      {/* Love Story */}
+      <LoveStorySection 
+        story={invitation.loveStory || []} 
+        bgColor="bg-[#fdf2f4]" 
+        accentColor="text-rose-500" 
+        textColor="text-rose-950"
+      />
+
+      {/* Digital Gift */}
+      <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-white" textColor="text-rose-800" />
 
       {/* Gallery */}
       {galleryPhotos.length > 0 && (

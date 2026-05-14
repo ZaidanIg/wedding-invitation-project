@@ -14,11 +14,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const invitation = await getInvitationBySlug(slug);
 
   if (!invitation) {
-    return { title: 'Invitation Not Found — WeddingAI' };
+    return { title: 'Undangan Tidak Ditemukan — Wedding Invitation' };
   }
 
   return {
-    title: `${invitation.groomName} & ${invitation.brideName} — Wedding Invitation`,
+    title: `${invitation.groomName} & ${invitation.brideName} — Undangan Pernikahan`,
     description: invitation.greeting,
   };
 }
@@ -38,6 +38,8 @@ export default async function InvitationPage({ params }: PageProps) {
   const serialized: Invitation = {
     ...invitation,
     schedule: (invitation.schedule as any) || [],
+    loveStory: (invitation.loveStory as any) || [],
+    digitalGifts: (invitation.digitalGifts as any) || [],
     eventDate: invitation.eventDate.toISOString(),
     createdAt: invitation.createdAt.toISOString(),
     updatedAt: invitation.updatedAt.toISOString(),
@@ -49,22 +51,25 @@ export default async function InvitationPage({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f0eb]">
+    <div className={`min-h-screen ${serialized.layout === 'luxury-emerald' ? 'bg-[#faf7f0]' : 'bg-[#f7f4ed]'}`}>
       <InvitationPreview invitation={serialized} />
 
-      {/* RSVP Section — same cream theme */}
-      <section className="py-16 px-4 bg-[#f5f0eb]">
-        <div className="max-w-lg mx-auto">
-          <div className="text-center mb-8">
-            <p className="text-xs uppercase tracking-[0.25em] text-stone-400 mb-3">Confirm Attendance</p>
-            <h2 className="text-3xl font-display font-bold text-stone-800 mb-2">RSVP</h2>
-            <p className="text-sm text-stone-500">We can&apos;t wait to celebrate with you.</p>
+      {/* Hide external RSVP for luxury-emerald as it has its own integrated version */}
+      {serialized.layout !== 'luxury-emerald' && (
+        <section className="py-24 px-4 bg-[#f7f4ed]">
+          <div className="max-w-lg mx-auto">
+            <div className="text-center mb-10">
+              <p className="text-[10px] uppercase tracking-[2px] font-bold text-[#1c1c1c]/40 mb-3">Konfirmasi Kehadiran</p>
+              <h2 className="text-[32px] font-display font-bold text-[#1c1c1c] mb-2 tracking-tight">RSVP</h2>
+              <p className="text-[#5f5f5d]">Kami sangat menantikan kehadiran Anda.</p>
+            </div>
+            <div className="bg-[#f7f4ed] rounded-xl border border-[#eceae4] p-6 sm:p-10 shadow-sm">
+              <RsvpForm slug={slug} />
+            </div>
           </div>
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-sm">
-            <RsvpForm slug={slug} />
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
+

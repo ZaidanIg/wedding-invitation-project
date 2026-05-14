@@ -11,6 +11,11 @@ import {
   formatEventDate,
   getMapsUrl,
   IconMapper,
+  WaveDivider,
+  CurvedDivider,
+  LoveStorySection,
+  DigitalGiftSection,
+  GuestWelcome,
 } from './shared';
 
 interface LayoutProps {
@@ -66,6 +71,8 @@ export default function GoldenClassic({ invitation }: LayoutProps) {
           <AnimatedSection delay="delay-200">
             <GoldDivider />
             <p className="text-xs uppercase tracking-[0.3em] text-zinc-500 mt-4">{formattedDate}</p>
+            
+            <GuestWelcome />
           </AnimatedSection>
         </div>
 
@@ -75,13 +82,16 @@ export default function GoldenClassic({ invitation }: LayoutProps) {
       </section>
 
       {/* Countdown */}
-      <section className="py-16 px-6 text-center bg-zinc-50 border-y border-[#D4AF37]/10">
-        <AnimatedSection>
-          <h2 className="text-sm uppercase tracking-[0.3em] text-[#D4AF37] mb-10">Countdown to Forever</h2>
-        </AnimatedSection>
-        <AnimatedSection delay="delay-200">
-          <CountdownTimer targetDate={invitation.eventDate} textColor="text-zinc-800" labelColor="text-zinc-500" separatorColor="text-[#D4AF37]" />
-        </AnimatedSection>
+      <section className="py-20 px-4 sm:px-6 text-center bg-zinc-50 border-y border-[#D4AF37]/10 relative">
+        <WaveDivider fill="#fff" flip />
+        <div className="mt-12">
+          <AnimatedSection>
+            <h2 className="text-sm uppercase tracking-[0.3em] text-[#D4AF37] mb-10">Countdown to Forever</h2>
+          </AnimatedSection>
+          <AnimatedSection delay="delay-200">
+            <CountdownTimer targetDate={invitation.eventDate} textColor="text-zinc-800" labelColor="text-zinc-500" separatorColor="text-[#D4AF37]" />
+          </AnimatedSection>
+        </div>
       </section>
 
       {/* Full Bleed Photo 2 */}
@@ -99,6 +109,31 @@ export default function GoldenClassic({ invitation }: LayoutProps) {
           <GoldDivider />
           <p className="text-sm text-zinc-600 leading-relaxed max-w-sm mx-auto mt-6 font-light">{invitation.mainBody}</p>
         </AnimatedSection>
+      </section>
+
+      {/* The Couple Profile */}
+      <section className="py-14 px-8 bg-zinc-50 border-y border-[#D4AF37]/10 text-center">
+        <div className="grid grid-cols-1 gap-12">
+          {/* Groom */}
+          <AnimatedSection animation="left">
+            <div className="flex flex-col items-center">
+              <h3 className="text-3xl font-light uppercase tracking-widest text-zinc-800 mb-2">{invitation.groomName}</h3>
+              <p className="text-[10px] text-[#D4AF37] uppercase tracking-[0.2em] mb-1">Putra dari</p>
+              <p className="text-sm text-zinc-600 font-serif italic">{invitation.groomParents || 'Bapak & Ibu'}</p>
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection animation="scale"><GoldDivider /></AnimatedSection>
+
+          {/* Bride */}
+          <AnimatedSection animation="right">
+            <div className="flex flex-col items-center">
+              <h3 className="text-3xl font-light uppercase tracking-widest text-zinc-800 mb-2">{invitation.brideName}</h3>
+              <p className="text-[10px] text-[#D4AF37] uppercase tracking-[0.2em] mb-1">Putri dari</p>
+              <p className="text-sm text-zinc-600 font-serif italic">{invitation.brideParents || 'Bapak & Ibu'}</p>
+            </div>
+          </AnimatedSection>
+        </div>
       </section>
 
       {/* Ceremony */}
@@ -162,7 +197,18 @@ export default function GoldenClassic({ invitation }: LayoutProps) {
         </AnimatedSection>
       </section>
 
-      {/* Gallery */}
+      {/* Digital Gift */}
+      <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-zinc-50" textColor="text-zinc-800" />
+
+      {/* ═══ LOVE STORY ═══ */}
+      <LoveStorySection 
+        story={invitation.loveStory || []} 
+        bgColor="bg-white" 
+        accentColor="text-[#D4AF37]" 
+        textColor="text-stone-800"
+      />
+
+      {/* Greeting */}
       {galleryPhotos.length > 0 && (
         <section className="py-16 px-8 bg-white text-center">
           <AnimatedSection>

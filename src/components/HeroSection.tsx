@@ -1,89 +1,70 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Heart, Sparkles, ArrowRight } from 'lucide-react';
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-rose-950/50 via-background to-pink-950/30" />
-
-      {/* Floating orbs */}
-      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-rose-500/10 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/8 rounded-full blur-3xl animate-float-delayed" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-rose-400/5 rounded-full blur-3xl" />
-
-      {/* Sparkle decorations */}
-      <div className="absolute top-20 right-20 animate-pulse-slow">
-        <Sparkles className="h-6 w-6 text-rose-400/30" />
-      </div>
-      <div className="absolute bottom-32 left-16 animate-pulse-slow delay-1000">
-        <Sparkles className="h-4 w-4 text-pink-400/20" />
-      </div>
-      <div className="absolute top-40 left-1/3 animate-pulse-slow delay-500">
-        <Heart className="h-5 w-5 text-rose-300/15" />
+    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/images/hero-bg.png"
+          alt="Wedding Background"
+          fill
+          className="object-cover opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-[#f7f4ed]/80 backdrop-blur-[2px]" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-medium mb-8 animate-fade-in">
-          <Sparkles className="h-3.5 w-3.5" />
-          AI-Powered Wedding Invitations
+      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+        {/* Subtle Accent */}
+        <div className="mb-6 flex items-center justify-center gap-3 animate-fade-in">
+          <span className="h-px w-8 bg-[#1c1c1c]/20" />
+          <span className="font-handwriting text-2xl text-[#1c1c1c]/60">Cerita cinta Anda...</span>
+          <span className="h-px w-8 bg-[#1c1c1c]/20" />
         </div>
 
         {/* Heading */}
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold leading-tight mb-6 animate-fade-in-up">
-          <span className="text-foreground">Create </span>
-          <span className="bg-gradient-to-r from-rose-400 via-pink-400 to-rose-300 bg-clip-text text-transparent">
-            Beautiful
-          </span>
-          <br />
-          <span className="text-foreground">Wedding Invitations</span>
+        <h1 className="text-[52px] sm:text-[72px] md:text-[88px] font-display font-bold leading-[1.1] tracking-[-2px] text-[#1c1c1c] mb-10 animate-fade-in-up">
+          Rayakan Momen <br />
+          <span className="italic font-normal text-highlight">Terindah</span> Bersama
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base sm:text-lg text-foreground/50 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up delay-200">
-          Let AI craft the perfect words for your special day. Generate elegant,
-          personalized wedding invitation text in seconds — then share it with a
-          beautiful, shareable link.
+        <p className="text-xl sm:text-2xl text-[#5f5f5d] max-w-2xl mx-auto mb-14 leading-[1.5] animate-fade-in-up delay-200">
+          Undangan digital yang terasa <span className="text-[#1c1c1c] border-b border-highlight/30">personal</span>. 
+          Hanya butuh 5 menit untuk menyusun undangan pernikahan yang elegan, mewah, dan berkesan.
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up delay-300">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-up delay-300">
           <Link
             href="/create"
-            className="group inline-flex items-center gap-2.5 px-8 py-4 text-base font-semibold rounded-2xl bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-2xl shadow-rose-500/25 hover:shadow-rose-500/40 transition-all duration-300 hover:scale-105"
+            className="group relative inline-flex items-center gap-3 px-10 py-5 text-lg font-bold rounded-lg bg-[#1c1c1c] text-[#fcfbf8] shadow-inset hover:opacity-95 transition-all duration-500 hover:scale-[1.02]"
           >
-            <Heart className="h-5 w-5 group-hover:scale-110 transition-transform" fill="white" />
-            Start Creating
-            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            Buat Undangan Sekarang
+            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Link>
 
           <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-8 py-4 text-base font-medium rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 text-foreground/70 hover:text-foreground hover:bg-white/10 transition-all duration-300"
+            href="/pricing"
+            className="text-[#1c1c1c] font-bold text-lg hover:opacity-70 border-b-2 border-[#1c1c1c]/10 pb-1 transition-all"
           >
-            View My Invitations
+            Lihat Paket Hemat
           </Link>
         </div>
 
-        {/* Stats */}
-        <div className="mt-16 flex items-center justify-center gap-8 sm:gap-12 animate-fade-in-up delay-500">
-          {[
-            { value: 'AI', label: 'Powered Generation' },
-            { value: '4', label: 'Tone Styles' },
-            { value: '2', label: 'Languages' },
-            { value: '∞', label: 'Possibilities' },
-          ].map((stat, i) => (
-            <div key={i} className="text-center">
-              <p className="text-2xl sm:text-3xl font-display font-bold bg-gradient-to-b from-foreground to-foreground/50 bg-clip-text text-transparent">
-                {stat.value}
-              </p>
-              <p className="text-[10px] sm:text-xs text-foreground/30 mt-1">{stat.label}</p>
-            </div>
-          ))}
+        {/* Floating Accents */}
+        <div className="absolute hidden lg:block left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 font-handwriting text-[120px] text-[#1c1c1c]/[0.03] rotate-[-90deg] select-none">
+          Wedding
+        </div>
+        <div className="absolute hidden lg:block right-0 top-1/2 -translate-y-1/2 translate-x-1/2 font-handwriting text-[120px] text-[#1c1c1c]/[0.03] rotate-[90deg] select-none">
+          Invitation
         </div>
       </div>
     </section>

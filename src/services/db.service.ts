@@ -1,6 +1,4 @@
-// ============================================================
-// DB Service — All Prisma database operations
-// ============================================================
+// DB Service — All Prisma database operations (Updated for new fields)
 
 import { prisma } from '@/lib/prisma';
 import type {
@@ -15,7 +13,9 @@ export async function createInvitation(data: CreateInvitationRequest, userId?: s
   return prisma.invitation.create({
     data: {
       groomName: data.groomName,
+      groomParents: data.groomParents || null,
       brideName: data.brideName,
+      brideParents: data.brideParents || null,
       eventDate: new Date(data.eventDate),
       eventTime: data.eventTime,
       venueName: data.venueName,
@@ -31,6 +31,9 @@ export async function createInvitation(data: CreateInvitationRequest, userId?: s
       musicUrl: data.musicUrl || null,
       layout: data.layout || 'elegant-cream',
       schedule: (data.schedule || []) as any,
+      loveStory: (data.loveStory || []) as any,
+      digitalGifts: (data.digitalGifts || []) as any,
+      quotes: data.quotes || null,
       userId: userId || null,
     },
   });
@@ -81,7 +84,7 @@ export async function getInvitationById(id: string) {
 }
 
 export async function getInvitationBySlug(slug: string) {
-  return prisma.invitation.findUnique({
+  const invitation = await prisma.invitation.findUnique({
     where: { slug },
     include: {
       guests: {
@@ -89,6 +92,8 @@ export async function getInvitationBySlug(slug: string) {
       },
     },
   });
+  console.log('[DB] getInvitationBySlug result for:', slug, !!invitation);
+  return invitation;
 }
 
 export async function updateInvitation(id: string, data: UpdateInvitationRequest) {

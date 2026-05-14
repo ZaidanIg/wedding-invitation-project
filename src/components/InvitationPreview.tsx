@@ -5,6 +5,7 @@ import ElegantCream from './layouts/ElegantCream';
 import RoyalBlue from './layouts/RoyalBlue';
 import RoseGarden from './layouts/RoseGarden';
 import GoldenClassic from './layouts/GoldenClassic';
+import LuxuryEmerald from './layouts/luxury-emerald';
 
 interface InvitationPreviewProps {
   invitation: Invitation;
@@ -19,8 +20,11 @@ export default function InvitationPreview({ invitation }: InvitationPreviewProps
       return <RoseGarden invitation={invitation} />;
     case 'golden-classic':
       return <GoldenClassic invitation={invitation} />;
+    case 'luxury-emerald':
+      return <LuxuryEmerald invitation={invitation} />;
     case 'elegant-cream':
     default:
       return <ElegantCream invitation={invitation} />;
   }
 }
+

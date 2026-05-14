@@ -1,8 +1,184 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen } from 'lucide-react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
+
+/* ── Photo Carousel (Fade Animation) ── */
+export function PhotoCarousel({ photos, className = "" }: { photos: string[]; className?: string }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (photos.length <= 1) return;
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % photos.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [photos]);
+
+  if (!photos.length) return null;
+
+  return (
+    <div className={`relative overflow-hidden rounded-[2.5rem] mx-4 sm:mx-8 shadow-2xl border border-white/10 ${className}`}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          className="absolute inset-0 w-full h-full"
+        >
+          <img src={photos[index]} alt="Carousel" className="w-full h-full object-cover" />
+        </motion.div>
+      </AnimatePresence>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10 pointer-events-none" />
+      
+      {/* Indicators */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {photos.map((_, i) => (
+          <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${i === index ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Floral Divider ── */
+export function FloralDivider({ color = "#8b5e3c", imageSrc, className = "" }: { color?: string; imageSrc?: string; className?: string }) {
+  if (imageSrc) {
+    return (
+      <div className={`flex items-center justify-between w-full px-2 sm:px-6 ${className}`}>
+        <div className="relative w-24 h-24 opacity-80 rotate-[15deg]" style={{ filter: 'sepia(100%) saturate(300%) brightness(40%) hue-rotate(5deg)' }}>
+          <Image src={imageSrc} alt="Flower" fill className="object-contain" unoptimized />
+        </div>
+        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-current to-transparent opacity-10 mx-2" style={{ color }} />
+        <div className="relative w-24 h-24 opacity-80 scale-x-[-1] -rotate-[15deg]" style={{ filter: 'sepia(100%) saturate(300%) brightness(40%) hue-rotate(5deg)' }}>
+          <Image src={imageSrc} alt="Flower" fill className="object-contain" unoptimized />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`flex items-center justify-between w-full px-4 sm:px-12 opacity-40 ${className}`}>
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="rotate-45">
+        <circle cx="20" cy="20" r="4" fill={color} />
+        <ellipse cx="20" cy="10" rx="4" ry="8" fill={color} />
+        <ellipse cx="20" cy="30" rx="4" ry="8" fill={color} />
+        <ellipse cx="10" cy="20" rx="8" ry="4" fill={color} />
+        <ellipse cx="30" cy="20" rx="8" ry="4" fill={color} />
+      </svg>
+      <div className="flex-1 h-px bg-gradient-to-r from-transparent via-current to-transparent opacity-10 mx-4" style={{ color }} />
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="-rotate-45">
+        <circle cx="20" cy="20" r="4" fill={color} />
+        <ellipse cx="20" cy="10" rx="4" ry="8" fill={color} />
+        <ellipse cx="20" cy="30" rx="4" ry="8" fill={color} />
+        <ellipse cx="10" cy="20" rx="8" ry="4" fill={color} />
+        <ellipse cx="30" cy="20" rx="8" ry="4" fill={color} />
+      </svg>
+    </div>
+  );
+}
+
+/* ── Love Story Section ── */
+export function LoveStorySection({ 
+  story, 
+  bgColor = "bg-[#042f2e]", 
+  accentColor = "text-[#d4af37]", 
+  textColor = "text-white",
+  floralImage
+}: { 
+  story: any[]; 
+  bgColor?: string; 
+  accentColor?: string; 
+  textColor?: string;
+  floralImage?: string;
+}) {
+  if (!story || story.length === 0) return null;
+
+  return (
+    <section id="story" className={`py-24 px-8 ${bgColor} text-center relative overflow-hidden`}>
+      <div className="relative z-10 mt-12">
+        <FloralDivider color="#8b5e3c" imageSrc={floralImage} className="mb-12" />
+        
+        <AnimatedSection>
+          <div className="inline-flex p-3 rounded-full bg-white/10 mb-4">
+            <BookOpen className={`h-5 w-5 ${accentColor}`} />
+          </div>
+          <h2 className={`text-2xl font-display font-bold ${textColor} mb-2`}>Our Love Story</h2>
+          <p className={`text-[10px] uppercase tracking-[0.3em] ${accentColor} opacity-60 mb-16`}>Perjalanan Cinta Kami</p>
+        </AnimatedSection>
+
+        <div className="max-w-md mx-auto relative">
+          {/* Timeline Line */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent -translate-x-1/2" />
+
+          {story.map((item, idx) => (
+            <div key={item.id} className={`relative mb-20 last:mb-0 ${idx % 2 === 0 ? 'text-right pr-[50%] mr-8' : 'text-left pl-[50%] ml-8'}`}>
+              <AnimatedSection animation={idx % 2 === 0 ? 'left' : 'right'}>
+                {/* Year Bubble */}
+                <div className={`absolute top-0 w-12 h-12 rounded-full ${bgColor} border border-white/20 flex items-center justify-center z-10 ${idx % 2 === 0 ? '-right-14' : '-left-14'}`}>
+                  <span className={`text-[10px] font-bold ${accentColor}`}>{item.year}</span>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-5 rounded-2xl">
+                  <h3 className={`text-lg font-display font-bold ${textColor} mb-2`}>{item.title}</h3>
+                  <p className={`text-sm ${textColor} opacity-60 leading-relaxed italic`}>&ldquo;{item.description}&rdquo;</p>
+                </div>
+              </AnimatedSection>
+            </div>
+          ))}
+        </div>
+
+        <AnimatedSection delay="delay-500">
+          <div className="mt-16">
+            <Heart className={`h-6 w-6 ${accentColor} mx-auto animate-pulse`} fill="currentColor" />
+          </div>
+        </AnimatedSection>
+
+        <FloralDivider color="#8b5e3c" imageSrc={floralImage} className="mt-20" />
+      </div>
+    </section>
+  );
+}
+
+/* ── Parallax Image Effect ── */
+export function ParallaxImage({ src, alt, className = "", rounded = true }: { src: string; alt: string; className?: string; rounded?: boolean }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
+  
+  return (
+    <div ref={ref} className={`relative overflow-hidden ${rounded ? 'rounded-[2rem] mx-4 sm:mx-8' : ''} ${className} shadow-xl border border-white/10`}>
+      <motion.div style={{ y, height: "130%", top: "-15%" }} className="absolute inset-0 w-full">
+        <img src={src} alt={alt} className="w-full h-full object-cover" loading="lazy" />
+      </motion.div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+    </div>
+  );
+}
+
+export function ParallaxSection({ children, speed = 0.5 }: { children: React.ReactNode; speed?: number }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", `${speed * 20}%`]);
+  
+  return (
+    <motion.div ref={ref} style={{ y }} className="relative z-0">
+      {children}
+    </motion.div>
+  );
+}
 
 /* ── Animated Section Wrapper (3D Smooth Fade) ── */
 export function AnimatedSection({
@@ -110,19 +286,19 @@ export function CountdownTimer({
   ];
 
   return (
-    <div className="flex items-center justify-center gap-3 sm:gap-5">
+    <div className="flex items-center justify-center gap-1 sm:gap-5 px-1 max-w-full overflow-hidden">
       {blocks.map((block, i) => (
-        <div key={block.label} className="flex items-center gap-3 sm:gap-5">
-          <div className="text-center">
-            <div className={`text-3xl sm:text-5xl font-display font-bold ${textColor} tabular-nums transition-all duration-300`}>
+        <div key={block.label} className="flex items-center gap-1 sm:gap-5">
+          <div className="text-center min-w-[42px] sm:min-w-[70px]">
+            <div className={`text-2xl sm:text-5xl font-display font-bold ${textColor} tabular-nums transition-all duration-300 leading-none`}>
               {String(block.value).padStart(2, '0')}
             </div>
-            <div className={`text-[10px] sm:text-xs uppercase tracking-widest ${labelColor} mt-1`}>
+            <div className={`text-[7px] sm:text-[10px] uppercase tracking-widest ${labelColor} mt-1.5`}>
               {block.label}
             </div>
           </div>
           {i < blocks.length - 1 && (
-            <span className={`text-2xl sm:text-4xl ${separatorColor} font-light -mt-4`}>:</span>
+            <span className={`text-xl sm:text-4xl ${separatorColor} font-light -mt-4 opacity-40`}>:</span>
           )}
         </div>
       ))}
@@ -191,12 +367,9 @@ export function AudioPlayer({
 /* ── Torn Paper Edge SVGs ── */
 export function TornEdgeTop({ fill = '#f5f0eb' }: { fill?: string }) {
   return (
-    <div className="absolute top-0 left-0 right-0 h-6 z-10">
+    <div className="absolute top-0 left-0 right-0 h-6 z-10 pointer-events-none">
       <svg viewBox="0 0 500 30" preserveAspectRatio="none" className="w-full h-full">
-        <path
-          d="M0,0 L0,22 Q25,30 50,22 Q75,14 100,22 Q125,30 150,22 Q175,14 200,22 Q225,30 250,22 Q275,14 300,22 Q325,30 350,22 Q375,14 400,22 Q425,30 450,22 Q475,14 500,22 L500,0 Z"
-          fill={fill}
-        />
+        <path d="M0,0 L0,22 Q25,30 50,22 Q75,14 100,22 Q125,30 150,22 Q175,14 200,22 Q225,30 250,22 Q275,14 300,22 Q325,30 350,22 Q375,14 400,22 Q425,30 450,22 Q475,14 500,22 L500,0 Z" fill={fill} />
       </svg>
     </div>
   );
@@ -204,16 +377,35 @@ export function TornEdgeTop({ fill = '#f5f0eb' }: { fill?: string }) {
 
 export function TornEdgeBottom({ fill = '#f5f0eb' }: { fill?: string }) {
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-6 z-10">
+    <div className="absolute bottom-0 left-0 right-0 h-6 z-10 pointer-events-none">
       <svg viewBox="0 0 500 30" preserveAspectRatio="none" className="w-full h-full">
-        <path
-          d="M0,30 L0,8 Q25,0 50,8 Q75,16 100,8 Q125,0 150,8 Q175,16 200,8 Q225,0 250,8 Q275,16 300,8 Q325,0 350,8 Q375,16 400,8 Q425,0 450,8 Q475,16 500,8 L500,30 Z"
-          fill={fill}
-        />
+        <path d="M0,30 L0,8 Q25,0 50,8 Q75,16 100,8 Q125,0 150,8 Q175,16 200,8 Q225,0 250,8 Q275,16 300,8 Q325,0 350,8 Q375,16 400,8 Q425,0 450,8 Q475,16 500,8 L500,30 Z" fill={fill} />
       </svg>
     </div>
   );
 }
+
+/* ── Dramatic Wave Dividers ── */
+export function WaveDivider({ fill = '#faf7f0', position = 'top', flip = false }: { fill?: string; position?: 'top' | 'bottom'; flip?: boolean }) {
+  return (
+    <div className={`absolute left-0 right-0 w-full h-16 z-10 pointer-events-none ${position === 'top' ? 'top-[-1px]' : 'bottom-[-1px]'} ${flip ? 'scale-x-[-1]' : ''}`}>
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className={`w-full h-full ${position === 'bottom' ? 'rotate-180' : ''} scale-y-105`}>
+        <path fill={fill} d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,80C1120,75,1280,85,1360,90.7L1440,96L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z" />
+      </svg>
+    </div>
+  );
+}
+
+export function CurvedDivider({ fill = '#faf7f0', position = 'top' }: { fill?: string; position?: 'top' | 'bottom' }) {
+  return (
+    <div className={`absolute left-0 right-0 w-full h-10 z-10 pointer-events-none ${position === 'top' ? 'top-0' : 'bottom-0'}`}>
+      <svg viewBox="0 0 100 10" preserveAspectRatio="none" className={`w-full h-full ${position === 'bottom' ? 'rotate-180' : ''}`}>
+        <path d="M0 0 Q 50 10 100 0 L 100 0 L 0 0 Z" fill={fill} />
+      </svg>
+    </div>
+  );
+}
+
 
 /* ── Fallback Photos ── */
 export const fallbackPhotos = [
@@ -255,6 +447,116 @@ export function formatEventDate(eventDate: string) {
 /* ── Helper: maps URL ── */
 export function getMapsUrl(venueName: string, venueAddress: string) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venueName + ', ' + venueAddress)}`;
+}
+
+/* ── Digital Gift (Angpao) ── */
+export function DigitalGiftSection({ 
+  gifts, 
+  bgColor = "bg-white", 
+  textColor = "text-stone-800" 
+}: { 
+  gifts: any[]; 
+  bgColor?: string; 
+  textColor?: string;
+}) {
+  const [copied, setCopied] = useState<string | null>(null);
+
+  if (!gifts || gifts.length === 0) return null;
+
+  const handleCopy = (accountNumber: string) => {
+    navigator.clipboard.writeText(accountNumber);
+    setCopied(accountNumber);
+    setTimeout(() => setCopied(null), 2000);
+  };
+
+  return (
+    <section className={`py-24 px-8 ${bgColor} text-center relative overflow-hidden`}>
+      {/* Subtle Decorative Elements */}
+      <div className="absolute top-10 left-10 opacity-20 animate-float">
+        <Heart className="h-20 w-20 text-rose-200" fill="currentColor" />
+      </div>
+      <div className="absolute bottom-10 right-10 opacity-10 animate-float-delayed scale-75">
+        <Heart className="h-24 w-24 text-rose-300" fill="currentColor" />
+      </div>
+
+      <div className="relative z-10">
+        <AnimatedSection>
+          <div className="inline-flex p-3 rounded-full bg-current opacity-5 mb-4 relative">
+            <Heart className="h-5 w-5 text-rose-500 relative z-10" fill="currentColor" />
+          </div>
+          <h2 className={`text-2xl font-display font-bold ${textColor} mb-2`}>Wedding Gift</h2>
+          <p className="text-sm opacity-60 mb-12 leading-relaxed max-w-xs mx-auto">
+            Doa restu Anda sudah lebih dari cukup. Namun bagi Anda yang ingin memberikan tanda kasih, dapat melalui:
+          </p>
+        </AnimatedSection>
+
+        <div className="space-y-6 max-w-sm mx-auto">
+          {gifts.map((gift, idx) => (
+            <AnimatedSection key={idx} animation="scale" delay={`delay-${idx * 100}`}>
+              <div className="p-8 rounded-[2rem] bg-white shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] border border-stone-100 relative overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+                {/* Accent line */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-rose-300 to-transparent opacity-50" />
+                
+                <div className="absolute -top-6 -right-6 p-3 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity rotate-12">
+                  <Heart className="h-32 w-32 text-rose-900" />
+                </div>
+                
+                <div className="relative z-10">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 mb-3 font-bold">{gift.bankName}</p>
+                  <p className="text-xl font-display font-bold text-stone-800 mb-2 tracking-wider">{gift.accountNumber}</p>
+                  <p className="text-xs text-stone-500 mb-6 font-medium">Atas Nama: <span className="text-stone-800 uppercase">{gift.accountHolder}</span></p>
+                  
+                  <button
+                    onClick={() => handleCopy(gift.accountNumber)}
+                    className="group relative inline-flex items-center gap-3 px-8 py-3 bg-stone-900 text-white text-[11px] font-bold uppercase tracking-[0.2em] rounded-full overflow-hidden transition-all hover:pr-10"
+                  >
+                    <span className="relative z-10">{copied === gift.accountNumber ? 'Tersalin!' : 'Salin Nomor'}</span>
+                    <div className="absolute inset-0 bg-rose-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    {copied !== gift.accountNumber && (
+                      <svg className="w-3 h-3 relative z-10 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </AnimatedSection>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── Guest Welcome (Personalized Greeting) ── */
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+
+export function GuestWelcome({ defaultText = "You" }: { defaultText?: string }) {
+  return (
+    <Suspense fallback={null}>
+      <GuestWelcomeContent defaultText={defaultText} />
+    </Suspense>
+  );
+}
+
+function GuestWelcomeContent({ defaultText }: { defaultText: string }) {
+  const searchParams = useSearchParams();
+  const guestName = searchParams.get('to');
+
+  if (!guestName) return null;
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1, duration: 1 }}
+      className="mt-8 p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 inline-block"
+    >
+      <p className="text-xs uppercase tracking-widest text-white/60 mb-1">Exclusive Invitation for</p>
+      <p className="text-xl font-display font-bold text-white uppercase tracking-wider">{guestName}</p>
+    </motion.div>
+  );
 }
 
 /* ── Helper: Icon Mapper ── */

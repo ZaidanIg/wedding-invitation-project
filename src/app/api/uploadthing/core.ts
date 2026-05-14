@@ -7,7 +7,7 @@ export const ourFileRouter = {
   weddingPhotos: f({
     image: {
       maxFileSize: '4MB',
-      maxFileCount: 8,
+      maxFileCount: 30,
     },
   })
     .middleware(async () => {

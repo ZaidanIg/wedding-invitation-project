@@ -16,12 +16,12 @@ export default function Card({
   return (
     <div
       className={`
-        rounded-2xl p-6
+        rounded-xl p-6
         ${glass
-          ? 'bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl shadow-black/5'
-          : 'bg-background border border-foreground/10'
+          ? 'bg-white border border-[#eceae4] shadow-sm'
+          : 'bg-transparent border border-[#eceae4]'
         }
-        ${hover ? 'transition-all duration-300 hover:shadow-2xl hover:shadow-rose-500/5 hover:border-rose-400/20 hover:scale-[1.01]' : ''}
+        ${hover ? 'transition-all duration-500 hover:shadow-focus hover:border-[#1c1c1c]/20' : ''}
         ${className}
       `}
     >

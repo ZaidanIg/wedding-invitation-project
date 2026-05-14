@@ -11,22 +11,17 @@ import {
   formatEventDate,
   getMapsUrl,
   IconMapper,
+  WaveDivider,
+  CurvedDivider,
+  DigitalGiftSection,
+  LoveStorySection,
+  GuestWelcome,
 } from './shared';
 
 interface LayoutProps {
   invitation: Invitation;
 }
 
-/* Wave divider */
-function WaveDivider({ flip = false }: { flip?: boolean }) {
-  return (
-    <div className={`w-full h-8 ${flip ? 'rotate-180' : ''}`}>
-      <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="w-full h-full">
-        <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="#e8f0fe" />
-      </svg>
-    </div>
-  );
-}
 
 /* Floral accent SVG */
 function FloralAccent({ className = '' }: { className?: string }) {
@@ -73,6 +68,9 @@ export default function RoyalBlue({ invitation }: LayoutProps) {
             <span className="text-2xl font-display font-bold text-white">{dayNumber}</span>
             <span className="text-xs uppercase tracking-widest text-blue-100">{new Date(invitation.eventDate).getFullYear()}</span>
           </div>
+
+          <GuestWelcome />
+
           <div className="mt-8 animate-bounce" style={{ animationDelay: '1.5s' }}>
             <ChevronDown className="h-6 w-6 text-blue-200/50 mx-auto" />
           </div>
@@ -82,7 +80,7 @@ export default function RoyalBlue({ invitation }: LayoutProps) {
       <WaveDivider />
 
       {/* Monogram & Countdown */}
-      <section className="py-14 px-6 text-center bg-[#e8f0fe]">
+      <section className="py-14 px-4 sm:px-6 text-center bg-[#e8f0fe]">
         <AnimatedSection animation="scale">
           <div className="w-24 h-24 mx-auto rounded-full border-2 border-blue-400/40 flex items-center justify-center mb-6">
             <span className="text-2xl font-display font-bold text-blue-600">
@@ -100,6 +98,37 @@ export default function RoyalBlue({ invitation }: LayoutProps) {
             <div className="h-px w-12 bg-blue-300" />
           </div>
         </AnimatedSection>
+      </section>
+
+      {/* The Couple Profile */}
+      <section className="py-14 px-8 bg-white/50 backdrop-blur-sm">
+        <div className="grid grid-cols-1 gap-12 text-center">
+          {/* Groom */}
+          <AnimatedSection animation="left">
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-blue-400/20 mb-4 relative">
+                <Image src={heroPhoto} alt="Groom" fill className="object-cover" unoptimized />
+              </div>
+              <h3 className="text-2xl font-display font-bold text-blue-800">{invitation.groomName}</h3>
+              <p className="text-[10px] text-blue-400 uppercase tracking-widest mt-2">Putra dari</p>
+              <p className="text-sm text-slate-600 font-medium">{invitation.groomParents || 'Bapak & Ibu'}</p>
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection animation="scale"><FloralAccent className="opacity-40" /></AnimatedSection>
+
+          {/* Bride */}
+          <AnimatedSection animation="right">
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-blue-400/20 mb-4 relative">
+                <Image src={photo2} alt="Bride" fill className="object-cover" unoptimized />
+              </div>
+              <h3 className="text-2xl font-display font-bold text-blue-800">{invitation.brideName}</h3>
+              <p className="text-[10px] text-blue-400 uppercase tracking-widest mt-2">Putri dari</p>
+              <p className="text-sm text-slate-600 font-medium">{invitation.brideParents || 'Bapak & Ibu'}</p>
+            </div>
+          </AnimatedSection>
+        </div>
       </section>
 
       {/* Greeting */}
@@ -200,6 +229,17 @@ export default function RoyalBlue({ invitation }: LayoutProps) {
           </div>
         </AnimatedSection>
       </section>
+
+      {/* Love Story */}
+      <LoveStorySection 
+        story={invitation.loveStory || []} 
+        bgColor="bg-[#e8f0fe]" 
+        accentColor="text-blue-600" 
+        textColor="text-slate-800"
+      />
+
+      {/* Digital Gift */}
+      <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-white" textColor="text-blue-900" />
 
       {/* Gallery */}
       {galleryPhotos.length > 0 && (

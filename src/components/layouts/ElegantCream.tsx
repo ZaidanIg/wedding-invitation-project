@@ -7,12 +7,17 @@ import {
   AnimatedSection,
   CountdownTimer,
   AudioPlayer,
-  TornEdgeTop,
-  TornEdgeBottom,
   resolvePhotos,
   formatEventDate,
   getMapsUrl,
   IconMapper,
+  WaveDivider,
+  ParallaxImage,
+  DigitalGiftSection,
+  LoveStorySection,
+  GuestWelcome,
+  TornEdgeTop,
+  TornEdgeBottom,
 } from './shared';
 
 interface LayoutProps {
@@ -43,20 +48,21 @@ export default function ElegantCream({ invitation }: LayoutProps) {
             <span className="block text-4xl sm:text-6xl font-display font-bold text-white drop-shadow-lg">{invitation.brideName}</span>
           </h1>
           <p className="text-sm sm:text-base text-white/60 mt-6 tracking-widest animate-fade-in-up" style={{ animationDelay: '600ms', animationFillMode: 'both' }}>{formattedDate}</p>
+          
+          <GuestWelcome />
+
           <div className="mt-10 animate-bounce" style={{ animationDelay: '1.5s' }}>
             <ChevronDown className="h-6 w-6 text-white/50 mx-auto" />
           </div>
         </div>
       </section>
 
-      <div className="relative h-6 -mt-1 z-10">
-        <svg viewBox="0 0 500 30" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
-          <path d="M0,30 L0,8 Q25,0 50,8 Q75,16 100,8 Q125,0 150,8 Q175,16 200,8 Q225,0 250,8 Q275,16 300,8 Q325,0 350,8 Q375,16 400,8 Q425,0 450,8 Q475,16 500,8 L500,30 Z" fill="#f5f0eb" />
-        </svg>
+      <div className="relative h-px w-full bg-[#f5f0eb]">
+        <WaveDivider fill="#faf7f0" position="top" />
       </div>
 
       {/* Countdown */}
-      <section className="py-14 px-6 text-center bg-[#f5f0eb]">
+      <section className="py-14 px-4 sm:px-6 text-center bg-[#f5f0eb]">
         <AnimatedSection><p className="text-xs uppercase tracking-[0.25em] text-stone-400 mb-8">Counting down to</p></AnimatedSection>
         <AnimatedSection delay="delay-200"><CountdownTimer targetDate={invitation.eventDate} /></AnimatedSection>
         <AnimatedSection delay="delay-300">
@@ -82,31 +88,62 @@ export default function ElegantCream({ invitation }: LayoutProps) {
         <AnimatedSection delay="delay-200"><p className="text-sm text-stone-500 leading-relaxed mt-6 max-w-sm mx-auto">{invitation.mainBody}</p></AnimatedSection>
       </section>
 
-      {/* Photo divider */}
-      <section className="relative w-full h-[350px] sm:h-[450px] overflow-hidden">
-        <TornEdgeTop />
-        <Image src={photo2} alt="Couple photo" fill className="object-cover animate-gentle-zoom" unoptimized />
-        <TornEdgeBottom />
+      {/* The Couple Profile */}
+      <section className="py-14 px-8 bg-[#f5f0eb] text-center">
+        <div className="grid grid-cols-1 gap-12">
+          {/* Groom */}
+          <AnimatedSection animation="left">
+            <div className="flex flex-col items-center">
+              <h3 className="text-3xl font-display font-bold text-stone-800 mb-2">{invitation.groomName}</h3>
+              <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">Putra dari</p>
+              <p className="text-sm text-stone-600 font-serif italic">{invitation.groomParents || 'Bapak & Ibu'}</p>
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection animation="scale">
+            <div className="flex items-center justify-center gap-4">
+              <div className="h-px w-12 bg-stone-300" />
+              <Heart className="h-4 w-4 text-rose-400/60" fill="currentColor" />
+              <div className="h-px w-12 bg-stone-300" />
+            </div>
+          </AnimatedSection>
+
+          {/* Bride */}
+          <AnimatedSection animation="right">
+            <div className="flex flex-col items-center">
+              <h3 className="text-3xl font-display font-bold text-stone-800 mb-2">{invitation.brideName}</h3>
+              <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">Putri dari</p>
+              <p className="text-sm text-stone-600 font-serif italic">{invitation.brideParents || 'Bapak & Ibu'}</p>
+            </div>
+          </AnimatedSection>
+        </div>
       </section>
 
+      {/* Photo divider */}
+      <ParallaxImage src={photo2} alt="Couple photo" className="w-full h-[350px] sm:h-[450px]" />
+
       {/* Ceremony */}
-      <section className="py-14 px-8 bg-[#f5f0eb] text-center">
-        <AnimatedSection animation="scale"><div className="inline-flex p-3 rounded-full border border-stone-300 mb-4"><Heart className="h-5 w-5 text-stone-500" /></div></AnimatedSection>
-        <AnimatedSection delay="delay-100"><h2 className="text-2xl font-display font-bold text-stone-800 mb-4">Ceremony</h2></AnimatedSection>
-        <AnimatedSection delay="delay-200">
-          <p className="text-sm text-stone-600 leading-relaxed">{invitation.eventTime}</p>
-          <p className="text-sm text-stone-600 mt-1 font-medium">{invitation.venueName}</p>
-          <p className="text-xs text-stone-400 mt-1">{invitation.venueAddress}</p>
-        </AnimatedSection>
-        <AnimatedSection delay="delay-300">
-          <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-6 px-6 py-2.5 border border-stone-800 text-stone-800 text-xs font-semibold uppercase tracking-widest rounded-sm hover:bg-stone-800 hover:text-[#f5f0eb] transition-all duration-300">
-            <MapPin className="h-3.5 w-3.5" />How to Get There
-          </a>
-        </AnimatedSection>
+      <section className="py-20 px-8 bg-white text-center relative">
+        <WaveDivider fill="#f5f0eb" position="top" />
+        <div className="mt-12">
+          <AnimatedSection animation="scale"><div className="inline-flex p-3 rounded-full border border-stone-300 mb-4"><Heart className="h-5 w-5 text-stone-500" /></div></AnimatedSection>
+          <AnimatedSection delay="delay-100"><h2 className="text-2xl font-display font-bold text-stone-800 mb-4">Ceremony</h2></AnimatedSection>
+          <AnimatedSection delay="delay-200">
+            <p className="text-sm text-stone-600 leading-relaxed">{invitation.eventTime}</p>
+            <p className="text-sm text-stone-600 mt-1 font-medium">{invitation.venueName}</p>
+            <p className="text-xs text-stone-400 mt-1">{invitation.venueAddress}</p>
+          </AnimatedSection>
+          <AnimatedSection delay="delay-300">
+            <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-6 px-6 py-2.5 border border-stone-800 text-stone-800 text-xs font-semibold uppercase tracking-widest rounded-sm hover:bg-stone-800 hover:text-[#f5f0eb] transition-all duration-300">
+              <MapPin className="h-3.5 w-3.5" />How to Get There
+            </a>
+          </AnimatedSection>
+        </div>
       </section>
 
       {/* Timeline */}
-      <section className="py-14 px-8 bg-[#f5f0eb]">
+      <section className="py-20 px-8 bg-[#f5f0eb] relative">
+        <WaveDivider fill="#fff" position="top" />
         <AnimatedSection><h2 className="text-2xl font-display font-bold text-stone-800 text-center mb-10">Event Schedule</h2></AnimatedSection>
         <div className="max-w-xs mx-auto space-y-0">
           {invitation.schedule && invitation.schedule.length > 0 ? (
@@ -156,6 +193,12 @@ export default function ElegantCream({ invitation }: LayoutProps) {
           </a>
         </AnimatedSection>
       </section>
+
+      {/* Love Story */}
+      <LoveStorySection story={invitation.loveStory || []} bgColor="#f5f0eb" textColor="text-stone-800" accentColor="text-rose-400" floralImage="/images/bunga.png" />
+
+      {/* Digital Gift */}
+      <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-[#faf9f6]" textColor="text-stone-800" />
 
       {/* Gallery */}
       {galleryPhotos.length > 0 && (
