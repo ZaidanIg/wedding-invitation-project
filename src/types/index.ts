@@ -73,6 +73,7 @@ export interface Invitation {
   schedule: ScheduleItem[];
   loveStory?: LoveStoryItem[];
   digitalGifts?: any[];
+  quotes?: string | null;
   slug: string;
   viewCount: number;
   tier: InvitationTier;
