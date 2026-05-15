@@ -250,7 +250,7 @@ export default function RoyalBlue({ invitation }: LayoutProps) {
             <h2 className="text-2xl font-display font-bold text-blue-800 mb-8">Gallery</h2>
           </AnimatedSection>
           <div className="grid grid-cols-2 gap-3">
-            {galleryPhotos.map((src, idx) => (
+            {galleryPhotos.map((src: string, idx: number) => (
               <AnimatedSection key={idx} animation="scale" delay={`delay-${(idx + 1) * 100}`} className={idx === 0 ? 'col-span-2' : ''}>
                 <div className={`relative rounded-2xl overflow-hidden shadow-md border-2 border-blue-200/50 group ${idx === 0 ? 'h-[250px]' : 'h-[180px]'}`}>
                   <Image src={src} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" unoptimized />

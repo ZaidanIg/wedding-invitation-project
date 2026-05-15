@@ -222,7 +222,7 @@ export default function GoldenClassic({ invitation }: LayoutProps) {
             <h2 className="text-sm uppercase tracking-[0.3em] text-[#D4AF37] mb-8">Captured Moments</h2>
           </AnimatedSection>
           <div className="grid grid-cols-2 gap-1">
-            {galleryPhotos.map((src, idx) => (
+            {galleryPhotos.map((src: string, idx: number) => (
               <AnimatedSection key={idx} animation="scale" delay={`delay-${(idx + 1) * 100}`} className={idx === 0 ? 'col-span-2' : ''}>
                 <div className={`relative overflow-hidden group bg-zinc-100 ${idx === 0 ? 'h-[300px]' : 'h-[200px]'}`}>
                   <Image src={src} alt={`Gallery ${idx + 1}`} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out" unoptimized />
