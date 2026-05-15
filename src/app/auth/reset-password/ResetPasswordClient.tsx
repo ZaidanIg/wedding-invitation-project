@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Lock, Heart, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -103,7 +103,7 @@ export default function ResetPasswordPage() {
                   placeholder="••••••••"
                   icon={<Lock className="h-4 w-4" />}
                   value={password}
-                  onChange={(e: { target: { value: SetStateAction<string>; }; }) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={!token || isLoading}
                   className="rounded-2xl h-12"
