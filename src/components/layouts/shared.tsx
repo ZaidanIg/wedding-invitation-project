@@ -241,6 +241,45 @@ export function AnimatedSection({
   );
 }
 
+
+/* ── Quotes Section ── */
+export function QuotesSection({ 
+  text, 
+  textColor = "text-stone-800", 
+  bgColor = "bg-white" 
+}: { 
+  text: string; 
+  textColor?: string; 
+  bgColor?: string; 
+}) {
+  if (!text) return null;
+
+  return (
+    <section className={`py-24 px-8 ${bgColor} text-center relative overflow-hidden`}>
+      <div className="max-w-3xl mx-auto">
+        <AnimatedSection>
+          <div className="relative">
+            <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-10">
+              <BookOpen className={`h-24 w-24 ${textColor}`} />
+            </div>
+            
+            <div className="relative z-10 pt-8">
+              <p className={`text-2xl md:text-3xl font-display italic leading-relaxed ${textColor} mb-8`}>
+                "{text}"
+              </p>
+              <div className="flex items-center justify-center gap-4">
+                <div className={`h-px w-12 ${textColor} opacity-20`} />
+                <Heart className={`h-5 w-5 ${textColor} opacity-40`} />
+                <div className={`h-px w-12 ${textColor} opacity-20`} />
+              </div>
+            </div>
+          </div>
+        </AnimatedSection>
+      </div>
+    </section>
+  );
+}
+
 /* ── Countdown Timer ── */
 export function CountdownTimer({
   targetDate,
@@ -528,43 +567,6 @@ export function DigitalGiftSection({
   );
 }
 
-/* ── Quotes Section ── */
-export function QuotesSection({ 
-  text, 
-  textColor = "text-stone-800", 
-  bgColor = "bg-white" 
-}: { 
-  text: string; 
-  textColor?: string; 
-  bgColor?: string; 
-}) {
-  if (!text) return null;
-
-  return (
-    <section className={`py-24 px-8 ${bgColor} text-center relative overflow-hidden`}>
-      <div className="max-w-3xl mx-auto">
-        <AnimatedSection>
-          <div className="relative">
-            <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-10">
-              <BookOpen className={`h-24 w-24 ${textColor}`} />
-            </div>
-            
-            <div className="relative z-10 pt-8">
-              <p className={`text-2xl md:text-3xl font-display italic leading-relaxed ${textColor} mb-8`}>
-                "{text}"
-              </p>
-              <div className="flex items-center justify-center gap-4">
-                <div className={`h-px w-12 ${textColor} opacity-20`} />
-                <Heart className={`h-5 w-5 ${textColor} opacity-40`} />
-                <div className={`h-px w-12 ${textColor} opacity-20`} />
-              </div>
-            </div>
-          </div>
-        </AnimatedSection>
-      </div>
-    </section>
-  );
-}
 
 /* ── Guest Welcome (Personalized Greeting) ── */
 import { Suspense } from 'react';
