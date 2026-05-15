@@ -221,7 +221,7 @@ export default function ElegantCream({ invitation }: LayoutProps) {
             <h2 className="text-2xl font-display font-bold text-stone-800 mb-8">Our Moments</h2>
           </AnimatedSection>
           <div className="grid grid-cols-2 gap-3">
-            {galleryPhotos.map((src, idx) => (
+            {galleryPhotos.map((src: string, idx: number) => (
               <AnimatedSection key={idx} animation="scale" delay={`delay-${(idx + 1) * 100}`} className={idx === 0 ? 'col-span-2' : ''}>
                 <div className={`relative rounded-xl overflow-hidden shadow-sm group ${idx === 0 ? 'h-[250px]' : 'h-[180px]'}`}>
                   <Image src={src} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" unoptimized />
