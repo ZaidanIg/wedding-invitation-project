@@ -14,16 +14,39 @@
 }
 
 :root {
-  /* Lovable-inspired palette */
-  --background: #f7f4ed; /* Cream */
+  /* Premium Rose & Cream palette */
+  --background: #fdfcf9; /* Softer Cream */
   --foreground: #1c1c1c; /* Charcoal */
-  --muted: #5f5f5d;     /* Muted Gray */
+  --muted: #6b6b6b;     /* Muted Gray */
   --border: #eceae4;    /* Passive Border */
-  --border-interactive: rgba(28, 28, 28, 0.4);
-  --highlight: #9d174d; /* Premium Rose/Pinkish Red */
+  --border-interactive: rgba(244, 63, 94, 0.3); /* Rose border */
+  --highlight: #f43f5e; /* Rose 500 */
+  --highlight-dark: #e11d48; /* Rose 600 */
+  --highlight-light: #fb7185; /* Rose 400 */
   
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-display: var(--font-playfair), serif;
+}
+
+/* Premium Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(28, 28, 28, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bg-rose-gradient {
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+}
+
+.text-balance {
+  text-wrap: balance;
 }
 
 /* ============================================================
@@ -35,6 +58,17 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
 }
 
 /* Custom Inset Shadow for Buttons */
@@ -271,6 +305,22 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(244, 63, 94, 0.4);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(28, 28, 28, 0.02);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(244, 63, 94, 0.2);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 63, 94, 0.5);
 }
 
 /* ============================================================

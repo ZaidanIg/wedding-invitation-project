@@ -22,7 +22,7 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
   const [isOpened, setIsOpened] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
-  const { heroPhoto, photo2, photo3, galleryPhotos } = resolvePhotos(invitation);
+  const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   useEffect(() => {
@@ -33,7 +33,6 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
 
   const handleOpen = () => {
     setIsOpened(true);
-    // Auto-play music after interaction
     setTimeout(() => {
       const btn = document.querySelector('[data-emerald-audio]') as HTMLButtonElement;
       if (btn) btn.click();
@@ -42,10 +41,8 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
 
   return (
     <div className={`w-full max-w-lg mx-auto bg-[#faf7f0] text-[#1a1a2e] font-sans relative shadow-2xl ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
-      {/* Cover Page Overlay */}
       <AnimatePresence>{!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={handleOpen} />}</AnimatePresence>
 
-      {/* Romantic 3D Assets */}
       {isOpened && (
         <>
           <GoldParticles />
@@ -56,7 +53,6 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         </>
       )}
 
-      {/* ═══ HERO ═══ */}
       <section id="home" className="relative w-full h-[100vh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
           <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority unoptimized />
@@ -74,7 +70,6 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         </div>
       </section>
 
-      {/* ═══ BISMILLAH ═══ */}
       <section className="py-14 px-8 bg-[#042f2e] text-center">
         <AnimatedSection>
           <p className="text-2xl font-display text-[#d4af37] mb-4" style={{ fontFamily: 'serif' }}>﷽</p>
@@ -84,15 +79,13 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         <IslamicDivider />
       </section>
 
-      {/* ═══ COUPLE PROFILE ═══ */}
       <section id="couple" className="py-14 px-8 bg-[#faf7f0] text-center">
         <AnimatedSection><p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-8">The Groom & Bride</p></AnimatedSection>
         <div className="grid grid-cols-1 gap-10">
-          {/* Groom */}
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#d4af37]/30 shadow-lg mb-4 relative">
-                <Image src={heroPhoto} alt="Groom" fill className="object-cover" unoptimized />
+                <Image src={groomPhoto} alt="Groom" fill className="object-cover" unoptimized />
               </div>
               <h3 className="text-2xl font-display font-bold text-[#042f2e]">{invitation.groomName}</h3>
               <p className="text-xs text-[#042f2e]/50 mt-1">Putra dari</p>
@@ -100,22 +93,19 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
             </div>
           </AnimatedSection>
           <AnimatedSection animation="scale"><Heart className="h-6 w-6 text-[#d4af37] mx-auto" fill="currentColor" /></AnimatedSection>
-          {/* Bride */}
           <AnimatedSection animation="right">
             <div className="flex flex-col items-center">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#d4af37]/30 shadow-lg mb-4 relative">
-                <Image src={photo2} alt="Bride" fill className="object-cover" unoptimized />
+                <Image src={bridePhoto} alt="Bride" fill className="object-cover" unoptimized />
               </div>
               <h3 className="text-2xl font-display font-bold text-[#042f2e]">{invitation.brideName}</h3>
               <p className="text-xs text-[#042f2e]/50 mt-1">Putri dari</p>
               <p className="text-sm text-[#042f2e]/70">{invitation.brideParents || 'Bapak & Ibu'}</p>
-
             </div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* ═══ QURAN VERSE ═══ */}
       <section className="py-24 px-8 bg-[#042f2e] text-center relative overflow-hidden">
         <WaveDivider fill="#faf7f0" position="top" />
         <div className="absolute inset-6 border border-[#d4af37]/10 pointer-events-none" />
@@ -129,7 +119,6 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         </AnimatedSection>
       </section>
 
-      {/* ═══ COUNTDOWN ═══ */}
       <section id="date" className="py-20 px-6 text-center bg-[#faf7f0] relative">
         <WaveDivider fill="#042f2e" position="top" />
         <div className="mt-12">
@@ -149,7 +138,6 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         </div>
       </section>
 
-      {/* ═══ PHOTO CAROUSEL ═══ */}
       <section className="py-12 bg-[#faf7f0]">
         <PhotoCarousel 
           photos={[photo2, photo3, galleryPhotos[0] || heroPhoto]} 
@@ -157,7 +145,6 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         />
       </section>
 
-      {/* ═══ CEREMONY ═══ */}
       <section className="py-20 px-8 bg-[#042f2e] text-center relative">
         <WaveDivider fill="#faf7f0" position="top" />
         <div className="mt-12">
@@ -178,7 +165,6 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         </div>
       </section>
 
-      {/* ═══ TIMELINE ═══ */}
       {invitation.schedule && invitation.schedule.length > 0 && (
         <section className="py-20 px-8 bg-[#faf7f0] relative">
           <WaveDivider fill="#042f2e" position="top" />
@@ -202,12 +188,10 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         </section>
       )}
 
-      {/* ═══ PHOTO DIVIDER 2 ═══ */}
       <section className="py-12 bg-[#faf7f0]">
         <ParallaxImage src={photo3} alt="Photo" className="h-[350px] sm:h-[450px]" />
       </section>
 
-      {/* ═══ MAP ═══ */}
       <section className="py-20 px-8 bg-[#faf7f0] text-center relative">
         <div className="mt-12">
           <AnimatedSection><p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-6">Lokasi Acara</p></AnimatedSection>
@@ -219,13 +203,9 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         </div>
       </section>
 
-      {/* ═══ DIGITAL GIFT ═══ */}
       <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-[#faf7f0]" textColor="text-[#042f2e]" />
-
-      {/* ═══ LOVE STORY ═══ */}
       <LoveStorySection story={invitation.loveStory || []} />
 
-      {/* ═══ GALLERY ═══ */}
       {galleryPhotos.length > 0 && (
         <section id="gallery" className="pb-24 pt-12 px-8 bg-[#042f2e] text-center relative">
           <div className="relative z-10">
@@ -251,7 +231,6 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         </section>
       )}
 
-      {/* ═══ GUEST WISHES ═══ */}
       <section id="wishes" className="py-20 px-8 bg-[#faf7f0] text-center relative">
         <WaveDivider fill="#042f2e" position="top" />
         <AnimatedSection>
@@ -264,10 +243,8 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
         </AnimatedSection>
       </section>
 
-      {/* ═══ QUOTES ═══ */}
       <QuotesSection text={invitation.quotes || ''} bgColor="bg-[#faf7f0]" textColor="text-[#042f2e]" />
 
-      {/* ═══ CLOSING ═══ */}
       <section className="py-24 px-8 bg-[#042f2e] text-center relative overflow-hidden">
         <WaveDivider fill="#faf7f0" position="top" />
         <div className="absolute inset-6 border border-[#d4af37]/15 pointer-events-none" />
@@ -283,21 +260,16 @@ export default function LuxuryEmerald({ invitation }: LayoutProps) {
       </section>
 
       <div className="h-20 bg-[#042f2e]" />
-
-      {/* Audio & Bottom Nav */}
       {isOpened && invitation.musicUrl && <EmeraldAudioAutoPlay src={invitation.musicUrl} isPreview={invitation.id === 'preview'} />}
       <BottomNav visible={isOpened} isPreview={invitation.id === 'preview'} />
     </div>
   );
 }
 
-/* ── Auto-play audio after opening ── */
 function EmeraldAudioAutoPlay({ src, isPreview }: { src: string; isPreview?: boolean }) {
   return <EmeraldAudio src={src} isPreview={isPreview} />;
 }
 
-
-/* ── Inline Wishes Section ── */
 import type { Guest } from '@/types';
 
 function WishesSection({ slug, guests: initialGuests }: { slug: string; guests: Guest[] }) {

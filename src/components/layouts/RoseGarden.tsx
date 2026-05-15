@@ -54,7 +54,7 @@ function FloralBorder() {
 
 export default function RoseGarden({ invitation }: LayoutProps) {
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
-  const { heroPhoto, photo2, photo3, galleryPhotos } = resolvePhotos(invitation);
+  const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   return (
@@ -113,7 +113,7 @@ export default function RoseGarden({ invitation }: LayoutProps) {
           {/* Groom */}
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
-              <ArchPhoto src={heroPhoto} className="w-32 h-40 mb-4 border-2 border-pink-200" />
+              <ArchPhoto src={groomPhoto} className="w-32 h-40 mb-4 border-2 border-pink-200 shadow-md" />
               <h3 className="text-2xl font-display font-bold text-rose-800">{invitation.groomName}</h3>
               <p className="text-[10px] text-pink-400 uppercase tracking-widest mt-2">Putra tercinta dari</p>
               <p className="text-sm text-rose-950/70 italic font-serif mt-1">{invitation.groomParents || 'Bapak & Ibu'}</p>
@@ -123,7 +123,7 @@ export default function RoseGarden({ invitation }: LayoutProps) {
           {/* Bride */}
           <AnimatedSection animation="right">
             <div className="flex flex-col items-center">
-              <ArchPhoto src={photo2} className="w-32 h-40 mb-4 border-2 border-pink-200" />
+              <ArchPhoto src={bridePhoto} className="w-32 h-40 mb-4 border-2 border-pink-200 shadow-md" />
               <h3 className="text-2xl font-display font-bold text-rose-800">{invitation.brideName}</h3>
               <p className="text-[10px] text-pink-400 uppercase tracking-widest mt-2">Putri tercinta dari</p>
               <p className="text-sm text-rose-950/70 italic font-serif mt-1">{invitation.brideParents || 'Bapak & Ibu'}</p>

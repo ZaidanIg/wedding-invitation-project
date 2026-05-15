@@ -43,7 +43,7 @@ function FloralAccent({ className = '' }: { className?: string }) {
 
 export default function RoyalBlue({ invitation }: LayoutProps) {
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
-  const { heroPhoto, photo2, photo3, galleryPhotos } = resolvePhotos(invitation);
+  const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   return (
@@ -107,8 +107,8 @@ export default function RoyalBlue({ invitation }: LayoutProps) {
           {/* Groom */}
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-blue-400/20 mb-4 relative">
-                <Image src={heroPhoto} alt="Groom" fill className="object-cover" unoptimized />
+              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-blue-400 shadow-lg mb-4 relative">
+                <Image src={groomPhoto} alt="Groom" fill className="object-cover" unoptimized />
               </div>
               <h3 className="text-2xl font-display font-bold text-blue-800">{invitation.groomName}</h3>
               <p className="text-[10px] text-blue-400 uppercase tracking-widest mt-2">Putra dari</p>
@@ -121,8 +121,8 @@ export default function RoyalBlue({ invitation }: LayoutProps) {
           {/* Bride */}
           <AnimatedSection animation="right">
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-blue-400/20 mb-4 relative">
-                <Image src={photo2} alt="Bride" fill className="object-cover" unoptimized />
+              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-blue-400 shadow-lg mb-4 relative">
+                <Image src={bridePhoto} alt="Bride" fill className="object-cover" unoptimized />
               </div>
               <h3 className="text-2xl font-display font-bold text-blue-800">{invitation.brideName}</h3>
               <p className="text-[10px] text-blue-400 uppercase tracking-widest mt-2">Putri dari</p>

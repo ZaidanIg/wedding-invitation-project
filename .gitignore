@@ -45,3 +45,9 @@ client_secret_*.json
 test-db.js
 .DS_Store
 *.local
+
+# Excluded by request
+scratch/
+AGENTS.md
+CLAUDE.md
+DESIGN.md

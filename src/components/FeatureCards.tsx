@@ -30,7 +30,7 @@ export default function FeatureCards() {
   return (
     <section className="py-24 px-4 bg-[#f7f4ed]">
       <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
           {features.map((feature, i) => (
             <motion.div
               key={i}

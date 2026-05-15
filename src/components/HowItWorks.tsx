@@ -27,7 +27,7 @@ export default function HowItWorks() {
     <section className="py-32 px-4 bg-[#fcfbf8] overflow-hidden border-y border-[#eceae4]">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-24">
-          <h2 className="text-[42px] sm:text-[54px] font-display font-bold text-[#1c1c1c] tracking-[-1.5px] mb-6">
+          <h2 className="text-3xl sm:text-[54px] font-display font-bold text-[#1c1c1c] tracking-tight sm:tracking-[-1.5px] mb-6">
             Langkah Sederhana Menuju <br /> <span className="italic font-normal">Momen Sempurna</span>
           </h2>
           <p className="text-[#5f5f5d] max-w-xl mx-auto text-lg leading-[1.5]">

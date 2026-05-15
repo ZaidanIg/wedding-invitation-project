@@ -66,6 +66,9 @@ export interface Invitation {
   closing: string;
   fullText: string;
   photoUrls: string[];
+  headerPhotoUrl?: string | null;
+  groomPhotoUrl?: string | null;
+  bridePhotoUrl?: string | null;
   tone: string;
   language: string;
   musicUrl?: string | null;
@@ -110,6 +113,9 @@ export interface CreateInvitationRequest {
   closing: string;
   fullText: string;
   photoUrls?: string[];
+  headerPhotoUrl?: string;
+  groomPhotoUrl?: string;
+  bridePhotoUrl?: string;
   tone: Tone;
   language: Language;
   musicUrl?: string;
@@ -191,6 +197,9 @@ export interface FormWizardState {
     layout: Layout;
   };
   photoUrls: string[];
+  headerPhotoUrl?: string;
+  groomPhotoUrl?: string;
+  bridePhotoUrl?: string;
   generatedInvitation: GeneratedInvitation | null;
   isGenerating: boolean;
   isSaving: boolean;

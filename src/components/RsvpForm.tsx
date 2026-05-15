@@ -63,92 +63,94 @@ export default function RsvpForm({ slug }: RsvpFormProps) {
   const labelClass = 'block text-xs font-semibold uppercase tracking-wider text-stone-500 mb-1.5';
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Attendance selection */}
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          onClick={() => setStatus('ATTENDING')}
-          className={`p-3.5 rounded-xl border text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
-            status === 'ATTENDING'
-              ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-              : 'bg-white border-stone-200 text-stone-500 hover:border-stone-300'
-          }`}
-        >
-          <Heart className="h-4 w-4" /> Attending
-        </button>
-        <button
-          type="button"
-          onClick={() => setStatus('NOT_ATTENDING')}
-          className={`p-3.5 rounded-xl border text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
-            status === 'NOT_ATTENDING'
-              ? 'bg-red-50 border-red-300 text-red-600'
-              : 'bg-white border-stone-200 text-stone-500 hover:border-stone-300'
-          }`}
-        >
-          <X className="h-4 w-4" /> Can&apos;t Make It
-        </button>
-      </div>
+    <div className="bg-white p-5 sm:p-8 rounded-2xl shadow-sm border border-stone-100">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Attendance selection */}
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setStatus('ATTENDING')}
+            className={`p-3 sm:p-4 rounded-xl border text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+              status === 'ATTENDING'
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                : 'bg-white border-stone-200 text-stone-500 hover:border-stone-300'
+            }`}
+          >
+            <Heart className="h-4 w-4" /> Attending
+          </button>
+          <button
+            type="button"
+            onClick={() => setStatus('NOT_ATTENDING')}
+            className={`p-3 sm:p-4 rounded-xl border text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+              status === 'NOT_ATTENDING'
+                ? 'bg-red-50 border-red-300 text-red-600'
+                : 'bg-white border-stone-200 text-stone-500 hover:border-stone-300'
+            }`}
+          >
+            <X className="h-4 w-4" /> Can&apos;t Make It
+          </button>
+        </div>
 
-      <div>
-        <label className={labelClass}>Your Name *</label>
-        <input
-          className={inputClass}
-          placeholder="Enter your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
-
-      <div>
-        <label className={labelClass}>Email (Optional)</label>
-        <input
-          className={inputClass}
-          type="email"
-          placeholder="your@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-
-      {status === 'ATTENDING' && (
         <div>
-          <label className={labelClass}>Number of Guests</label>
+          <label className={labelClass}>Your Name *</label>
           <input
             className={inputClass}
-            type="number"
-            min={1}
-            max={10}
-            value={attendees}
-            onChange={(e) => setAttendees(parseInt(e.target.value) || 1)}
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
           />
         </div>
-      )}
 
-      <div>
-        <label className={labelClass}>Message for the Couple (Optional)</label>
-        <textarea
-          className={`${inputClass} resize-none`}
-          placeholder="Share your wishes..."
-          rows={3}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-      </div>
+        <div>
+          <label className={labelClass}>Email (Optional)</label>
+          <input
+            className={inputClass}
+            type="email"
+            placeholder="your@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting || !status || !name.trim()}
-        className="w-full flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold uppercase tracking-widest bg-stone-800 text-[#f5f0eb] rounded-xl hover:bg-stone-700 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        {isSubmitting ? (
-          <div className="h-4 w-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-        ) : (
-          <Send className="h-4 w-4" />
+        {status === 'ATTENDING' && (
+          <div>
+            <label className={labelClass}>Number of Guests</label>
+            <input
+              className={inputClass}
+              type="number"
+              min={1}
+              max={10}
+              value={attendees}
+              onChange={(e) => setAttendees(parseInt(e.target.value) || 1)}
+            />
+          </div>
         )}
-        {isSubmitting ? 'Submitting...' : 'Submit RSVP'}
-      </button>
-    </form>
+
+        <div>
+          <label className={labelClass}>Message for the Couple (Optional)</label>
+          <textarea
+            className={`${inputClass} resize-none`}
+            placeholder="Share your wishes..."
+            rows={3}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting || !status || !name.trim()}
+          className="w-full flex items-center justify-center gap-2 px-6 py-4 text-sm font-semibold uppercase tracking-widest bg-stone-800 text-[#f5f0eb] rounded-xl hover:bg-stone-700 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
+        >
+          {isSubmitting ? (
+            <div className="h-4 w-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+          ) : (
+            <Send className="h-4 w-4" />
+          )}
+          {isSubmitting ? 'Submitting...' : 'Submit RSVP'}
+        </button>
+      </form>
+    </div>
   );
 }

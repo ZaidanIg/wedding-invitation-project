@@ -36,7 +36,7 @@ function GoldDivider() {
 
 export default function GoldenClassic({ invitation }: LayoutProps) {
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
-  const { heroPhoto, photo2, photo3, galleryPhotos } = resolvePhotos(invitation);
+  const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   return (
@@ -118,6 +118,9 @@ export default function GoldenClassic({ invitation }: LayoutProps) {
           {/* Groom */}
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
+              <div className="relative w-32 h-40 mb-6 bg-zinc-200 border border-[#D4AF37]/20 overflow-hidden shadow-md">
+                <Image src={groomPhoto} alt="Groom" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-700" unoptimized />
+              </div>
               <h3 className="text-3xl font-light uppercase tracking-widest text-zinc-800 mb-2">{invitation.groomName}</h3>
               <p className="text-[10px] text-[#D4AF37] uppercase tracking-[0.2em] mb-1">Putra dari</p>
               <p className="text-sm text-zinc-600 font-serif italic">{invitation.groomParents || 'Bapak & Ibu'}</p>
@@ -129,6 +132,9 @@ export default function GoldenClassic({ invitation }: LayoutProps) {
           {/* Bride */}
           <AnimatedSection animation="right">
             <div className="flex flex-col items-center">
+              <div className="relative w-32 h-40 mb-6 bg-zinc-200 border border-[#D4AF37]/20 overflow-hidden shadow-md">
+                <Image src={bridePhoto} alt="Bride" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-700" unoptimized />
+              </div>
               <h3 className="text-3xl font-light uppercase tracking-widest text-zinc-800 mb-2">{invitation.brideName}</h3>
               <p className="text-[10px] text-[#D4AF37] uppercase tracking-[0.2em] mb-1">Putri dari</p>
               <p className="text-sm text-zinc-600 font-serif italic">{invitation.brideParents || 'Bapak & Ibu'}</p>

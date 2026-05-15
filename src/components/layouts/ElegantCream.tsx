@@ -27,7 +27,7 @@ interface LayoutProps {
 
 export default function ElegantCream({ invitation }: LayoutProps) {
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
-  const { heroPhoto, photo2, photo3, galleryPhotos } = resolvePhotos(invitation);
+  const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   return (
@@ -90,11 +90,17 @@ export default function ElegantCream({ invitation }: LayoutProps) {
       </section>
 
       {/* The Couple Profile */}
-      <section className="py-14 px-8 bg-[#f5f0eb] text-center">
-        <div className="grid grid-cols-1 gap-12">
+      <section className="py-20 px-8 bg-[#f5f0eb] text-center">
+        <div className="grid grid-cols-1 gap-16">
           {/* Groom */}
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
+              <div className="relative w-40 h-40 mb-8 group">
+                <div className="absolute inset-0 bg-stone-200 rounded-full scale-110 blur-xl opacity-50 group-hover:opacity-80 transition-opacity" />
+                <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-2xl">
+                  <Image src={groomPhoto} alt="Groom" fill className="object-cover" unoptimized />
+                </div>
+              </div>
               <h3 className="text-3xl font-display font-bold text-stone-800 mb-2">{invitation.groomName}</h3>
               <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">Putra dari</p>
               <p className="text-sm text-stone-600 font-serif italic">{invitation.groomParents || 'Bapak & Ibu'}</p>
@@ -104,7 +110,7 @@ export default function ElegantCream({ invitation }: LayoutProps) {
           <AnimatedSection animation="scale">
             <div className="flex items-center justify-center gap-4">
               <div className="h-px w-12 bg-stone-300" />
-              <Heart className="h-4 w-4 text-rose-400/60" fill="currentColor" />
+              <Heart className="h-5 w-5 text-rose-400/60 animate-heartbeat" fill="currentColor" />
               <div className="h-px w-12 bg-stone-300" />
             </div>
           </AnimatedSection>
@@ -112,6 +118,12 @@ export default function ElegantCream({ invitation }: LayoutProps) {
           {/* Bride */}
           <AnimatedSection animation="right">
             <div className="flex flex-col items-center">
+              <div className="relative w-40 h-40 mb-8 group">
+                <div className="absolute inset-0 bg-rose-100 rounded-full scale-110 blur-xl opacity-50 group-hover:opacity-80 transition-opacity" />
+                <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-2xl">
+                  <Image src={bridePhoto} alt="Bride" fill className="object-cover" unoptimized />
+                </div>
+              </div>
               <h3 className="text-3xl font-display font-bold text-stone-800 mb-2">{invitation.brideName}</h3>
               <p className="text-xs text-stone-400 uppercase tracking-widest mb-1">Putri dari</p>
               <p className="text-sm text-stone-600 font-serif italic">{invitation.brideParents || 'Bapak & Ibu'}</p>

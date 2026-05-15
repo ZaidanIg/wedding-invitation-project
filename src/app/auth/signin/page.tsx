@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { Heart, Mail, Lock, User, ArrowRight, Check, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -278,6 +279,13 @@ export default function SignInPage() {
                   placeholder="••••••••"
                 />
               </div>
+              {isLogin && (
+                <div className="pt-1 flex justify-end">
+                  <Link href="/auth/forgot-password" className="text-xs text-rose-500 hover:text-rose-400 font-medium transition-colors">
+                    Lupa Kata Sandi?
+                  </Link>
+                </div>
+              )}
               {!isLogin && formData.password.length > 0 && (
                 <div className="pt-2">
                   <div className="flex gap-1 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">

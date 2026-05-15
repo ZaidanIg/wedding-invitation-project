@@ -456,14 +456,22 @@ export const fallbackPhotos = [
 ];
 
 /* ── Helper: resolve photos ── */
-export function resolvePhotos(invitation: { photoUrls: string[] }) {
+export function resolvePhotos(invitation: any) {
   const photos = invitation.photoUrls && invitation.photoUrls.length > 0 ? invitation.photoUrls : fallbackPhotos;
+  
+  // New specific fields
+  const headerPhoto = invitation.headerPhotoUrl || photos[0];
+  const groomPhoto = invitation.groomPhotoUrl || photos[0];
+  const bridePhoto = invitation.bridePhotoUrl || photos[0];
+  
   return {
     photos,
-    heroPhoto: photos[0],
+    heroPhoto: headerPhoto,
     photo2: photos[1] || photos[0],
     photo3: photos[2] || photos[0],
-    galleryPhotos: photos.slice(1),
+    galleryPhotos: photos,
+    groomPhoto,
+    bridePhoto,
   };
 }
 

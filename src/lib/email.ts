@@ -72,3 +72,36 @@ export const sendVerificationCodeEmail = async (email: string, code: string) => 
     return false;
   }
 };
+
+export const sendPasswordResetEmail = async (email: string, token: string) => {
+  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password?token=${token}`;
+
+  const mailOptions = {
+    from: process.env.SMTP_FROM || 'WeddingAI <noreply@weddingai.com>',
+    to: email,
+    subject: 'Reset your password - WeddingAI',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
+        <h2 style="color: #e11d48; text-align: center;">Reset Password</h2>
+        <p style="font-size: 16px; color: #333;">Hi,</p>
+        <p style="font-size: 16px; color: #333;">Kami menerima permintaan untuk mereset kata sandi akun WeddingAI Anda. Klik tombol di bawah ini untuk melanjutkan:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${resetUrl}" style="background-color: #e11d48; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Reset Kata Sandi</a>
+        </div>
+        <p style="font-size: 14px; color: #666;">Atau salin link berikut ke browser Anda:</p>
+        <p style="font-size: 14px; color: #e11d48; word-break: break-all;">${resetUrl}</p>
+        <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;" />
+        <p style="font-size: 12px; color: #999; text-align: center;">Jika Anda tidak merasa meminta reset kata sandi, silakan abaikan email ini.</p>
+      </div>
+    `,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Password reset email sent: %s', info.messageId);
+    return true;
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    return false;
+  }
+};

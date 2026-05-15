@@ -2,24 +2,24 @@ import { Heart } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[#eceae4] bg-[#f7f4ed]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-[#1c1c1c] shadow-inset">
-              <Heart className="h-3 w-3 text-[#f7f4ed]" fill="currentColor" />
+    <footer className="border-t border-rose-500/5 bg-[#fdfcf9]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-10">
+          <div className="flex items-center gap-3 group">
+            <div className="p-2 rounded-xl bg-rose-gradient shadow-lg shadow-rose-500/20 group-hover:scale-110 transition-transform">
+              <Heart className="h-4 w-4 text-white" fill="currentColor" />
             </div>
-            <span className="text-sm font-bold text-[#1c1c1c]">
-              Wedding Invitation
+            <span className="text-lg font-display font-bold text-[#1c1c1c]">
+              Wedding <span className="text-rose-500">Invitation</span>
             </span>
           </div>
 
-          <p className="text-xs text-[#5f5f5d] font-medium">
-            Dibuat dengan penuh perasaan — Undangan Digital Premium
+          <p className="text-sm text-[#6b6b6b] font-medium text-center md:text-left">
+            Dibuat dengan penuh perasaan — <span className="text-rose-500/60">Artefact Project</span>
           </p>
 
-          <p className="text-xs text-[#5f5f5d]/60">
-            © {new Date().getFullYear()} Wedding Invitation. Semua hak dilindungi.
+          <p className="text-xs text-[#6b6b6b]/40">
+            © {new Date().getFullYear()} Wedding Invitation. <br className="md:hidden" /> Semua hak dilindungi.
           </p>
         </div>
       </div>

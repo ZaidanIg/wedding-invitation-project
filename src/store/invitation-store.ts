@@ -15,9 +15,14 @@ interface FormWizardActions {
   setPhotoUrls: (urls: string[]) => void;
   addPhotoUrl: (url: string) => void;
   removePhotoUrl: (url: string) => void;
+  setHeaderPhotoUrl: (url: string) => void;
+  setGroomPhotoUrl: (url: string) => void;
+  setBridePhotoUrl: (url: string) => void;
   setGeneratedInvitation: (invitation: GeneratedInvitation | null) => void;
   setIsGenerating: (val: boolean) => void;
   setIsSaving: (val: boolean) => void;
+  targetTier: 'DRAFT' | 'BASIC' | 'PREMIUM';
+  setTargetTier: (tier: 'DRAFT' | 'BASIC' | 'PREMIUM') => void;
   reset: () => void;
 }
 
@@ -53,10 +58,13 @@ const initialState: FormWizardState = {
     tone: 'formal' as Tone,
     language: 'id' as Language,
     additionalNotes: '',
-    musicUrl: '',
+    musicUrl: '/music/Epic Spectrum - Sky Clearing (freetouse.com).mp3',
     layout: 'elegant-cream' as Layout,
   },
   photoUrls: [],
+  headerPhotoUrl: '',
+  groomPhotoUrl: '',
+  bridePhotoUrl: '',
   generatedInvitation: null,
   isGenerating: false,
   isSaving: false,
@@ -79,10 +87,16 @@ export const useInvitationStore = create<FormWizardState & FormWizardActions>(
     removePhotoUrl: (url) =>
       set((state) => ({ photoUrls: state.photoUrls.filter((u) => u !== url) })),
 
+    setHeaderPhotoUrl: (headerPhotoUrl) => set({ headerPhotoUrl }),
+    setGroomPhotoUrl: (groomPhotoUrl) => set({ groomPhotoUrl }),
+    setBridePhotoUrl: (bridePhotoUrl) => set({ bridePhotoUrl }),
+
     setGeneratedInvitation: (generatedInvitation) => set({ generatedInvitation }),
     setIsGenerating: (isGenerating) => set({ isGenerating }),
     setIsSaving: (isSaving) => set({ isSaving }),
 
+    targetTier: 'DRAFT',
+    setTargetTier: (targetTier) => set({ targetTier }),
     reset: () => set(initialState),
   }),
 );

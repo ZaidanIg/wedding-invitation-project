@@ -45,9 +45,9 @@ Terima kasih.`;
 
   if (!isOpen) {
     return (
-      <Button variant="ghost" size="sm" onClick={() => setIsOpen(true)} className="text-emerald-500 hover:bg-emerald-500/10">
-        <MessageSquare className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline ml-2">Share WA</span>
+      <Button variant="secondary" onClick={() => setIsOpen(true)} className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
+        <MessageSquare className="h-5 w-5 mr-3 text-emerald-500 group-hover:text-white transition-colors" />
+        Kirim Ke WhatsApp
       </Button>
     );
   }

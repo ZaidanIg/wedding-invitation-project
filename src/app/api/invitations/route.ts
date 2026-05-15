@@ -45,8 +45,8 @@ export async function POST(request: Request) {
       tier = 'B2B_GENERATED';
       maxPhotos = 99; // effectively unlimited
     } else {
-      // B2C_FREE default
-      tier = 'DRAFT';
+      // B2C_FREE default is now BASIC (Published) instead of DRAFT
+      tier = 'BASIC';
       maxPhotos = 1;
     }
 

@@ -14,48 +14,55 @@ export default function HeroSection() {
           src="/images/hero-bg.png"
           alt="Wedding Background"
           fill
-          className="object-cover opacity-30"
+          className="object-cover opacity-[0.15]"
           priority
         />
-        <div className="absolute inset-0 bg-[#f7f4ed]/80 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-[#fdfcf9]/60 backdrop-blur-[2px]" />
+        
+        {/* Rose Blurs */}
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-rose-500/5 blur-[120px] rounded-full animate-float" />
+        <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-pink-500/5 blur-[150px] rounded-full animate-float-delayed" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
         {/* Subtle Accent */}
-        <div className="mb-6 flex items-center justify-center gap-3 animate-fade-in">
-          <span className="h-px w-8 bg-[#1c1c1c]/20" />
+        <div className="mb-8 flex items-center justify-center gap-4 animate-fade-in">
+          <div className="p-2 rounded-xl bg-rose-500/5">
+          </div>
           <span className="font-handwriting text-2xl text-[#1c1c1c]/60">Cerita cinta Anda...</span>
-          <span className="h-px w-8 bg-[#1c1c1c]/20" />
+          <div className="p-2 rounded-xl bg-rose-500/5">
+          </div>
         </div>
 
         {/* Heading */}
-        <h1 className="text-[52px] sm:text-[72px] md:text-[88px] font-display font-bold leading-[1.1] tracking-[-2px] text-[#1c1c1c] mb-10 animate-fade-in-up">
+        <h1 className="text-5xl sm:text-[84px] md:text-[100px] font-display font-bold leading-[0.95] tracking-tight sm:tracking-[-0.04em] text-[#1c1c1c] mb-12 animate-fade-in-up">
           Rayakan Momen <br />
-          <span className="italic font-normal text-highlight">Terindah</span> Bersama
+          <span className="text-rose-500 italic font-normal">Terindah</span> Bersama
         </h1>
 
         {/* Subtitle */}
-        <p className="text-xl sm:text-2xl text-[#5f5f5d] max-w-2xl mx-auto mb-14 leading-[1.5] animate-fade-in-up delay-200">
-          Undangan digital yang terasa <span className="text-[#1c1c1c] border-b border-highlight/30">personal</span>. 
-          Hanya butuh 5 menit untuk menyusun undangan pernikahan yang elegan, mewah, dan berkesan.
+        <p className="text-lg sm:text-xl text-[#6b6b6b] max-w-2xl mx-auto mb-16 leading-relaxed animate-fade-in-up delay-200 text-balance">
+          Wujudkan visi pernikahan Anda dalam <span className="text-[#1c1c1c] font-semibold underline decoration-rose-500/30 underline-offset-8">5 menit</span>. 
+          Undangan digital yang mewah, elegan, dan siap memikat tamu Anda.
         </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-up delay-300">
           <Link
             href="/create"
-            className="group relative inline-flex items-center gap-3 px-10 py-5 text-lg font-bold rounded-lg bg-[#1c1c1c] text-[#fcfbf8] shadow-inset hover:opacity-95 transition-all duration-500 hover:scale-[1.02]"
+            className="group relative inline-flex items-center gap-4 px-12 py-5 text-lg font-bold rounded-2xl bg-rose-gradient text-white shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 hover:scale-[1.02] transition-all duration-500"
           >
-            Buat Undangan Sekarang
+            Mulai Buat Undangan
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Link>
 
           <Link
             href="/pricing"
-            className="text-[#1c1c1c] font-bold text-lg hover:opacity-70 border-b-2 border-[#1c1c1c]/10 pb-1 transition-all"
+            className="flex items-center gap-2 text-[#1c1c1c] font-bold text-lg hover:text-rose-500 transition-colors"
           >
-            Lihat Paket Hemat
+            Lihat Paket Harga
+            <Sparkles className="h-4 w-4 text-rose-400" />
           </Link>
         </div>
 

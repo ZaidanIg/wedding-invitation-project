@@ -39,12 +39,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${inter.variable} ${playfair.variable} ${dancingScript.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#f7f4ed] text-[#1c1c1c]">
+      <body className="min-h-full flex flex-col bg-[#f7f4ed] text-[#1c1c1c] overflow-x-hidden">
         <Providers>
           <ErrorBoundary>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <div className="flex flex-col min-h-screen w-full overflow-x-hidden relative">
+              <Navbar />
+              <main className="flex-1 w-full overflow-x-hidden">{children}</main>
+              <Footer />
+            </div>
             <ToastContainer />
           </ErrorBoundary>
         </Providers>
