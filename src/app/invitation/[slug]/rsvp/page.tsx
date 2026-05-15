@@ -43,7 +43,7 @@ export default function RsvpManagementPage() {
   }, [params.slug]);
 
   return (
-    <section className="min-h-[calc(100vh-4rem)] py-12 px-4">
+    <section className="min-h-[calc(100vh-4rem)] py-12 px-4 pt-20 mt-12">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
