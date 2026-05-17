@@ -68,12 +68,20 @@ const musicOptions = [
   { value: 'custom', label: '🔗 URL Kustom...' },
 ];
 
-const layoutOptions: { value: Layout; label: string; bg: string; border: string; preview: string; category: 'basic' | 'advance' }[] = [
-  { value: 'elegant-cream', label: 'Cream', bg: 'bg-[#f7f4ed]', border: 'border-[#eceae4]', preview: 'bg-[#1c1c1c]/10', category: 'basic' },
-  { value: 'royal-blue', label: 'Royal Blue', bg: 'bg-[#e8f0fe]', border: 'border-blue-300', preview: 'bg-blue-200', category: 'basic' },
-  { value: 'rose-garden', label: 'Rose Garden', bg: 'bg-[#fdf2f4]', border: 'border-pink-300', preview: 'bg-pink-200', category: 'basic' },
-  { value: 'golden-classic', label: 'Golden Classic', bg: 'bg-white', border: 'border-[#D4AF37]', preview: 'bg-[#D4AF37]/20', category: 'advance' },
-  { value: 'luxury-emerald', label: '✨ Emerald', bg: 'bg-[#042f2e]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/30', category: 'advance' },
+const layoutOptions: { value: Layout; label: string; bg: string; border: string; preview: string; category: 'klasik' | 'premium' }[] = [
+  { value: 'elegant-cream', label: 'Cream', bg: 'bg-[#f7f4ed]', border: 'border-[#eceae4]', preview: 'bg-[#1c1c1c]/10', category: 'klasik' },
+  { value: 'royal-blue', label: 'Royal Blue', bg: 'bg-[#e8f0fe]', border: 'border-blue-300', preview: 'bg-blue-200', category: 'klasik' },
+  { value: 'rose-garden', label: 'Rose Garden', bg: 'bg-[#fdf2f4]', border: 'border-pink-300', preview: 'bg-pink-200', category: 'klasik' },
+  { value: 'islamic-minimalist', label: '🕌 Islamic Classic', bg: 'bg-[#fdfcf9]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/20', category: 'klasik' },
+  { value: 'islamic-midnight', label: '🕌 Islamic Midnight', bg: 'bg-[#0a0f0d]', border: 'border-[#c5a059]', preview: 'bg-[#c5a059]/40', category: 'klasik' },
+  { value: 'islamic-arabesque', label: '🕌 Islamic Arabesque', bg: 'bg-[#f0fdfa]', border: 'border-[#2dd4bf]', preview: 'bg-[#2dd4bf]/20', category: 'klasik' },
+  { value: 'golden-classic', label: 'Golden Classic', bg: 'bg-white', border: 'border-[#D4AF37]', preview: 'bg-[#D4AF37]/20', category: 'premium' },
+  { value: 'luxury-emerald', label: '✨ Emerald', bg: 'bg-[#042f2e]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/30', category: 'premium' },
+  { value: 'islamic-grace', label: '🕌 Islamic Grace', bg: 'bg-[#1a2b23]', border: 'border-[#c5a059]', preview: 'bg-[#c5a059]/30', category: 'premium' },
+  { value: 'christian-elegant', label: '⛪ Christian Elegant', bg: 'bg-[#f8f7f4]', border: 'border-rose-200', preview: 'bg-rose-100/50', category: 'premium' },
+  { value: 'hindu-mandala', label: '🕉️ Hindu Mandala', bg: 'bg-[#fff8f0]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/20', category: 'premium' },
+  { value: 'buddhist-zen', label: '☸️ Buddhist Zen', bg: 'bg-[#fdfbf7]', border: 'border-[#a3b18a]', preview: 'bg-[#a3b18a]/20', category: 'premium' },
+  { value: 'confucian-oriental', label: '🧧 Confucian Oriental', bg: 'bg-[#fffcf9]', border: 'border-[#8b0000]', preview: 'bg-[#8b0000]/20', category: 'premium' },
 ];
 
 const steps = [
@@ -85,9 +93,10 @@ const steps = [
 ];
 
 const tiers = [
-  { id: 'DRAFT', name: 'Free Demo', price: 'Gratis', description: 'Coba fitur dasar dan lihat pratinjau desain Anda.', features: ['2 Foto Mempelai', 'Pilih Tema Dasar', 'Tanpa Musik', 'Tidak Bisa Disimpan'], color: 'text-stone-500', bg: 'bg-stone-50' },
-  { id: 'BASIC', name: 'Basic Plan', price: 'Rp 50.000', description: 'Sangat cocok untuk undangan minimalis yang elegan.', features: ['Header Foto', '2 Foto Mempelai', '2 Foto Galeri', 'Aktif Selamanya', 'Bisa Disimpan'], color: 'text-blue-500', bg: 'bg-blue-50' },
-  { id: 'PREMIUM', name: 'Premium Plan', price: 'Rp 100.000', description: 'Fitur lengkap untuk momen pernikahan yang tak terlupakan.', features: ['Header Foto', '2 Foto Mempelai', 'Unlimited Galeri', 'Background Music', 'Priority Support', 'Custom Link'], color: 'text-rose-500', bg: 'bg-rose-50' },
+  { id: 'DRAFT', name: 'Free Demo', price: 'Gratis', description: 'Coba fitur dasar dan lihat pratinjau desain Anda.', features: ['1 Foto Header', 'Ganti Tema Klasik', 'Preview RSVP', 'Tidak Bisa Disimpan'], color: 'text-stone-500', bg: 'bg-stone-50' },
+  { id: 'BASIC', name: 'Basic Plan', price: 'Rp 50.000', description: 'Sangat cocok untuk undangan minimalis yang elegan.', features: ['Hapus Watermark', '2 Foto Mempelai', '2 Foto Galeri', 'Aktif Selamanya', 'Semua Tema Klasik'], color: 'text-blue-500', bg: 'bg-blue-50' },
+  { id: 'PREMIUM', name: 'Premium Plan', price: 'Rp 100.000', description: 'Fitur lengkap untuk momen pernikahan yang tak terlupakan.', features: ['10 Foto Galeri', 'Love Story Section', 'Countdown Timer', 'Musik Latar Kustom', 'Akses Tema Klasik'], color: 'text-rose-500', bg: 'bg-rose-50' },
+  { id: 'ULTIMATE', name: 'Ultimate Plan', price: 'Rp 200.000', description: 'Justifikasi termewah dengan fitur manajemen tamu modern.', features: ['Akses Tema Premium', 'Sistem QR Check-in', 'Link Per Tamu', 'WA Blast Integration', 'Unlimited Galeri Foto'], color: 'text-amber-500', bg: 'bg-amber-50/50' },
 ];
 
 export default function InvitationForm() {
@@ -215,6 +224,7 @@ export default function InvitationForm() {
   const isFree = store.targetTier === 'DRAFT';
   const isBasic = store.targetTier === 'BASIC';
   const isPremium = store.targetTier === 'PREMIUM';
+  const isUltimate = store.targetTier === 'ULTIMATE';
 
   if (showPlanSelection) {
     return (
@@ -386,7 +396,29 @@ export default function InvitationForm() {
                 <div className="space-y-10">
                   <div className="space-y-4">
                     <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#1c1c1c]/50">Pilih Tema</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">{layoutOptions.map((opt) => (<button key={opt.value} onClick={() => store.setStylePreferences({ ...store.stylePreferences, layout: opt.value })} className={`p-4 border rounded-2xl flex flex-col items-center gap-3 transition-all ${store.stylePreferences.layout === opt.value ? 'ring-2 ring-rose-500 bg-rose-50/20 border-rose-200' : 'hover:bg-[#fcfbf8] border-[#eceae4]'}`}><div className={`w-10 h-14 rounded-lg border-2 ${opt.bg} ${opt.border} shadow-sm`} /><span className="text-[9px] font-bold uppercase tracking-wider">{opt.label}</span></button>))}</div>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                      {layoutOptions.map((opt) => {
+                        const isLocked = opt.category === 'premium' && !isUltimate;
+                        return (
+                          <button 
+                            key={opt.value} 
+                            onClick={() => !isLocked && store.setStylePreferences({ ...store.stylePreferences, layout: opt.value })} 
+                            className={`p-4 border rounded-2xl flex flex-col items-center gap-3 transition-all relative ${isLocked ? 'opacity-60 cursor-not-allowed bg-stone-50' : store.stylePreferences.layout === opt.value ? 'ring-2 ring-rose-500 bg-rose-50/20 border-rose-200' : 'hover:bg-[#fcfbf8] border-[#eceae4]'}`}
+                          >
+                            <div className={`w-10 h-14 rounded-lg border-2 ${opt.bg} ${opt.border} shadow-sm`} />
+                            <span className="text-[9px] font-bold uppercase tracking-wider">{opt.label}</span>
+                            {isLocked && (
+                              <div className="absolute top-2 right-2">
+                                <Lock className="h-3 w-3 text-stone-400" />
+                              </div>
+                            )}
+                            {opt.category === 'premium' && (
+                              <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">PREMIUM</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Select label="Nuansa" options={toneOptions} value={store.stylePreferences.tone} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, tone: e.target.value as any })} /><Select label="Bahasa" options={languageOptions} value={store.stylePreferences.language} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, language: e.target.value as any })} /></div>
                   

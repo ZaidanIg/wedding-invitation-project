@@ -103,7 +103,7 @@ export default function ResetPasswordPage() {
                   placeholder="••••••••"
                   icon={<Lock className="h-4 w-4" />}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                   required
                   disabled={!token || isLoading}
                   className="rounded-2xl h-12"
@@ -115,7 +115,7 @@ export default function ResetPasswordPage() {
                   placeholder="••••••••"
                   icon={<Lock className="h-4 w-4" />}
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                   required
                   disabled={!token || isLoading}
                   className="rounded-2xl h-12"

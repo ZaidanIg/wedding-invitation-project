@@ -1,21 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+
 import { showToast } from '@/components/ui/Toast';
-import { Heart, Send, Check, X } from 'lucide-react';
+import { Heart, Send, Check, X, QrCode } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface RsvpFormProps {
   slug: string;
+  tier?: string;
 }
 
-export default function RsvpForm({ slug }: RsvpFormProps) {
+export default function RsvpForm({ slug, tier }: RsvpFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [attendees, setAttendees] = useState(1);
   const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [guestId, setGuestId] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +34,7 @@ export default function RsvpForm({ slug }: RsvpFormProps) {
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim() || undefined,
+          phone: phone.trim() || undefined,
           rsvpStatus: status,
           message: message.trim() || undefined,
           attendees,
@@ -36,6 +42,11 @@ export default function RsvpForm({ slug }: RsvpFormProps) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to submit');
+      
+      if (data.data?.id) {
+        setGuestId(data.data.id);
+      }
+      
       setIsSubmitted(true);
       showToast('success', 'RSVP submitted successfully!');
     } catch (error) {
@@ -52,11 +63,26 @@ export default function RsvpForm({ slug }: RsvpFormProps) {
         <div className="inline-flex p-3 rounded-full bg-emerald-100 mb-4">
           <Check className="h-6 w-6 text-emerald-600" />
         </div>
-        <h3 className="text-lg font-display font-semibold text-stone-800 mb-2">Thank You!</h3>
-        <p className="text-sm text-stone-500">Your RSVP has been recorded.</p>
+        <h3 className="text-lg font-display font-semibold text-stone-800 mb-2">Terima Kasih!</h3>
+        <p className="text-sm text-stone-500 mb-8">Konfirmasi kehadiran Anda telah tersimpan.</p>
+
+        {(tier === 'ULTIMATE' || tier === 'B2B_GENERATED') && status === 'ATTENDING' && guestId && (
+          <div className="mt-6 p-6 bg-white border border-stone-100 rounded-3xl shadow-sm inline-block animate-fade-in">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-4 flex items-center justify-center gap-2">
+              <QrCode className="h-3 w-3" /> QR Check-in Anda
+            </p>
+            <div className="bg-white p-3 rounded-2xl border border-stone-50 inline-block">
+              <QRCodeSVG value={guestId} size={150} level="H" />
+            </div>
+            <p className="mt-4 text-[10px] text-stone-400 leading-relaxed max-w-[200px] mx-auto">
+              Tunjukkan QR Code ini kepada petugas penerima tamu saat acara.
+            </p>
+          </div>
+        )}
       </div>
     );
   }
+
 
   const inputClass =
     'w-full px-4 py-3 text-sm bg-white border border-stone-200 rounded-xl text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-400/30 focus:border-stone-400 transition-all duration-200';
@@ -103,7 +129,19 @@ export default function RsvpForm({ slug }: RsvpFormProps) {
         </div>
 
         <div>
-          <label className={labelClass}>Email (Optional)</label>
+          <label className={labelClass}>Nomor WhatsApp (Contoh: 08123456789) *</label>
+          <input
+            className={inputClass}
+            type="tel"
+            placeholder="0812..."
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Email (Opsional)</label>
           <input
             className={inputClass}
             type="email"

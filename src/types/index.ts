@@ -5,7 +5,7 @@
 // ---- Enums ----
 export type Tone = 'formal' | 'romantic' | 'modern' | 'playful';
 export type Language = 'id' | 'en';
-export type Layout = 'elegant-cream' | 'royal-blue' | 'rose-garden' | 'golden-classic' | 'luxury-emerald';
+export type Layout = 'elegant-cream' | 'royal-blue' | 'rose-garden' | 'golden-classic' | 'luxury-emerald' | 'islamic-grace' | 'islamic-minimalist' | 'islamic-midnight' | 'islamic-arabesque' | 'christian-elegant' | 'hindu-mandala' | 'buddhist-zen' | 'confucian-oriental';
 export type RsvpStatus = 'PENDING' | 'ATTENDING' | 'NOT_ATTENDING';
 export type AccountType = 'B2C_FREE' | 'B2B_PRO' | 'B2B_ALL_TIME';
 export type InvitationTier = 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'B2B_GENERATED';
@@ -50,6 +50,7 @@ export interface GeneratedInvitation {
 
 // ---- Database Models (mirrors Prisma, used on the client side) ----
 export interface Invitation {
+  stylePreferences: any;
   id: string;
   userId?: string | null;
   groomName: string;
@@ -90,12 +91,15 @@ export interface Guest {
   invitationId: string;
   name: string;
   email: string | null;
+  phone: string | null;
   rsvpStatus: RsvpStatus;
   message: string | null;
   attendees: number;
+  checkedIn: boolean;
   createdAt: string;
   updatedAt: string;
 }
+
 
 // ---- API Request/Response types ----
 export interface CreateInvitationRequest {
@@ -148,6 +152,7 @@ export interface UpdateInvitationRequest {
 export interface SubmitRsvpRequest {
   name: string;
   email?: string;
+  phone?: string;
   rsvpStatus: 'ATTENDING' | 'NOT_ATTENDING';
   message?: string;
   attendees?: number;

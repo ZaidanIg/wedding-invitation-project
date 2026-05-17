@@ -20,6 +20,7 @@ import {
 
 interface LayoutProps {
   invitation: Invitation;
+  isPreview?: boolean;
 }
 
 /* Arch-shaped photo frame */
@@ -52,7 +53,7 @@ function FloralBorder() {
   );
 }
 
-export default function RoseGarden({ invitation }: LayoutProps) {
+export default function RoseGarden({ invitation, isPreview = false }: LayoutProps) {
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
@@ -259,7 +260,7 @@ export default function RoseGarden({ invitation }: LayoutProps) {
       </section>
 
       <div className="h-4 bg-[#fdf2f4]" />
-      {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} activeColor="bg-rose-500 text-white hover:bg-rose-600" inactiveColor="bg-white/80 text-rose-500 hover:bg-white" />}
+      {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} activeColor="bg-rose-500 text-white hover:bg-rose-600" inactiveColor="bg-white/80 text-rose-500 hover:bg-white" />}
     </div>
   );
 }

@@ -21,6 +21,7 @@ import {
 
 interface LayoutProps {
   invitation: Invitation;
+  isPreview?: boolean;
 }
 
 
@@ -41,7 +42,7 @@ function FloralAccent({ className = '' }: { className?: string }) {
   );
 }
 
-export default function RoyalBlue({ invitation }: LayoutProps) {
+export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps) {
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
@@ -279,7 +280,7 @@ export default function RoyalBlue({ invitation }: LayoutProps) {
       </section>
 
       <div className="h-4 bg-[#e8f0fe]" />
-      {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} activeColor="bg-blue-600 text-white hover:bg-blue-700" inactiveColor="bg-white/80 text-blue-600 hover:bg-white" />}
+      {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} activeColor="bg-blue-600 text-white hover:bg-blue-700" inactiveColor="bg-white/80 text-blue-600 hover:bg-white" />}
     </div>
   );
 }

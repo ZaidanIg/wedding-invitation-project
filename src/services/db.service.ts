@@ -134,7 +134,9 @@ export async function submitRsvp(invitationId: string, data: SubmitRsvpRequest) 
       invitationId,
       name: data.name,
       email: data.email || null,
+      phone: data.phone || null,
       rsvpStatus: data.rsvpStatus,
+
       message: data.message || null,
       attendees: data.attendees || 1,
     },

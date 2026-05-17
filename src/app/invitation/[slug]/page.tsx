@@ -14,14 +14,41 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const invitation = await getInvitationBySlug(slug);
 
   if (!invitation) {
-    return { title: 'Undangan Tidak Ditemukan — Wedding Invitation' };
+    return { title: 'Undangan Tidak Ditemukan — Sahin' };
   }
 
+  const title = `The Wedding of ${invitation.groomName} & ${invitation.brideName}`;
+  const description = invitation.greeting || `Undangan pernikahan digital ${invitation.groomName} & ${invitation.brideName}. Mohon doa restu dan kehadirannya.`;
+  
+  // Use header photo if available, otherwise first photo from gallery, otherwise default
+  const ogImage = invitation.headerPhotoUrl || (invitation.photoUrls && (invitation.photoUrls as string[]).length > 0 ? (invitation.photoUrls as string[])[0] : '/images/hero-bg.png');
+
   return {
-    title: `${invitation.groomName} & ${invitation.brideName} — Undangan Pernikahan`,
-    description: invitation.greeting,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `/invitation/${slug}`,
+      type: 'article',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
+    },
   };
 }
+
 
 export default async function InvitationPage({ params }: PageProps) {
   const { slug } = await params;
@@ -54,8 +81,8 @@ export default async function InvitationPage({ params }: PageProps) {
     <div className={`min-h-screen ${serialized.layout === 'luxury-emerald' ? 'bg-[#faf7f0]' : 'bg-[#f7f4ed]'}`}>
       <InvitationPreview invitation={serialized} />
 
-      {/* Hide external RSVP for luxury-emerald as it has its own integrated version */}
-      {serialized.layout !== 'luxury-emerald' && (
+      {/* Hide external RSVP for themes that have their own integrated version */}
+      {serialized.layout !== 'luxury-emerald' && serialized.layout !== 'islamic-grace' && (
         <section className="py-24 px-4 bg-[#f7f4ed]">
           <div className="max-w-lg mx-auto">
             <div className="text-center mb-10">
@@ -64,8 +91,9 @@ export default async function InvitationPage({ params }: PageProps) {
               <p className="text-[#5f5f5d]">Kami sangat menantikan kehadiran Anda.</p>
             </div>
             <div className="bg-[#f7f4ed] rounded-xl border border-[#eceae4] p-6 sm:p-10 shadow-sm">
-              <RsvpForm slug={slug} />
+              <RsvpForm slug={slug} tier={serialized.tier} />
             </div>
+
           </div>
         </section>
       )}

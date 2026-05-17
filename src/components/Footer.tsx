@@ -1,6 +1,12 @@
+'use client';
+
 import { Heart } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith('/demo/')) return null;
+
   return (
     <footer className="border-t border-rose-500/5 bg-[#fdfcf9]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -10,7 +16,7 @@ export default function Footer() {
               <Heart className="h-4 w-4 text-white" fill="currentColor" />
             </div>
             <span className="text-lg font-display font-bold text-[#1c1c1c]">
-              Wedding <span className="text-rose-500">Invitation</span>
+              Sahin
             </span>
           </div>
 
@@ -19,7 +25,7 @@ export default function Footer() {
           </p>
 
           <p className="text-xs text-[#6b6b6b]/40">
-            © {new Date().getFullYear()} Wedding Invitation. <br className="md:hidden" /> Semua hak dilindungi.
+            © {new Date().getFullYear()} Sahin. <br className="md:hidden" /> Semua hak dilindungi.
           </p>
         </div>
       </div>

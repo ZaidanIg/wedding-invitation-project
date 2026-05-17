@@ -133,6 +133,13 @@ export function validateRsvp(data: unknown): ValidationResult {
     errors.push(`RSVP status must be one of: ${validStatuses.join(', ')}`);
   }
 
+  if (input.phone && typeof input.phone === 'string') {
+    const phoneRegex = /^[0-9+-\s]{7,15}$/;
+    if (!phoneRegex.test(input.phone.replace(/\D/g, ''))) {
+      errors.push('Invalid phone number format');
+    }
+  }
+
   if (input.attendees !== undefined) {
     const attendees = Number(input.attendees);
     if (isNaN(attendees) || attendees < 1 || attendees > 10) {

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display, Dancing_Script } from 'next/font/google';
+import { Inter, Playfair_Display, Dancing_Script, Cinzel, Montserrat, Outfit, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -25,12 +25,70 @@ const dancingScript = Dancing_Script({
   display: 'swap',
 });
 
+const cinzel = Cinzel({
+  variable: '--font-cinzel',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const montserrat = Montserrat({
+  variable: '--font-montserrat',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const outfit = Outfit({
+  variable: '--font-outfit',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const cormorant = Cormorant_Garamond({
+  variable: '--font-cormorant',
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
-  title: 'Wedding Invitation — Undangan Digital Premium, Cepat & Murah',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  title: {
+    default: 'Sahin — Undangan Digital Premium',
+    template: '%s | Sahin',
+  },
   description:
-    'Buat undangan pernikahan impian Anda hanya dalam 5 menit. Desain mewah, fitur lengkap, dan harga paling murah di kelasnya.',
-  keywords: ['undangan pernikahan', 'undangan digital', 'wedding invitation', 'murah', 'cepat'],
+    'Buat undangan pernikahan impian Anda hanya dalam 5 menit dengan Sahin. Desain mewah, fitur lengkap, dan harga paling murah di kelasnya.',
+  keywords: ['sahin', 'undangan pernikahan', 'undangan digital', 'wedding invitation', 'murah', 'cepat'],
+  authors: [{ name: 'Sahin Team' }],
+  creator: 'Sahin',
+  openGraph: {
+    type: 'website',
+    locale: 'id_ID',
+    url: '/',
+    siteName: 'Sahin',
+    title: 'Sahin — Undangan Digital Premium',
+    description: 'Buat undangan pernikahan impian Anda hanya dalam 5 menit dengan Sahin. Desain mewah, fitur lengkap, dan harga paling murah di kelasnya.',
+    images: [
+      {
+        url: '/images/hero-bg.png',
+        width: 1200,
+        height: 630,
+        alt: 'Sahin — Undangan Digital Premium',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Sahin — Undangan Digital Premium',
+    description: 'Buat undangan pernikahan impian Anda hanya dalam 5 menit dengan Sahin. Desain mewah, fitur lengkap, dan harga paling murah di kelasnya.',
+    images: ['/images/hero-bg.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
+
 
 export default function RootLayout({
   children,
@@ -38,7 +96,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${inter.variable} ${playfair.variable} ${dancingScript.variable} h-full antialiased`}>
+    <html lang="id" className={`${inter.variable} ${playfair.variable} ${dancingScript.variable} ${cinzel.variable} ${montserrat.variable} ${outfit.variable} ${cormorant.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#f7f4ed] text-[#1c1c1c] overflow-x-hidden">
         <Providers>
           <ErrorBoundary>

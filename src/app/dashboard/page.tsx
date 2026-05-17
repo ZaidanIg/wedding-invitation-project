@@ -49,52 +49,88 @@ export default function DashboardPage() {
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-500/5 blur-[100px] rounded-full" />
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-5xl mx-auto relative z-10">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-8 mb-16 text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-12 mb-20 text-center sm:text-left">
           <div>
-            <h1 className="text-[40px] font-display font-bold text-[#1c1c1c] tracking-tight leading-tight">
-              Undangan Saya
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-[#1c1c1c] tracking-tight leading-tight">
+              Dashboard {userStats?.accountType !== 'B2C_FREE' ? 'Pro' : 'Saya'}
             </h1>
-            <p className="text-lg text-[#6b6b6b] mt-2">
-              Kelola semua momen berharga Anda di satu tempat
+            <p className="text-lg text-[#6b6b6b] mt-4 max-w-2xl">
+              {userStats?.accountType !== 'B2C_FREE' 
+                ? 'Kelola bisnis dan undangan premium Anda dengan fitur eksklusif.'
+                : 'Kelola semua momen berharga Anda di satu tempat'}
             </p>
           </div>
           <Link href="/create" className="w-full sm:w-auto">
-            <Button size="lg" className="w-full sm:w-auto bg-rose-gradient text-white shadow-lg shadow-rose-500/20 hover:shadow-rose-500/40 rounded-2xl">
-              <Plus className="h-5 w-5" />
+            <Button size="lg" className="w-full sm:w-auto h-16 px-10 bg-rose-gradient text-white shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 rounded-2xl font-bold">
+              <Plus className="h-5 w-5 mr-2" />
               Buat Undangan Baru
             </Button>
           </Link>
         </div>
 
-        {/* Quota / Upgrade Banner */}
+        {/* Pro Banner / Stats for Subscribers */}
+        {userStats && userStats.accountType !== 'B2C_FREE' && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+            <Card className="p-10 bg-[#1c1c1c] text-white border-none shadow-2xl shadow-rose-500/10 rounded-[3rem] relative overflow-hidden group">
+               <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+                  <Heart className="h-32 w-32 fill-rose-500 text-rose-500" />
+               </div>
+               <div className="relative z-10">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-rose-400 mb-6">Account Tier</div>
+                  <div className="text-4xl font-display font-bold mb-3">
+                    {userStats.accountType === 'B2B_ALL_TIME' ? 'Enterprise' : 'B2B Pro'}
+                  </div>
+                  <p className="text-white/40 text-xs font-medium">Aktif Selamanya • Akses Penuh Fitur</p>
+               </div>
+            </Card>
+            
+            <Card className="p-10 bg-white border-[#eceae4] rounded-[3rem] shadow-sm hover:shadow-md transition-all">
+               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-6">Total Engagement</div>
+               <div className="text-4xl font-display font-bold text-[#1c1c1c] mb-3">
+                  {invitations.reduce((acc, inv) => acc + inv.viewCount, 0).toLocaleString()}
+               </div>
+               <p className="text-[#6b6b6b] text-xs font-medium">Klik Undangan (Kumulatif)</p>
+            </Card>
+ 
+            <Card className="p-10 bg-white border-[#eceae4] rounded-[3rem] shadow-sm hover:shadow-md transition-all">
+               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-6">Manajemen Tamu</div>
+               <div className="text-4xl font-display font-bold text-[#1c1c1c] mb-3">
+                  {invitations.reduce((acc, inv) => acc + (inv._count?.guests || 0), 0).toLocaleString()}
+               </div>
+               <p className="text-[#6b6b6b] text-xs font-medium">Total RSVP Masuk</p>
+            </Card>
+          </div>
+        )}
+
+        {/* Quota / Upgrade Banner for Free Users */}
         {userStats && userStats.accountType === 'B2C_FREE' && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass rounded-[2rem] p-8 mb-16 flex flex-col sm:flex-row items-center justify-between gap-8 border-rose-500/10 shadow-xl shadow-rose-500/5"
+            className="glass rounded-[3rem] p-10 mb-20 flex flex-col sm:flex-row items-center justify-between gap-12 border-rose-500/10 shadow-xl shadow-rose-500/5"
           >
             <div className="text-center sm:text-left flex-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/5 text-rose-500 text-[10px] font-bold uppercase tracking-widest mb-4">
-                <Heart className="h-3 w-3 fill-rose-500" /> Paket Gratis
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/5 text-rose-500 text-[10px] font-bold uppercase tracking-[0.2em] mb-6">
+                <Heart className="h-3.5 w-3.5 fill-rose-500" /> Paket Gratis
               </div>
-              <h3 className="text-[#1c1c1c] text-xl font-bold mb-2">Eksplorasi Desain Anda</h3>
-              <p className="text-[#6b6b6b] text-sm">
-                Tersisa {Math.max(0, 3 - userStats.freeGeneratesUsed)} desain gratis dari kuota 3 desain.
+              <h3 className="text-[#1c1c1c] text-2xl font-bold mb-3 tracking-tight">Eksplorasi Desain Anda</h3>
+              <p className="text-[#6b6b6b] text-sm leading-relaxed max-w-md">
+                Tersisa {Math.max(0, 3 - userStats.freeGeneratesUsed)} desain gratis dari kuota 3 desain yang diberikan. Tingkatkan ke Pro untuk desain tanpa batas.
               </p>
-              <div className="w-full sm:w-72 bg-rose-500/10 rounded-full h-2 mt-5 overflow-hidden">
+              <div className="w-full sm:w-80 bg-rose-500/10 rounded-full h-2.5 mt-8 overflow-hidden">
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${(Math.min(userStats.freeGeneratesUsed, 3) / 3) * 100}%` }}
                   className="bg-rose-gradient h-full rounded-full" 
-                  transition={{ duration: 1, ease: "easeOut" }}
+                  transition={{ duration: 1.2, ease: "circOut" }}
                 />
               </div>
             </div>
             <Link href="/pricing" className="shrink-0 w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto bg-[#1c1c1c] text-white rounded-2xl hover:bg-stone-800 transition-all shadow-xl">
-                <Heart className="h-4 w-4 mr-2 text-rose-500 fill-rose-500" />
+              <Button size="lg" className="w-full sm:w-auto h-16 px-10 bg-[#1c1c1c] text-white rounded-2xl hover:bg-stone-800 transition-all shadow-xl font-bold">
+                <Heart className="h-4 w-4 mr-3 text-rose-500 fill-rose-500" />
                 Upgrade Paket
               </Button>
             </Link>
@@ -129,7 +165,7 @@ export default function DashboardPage() {
             </Link>
           </motion.div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {invitations.map((inv) => (
               <InvitationCard 
                 key={inv.id} 
@@ -144,3 +180,4 @@ export default function DashboardPage() {
     </section>
   );
 }
+

@@ -118,10 +118,14 @@ model Guest {
   invitationId String
   name         String
   email        String?
+  phone        String?
   rsvpStatus   RsvpStatus @default(PENDING)
+
   message      String?
   attendees    Int        @default(1)
+  checkedIn    Boolean    @default(false)
   createdAt    DateTime   @default(now())
+
   updatedAt    DateTime   @updatedAt
   invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
 

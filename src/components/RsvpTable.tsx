@@ -44,6 +44,7 @@ export default function RsvpTable({ guests, stats }: RsvpTableProps) {
                 <tr className="border-b border-white/5">
                   <th className="text-left p-4 text-xs font-medium text-foreground/40 uppercase tracking-wider">Name</th>
                   <th className="text-left p-4 text-xs font-medium text-foreground/40 uppercase tracking-wider">Status</th>
+                  <th className="text-left p-4 text-xs font-medium text-foreground/40 uppercase tracking-wider text-center">Check-in</th>
                   <th className="text-left p-4 text-xs font-medium text-foreground/40 uppercase tracking-wider">Guests</th>
                   <th className="text-left p-4 text-xs font-medium text-foreground/40 uppercase tracking-wider">Message</th>
                 </tr>
@@ -58,11 +59,19 @@ export default function RsvpTable({ guests, stats }: RsvpTableProps) {
                         {guest.email && <p className="text-xs text-foreground/30 mt-0.5">{guest.email}</p>}
                       </td>
                       <td className="p-4"><Badge variant={badge.variant}>{badge.label}</Badge></td>
+                      <td className="p-4 text-center">
+                        {guest.checkedIn ? (
+                          <Badge variant="success">Hadir</Badge>
+                        ) : (
+                          <span className="text-[10px] text-foreground/20 font-bold uppercase tracking-widest">Belum</span>
+                        )}
+                      </td>
                       <td className="p-4 text-foreground/50">{guest.attendees}</td>
                       <td className="p-4 text-foreground/40 max-w-[200px] truncate">{guest.message || '—'}</td>
                     </tr>
                   );
                 })}
+
               </tbody>
             </table>
           </div>

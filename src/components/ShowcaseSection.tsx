@@ -28,7 +28,7 @@ const themes: { name: string; slug: Layout; tag: string; isLuxury?: boolean }[] 
   {
     name: 'Royal Blue',
     slug: 'royal-blue',
-    tag: 'Modern',
+    tag: 'Klasik',
   },
   {
     name: 'Golden Classic',
@@ -36,6 +36,54 @@ const themes: { name: string; slug: Layout; tag: string; isLuxury?: boolean }[] 
     tag: '✨ Premium',
     isLuxury: true,
   },
+  {
+    name: 'Islamic Grace',
+    slug: 'islamic-grace',
+    tag: '✨ Premium',
+    isLuxury: true,
+  },
+  {
+    name: 'Islamic Classic',
+    slug: 'islamic-minimalist',
+    tag: 'Klasik',
+    isLuxury: false,
+  },
+  {
+    name: 'Islamic Midnight',
+    slug: 'islamic-midnight',
+    tag: 'Klasik',
+    isLuxury: false,
+  },
+  {
+    name: 'Islamic Arabesque',
+    slug: 'islamic-arabesque',
+    tag: 'Klasik',
+    isLuxury: false,
+  },
+  {
+    name: 'Christian Elegant',
+    slug: 'christian-elegant',
+    tag: '✨ Premium',
+    isLuxury: true,
+  },
+  {
+    name: 'Hindu Mandala',
+    slug: 'hindu-mandala',
+    tag: '✨ Premium',
+    isLuxury: true,
+  },
+  {
+    name: 'Buddhist Zen',
+    slug: 'buddhist-zen',
+    tag: '✨ Premium',
+    isLuxury: true,
+  },
+  {
+    name: 'Confucian Oriental',
+    slug: 'confucian-oriental',
+    tag: '✨ Premium',
+    isLuxury: true,
+  }
 ];
 
 export default function ShowcaseSection({ fullGallery = false }: { fullGallery?: boolean }) {

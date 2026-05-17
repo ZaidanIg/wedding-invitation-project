@@ -1,7 +1,15 @@
-'use client';
-
 import React from 'react';
+import type { Metadata } from 'next';
 import ShowcaseSection from '@/components/ShowcaseSection';
+
+export const metadata: Metadata = {
+  title: 'Koleksi Tema Undangan',
+  description: 'Jelajahi koleksi tema undangan pernikahan digital premium dengan desain mewah dan elegan.',
+  openGraph: {
+    title: 'Koleksi Tema Undangan | Sahin',
+    description: 'Jelajahi koleksi tema undangan pernikahan digital premium dengan desain mewah dan elegan.',
+  },
+};
 
 export default function ThemesPage() {
   return (
@@ -12,3 +20,4 @@ export default function ThemesPage() {
     </div>
   );
 }
+

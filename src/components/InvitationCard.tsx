@@ -1,13 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { Eye, Users, Calendar, Trash2, ExternalLink, Copy, Sparkles, MapPin, Share2 } from 'lucide-react';
+import { Eye, Users, Calendar, Trash2, ExternalLink, Copy, Sparkles, MapPin, Share2, QrCode, Download, MessageSquare } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
 import WhatsAppGenerator from './WhatsAppGenerator';
+import { QRCodeSVG } from 'qrcode.react';
 import type { Invitation, AccountType } from '@/types';
+
 
 interface InvitationCardProps {
   invitation: Invitation & { _count?: { guests: number } };
@@ -29,6 +31,26 @@ export default function InvitationCard({ invitation, accountType, onDelete }: In
     } catch { showToast('error', 'Gagal menyalin link'); }
   };
 
+  const handleDownloadQR = () => {
+    const svg = document.getElementById(`qr-inv-${invitation.id}`);
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx?.drawImage(img, 0, 0);
+      const pngFile = canvas.toDataURL('image/png');
+      const downloadLink = document.createElement('a');
+      downloadLink.download = `QR-${invitation.slug}.png`;
+      downloadLink.href = pngFile;
+      downloadLink.click();
+    };
+    img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+    showToast('success', 'QR Code berhasil diunduh!');
+  };
   const handleDelete = async () => {
     if (!confirm('Hapus undangan ini selamanya?')) return;
     try {
@@ -39,10 +61,11 @@ export default function InvitationCard({ invitation, accountType, onDelete }: In
     } catch { showToast('error', 'Gagal menghapus undangan'); }
   };
 
+
   const showUpgrade = invitation.tier === 'DRAFT' && accountType !== 'B2B_ALL_TIME' && accountType !== 'B2B_PRO';
 
   return (
-    <Card className="group bg-white border-[#eceae4] hover:border-rose-200 transition-all shadow-sm hover:shadow-md p-5 sm:p-7 rounded-[2.5rem]">
+    <Card className="group bg-white border-[#eceae4] hover:border-rose-200 transition-all shadow-sm hover:shadow-lg p-8 sm:p-10 rounded-[3rem]">
       <div className="flex flex-col gap-8">
         {/* Info Section */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
@@ -63,7 +86,12 @@ export default function InvitationCard({ invitation, accountType, onDelete }: In
                   <Badge className="bg-blue-500/10 text-blue-600 border-blue-200 text-[10px] uppercase tracking-widest font-bold px-3 py-1">
                     Aktif (Gratis)
                   </Badge>
+                ) : (invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED') ? (
+                  <Badge className="bg-amber-500 text-white border-amber-500 text-[10px] uppercase tracking-widest font-bold px-3 py-1 shadow-lg shadow-amber-500/20">
+                    Ultimate
+                  </Badge>
                 ) : (
+
                   <Badge className="bg-rose-500 text-white border-rose-500 text-[10px] uppercase tracking-widest font-bold px-3 py-1">
                     Premium
                   </Badge>
@@ -92,58 +120,101 @@ export default function InvitationCard({ invitation, accountType, onDelete }: In
           </div>
         </div>
 
-        {/* Action Panel for "Lay Users" (User Awam) */}
-        <div className="bg-[#fcfbf8] rounded-3xl p-5 border border-[#eceae4]">
-          <div className="flex items-center gap-2 mb-5">
-             <Share2 className="h-4 w-4 text-[#1c1c1c]/40" />
-             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1c1c1c]/40">Kelola & Bagikan</span>
+        {/* Action Panel */}
+        <div className="bg-[#fcfbf8] rounded-[2rem] p-6 sm:p-8 border border-[#eceae4]">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2">
+               <Share2 className="h-4 w-4 text-[#1c1c1c]/40" />
+               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1c1c1c]/40">Kelola & Bagikan</span>
+            </div>
+            {(invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED' || accountType === 'B2B_PRO' || accountType === 'B2B_ALL_TIME') && (
+              <div className="flex items-center gap-3">
+                <div className="hidden">
+                  <QRCodeSVG 
+                    id={`qr-inv-${invitation.id}`}
+                    value={`${window.location.origin}/invitation/${invitation.slug}`}
+                    size={256}
+                  />
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleDownloadQR}
+                  className="h-8 rounded-full bg-amber-500/10 text-amber-600 border-none text-[10px] font-bold uppercase tracking-widest px-4"
+                >
+                  <Download className="h-3 w-3 mr-2" /> Download QR
+                </Button>
+                <div className="flex items-center gap-1 text-[10px] font-bold text-amber-500 bg-amber-500/5 px-3 py-1 rounded-full uppercase tracking-widest border border-amber-200/50">
+                  <Sparkles className="h-3 w-3 fill-amber-500" /> Pro Active
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* WhatsApp (Dynamic Component) */}
             <WhatsAppGenerator invitationSlug={invitation.slug} groomName={invitation.groomName} brideName={invitation.brideName} />
             
             {/* Copy Link with Clear Label */}
             <Button variant="secondary" onClick={handleCopyLink} className="h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
               <Copy className="h-5 w-5 mr-3 text-rose-500 group-hover:text-white transition-colors" />
-              Salin Link Undangan
+              Salin Link
             </Button>
 
             {/* View Invitation with Clear Label */}
             <Link href={invitationUrl} target="_blank" className="w-full">
               <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
                 <ExternalLink className="h-5 w-5 mr-3 text-blue-500 group-hover:text-white transition-colors" />
-                Lihat Hasil Undangan
+                Lihat Hasil
               </Button>
             </Link>
 
-            {/* RSVP List */}
+            {/* RSVP List / Management */}
             <Link href={`${invitationUrl}/rsvp`} className="w-full">
               <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
                 <Users className="h-5 w-5 mr-3 text-emerald-500 group-hover:text-white transition-colors" />
-                Daftar Tamu RSVP
+                Manajemen Tamu
               </Button>
             </Link>
           </div>
 
           {/* Special Actions (Upgrade/Delete) */}
-          {(showUpgrade || true) && (
-            <div className="flex flex-col sm:flex-row items-center gap-3 mt-3">
-              {showUpgrade && (
-                <Link href={`/pricing?invitationId=${invitation.id}`} className="flex-1 w-full">
-                  <Button className="w-full h-12 rounded-2xl bg-rose-500 text-white font-bold text-sm shadow-lg hover:bg-rose-600 hover:scale-[1.01] transition-all">
-                    <Sparkles className="h-5 w-5 mr-3 text-white fill-white" />
-                    Aktifkan Paket Premium
+          <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+            {(invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED' || accountType === 'B2B_PRO' || accountType === 'B2B_ALL_TIME') && (
+              <>
+                <Link href={`${invitationUrl}/blast`} className="flex-1 w-full">
+
+
+                  <Button className="w-full h-12 rounded-2xl bg-emerald-500 text-white font-bold text-sm shadow-lg hover:bg-emerald-600 transition-all">
+                    <MessageSquare className="h-5 w-5 mr-3" />
+                    WA Blast Pro
                   </Button>
                 </Link>
-              )}
-              <Button variant="ghost" onClick={handleDelete} className="w-full sm:w-auto h-12 px-6 rounded-2xl text-red-400 hover:bg-red-50 font-bold text-sm">
-                <Trash2 className="h-5 w-5 mr-2" />
-                Hapus
-              </Button>
-            </div>
-          )}
+                <Link href={`${invitationUrl}/rsvp/scanner`} className="flex-1 w-full">
+                   <Button className="w-full h-12 rounded-2xl bg-amber-500 text-white font-bold text-sm shadow-lg hover:bg-amber-600 transition-all">
+                     <QrCode className="h-5 w-5 mr-3" />
+                     Scan QR Check-in
+                   </Button>
+                </Link>
+              </>
+            )}
+
+            {showUpgrade && (
+              <Link href={`/pricing?invitationId=${invitation.id}`} className="flex-1 w-full">
+                <Button className="w-full h-12 rounded-2xl bg-rose-500 text-white font-bold text-sm shadow-lg hover:bg-rose-600 hover:scale-[1.01] transition-all">
+                  <Sparkles className="h-5 w-5 mr-3 text-white fill-white" />
+                  Upgrade Paket
+                </Button>
+              </Link>
+            )}
+            <Button variant="ghost" onClick={handleDelete} className="w-full sm:w-auto h-12 px-6 rounded-2xl text-red-400 hover:bg-red-50 font-bold text-sm">
+              <Trash2 className="h-5 w-5 mr-2" />
+              Hapus
+            </Button>
+          </div>
         </div>
+
       </div>
     </Card>
   );

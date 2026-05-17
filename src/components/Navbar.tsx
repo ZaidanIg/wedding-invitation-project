@@ -14,12 +14,15 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { data: session } = useSession();
   const pathname = usePathname();
+  const isDemoPage = pathname?.startsWith('/demo/');
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  if (isDemoPage) return null;
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -46,9 +49,8 @@ export default function Navbar() {
             </div>
             <div className="flex flex-col -space-y-1">
               <span className="font-display text-xl font-bold text-[#1c1c1c] tracking-tight group-hover:text-rose-500 transition-colors">
-                Wedding
+                Sahin
               </span>
-              <span className="font-handwriting text-lg text-rose-500/40">Invitation</span>
             </div>
           </Link>
 
@@ -152,9 +154,9 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+                className={`block mx-3 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
                   isActive(link.href) 
-                    ? 'text-rose-500 bg-rose-500/5' 
+                    ? 'text-rose-500 bg-rose-500/10 shadow-sm shadow-rose-500/5' 
                     : 'text-[#6b6b6b] hover:text-[#1c1c1c] hover:bg-rose-500/5'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -168,7 +170,7 @@ export default function Navbar() {
                   setIsMobileMenuOpen(false);
                   signOut({ callbackUrl: '/' });
                 }}
-                className="block w-full text-left px-4 py-3 rounded-xl text-sm text-rose-500 font-bold hover:bg-rose-50 transition-all"
+                className="block w-[calc(100%-1.5rem)] mx-3 px-5 py-3.5 rounded-2xl text-sm text-rose-500 font-bold hover:bg-rose-50 transition-all text-left"
               >
                 Sign Out
               </button>

@@ -10,6 +10,10 @@
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
   --font-handwriting: var(--font-handwriting);
+  --font-cinzel: var(--font-cinzel);
+  --font-montserrat: var(--font-montserrat);
+  --font-outfit: var(--font-outfit);
+  --font-cormorant: var(--font-cormorant);
   --color-highlight: var(--highlight);
 }
 

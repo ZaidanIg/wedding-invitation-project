@@ -180,8 +180,8 @@ export default function SignInPage() {
             </h1>
             <p className="text-sm text-foreground/50">
               {isLogin
-                ? 'Sign in to access your wedding invitations'
-                : 'Sign up to create your perfect wedding invitation'}
+                ? 'Sign in to access your Sahin invitations'
+                : 'Sign up to create your perfect wedding invitation with Sahin'}
             </p>
           </div>
 

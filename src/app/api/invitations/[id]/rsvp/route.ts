@@ -77,8 +77,13 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
     return NextResponse.json({
       success: true,
-      data: { guests, stats },
+      data: { 
+        guests, 
+        stats,
+        tier: invitation.tier
+      },
     });
+
   } catch (error) {
     console.error('[Get RSVPs Error]:', error);
     return NextResponse.json(
