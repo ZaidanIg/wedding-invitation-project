@@ -60,11 +60,8 @@ export async function POST(request: Request) {
 
     // If status changed to SUCCESS, apply the upgrades
     if (newStatus === 'SUCCESS' && transaction.status !== 'SUCCESS') {
-      let coupleNames = 'Upgrade Paket Layanan';
-      let userEmail = '';
-
       // Execute within a database transaction to ensure atomicity
-      await prisma.$transaction(async (tx) => {
+      const { userEmail, coupleNames } = await prisma.$transaction(async (tx) => {
         // 1. Update Transaction
         await tx.transaction.update({
           where: { id: transaction.id },
@@ -79,11 +76,10 @@ export async function POST(request: Request) {
           where: { id: transaction.userId },
           select: { email: true }
         });
-        if (user) {
-          userEmail = user.email;
-        }
+        const email = user?.email || '';
 
         // 3. Apply Upgrades
+        let names = 'Upgrade Paket Layanan';
         if (transaction.type === 'INVITATION_UPGRADE' && transaction.invitationId && transaction.tier) {
           const inv = await tx.invitation.update({
             where: { id: transaction.invitationId },
@@ -91,15 +87,17 @@ export async function POST(request: Request) {
             select: { groomName: true, brideName: true }
           });
           if (inv) {
-            coupleNames = `${inv.groomName} & ${inv.brideName}`;
+            names = `${inv.groomName} & ${inv.brideName}`;
           }
         } else if (transaction.type === 'ACCOUNT_UPGRADE' && transaction.accountType) {
           await tx.user.update({
             where: { id: transaction.userId },
             data: { accountType: transaction.accountType },
           });
-          coupleNames = `Akun WO (${transaction.accountType})`;
+          names = `Akun WO (${transaction.accountType})`;
         }
+
+        return { userEmail: email, coupleNames: names };
       });
 
       // Send Invoice/Receipt Email outside of transaction block to avoid SMTP latency holding database locks

@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState } from 'react';
 import { Check, Star, Zap, Crown, Heart, Sparkles, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -13,9 +14,21 @@ interface PricingContentProps {
 export default function PricingContent({ invitationId }: PricingContentProps) {
   const router = useRouter();
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<{
+    code: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'DRAFT' | 'PRO_PLAN' | 'ENTERPRISE';
+    label: string;
+  } | null>(null);
+
   const handlePlanSelect = (plan: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'DRAFT' | 'PRO_PLAN' | 'ENTERPRISE', planLabel: string) => {
-    const confirmed = window.confirm(`Apakah benar Anda akan membeli item ${planLabel} ini?`);
-    if (!confirmed) return;
+    setSelectedPlan({ code: plan, label: planLabel });
+    setModalOpen(true);
+  };
+
+  const executePlanSelect = () => {
+    if (!selectedPlan) return;
+    const { code: plan } = selectedPlan;
+    setModalOpen(false);
 
     if (plan === 'DRAFT') {
       router.push(`/create?plan=${plan}`);
@@ -64,36 +77,32 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
           transition={{ duration: 0.8 }}
           className="text-center mb-24"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/5 border border-rose-500/10 text-rose-500 text-xs font-bold uppercase tracking-widest mb-6">
-            <Sparkles className="h-3.5 w-3.5" />
-            Pricing Plans
-          </div>
           <h1 className="text-[42px] md:text-[72px] font-display font-bold text-[#1c1c1c] tracking-[-0.03em] leading-[1.1] mb-8 text-balance">
-            Investasi untuk Momen <br /> <span className="text-rose-500 italic font-normal">Tak Terlupakan</span>
+            Satu Sentuhan Indah <br /> Untuk Mengabarkan <span className="text-rose-500 italic font-normal">Hari Istimewa Anda</span>
           </h1>
           <p className="text-lg md:text-xl text-[#6b6b6b] max-w-2xl mx-auto leading-relaxed text-balance">
-            Pilih paket yang sesuai dengan impian pernikahan Anda. <br className="hidden md:block" />
-            Tanpa biaya langganan, cukup sekali bayar.
+            Temukan paket terbaik untuk mengabadikan momen terindah Anda. <br className="hidden md:block" />
+            Tanpa biaya tersembunyi, tanpa langganan—cukup sekali bayar untuk selamanya.
           </p>
         </motion.div>
 
         {/* B2C Plans */}
-        <div className="mb-32">
+        <div className="mb-32 ">
           <motion.div 
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"
-          >
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+
             {/* Free Draft */}
-            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40">
+            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40 shadow-sm shadow-[#1c1c1c]/5">
               <div className="mb-8">
                 <div className="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Zap className="h-6 w-6 text-stone-400" />
                 </div>
-                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Draft Gratis</h3>
-                <p className="text-[#6b6b6b] text-xs leading-relaxed">Eksplorasi desain sepuasnya tanpa risiko.</p>
+                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Draf Percobaan</h3>
+                <p className="text-[#6b6b6b] text-xs leading-relaxed">Eksplorasi ribuan kemungkinan desain sesuka hati, tanpa batas waktu.</p>
               </div>
               
               <div className="flex items-baseline gap-1 mb-10">
@@ -121,13 +130,13 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
             </motion.div>
 
             {/* Minimalist */}
-            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40">
+            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40 shadow-sm shadow-[#1c1c1c]/5">
               <div className="mb-8">
                 <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Sparkles className="h-6 w-6 text-blue-500" />
                 </div>
                 <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Minimalist</h3>
-                <p className="text-[#6b6b6b] text-xs leading-relaxed">Undangan minimalis yang modern dan berkelas.</p>
+                <p className="text-[#6b6b6b] text-xs leading-relaxed">Desain esensial yang bersih, bersahaja, namun tetap memikat pandangan.</p>
               </div>
               
               <div className="flex items-baseline gap-1 mb-10">
@@ -161,7 +170,7 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
             {/* Premium */}
             <motion.div variants={itemVariants} className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-rose-500 to-pink-600 rounded-[2.6rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative glass rounded-[2.5rem] p-8 flex flex-col h-full border-rose-500/20 shadow-xl shadow-rose-500/10">
+              <div className="relative glass rounded-[2.5rem] p-8 flex flex-col h-full border-rose-500/20 shadow-xl shadow-rose-500/10 animate-card-glow">
                 <div className="absolute top-0 right-8 transform -translate-y-1/2 bg-rose-500 text-white px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-lg shadow-rose-500/25 flex items-center gap-1">
                   <Star className="h-2.5 w-2.5 fill-white" /> Paling Populer
                 </div>
@@ -171,7 +180,7 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
                     <Heart className="h-6 w-6 text-rose-500" fill="currentColor" />
                   </div>
                   <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Premium</h3>
-                  <p className="text-[#6b6b6b] text-xs leading-relaxed">Sentuhan romantis dan elegan yang lengkap.</p>
+                  <p className="text-[#6b6b6b] text-xs leading-relaxed">Penyampaian kisah cinta yang utuh dengan balutan musik syahdu dan galeri elok.</p>
                 </div>
 
                 <div className="flex items-baseline gap-1 mb-10">
@@ -204,13 +213,13 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
             </motion.div>
 
             {/* Ultimate */}
-            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40">
+            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40 shadow-sm shadow-[#1c1c1c]/5">
               <div className="mb-8">
                 <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <ShieldCheck className="h-6 w-6 text-rose-400" />
                 </div>
                 <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Ultimate</h3>
-                <p className="text-[#6b6b6b] text-xs leading-relaxed">Fitur termewah dengan teknologi modern.</p>
+                <p className="text-[#6b6b6b] text-xs leading-relaxed">Kemewahan tanpa kompromi, dilengkapi RSVP pintar dan interaksi tamu eksklusif.</p>
               </div>
 
               <div className="flex items-baseline gap-1 mb-10">
@@ -330,6 +339,75 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
           </div>
         )}
       </div>
+
+      {/* Custom Premium Confirmation Modal */}
+      {modalOpen && selectedPlan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop Blur */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute inset-0 bg-[#1c1c1c]/40 backdrop-blur-[4px]"
+            onClick={() => setModalOpen(false)}
+          />
+
+          {/* Modal Content Box */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            className="relative bg-[#fdfcf9] rounded-[2.5rem] p-8 sm:p-10 max-w-md w-full shadow-2xl border border-rose-500/10 z-10 text-center"
+          >
+            {/* Pulsing Sparkles Accent */}
+            <div className="w-16 h-16 rounded-full bg-rose-500/5 border border-rose-500/10 flex items-center justify-center mx-auto mb-6 shadow-sm">
+              <Sparkles className="h-6 w-6 text-rose-500 animate-pulse" />
+            </div>
+
+            {/* Modal Title */}
+            <h3 className="text-2xl font-display font-bold text-[#1c1c1c] mb-3">
+              Konfirmasi Pilihan Paket
+            </h3>
+
+            {/* Description */}
+            <p className="text-[#6b6b6b] text-sm leading-relaxed mb-8">
+              Apakah Anda yakin ingin memilih paket <strong className="text-rose-500 font-bold">{selectedPlan.label}</strong> untuk hari bahagia Anda?
+            </p>
+
+            {/* Custom CTA Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-stretch gap-3 justify-center">
+              <button
+                onClick={() => setModalOpen(false)}
+                className="py-3.5 px-6 rounded-2xl bg-stone-100 text-[#1c1c1c] text-sm font-bold hover:bg-stone-200 transition-all duration-300 cursor-pointer"
+              >
+                Kembali
+              </button>
+              <button
+                onClick={executePlanSelect}
+                className="py-3.5 px-8 rounded-2xl bg-rose-gradient text-white text-sm font-bold hover:shadow-lg hover:shadow-rose-500/25 transition-all duration-300 cursor-pointer"
+              >
+                Ya, Pilih Paket
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Premium Card Glow Animation Style */}
+      <style>{`
+        @keyframes card-glow {
+          0%, 100% {
+            box-shadow: 0 20px 25px -5px rgba(244, 63, 94, 0.08), 0 8px 10px -6px rgba(244, 63, 94, 0.08);
+            border-color: rgba(244, 63, 94, 0.15);
+          }
+          50% {
+            box-shadow: 0 25px 45px -2px rgba(244, 63, 94, 0.22), 0 12px 22px -3px rgba(244, 63, 94, 0.12);
+            border-color: rgba(244, 63, 94, 0.35);
+          }
+        }
+        .animate-card-glow {
+          animation: card-glow 3s infinite ease-in-out;
+        }
+      `}</style>
     </div>
   );
 }
