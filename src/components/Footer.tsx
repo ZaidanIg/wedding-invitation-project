@@ -19,6 +19,7 @@ export default function Footer() {
               width={900} 
               height={900} 
               className="absolute w-[340px] h-[340px] max-w-none object-contain transition-transform duration-300 group-hover:scale-105"
+              unoptimized
             />
           </div>
 
