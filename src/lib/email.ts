@@ -105,3 +105,83 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     return false;
   }
 };
+
+export const sendInvoiceEmail = async (email: string, invoiceDetails: {
+  orderId: string;
+  planName: string;
+  subtotal: number;
+  ppn: number;
+  adminFee: number;
+  total: number;
+  coupleNames: string;
+}) => {
+  const mailOptions = {
+    from: process.env.SMTP_FROM || 'Sahinaja <noreply@sahinaja.com>',
+    to: email,
+    subject: `Bukti Pembayaran Sukses — Sahinaja #${invoiceDetails.orderId}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; border: 1px solid #eaeaea; border-radius: 20px; background-color: #fcfbf8;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #e11d48; margin: 0; font-size: 28px;">Sahinaja</h1>
+          <p style="color: #666; font-size: 14px; margin: 5px 0 0 0;">Bukti Transaksi Resmi</p>
+        </div>
+        
+        <div style="background-color: white; border: 1px solid #eceae4; padding: 20px; border-radius: 15px; margin-bottom: 25px;">
+          <h3 style="margin-top: 0; color: #111; border-bottom: 1px solid #eee; padding-bottom: 10px;">Ringkasan Pembayaran</h3>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <tr>
+              <td style="padding: 6px 0; color: #666;">Nomor Order:</td>
+              <td style="padding: 6px 0; font-weight: bold; text-align: right; color: #111;">${invoiceDetails.orderId}</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; color: #666;">Paket Layanan:</td>
+              <td style="padding: 6px 0; font-weight: bold; text-align: right; color: #e11d48;">${invoiceDetails.planName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; color: #666;">Nama Pasangan:</td>
+              <td style="padding: 6px 0; font-weight: bold; text-align: right; color: #111;">${invoiceDetails.coupleNames}</td>
+            </tr>
+            <tr>
+              <td colspan="2"><hr style="border: none; border-top: 1px dashed #eee; margin: 10px 0;" /></td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; color: #666;">Subtotal:</td>
+              <td style="padding: 6px 0; font-weight: bold; text-align: right; color: #111;">Rp ${invoiceDetails.subtotal.toLocaleString('id-ID')}</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; color: #666;">PPN (11%):</td>
+              <td style="padding: 6px 0; font-weight: bold; text-align: right; color: #111;">Rp ${invoiceDetails.ppn.toLocaleString('id-ID')}</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; color: #666;">Biaya Admin & Layanan:</td>
+              <td style="padding: 6px 0; font-weight: bold; text-align: right; color: #111;">Rp ${invoiceDetails.adminFee.toLocaleString('id-ID')}</td>
+            </tr>
+            <tr>
+              <td colspan="2"><hr style="border: none; border-top: 1px solid #eee; margin: 10px 0;" /></td>
+            </tr>
+            <tr style="font-size: 16px; font-weight: bold;">
+              <td style="padding: 6px 0; color: #111;">Total Pembayaran:</td>
+              <td style="padding: 6px 0; text-align: right; color: #e11d48;">Rp ${invoiceDetails.total.toLocaleString('id-ID')}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="text-align: center; color: #666; font-size: 12px; line-height: 1.5;">
+          <p>Terima kasih atas kepercayaan Anda menggunakan Sahinaja untuk mengabadikan momen terindah hidup Anda.</p>
+          <p>Jika ada pertanyaan, hubungi kami di <a href="mailto:zaidanikhsan.g@gmail.com" style="color: #e11d48; text-decoration: none;">zaidanikhsan.g@gmail.com</a>.</p>
+          <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;" />
+          <p style="color: #999;">📍 Jln. Pager betis dsn, Jl. Tenjolaya No.15, RT.03/RW.01, Sukagalih, Kec. Sumedang selatan, Kabupaten Sumedang, Jawa Barat 45311</p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Invoice email sent: %s', info.messageId);
+    return true;
+  } catch (error) {
+    console.error('Error sending invoice email:', error);
+    return false;
+  }
+};

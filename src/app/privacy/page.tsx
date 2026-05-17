@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ShieldCheck, Eye, Database, Heart, Mail } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Kebijakan Privasi',
-  description: 'Informasi mengenai bagaimana platform Sahinaja melindungi, mengumpulkan, dan mengelola data pribadi Anda.',
+  title: 'Kebijakan Privasi — Sahinaja',
+  description: 'Komitmen hukum resmi platform Sahinaja dalam mengumpulkan, mengelola, menyimpang, serta menjamin keamanan data pribadi pengguna dan tamu undangan.',
 };
 
 export default function PrivacyPolicyPage() {
@@ -13,14 +13,14 @@ export default function PrivacyPolicyPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header decoration */}
         <div className="text-center mb-16">
-          <div className="inline-flex p-4 rounded-3xl bg-[#a3b18a]/10 border border-[#a3b18a]/20 text-[#a3b18a] mb-6 animate-pulse">
+          <div className="inline-flex p-4 rounded-3xl bg-[#a3b18a]/10 border border-[#a3b18a]/20 text-[#a3b18a] mb-6">
             <ShieldCheck size={32} />
           </div>
           <h1 className="text-3xl sm:text-4xl font-display font-bold text-[#1c1c1c] tracking-tight mb-4">
             Kebijakan Privasi
           </h1>
           <p className="text-sm text-[#6b6b6b] max-w-xl mx-auto">
-            Terakhir Diperbarui: 18 Mei 2026. Kami berkomitmen penuh melindungi hak privasi data pribadi Anda dan seluruh tamu undangan Anda.
+            Tanggal Berlaku: 18 Mei 2026. Kami berkomitmen penuh secara hukum untuk menjaga kerahasiaan, integritas, dan keamanan informasi pribadi milik Anda serta seluruh tamu undangan Anda.
           </p>
         </div>
 
@@ -31,15 +31,15 @@ export default function PrivacyPolicyPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-stone-900 font-bold text-base">
               <Eye className="h-5 w-5 text-[#a3b18a] shrink-0" />
-              <h3>1. Pengumpulan Informasi Pribadi</h3>
+              <h3>1. Kategori Informasi Pribadi Yang Kami Kumpulkan</h3>
             </div>
             <p>
-              Ketika Anda mendaftar, menggunakan, atau melakukan transaksi di platform **Sahinaja**, kami mengumpulkan beberapa jenis data pribadi secara terbatas dan transparan:
+              Guna menyelenggarakan Layanan secara optimal dan aman bagi seluruh Pengguna, platform <strong>Sahinaja</strong> mengumpulkan kategori data pribadi terbatas berikut:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Data Akun:</strong> Alamat email, nama lengkap, dan nomor telepon seluler.</li>
-              <li><strong>Data Undangan Pernikahan:</strong> Informasi detail acara (tanggal, waktu, lokasi resepsi/akad), nama lengkap mempelai pria & wanita beserta orang tua, foto profil mempelai, galeri foto, kisah cinta, dan rekening kado digital.</li>
-              <li><strong>Data Tamu Undangan:</strong> Nama tamu, nomor telepon WhatsApp (untuk blast undangan), serta status RSVP (kehadiran dan ucapan doa restu).</li>
+              <li><strong>Data Akun Pemilik Undangan:</strong> Nama lengkap, alamat surat elektronik (email), sandi pengaman terenkripsi, serta nomor telepon kontak aktif.</li>
+              <li><strong>Data Konten Undangan Pernikahan:</strong> Informasi detail acara (hari, tanggal, waktu, lokasi akad dan resepsi), data identitas lengkap kedua mempelai beserta orang tua, galeri foto kebahagiaan, deskripsi kisah cinta, serta rincian rekening bank kado digital.</li>
+              <li><strong>Data Tamu Undangan Pernikahan:</strong> Daftar nama tamu penerima undangan, nomor kontak WhatsApp tamu, status konfirmasi kehadiran (RSVP), serta doa restu yang dikirimkan oleh tamu.</li>
             </ul>
           </div>
 
@@ -47,31 +47,31 @@ export default function PrivacyPolicyPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-stone-900 font-bold text-base">
               <Database className="h-5 w-5 text-[#a3b18a] shrink-0" />
-              <h3>2. Penggunaan Informasi Pribadi</h3>
+              <h3>2. Dasar Hukum & Tujuan Penggunaan Data</h3>
             </div>
             <p>
-              Seluruh data pribadi yang dikumpulkan di sistem Sahinaja digunakan semata-mata untuk kelancaran penyediaan fitur platform:
+              Seluruh data pribadi yang kami kumpulkan diproses semata-mata atas dasar pemenuhan hak kontraktual Anda dan tujuan operasional yang sah:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Memproses pendaftaran akun, verifikasi keamanan, serta pemrosesan transaksi pembayaran Midtrans Snap.</li>
-              <li>Merender halaman undangan pernikahan digital unik sesuai draf kustomisasi Anda agar dapat diakses oleh publik atau tamu khusus.</li>
-              <li>Mengirim notifikasi blast undangan ke WhatsApp tamu penerima secara terjadwal.</li>
-              <li>Menyediakan statistik rekap kehadiran RSVP serta kiriman doa restu di dalam dasbor admin pemilik undangan.</li>
+              <li>Memproses pendaftaran akun, verifikasi keamanan berkala, serta kelancaran transaksi pembayaran paket premium melalui mitra pembayaran berlisensi.</li>
+              <li>Menyusun, merender, dan mempublikasikan undangan pernikahan digital mewah Anda pada alamat unik undangan agar dapat diakses oleh kerabat Anda.</li>
+              <li>Memproses notifikasi pesan undangan personal Anda ke nomor tamu secara tepat sasaran.</li>
+              <li>Menyediakan dasbor analitik visual bagi Pengguna untuk memantau rekap jumlah tamu yang hadir secara *real-time*.</li>
             </ul>
           </div>
 
-          {/* Section 3 */}
+          {/* Section 3 - THE SECURE STATEMENT WITHOUT ARCHITECTURE REVEALING */}
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-stone-900 font-bold text-base">
               <ShieldCheck className="h-5 w-5 text-[#a3b18a] shrink-0" />
-              <h3>3. Perlindungan & Keamanan Data (Security)</h3>
+              <h3>3. Jaminan Perlindungan & Enkripsi Keamanan Data</h3>
             </div>
             <p>
-              Kami mengimplementasikan langkah-langkah keamanan tingkat tinggi untuk menjamin integritas data Anda:
+              Kami mengutamakan pelindungan privasi Anda di atas segalanya. Kami menerapkan langkah-langkah keamanan tingkat tinggi untuk menjamin integritas data Anda:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Enkripsi Transportasi Data (SSL/HTTPS):</strong> Seluruh data yang mengalir antara browser Anda, server produksi Vercel, serta basis data terenkripsi Supabase dilindungi sepenuhnya menggunakan enkripsi SSL/TLS 256-bit standar industri perbankan.</li>
-              <li><strong>Tanpa Penjualan Data:</strong> Sahinaja **tidak akan pernah** menjual, menyewakan, memperdagangkan, atau memberikan data pribadi pengguna atau tamu undangan Anda kepada pihak ketiga mana pun tanpa persetujuan eksplisit Anda.</li>
+              <li><strong>Transmisi Data Terenkripsi:</strong> Seluruh pertukaran data antara browser Pengguna, sistem server, hingga basis data pusat dilindungi sepenuhnya menggunakan protokol enkripsi standar industri terpercaya. Ini memastikan data tidak dapat diintip oleh pihak luar saat ditransmisikan.</li>
+              <li><strong>Komitmen Anti-Bocor & Anti-Jual Data:</strong> Kami berkomitmen secara mutlak <strong>tidak akan pernah</strong> menjual, menyewakan, membagikan, atau memberikan data pribadi Pengguna maupun data tamu undangan Anda kepada pihak ketiga mana pun untuk tujuan periklanan atau komersial lainnya.</li>
             </ul>
           </div>
 
@@ -79,21 +79,21 @@ export default function PrivacyPolicyPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-stone-900 font-bold text-base">
               <Eye className="h-5 w-5 text-[#a3b18a] shrink-0" />
-              <h3>4. Cookie Browser</h3>
+              <h3>4. Kebijakan Cookie Sesi Browser</h3>
             </div>
             <p>
-              Platform kami memanfaatkan *cookies* berukuran kecil di browser Anda semata-mata untuk menyimpan status autentikasi login (NextAuth session) agar Anda tidak perlu berulang kali memasukkan kata sandi saat berpindah halaman dasbor. Anda dapat menonaktifkan cookie melalui pengaturan browser Anda, namun beberapa fungsi dasbor mungkin menjadi tidak bekerja maksimal.
+              Kami menggunakan teknologi penanda sesi sederhana (*cookies*) pada browser Anda dengan tujuan tunggal untuk menyimpan status masuk (login) akun Anda. Hal ini bertujuan untuk memudahkan kenyamanan akses Pengguna agar Anda tidak perlu memasukkan kata sandi berulang kali saat sedang asyik berpindah halaman dasbor pengeditan undangan. Kami tidak menggunakan cookie untuk tujuan pelacakan iklan (*ad-tracking*) di luar situs kami.
             </p>
           </div>
 
           {/* Section 5 */}
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-stone-900 font-bold text-base">
-              <Heart className="h-5 w-5 text-[#a3b18a] shrink-0 animate-heartbeat" />
-              <h3>5. Hak Akses & Penghapusan Data</h3>
+              <Heart className="h-5 w-5 text-[#a3b18a] shrink-0" />
+              <h3>5. Hak Pengguna Atas Kendali & Penghapusan Data</h3>
             </div>
             <p>
-              Anda memiliki hak penuh untuk mengakses, memperbarui, memodifikasi, atau meminta penghapusan permanen atas seluruh data pribadi Anda dari server kami kapan saja melalui menu dasbor akun Anda. Penghapusan akun berbayar juga akan secara permanen menghapus subdomain undangan Anda dari internet.
+              Sebagai pemilik data yang sah, Anda memegang kendali penuh atas informasi pribadi Anda di platform Sahinaja. Anda berhak untuk mengakses, mengubah, memperbarui, atau mengajukan permohonan penghapusan seluruh data akun dan data undangan Anda secara permanen kapan saja langsung melalui menu dasbor akun Anda. Tindakan penghapusan akun akan memicu penghapusan bersih seluruh catatan undangan Anda dari penyimpanan sistem kami tanpa ada salinan cadangan yang tersisa demi keamanan privasi Anda.
             </p>
           </div>
 
@@ -101,14 +101,14 @@ export default function PrivacyPolicyPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-stone-900 font-bold text-base">
               <Mail className="h-5 w-5 text-[#a3b18a] shrink-0" />
-              <h3>6. Kontak Pertanyaan Privasi</h3>
+              <h3>6. Kontak Pengawasan Perlindungan Data</h3>
             </div>
             <p>
-              Apabila Anda memiliki pertanyaan lebih lanjut, keraguan, atau kekhawatiran terkait bagaimana data pribadi Anda dikelola di sistem kami, silakan menghubungi Petugas Perlindungan Data (*Data Protection Officer*) kami di:
+              Apabila terdapat pertanyaan, masukan hukum, keraguan, atau keluhan terkait dengan tata cara pengelolaan kerahasiaan data di sistem kami, silakan menghubungi divisi pengawasan pelindungan data kami:
             </p>
             <div className="bg-stone-50 border border-stone-200/50 p-6 rounded-2xl font-mono text-xs text-[#6b6b6b]">
-              <p>✉️ <strong>Email Kebijakan Privasi:</strong> <a href="mailto:privacy@sahinaja.com" className="text-rose-500 hover:underline">privacy@sahinaja.com</a> / <a href="mailto:support@sahinaja.com" className="text-rose-500 hover:underline">support@sahinaja.com</a></p>
-              <p>📍 <strong>Alamat Kantor:</strong> Sahinaja HQ, Jl. Kemewahan No. 1, Jakarta Selatan, Indonesia</p>
+              <p>✉️ <strong>Divisi Perlindungan Data:</strong> <a href="mailto:zaidanikhsan.g@gmail.com" className="text-rose-500 hover:underline">zaidanikhsan.g@gmail.com</a></p>
+              <p>📍 <strong>Alamat Kantor Terdaftar:</strong> Jln. Pager betis dsn, Jl. Tenjolaya No.15, RT.03/RW.01, Sukagalih, Kec. Sumedang selatan, Kabupaten Sumedang, Jawa Barat 45311</p>
             </div>
           </div>
 

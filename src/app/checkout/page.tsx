@@ -153,6 +153,111 @@ function CheckoutContent() {
   const adminFee = 2500; // Biaya layanan / admin
   const total = subtotal + ppn + adminFee;
 
+  const handleDownloadDraftInvoice = () => {
+    const invoiceHtml = `
+      <html>
+        <head>
+          <title>Draft Invoice #${invitationId || 'DRAFT'}</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; padding: 40px; background: #fff; }
+            .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); font-size: 16px; line-height: 24px; border-radius: 10px; }
+            .invoice-box table { width: 100%; line-height: inherit; text-align: left; border-collapse: collapse; }
+            .invoice-box table td { padding: 10px; vertical-align: top; }
+            .invoice-box table tr td:nth-child(2) { text-align: right; }
+            .invoice-box table tr.top table td { padding-bottom: 20px; }
+            .invoice-box table tr.top table td.title { font-size: 45px; line-height: 45px; color: #e11d48; font-weight: bold; }
+            .invoice-box table tr.information table td { padding-bottom: 40px; }
+            .invoice-box table tr.heading td { background: #eee; border-bottom: 1px solid #ddd; font-weight: bold; }
+            .invoice-box table tr.details td { padding-bottom: 20px; }
+            .invoice-box table tr.item td { border-bottom: 1px solid #eee; }
+            .invoice-box table tr.item.last td { border-bottom: none; }
+            .invoice-box table tr.total td:nth-child(2) { border-top: 2px solid #eee; font-weight: bold; color: #e11d48; }
+            .brand { font-size: 28px; font-weight: bold; color: #1c1c1c; }
+            .brand span { color: #e11d48; }
+            .footer { text-align: center; margin-top: 50px; font-size: 12px; color: #777; border-top: 1px solid #eee; padding-top: 20px; }
+            .btn-print { background: #1c1c1c; color: #fff; padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 14px; }
+            @media print { .btn-print { display: none; } }
+          </style>
+        </head>
+        <body>
+          <div style="text-align: center;">
+            <button class="btn-print" onclick="window.print()">Cetak / Simpan PDF</button>
+          </div>
+          <div class="invoice-box">
+            <table>
+              <tr class="top">
+                <td colspan="2">
+                  <table>
+                    <tr>
+                      <td class="title">
+                        <div class="brand">Sahin<span>aja</span></div>
+                      </td>
+                      <td>
+                        Draft Invoice #: INV-DRF-${invitationId ? invitationId.slice(0, 8).toUpperCase() : 'NEW'}<br />
+                        Tanggal: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br />
+                        Status: DRAF SEBELUM CHECKOUT
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr class="information">
+                <td colspan="2">
+                  <table>
+                    <tr>
+                      <td>
+                        <strong>Sahinaja Office Address:</strong><br />
+                        Jln. Pager betis dsn, Jl. Tenjolaya No.15, RT.03/RW.01<br />
+                        Sukagalih, Kec. Sumedang selatan, Kabupaten Sumedang<br />
+                        Jawa Barat 45311
+                      </td>
+                      <td>
+                        <strong>Penerima Layanan:</strong><br />
+                        ${session?.user?.name || 'Pelanggan Sahinaja'}<br />
+                        ${session?.user?.email || '-'}<br />
+                        Pasangan: ${invitationData ? `${invitationData.groomName} & ${invitationData.brideName}` : 'Draf Undangan'}
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr class="heading">
+                <td>Item Deskripsi</td>
+                <td>Harga</td>
+              </tr>
+              <tr class="item">
+                <td>Paket Layanan Pernikahan Digital (${plan.name})</td>
+                <td>Rp ${subtotal.toLocaleString('id-ID')}</td>
+              </tr>
+              <tr class="item">
+                <td>PPN / Pajak (11%)</td>
+                <td>Rp ${ppn.toLocaleString('id-ID')}</td>
+              </tr>
+              <tr class="item last">
+                <td>Biaya Admin & Layanan Instant Gateway</td>
+                <td>Rp ${adminFee.toLocaleString('id-ID')}</td>
+              </tr>
+              <tr class="total">
+                <td></td>
+                <td>Total Bayar: Rp ${total.toLocaleString('id-ID')}</td>
+              </tr>
+            </table>
+            <div class="footer">
+              Terima kasih telah mempercayakan momen bahagia Anda bersama Sahinaja.<br />
+              Dokumen ini merupakan draf resmi penawaran sebelum konfirmasi checkout pembayaran.
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(invoiceHtml);
+      printWindow.document.close();
+    }
+  };
+
   // Protect Route
   useEffect(() => {
     if (sessionStatus === 'unauthenticated') {
@@ -342,7 +447,7 @@ function CheckoutContent() {
                     <div className="space-y-1">
                       <span className="text-[10px] font-bold text-[#6b6b6b] uppercase tracking-wide">Nama Pasangan</span>
                       <p className="text-sm font-bold text-[#1c1c1c]">
-                        {invitationData.groomNickname} & {invitationData.brideNickname}
+                        {invitationData.groomName} & {invitationData.brideName}
                       </p>
                     </div>
                     {invitationData.eventDate && (
@@ -393,9 +498,9 @@ function CheckoutContent() {
                     <ShieldCheck className="h-4 w-4 text-emerald-500" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-[#1c1c1c] mb-0.5">Lisensi Penggunaan Aktif Selamanya</h4>
+                    <h4 className="text-xs font-bold text-[#1c1c1c] mb-0.5">Masa Aktif Undangan Selamanya</h4>
                     <p className="text-xs text-[#6b6b6b] leading-relaxed font-medium">
-                      Undangan digital pernikahan Anda akan di-hosting secara permanen di server cloud kami dan dapat diakses kapan saja tanpa biaya tambahan berkala tersembunyi.
+                      Undangan pernikahan digital Anda akan tetap aktif secara permanen dan dapat diakses oleh kerabat kapan saja tanpa ada biaya tambahan atau biaya langganan di kemudian hari.
                     </p>
                   </div>
                 </div>
@@ -405,9 +510,9 @@ function CheckoutContent() {
                     <ShieldCheck className="h-4 w-4 text-emerald-500" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-[#1c1c1c] mb-0.5">Keamanan Data Sensitif Terenkripsi</h4>
+                    <h4 className="text-xs font-bold text-[#1c1c1c] mb-0.5">Perlindungan Data & Kerahasiaan Penuh</h4>
                     <p className="text-xs text-[#6b6b6b] leading-relaxed font-medium">
-                      Kami menjaga kerahasiaan data pribadi Anda, pasangan, serta daftar RSVP tamu. Enkripsi koneksi SSL 256-bit mutlak aktif di seluruh halaman publik.
+                      Kami menjamin kerahasiaan seluruh data pribadi Anda, pasangan, serta daftar tamu undangan melalui sistem pengamanan data terenkripsi yang aman dan tepercaya.
                     </p>
                   </div>
                 </div>
@@ -417,9 +522,9 @@ function CheckoutContent() {
                     <ShieldCheck className="h-4 w-4 text-emerald-500" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-[#1c1c1c] mb-0.5">Garansi Server Uptime 99.9%</h4>
+                    <h4 className="text-xs font-bold text-[#1c1c1c] mb-0.5">Akses Cepat & Stabil</h4>
                     <p className="text-xs text-[#6b6b6b] leading-relaxed font-medium">
-                      Infrastruktur berkinerja tinggi kami menjamin akses super cepat bagi seluruh tamu Anda di penjuru Indonesia tanpa lag pada hari perayaan Anda.
+                      Sistem kami dirancang secara khusus untuk memastikan undangan pernikahan Anda dapat dibuka dengan sangat cepat, stabil, dan lancar oleh para tamu undangan di mana pun mereka berada.
                     </p>
                   </div>
                 </div>
@@ -481,6 +586,17 @@ function CheckoutContent() {
                     Rp {total.toLocaleString('id-ID')}
                   </span>
                 </div>
+              </div>
+
+              <div className="mt-4 mb-6">
+                <button
+                  type="button"
+                  onClick={handleDownloadDraftInvoice}
+                  className="w-full py-3 rounded-2xl border border-stone-200 text-stone-700 font-bold hover:bg-stone-50 transition-all text-xs flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <FileText className="h-4 w-4 text-stone-500" />
+                  Cetak / Unduh Draft Invoice (PDF)
+                </button>
               </div>
 
               <div className="h-px bg-stone-200/50 my-6" />

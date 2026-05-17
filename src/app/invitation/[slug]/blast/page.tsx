@@ -314,7 +314,7 @@ export default function StandaloneBlastPage() {
               <div className="space-y-1">
                 <h4 className="font-bold text-sm text-stone-900">Auto WhatsApp Blast Terkunci 🔒</h4>
                 <p className="text-xs text-stone-600 leading-relaxed max-w-2xl">
-                  Paket Anda saat ini adalah **{tier === 'BASIC' ? 'Minimalist Plan' : tier === 'PREMIUM' ? 'Premium Plan' : 'Free Demo'}**. Fitur pengiriman **1-Click Auto Blast** otomatis dari server hanya tersedia untuk **Paket Ultimate**. Di paket saat ini Anda dapat mengirim undangan secara manual via `wa.me` di bawah ini.
+                  Paket Anda saat ini adalah <strong>{tier === 'BASIC' ? 'Minimalist Plan' : tier === 'PREMIUM' ? 'Premium Plan' : 'Free Demo'}</strong>. Fitur pengiriman otomatis hanya tersedia untuk <strong>Paket Ultimate</strong>. Di paket saat ini Anda dapat mengirim undangan secara manual di bawah ini.
                 </p>
               </div>
             </div>
@@ -388,9 +388,9 @@ export default function StandaloneBlastPage() {
               />
               <div className="bg-stone-50 border border-stone-200/50 p-4 rounded-xl mt-4">
                 <p className="text-[9px] text-[#6b6b6b] leading-relaxed">
-                  💡 **Tips Personalisasi:**<br/>
-                  Gunakan **`[NAMA]`** untuk menyisipkan nama tamu secara otomatis.<br/>
-                  Gunakan **`[LINK]`** untuk menyisipkan link undangan pribadi tamu.
+                  💡 <strong>Tips Personalisasi:</strong><br/>
+                  Gunakan <strong><code>[NAMA]</code></strong> untuk menyisipkan nama tamu secara otomatis.<br/>
+                  Gunakan <strong><code>[LINK]</code></strong> untuk menyisipkan link undangan pribadi tamu.
                 </p>
               </div>
             </Card>
@@ -492,14 +492,14 @@ export default function StandaloneBlastPage() {
                       Fitur Pengiriman Massal 1-Click dinonaktifkan di tier ini.
                     </p>
                     <p className="text-[10px] text-stone-400">
-                      Gunakan tombol **Kirim** hijau di samping masing-masing tamu untuk mengirim manual via WA Web.
+                      Gunakan tombol <strong>Kirim</strong> hijau di samping masing-masing tamu untuk mengirim manual via WhatsApp.
                     </p>
                   </div>
                 )}
                 
                 <p className="text-center text-[8px] text-[#6b6b6b]/40 mt-4 uppercase tracking-[0.2em] font-medium flex items-center justify-center gap-1.5">
                   <Activity className="h-3 w-3 text-emerald-500" />
-                  Sequential Queue Gateway Protection Active (3s Delay)
+                  Sistem Pengiriman Aman Aktif (Jeda Aman 3 Detik)
                 </p>
               </div>
             </Card>
@@ -516,7 +516,7 @@ export default function StandaloneBlastPage() {
              </div>
              
              <h2 className="text-xl font-display font-bold text-[#1c1c1c] mb-1">WhatsApp Auto Blast Sedang Berjalan</h2>
-             <p className="text-xs text-stone-400 uppercase tracking-widest font-semibold mb-8">Sahinaja Cloud Gateway API</p>
+             <p className="text-xs text-stone-400 uppercase tracking-widest font-semibold mb-8">Sistem Pengiriman Sahinaja</p>
 
              {/* Dynamic Live Counter Progress */}
              <div className="bg-stone-50 border border-stone-100 p-6 rounded-3xl mb-8 flex items-center justify-between text-left">

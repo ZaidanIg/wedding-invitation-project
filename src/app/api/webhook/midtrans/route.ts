@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
+import { sendInvoiceEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
@@ -59,6 +60,9 @@ export async function POST(request: Request) {
 
     // If status changed to SUCCESS, apply the upgrades
     if (newStatus === 'SUCCESS' && transaction.status !== 'SUCCESS') {
+      let coupleNames = 'Upgrade Paket Layanan';
+      let userEmail = '';
+
       // Execute within a database transaction to ensure atomicity
       await prisma.$transaction(async (tx) => {
         // 1. Update Transaction
@@ -70,19 +74,60 @@ export async function POST(request: Request) {
           },
         });
 
-        // 2. Apply Upgrades
+        // 2. Fetch User Email
+        const user = await tx.user.findUnique({
+          where: { id: transaction.userId },
+          select: { email: true }
+        });
+        if (user) {
+          userEmail = user.email;
+        }
+
+        // 3. Apply Upgrades
         if (transaction.type === 'INVITATION_UPGRADE' && transaction.invitationId && transaction.tier) {
-          await tx.invitation.update({
+          const inv = await tx.invitation.update({
             where: { id: transaction.invitationId },
             data: { tier: transaction.tier },
+            select: { groomName: true, brideName: true }
           });
+          if (inv) {
+            coupleNames = `${inv.groomName} & ${inv.brideName}`;
+          }
         } else if (transaction.type === 'ACCOUNT_UPGRADE' && transaction.accountType) {
           await tx.user.update({
             where: { id: transaction.userId },
             data: { accountType: transaction.accountType },
           });
+          coupleNames = `Akun WO (${transaction.accountType})`;
         }
       });
+
+      // Send Invoice/Receipt Email outside of transaction block to avoid SMTP latency holding database locks
+      if (userEmail) {
+        let planName = 'Premium Plan';
+        if (transaction.tier === 'BASIC') planName = 'Minimalist Plan';
+        if (transaction.tier === 'PREMIUM') planName = 'Premium Plan';
+        if (transaction.tier === 'ULTIMATE') planName = 'Ultimate Plan';
+
+        const subtotal = transaction.amount;
+        const ppn = Math.round(subtotal * 0.11);
+        const adminFee = 2500;
+        const total = subtotal + ppn + adminFee;
+
+        try {
+          await sendInvoiceEmail(userEmail, {
+            orderId: transaction.id,
+            planName: planName,
+            subtotal,
+            ppn,
+            adminFee,
+            total,
+            coupleNames
+          });
+        } catch (mailError) {
+          console.error('[Mail Webhook Error]:', mailError);
+        }
+      }
     } else if (newStatus !== transaction.status) {
       // Just update status (e.g., FAILED)
       await prisma.transaction.update({
