@@ -3,8 +3,8 @@ import { Book, CreditCard, Sparkles, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Panduan & Dokumentasi — Sahin',
-  description: 'Pelajari cara membuat, mengelola, dan meningkatkan paket undangan pernikahan digital Anda dengan Sahin.',
+  title: 'Panduan & Dokumentasi — Sahinaja',
+  description: 'Pelajari cara membuat, mengelola, dan meningkatkan paket undangan pernikahan digital Anda dengan Sahinaja.',
 };
 
 export default function DocsPage() {
@@ -22,7 +22,7 @@ export default function DocsPage() {
             Panduan & Dokumentasi
           </h1>
           <p className="text-[#5f5f5d] mt-3 text-lg leading-[1.38]">
-            Segala hal yang perlu Anda ketahui tentang penggunaan Sahin.
+            Segala hal yang perlu Anda ketahui tentang penggunaan Sahinaja.
           </p>
         </div>
 

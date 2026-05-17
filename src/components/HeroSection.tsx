@@ -68,7 +68,7 @@ export default function HeroSection() {
 
         {/* Floating Accents */}
         <div className="absolute hidden lg:block left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 font-handwriting text-[120px] text-[#1c1c1c]/[0.03] rotate-[-90deg] select-none">
-          Sahin
+          Sahinaja
         </div>
       </div>
     </section>

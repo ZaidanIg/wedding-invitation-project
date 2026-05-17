@@ -383,7 +383,7 @@ function CheckoutContent() {
                 </div>
                 <div>
                   <span className="text-[10px] uppercase font-bold text-[#6b6b6b] tracking-widest block">KETENTUAN LAYANAN</span>
-                  <h3 className="text-base font-bold text-[#1c1c1c] mt-0.5">Lisensi & Perjanjian Sahin</h3>
+                  <h3 className="text-base font-bold text-[#1c1c1c] mt-0.5">Lisensi & Perjanjian Sahinaja</h3>
                 </div>
               </div>
 
@@ -433,7 +433,7 @@ function CheckoutContent() {
                   className="mt-1 h-4 w-4 rounded border-stone-300 text-rose-500 focus:ring-rose-500 cursor-pointer"
                 />
                 <span className="text-xs text-[#1c1c1c]/80 leading-relaxed font-semibold">
-                  Saya memahami dan menyetujui seluruh Ketentuan Layanan, Lisensi Selamanya, serta Kebijakan Privasi yang berlaku pada platform Sahin.
+                  Saya memahami dan menyetujui seluruh Ketentuan Layanan, Lisensi Selamanya, serta Kebijakan Privasi yang berlaku pada platform Sahinaja.
                 </span>
               </label>
             </div>

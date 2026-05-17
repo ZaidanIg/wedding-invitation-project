@@ -293,8 +293,8 @@ export default function SignInPage() {
             </h1>
             <p className="text-sm text-foreground/50">
               {isLogin
-                ? 'Masuk ke akun Sahin untuk mengelola undangan Anda'
-                : 'Daftar akun Sahin untuk membuat undangan pernikahan premium'}
+                ? 'Masuk ke akun Sahinaja untuk mengelola undangan Anda'
+                : 'Daftar akun Sahinaja untuk membuat undangan pernikahan premium'}
             </p>
           </div>
 

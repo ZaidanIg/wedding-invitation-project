@@ -516,7 +516,7 @@ export default function StandaloneBlastPage() {
              </div>
              
              <h2 className="text-xl font-display font-bold text-[#1c1c1c] mb-1">WhatsApp Auto Blast Sedang Berjalan</h2>
-             <p className="text-xs text-stone-400 uppercase tracking-widest font-semibold mb-8">Sahin Cloud Gateway API</p>
+             <p className="text-xs text-stone-400 uppercase tracking-widest font-semibold mb-8">Sahinaja Cloud Gateway API</p>
 
              {/* Dynamic Live Counter Progress */}
              <div className="bg-stone-50 border border-stone-100 p-6 rounded-3xl mb-8 flex items-center justify-between text-left">

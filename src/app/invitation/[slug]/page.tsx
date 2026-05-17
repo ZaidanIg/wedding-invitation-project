@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const invitation = await invitationRepository.findBySlug(slug);
 
   if (!invitation) {
-    return { title: 'Undangan Tidak Ditemukan — Sahin' };
+    return { title: 'Undangan Tidak Ditemukan — Sahinaja' };
   }
 
   const title = `The Wedding of ${invitation.groomName} & ${invitation.brideName}`;
@@ -73,10 +73,10 @@ export default async function InvitationPage({ params }: PageProps) {
             </div>
             <h2 className="text-2xl font-display font-bold text-[#1c1c1c] mb-3">Undangan Belum Aktif</h2>
             <p className="text-xs text-[#6b6b6b] leading-relaxed font-semibold mb-6">
-              Undangan pernikahan digital ini belum diaktifkan oleh pemiliknya. Silakan lakukan pembayaran pada dashboard Sahin Anda untuk mengaktifkan seluruh fitur undangan ini secara publik.
+              Undangan pernikahan digital ini belum diaktifkan oleh pemiliknya. Silakan lakukan pembayaran pada dashboard Sahinaja Anda untuk mengaktifkan seluruh fitur undangan ini secara publik.
             </p>
             <a href="/dashboard" className="inline-block w-full py-4 bg-rose-gradient text-white rounded-2xl font-bold shadow-lg shadow-rose-500/20 hover:scale-[1.02] transition-all text-sm">
-              Masuk ke Dashboard Sahin
+              Masuk ke Dashboard Sahinaja
             </a>
           </div>
         </div>

@@ -46,7 +46,7 @@ export default function Navbar() {
           <Link href="/" className="relative flex items-center justify-start h-16 w-56 group">
             <Image 
               src="/images/logo.png" 
-              alt="Sahin Logo" 
+              alt="Sahinaja Logo" 
               width={1000} 
               height={1000} 
               className="absolute w-[220px] h-[220px] max-w-none object-contain left-0 top-1/2 -translate-y-1/2 transition-transform duration-300 group-hover:scale-105"
