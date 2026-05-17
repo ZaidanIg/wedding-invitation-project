@@ -103,13 +103,12 @@ export default function ShowcaseSection({ fullGallery = false }: { fullGallery?:
         {!fullGallery && (
           <div className="flex flex-col items-center text-center mb-24 gap-10">
             <div className="max-w-3xl mx-auto">
-              <div className="font-handwriting text-3xl text-rose-500/40 mb-4 animate-fade-in">Pilih kanvas untuk kisah Anda...</div>
+              <div className="font-handwriting text-3xl text-rose-500/40 mb-4 animate-fade-in">Tentukan pilihan kanvas untuk kisah cinta Anda</div>
               <h2 className="text-[40px] sm:text-[64px] font-display font-bold text-[#1c1c1c] tracking-tight sm:tracking-[-0.03em] leading-[1.1] mb-8 text-balance">
-                Koleksi Desain <br /> <span className="text-rose-500 italic font-normal underline decoration-rose-500/10 underline-offset-8">Penuh Jiwa</span>
+                Koleksi Desain <br /> <span className="text-rose-500 italic font-normal underline decoration-rose-500/10 underline-offset-8">Sepenuh Jiwa</span>
               </h2>
               <p className="text-[#6b6b6b] text-lg leading-relaxed max-w-2xl mx-auto text-balance">
-                Setiap tema dirancang dengan <span className="text-[#1c1c1c] font-semibold underline decoration-rose-500/10">ketelitian editorial</span>. 
-                Bukan sekadar digital, tapi sebuah undangan yang menceritakan siapa Anda.
+                Ceritakan tentang diri Anda dan pasangan melalui pilihan tema yang kami suguhkan. Bukan hanya sekadar undangan, namun ini adalah kisah yang telah digariskan, cinta yang telah diutuhkan.
               </p>
             </div>
             <Link href="/themes" className="group flex items-center gap-3 text-[#1c1c1c] font-bold text-lg border-b-2 border-rose-500/10 pb-2 hover:border-rose-500 transition-all">
