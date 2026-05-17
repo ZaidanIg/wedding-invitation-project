@@ -43,13 +43,13 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center justify-start h-16 w-44 group">
+          <Link href="/" className="flex items-center justify-start h-16 w-56 group">
             <Image 
               src="/images/logo.png" 
               alt="Sahin Logo" 
-              width={160} 
-              height={48} 
-              className="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              width={1500} 
+              height={1500} 
+              className="h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               priority
               unoptimized
             />
