@@ -30,7 +30,7 @@ export default function HeroSection() {
         <div className="mb-8 flex items-center justify-center gap-4 animate-fade-in">
           <div className="p-2 rounded-xl bg-rose-500/5">
           </div>
-          <span className="font-handwriting text-2xl text-[#1c1c1c]/60">Cerita cinta Anda...</span>
+          <span className="font-handwriting text-2xl text-[#1c1c1c]/60">Suratan pertama untuk cerita kasih selamanya</span>
           <div className="p-2 rounded-xl bg-rose-500/5">
           </div>
         </div>
@@ -42,9 +42,8 @@ export default function HeroSection() {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg sm:text-xl text-[#6b6b6b] max-w-2xl mx-auto mb-16 leading-relaxed animate-fade-in-up delay-200 text-balance">
-          Wujudkan visi pernikahan Anda dalam <span className="text-[#1c1c1c] font-semibold underline decoration-rose-500/30 underline-offset-8">5 menit</span>. 
-          Undangan digital yang mewah, elegan, dan siap memikat tamu Anda.
+        <p className="text-lg sm:text-xl text-[#6b6b6b] max-w-3xl mx-auto mb-16 leading-relaxed animate-fade-in-up delay-200 text-balance">
+          Izinkan kami membantu mewujudkan cita dan harapan Anda mengarungi perjalanan panjang bersama dengan undangan digital mewah, elegan, dan menyenangkan hati.
         </p>
 
         {/* CTA Buttons */}
@@ -53,7 +52,7 @@ export default function HeroSection() {
             href="/create"
             className="group relative inline-flex items-center gap-4 px-12 py-5 text-lg font-bold rounded-2xl bg-rose-gradient text-white shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 hover:scale-[1.02] transition-all duration-500"
           >
-            Mulai Buat Undangan
+            Mulai Momen Indah Anda Dari Sini
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Link>
 

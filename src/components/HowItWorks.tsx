@@ -7,18 +7,18 @@ import Link from 'next/link';
 const steps = [
   {
     icon: Sparkles,
-    title: 'Pilih Tema Mewah',
-    description: 'Pilih dari berbagai koleksi tema eksklusif yang dirancang oleh desainer profesional.',
+    title: 'Tentukan Tema',
+    description: 'Tersedia berbagai koleksi tema eksklusif untuk momen terindah Anda.',
   },
   {
     icon: PenTool,
     title: 'Isi Data Lengkap',
-    description: 'Masukkan informasi acara Anda. Proses sangat mudah dan cepat, selesai dalam sekejap.',
+    description: 'Lengkapi data diri pasangan, acara, dan informasi tambahan dengan mudah dan cepat.',
   },
   {
     icon: Share2,
-    title: 'Siap Disebarkan',
-    description: 'Dapatkan link undangan Anda dan bagikan ke tamu spesial melalui WhatsApp.',
+    title: 'Tebarkan Kebahagiaan',
+    description: 'Sebarkan undangan untuk orang-orang terdekat dan tamu spesial melalui kontak WhatsApp Anda.',
   },
 ];
 
@@ -30,9 +30,8 @@ export default function HowItWorks() {
           <h2 className="text-3xl sm:text-[54px] font-display font-bold text-[#1c1c1c] tracking-tight sm:tracking-[-1.5px] mb-6">
             Langkah Sederhana Menuju <br /> <span className="italic font-normal">Momen Sempurna</span>
           </h2>
-          <p className="text-[#5f5f5d] max-w-xl mx-auto text-lg leading-[1.5]">
-            Kami merancang sistem yang <span className="text-[#1c1c1c] font-semibold underline decoration-[#1c1c1c]/10">menghargai waktu Anda</span>. 
-            Cukup 5 menit untuk hasil yang bertahan selamanya.
+          <p className="text-[#5f5f5d] max-w-2xl mx-auto text-lg leading-relaxed">
+            Kami menyediakan layanan yang mudah dan cepat. Cukup dengan hitungan detik menuju kisah cinta tanpa titik.
           </p>
         </div>
 
