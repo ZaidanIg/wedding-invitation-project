@@ -51,41 +51,63 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://sahinaja.com'),
   title: {
-    default: 'Sahinaja — Undangan Digital Premium',
+    default: 'Sahinaja — Undangan Digital Pernikahan Premium & Mewah',
     template: '%s | Sahinaja',
   },
   description:
-    'Buat undangan pernikahan impian Anda hanya dalam 5 menit dengan Sahinaja. Desain mewah, fitur lengkap, dan harga paling murah di kelasnya.',
-  keywords: ['sahinaja', 'undangan pernikahan', 'undangan digital', 'wedding invitation', 'murah', 'cepat'],
-  authors: [{ name: 'Sahinaja Team' }],
+    'Buat undangan pernikahan digital mewah dan premium dalam 5 menit dengan Sahinaja. Dilengkapi fitur musik latar, galeri foto, kisah cinta, RSVP, WhatsApp Blast otomatis, kado digital, dan protokol kesehatan.',
+  keywords: [
+    'sahinaja', 
+    'undangan pernikahan', 
+    'undangan digital', 
+    'undangan digital premium', 
+    'undangan pernikahan online', 
+    'wedding invitation', 
+    'buat undangan murah', 
+    'undangan pernikahan mewah'
+  ],
+  authors: [{ name: 'Sahinaja Team', url: 'https://sahinaja.com' }],
   creator: 'Sahinaja',
+  publisher: 'Sahinaja',
+  icons: {
+    icon: '/images/logo.png',
+    shortcut: '/images/logo.png',
+    apple: '/images/logo.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'id_ID',
-    url: '/',
+    url: 'https://sahinaja.com',
     siteName: 'Sahinaja',
-    title: 'Sahinaja — Undangan Digital Premium',
-    description: 'Buat undangan pernikahan impian Anda hanya dalam 5 menit dengan Sahinaja. Desain mewah, fitur lengkap, dan harga paling murah di kelasnya.',
+    title: 'Sahinaja — Undangan Digital Pernikahan Premium & Mewah',
+    description: 'Buat undangan pernikahan digital mewah dan premium dalam 5 menit dengan Sahinaja. Dilengkapi fitur musik latar, RSVP, WhatsApp Blast, kado digital, dan peta lokasi.',
     images: [
       {
         url: '/images/hero-bg.png',
         width: 1200,
         height: 630,
-        alt: 'Sahinaja — Undangan Digital Premium',
+        alt: 'Sahinaja — Undangan Digital Pernikahan Premium & Mewah',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sahinaja — Undangan Digital Premium',
-    description: 'Buat undangan pernikahan impian Anda hanya dalam 5 menit dengan Sahinaja. Desain mewah, fitur lengkap, dan harga paling murah di kelasnya.',
+    title: 'Sahinaja — Undangan Digital Pernikahan Premium & Mewah',
+    description: 'Buat undangan pernikahan digital mewah dan premium dalam 5 menit dengan Sahinaja. Dilengkapi fitur musik latar, RSVP, WhatsApp Blast, kado digital, dan peta lokasi.',
     images: ['/images/hero-bg.png'],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
