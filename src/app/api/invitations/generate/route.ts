@@ -1,107 +1,47 @@
 // POST /api/invitations/generate — AI-powered invitation text generation
-import { NextResponse } from 'next/server';
-import { generateInvitation } from '@/services/ai.service';
-import { validateGenerateInput, parseGenerateInput } from '@/lib/validations';
-import { checkRateLimit, getClientIp } from '@/lib/rate-limiter';
+
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { successResponse, errorResponse } from '@/lib/api-response';
+import { handleServiceError } from '@/lib/errors';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limiter';
+import { aiService } from '@/modules/ai/server/service';
 
 export async function POST(request: Request) {
   try {
-    // Rate limiting
+    // Rate limiting (infrastructure concern, stays in handler)
     const ip = getClientIp(request);
     const rateCheck = checkRateLimit(ip);
 
     if (!rateCheck.allowed) {
-      return NextResponse.json(
-        { success: false, error: `Rate limit exceeded. Try again in ${rateCheck.retryAfter} seconds.` },
-        {
-          status: 429,
-          headers: { 'Retry-After': String(rateCheck.retryAfter) },
-        },
+      return errorResponse(
+        `Rate limit exceeded. Try again in ${rateCheck.retryAfter} seconds.`,
+        429,
+        'RATE_LIMITED',
       );
     }
 
-    // Parse and validate input
-    const body = await request.json();
-    const validation = validateGenerateInput(body);
-
-    if (!validation.valid) {
-      return NextResponse.json(
-        { success: false, error: validation.errors.join(', ') },
-        { status: 400 },
-      );
-    }
-
-    const input = parseGenerateInput(body);
-    if (!input) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid input' },
-        { status: 400 },
-      );
-    }
-
-    // Get Session and Check Limits
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return errorResponse('Authentication required', 401, 'UNAUTHORIZED');
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { accountType: true, freeGeneratesUsed: true },
+    const body = await request.json();
+    const result = await aiService.generate(body, session.user.id);
+
+    return successResponse(result, 'Invitation generated', 200, {
+      'X-RateLimit-Remaining': String(rateCheck.remaining),
     });
-
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'User not found' },
-        { status: 404 }
+  } catch (error) {
+    // Special handling for AI errors — don't leak internal details
+    if (error instanceof Error && error.message.includes('API')) {
+      return errorResponse(
+        'AI service is temporarily unavailable. Please try again.',
+        500,
+        'AI_SERVICE_ERROR',
       );
     }
 
-    if (user.accountType === 'B2C_FREE') {
-      if (user.freeGeneratesUsed >= 3) {
-        return NextResponse.json(
-          { success: false, error: 'Free generation limit reached (3/3). Please upgrade to publish and unlock more generates.' },
-          { status: 403 }
-        );
-      }
-    }
-
-    // Generate invitation text via AI
-    const generated = await generateInvitation(input);
-
-    // Increment free usage if applicable
-    if (user.accountType === 'B2C_FREE') {
-      await prisma.user.update({
-        where: { id: session.user.id },
-        data: { freeGeneratesUsed: { increment: 1 } },
-      });
-    }
-
-    return NextResponse.json(
-      { success: true, data: generated },
-      {
-        status: 200,
-        headers: {
-          'X-RateLimit-Remaining': String(rateCheck.remaining),
-        },
-      },
-    );
-  } catch (error) {
-    console.error('[AI Generate Error]:', error);
-
-    // Don't leak internal error details
-    const message = error instanceof Error && error.message.includes('API')
-      ? 'AI service is temporarily unavailable. Please try again.'
-      : 'Failed to generate invitation. Please try again.';
-
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 },
-    );
+    const { message, status, code } = handleServiceError(error);
+    return errorResponse(message, status, code);
   }
 }

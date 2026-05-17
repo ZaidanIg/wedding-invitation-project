@@ -10,6 +10,10 @@
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
   --font-handwriting: var(--font-handwriting);
+  --font-cinzel: var(--font-cinzel);
+  --font-montserrat: var(--font-montserrat);
+  --font-outfit: var(--font-outfit);
+  --font-cormorant: var(--font-cormorant);
   --color-highlight: var(--highlight);
 }
 
@@ -367,4 +371,15 @@ html {
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Custom Eye Blink Micro-Animation */
+@keyframes eye-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+.animate-eye-blink {
+  animation: eye-blink 4s ease-in-out infinite;
+}
+
 

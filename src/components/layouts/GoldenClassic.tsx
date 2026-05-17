@@ -21,6 +21,7 @@ import {
 
 interface LayoutProps {
   invitation: Invitation;
+  isPreview?: boolean;
 }
 
 /* Gold Divider */
@@ -34,7 +35,7 @@ function GoldDivider() {
   );
 }
 
-export default function GoldenClassic({ invitation }: LayoutProps) {
+export default function GoldenClassic({ invitation, isPreview = false }: LayoutProps) {
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
@@ -258,7 +259,7 @@ export default function GoldenClassic({ invitation }: LayoutProps) {
         </AnimatedSection>
       </section>
 
-      {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} activeColor="bg-[#D4AF37] text-white hover:bg-[#B8860B]" inactiveColor="bg-white text-[#D4AF37] hover:bg-zinc-50 border border-[#D4AF37]/30" />}
+      {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} activeColor="bg-[#D4AF37] text-white hover:bg-[#B8860B]" inactiveColor="bg-white text-[#D4AF37] hover:bg-zinc-50 border border-[#D4AF37]/30" />}
     </div>
   );
 }

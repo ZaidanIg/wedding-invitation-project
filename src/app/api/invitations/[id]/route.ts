@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
+// GET/PUT/DELETE /api/invitations/[id]
+
 import { auth } from '@/lib/auth';
-import {
-  getInvitationById,
-  updateInvitation,
-  deleteInvitation,
-} from '@/services/db.service';
+import { successResponse, errorResponse } from '@/lib/api-response';
+import { handleServiceError } from '@/lib/errors';
+import { invitationService } from '@/modules/invitation/server/service';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -13,22 +12,12 @@ interface RouteParams {
 export async function GET(_request: Request, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const invitation = await getInvitationById(id);
+    const result = await invitationService.getById(id);
 
-    if (!invitation) {
-      return NextResponse.json(
-        { success: false, error: 'Invitation not found' },
-        { status: 404 },
-      );
-    }
-
-    return NextResponse.json({ success: true, data: invitation });
+    return successResponse(result, 'Invitation fetched');
   } catch (error) {
-    console.error('[Get Invitation Error]:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch invitation' },
-      { status: 500 },
-    );
+    const { message, status, code } = handleServiceError(error);
+    return errorResponse(message, status, code);
   }
 }
 
@@ -36,31 +25,17 @@ export async function PUT(request: Request, { params }: RouteParams) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 });
+      return errorResponse('Authentication required', 401, 'UNAUTHORIZED');
     }
 
     const { id } = await params;
     const body = await request.json();
+    const result = await invitationService.update(id, body, session.user.id);
 
-    const existing = await getInvitationById(id);
-    if (!existing) {
-      return NextResponse.json({ success: false, error: 'Invitation not found' }, { status: 404 });
-    }
-
-    // SECURITY: IDOR Protection
-    if (existing.userId !== session.user.id) {
-      return NextResponse.json({ success: false, error: 'Unauthorized to edit this invitation' }, { status: 403 });
-    }
-
-    // SECURITY: Tier Escalation Protection
-    // Prevent sensitive fields from being updated via standard PUT
-    const { tier, userId, slug, viewCount, ...safeData } = body;
-
-    const updated = await updateInvitation(id, safeData);
-    return NextResponse.json({ success: true, data: updated });
+    return successResponse(result, 'Invitation updated');
   } catch (error) {
-    console.error('[Update Invitation Error]:', error);
-    return NextResponse.json({ success: false, error: 'Failed to update invitation' }, { status: 500 });
+    const { message, status, code } = handleServiceError(error);
+    return errorResponse(message, status, code);
   }
 }
 
@@ -68,25 +43,15 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json({ success: false, error: 'Authentication required' }, { status: 401 });
+      return errorResponse('Authentication required', 401, 'UNAUTHORIZED');
     }
 
     const { id } = await params;
+    const result = await invitationService.delete(id, session.user.id);
 
-    const existing = await getInvitationById(id);
-    if (!existing) {
-      return NextResponse.json({ success: false, error: 'Invitation not found' }, { status: 404 });
-    }
-
-    // SECURITY: IDOR Protection
-    if (existing.userId !== session.user.id) {
-      return NextResponse.json({ success: false, error: 'Unauthorized to delete this invitation' }, { status: 403 });
-    }
-
-    await deleteInvitation(id);
-    return NextResponse.json({ success: true, data: { message: 'Invitation deleted' } });
+    return successResponse(result, 'Invitation deleted');
   } catch (error) {
-    console.error('[Delete Invitation Error]:', error);
-    return NextResponse.json({ success: false, error: 'Failed to delete invitation' }, { status: 500 });
+    const { message, status, code } = handleServiceError(error);
+    return errorResponse(message, status, code);
   }
 }

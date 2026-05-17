@@ -1,30 +1,34 @@
 'use client';
 
 import type { Invitation } from '@/types';
-import ElegantCream from './layouts/ElegantCream';
-import RoyalBlue from './layouts/RoyalBlue';
-import RoseGarden from './layouts/RoseGarden';
-import GoldenClassic from './layouts/GoldenClassic';
-import LuxuryEmerald from './layouts/luxury-emerald';
+import { layouts } from './layouts';
+import Link from 'next/link';
 
 interface InvitationPreviewProps {
   invitation: Invitation;
 }
 
 export default function InvitationPreview({ invitation }: InvitationPreviewProps) {
-  // Route to the selected layout
-  switch (invitation.layout) {
-    case 'royal-blue':
-      return <RoyalBlue invitation={invitation} />;
-    case 'rose-garden':
-      return <RoseGarden invitation={invitation} />;
-    case 'golden-classic':
-      return <GoldenClassic invitation={invitation} />;
-    case 'luxury-emerald':
-      return <LuxuryEmerald invitation={invitation} />;
-    case 'elegant-cream':
-    default:
-      return <ElegantCream invitation={invitation} />;
-  }
-}
+  const LayoutComponent = (layouts as any)[invitation.layout] || layouts['elegant-cream'];
+  const isDraft = invitation.tier === 'DRAFT';
 
+  return (
+    <div className="relative min-h-screen flex flex-col justify-between">
+      <div className="flex-1 w-full">
+        <LayoutComponent invitation={invitation} isPreview={true} />
+      </div>
+      
+      {isDraft && (
+        <div className="bg-[#1c1c1c] text-white/80 py-4 px-6 text-center text-xs font-semibold tracking-wide border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-2 select-none z-[100] relative w-full">
+          <span>Dibuat dengan ❤️ oleh</span>
+          <Link href="/" target="_blank" className="text-rose-400 hover:text-rose-300 font-bold transition-all underline decoration-rose-400/30 hover:decoration-rose-300 underline-offset-4">
+            Sahin
+          </Link>
+          <span className="text-[10px] text-white/40 font-normal sm:ml-2 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+            Free Draft Mode
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}

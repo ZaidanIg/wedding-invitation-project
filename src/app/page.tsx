@@ -2,6 +2,7 @@ import HeroSection from '@/components/HeroSection';
 import FeatureCards from '@/components/FeatureCards';
 import ShowcaseSection from '@/components/ShowcaseSection';
 import HowItWorks from '@/components/HowItWorks';
+import TestimonialsSection from '@/components/TestimonialsSection';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -9,6 +10,7 @@ export default function HomePage() {
   return (
     <div className="bg-[#f7f4ed]">
       <HeroSection />
+      <TestimonialsSection />
       <HowItWorks />
       <ShowcaseSection />
       <FeatureCards />

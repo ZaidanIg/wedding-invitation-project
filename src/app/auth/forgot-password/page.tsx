@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
       if (data.success) {
         setMessage({ type: 'success', text: data.message });
       } else {
-        setMessage({ type: 'error', text: data.error || 'Terjadi kesalahan' });
+        setMessage({ type: 'error', text: data.message || 'Terjadi kesalahan' });
       }
     } catch (error) {
       setMessage({ type: 'error', text: 'Gagal menghubungi server' });

@@ -6,7 +6,7 @@ import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
 
 interface CheckoutButtonProps {
-  plan: 'PREMIUM' | 'ULTIMATE' | 'PRO_PLAN' | 'ENTERPRISE';
+  plan: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'PRO_PLAN' | 'ENTERPRISE';
   invitationId?: string;
   className?: string;
   children: React.ReactNode;
@@ -17,6 +17,17 @@ export default function CheckoutButton({ plan, invitationId, className, children
   const router = useRouter();
 
   const handleCheckout = async () => {
+    const planNames: Record<string, string> = {
+      BASIC: 'Minimalist Plan',
+      PREMIUM: 'Premium Plan',
+      ULTIMATE: 'Ultimate Plan',
+      PRO_PLAN: 'Paket Pro (Bulanan)',
+      ENTERPRISE: 'Enterprise (Seumur Hidup)'
+    };
+    const planName = planNames[plan] || plan;
+    const confirmed = window.confirm(`Apakah benar Anda akan membeli item ${planName} ini?`);
+    if (!confirmed) return;
+
     setIsLoading(true);
     try {
       const response = await fetch('/api/checkout', {
@@ -28,7 +39,7 @@ export default function CheckoutButton({ plan, invitationId, className, children
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Checkout failed');
+        throw new Error(data.message || 'Checkout failed');
       }
 
       if (data.success && data.data.redirect_url) {

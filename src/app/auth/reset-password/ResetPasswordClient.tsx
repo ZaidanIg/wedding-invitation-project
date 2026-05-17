@@ -47,7 +47,7 @@ export default function ResetPasswordPage() {
         setStatus({ type: 'success', text: 'Kata sandi berhasil diperbarui! Silakan login kembali.' });
         setTimeout(() => router.push('/auth/signin'), 3000);
       } else {
-        setStatus({ type: 'error', text: data.error || 'Gagal mereset kata sandi' });
+        setStatus({ type: 'error', text: data.message || 'Gagal mereset kata sandi' });
       }
     } catch (error) {
       setStatus({ type: 'error', text: 'Gagal menghubungi server' });
@@ -103,7 +103,7 @@ export default function ResetPasswordPage() {
                   placeholder="••••••••"
                   icon={<Lock className="h-4 w-4" />}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                   required
                   disabled={!token || isLoading}
                   className="rounded-2xl h-12"
@@ -115,7 +115,7 @@ export default function ResetPasswordPage() {
                   placeholder="••••••••"
                   icon={<Lock className="h-4 w-4" />}
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                   required
                   disabled={!token || isLoading}
                   className="rounded-2xl h-12"

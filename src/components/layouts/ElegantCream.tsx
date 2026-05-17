@@ -23,9 +23,10 @@ import {
 
 interface LayoutProps {
   invitation: Invitation;
+  isPreview?: boolean;
 }
 
-export default function ElegantCream({ invitation }: LayoutProps) {
+export default function ElegantCream({ invitation, isPreview = false }: LayoutProps) {
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
@@ -253,7 +254,7 @@ export default function ElegantCream({ invitation }: LayoutProps) {
       </section>
 
       <div className="h-4 bg-[#f5f0eb]" />
-      {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} />}
+      {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} />}
     </div>
   );
 }

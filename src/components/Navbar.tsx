@@ -14,12 +14,15 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { data: session } = useSession();
   const pathname = usePathname();
+  const isDemoPage = pathname?.startsWith('/demo/');
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  if (isDemoPage) return null;
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -40,16 +43,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="p-2 rounded-xl bg-rose-gradient shadow-lg shadow-rose-500/20 transition-all duration-300 group-hover:scale-105 group-hover:rotate-3">
-              <Heart className="h-4 w-4 text-white" fill="currentColor" />
-            </div>
-            <div className="flex flex-col -space-y-1">
-              <span className="font-display text-xl font-bold text-[#1c1c1c] tracking-tight group-hover:text-rose-500 transition-colors">
-                Wedding
-              </span>
-              <span className="font-handwriting text-lg text-rose-500/40">Invitation</span>
-            </div>
+          <Link href="/" className="relative flex items-center justify-center h-16 w-44 overflow-hidden group">
+            <Image 
+              src="/images/logo.png" 
+              alt="Sahin Logo" 
+              width={1500} 
+              height={1500} 
+              className="absolute w-[420px] h-[420px] max-w-none object-contain transition-transform duration-300 group-hover:scale-105"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -152,9 +154,9 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+                className={`block mx-3 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
                   isActive(link.href) 
-                    ? 'text-rose-500 bg-rose-500/5' 
+                    ? 'text-rose-500 bg-rose-500/10 shadow-sm shadow-rose-500/5' 
                     : 'text-[#6b6b6b] hover:text-[#1c1c1c] hover:bg-rose-500/5'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -168,7 +170,7 @@ export default function Navbar() {
                   setIsMobileMenuOpen(false);
                   signOut({ callbackUrl: '/' });
                 }}
-                className="block w-full text-left px-4 py-3 rounded-xl text-sm text-rose-500 font-bold hover:bg-rose-50 transition-all"
+                className="block w-[calc(100%-1.5rem)] mx-3 px-5 py-3.5 rounded-2xl text-sm text-rose-500 font-bold hover:bg-rose-50 transition-all text-left"
               >
                 Sign Out
               </button>

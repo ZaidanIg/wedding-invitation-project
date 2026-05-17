@@ -1,9 +1,63 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen } from 'lucide-react';
+import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen, MapPin, Coffee, Utensils, CalendarDays } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { Lock, Sparkles, MessageCircle, Check } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+
+import type { InvitationTier, Invitation, Guest } from '@/types';
+
+/* ── Tier Ranking ── */
+export const TIER_RANK: Record<InvitationTier, number> = {
+  'DRAFT': 0,
+  'BASIC': 1,
+  'PREMIUM': 2,
+  'ULTIMATE': 3,
+  'B2B_GENERATED': 3
+};
+
+export function TierGate({ 
+  tier, 
+  minTier, 
+  children,
+  fallback = null 
+}: { 
+  tier: InvitationTier; 
+  minTier: InvitationTier; 
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}) {
+  const isAllowed = TIER_RANK[tier] >= TIER_RANK[minTier];
+  
+  if (!isAllowed) {
+    return fallback as any;
+  }
+  
+  return children;
+}
+
+export function LockedSection({ 
+  title, 
+  requiredTier,
+  className = "" 
+}: { 
+  title: string; 
+  requiredTier: string;
+  className?: string;
+}) {
+  return (
+    <div className={`relative py-20 px-8 border-2 border-dashed border-stone-200 rounded-[2.5rem] bg-stone-50/50 flex flex-col items-center justify-center text-center group ${className}`}>
+      <div className="w-16 h-16 rounded-2xl bg-white shadow-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+        <Lock className="h-7 w-7 text-stone-300" />
+      </div>
+      <h3 className="text-lg font-bold text-stone-400 mb-2">{title}</h3>
+      <p className="text-xs text-stone-400/60 mb-6">Tersedia di Paket <span className="text-rose-500 font-bold uppercase">{requiredTier}</span></p>
+      <div className="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent pointer-events-none" />
+    </div>
+  );
+}
 
 /* ── Photo Carousel (Fade Animation) ── */
 export function PhotoCarousel({ photos, className = "" }: { photos: string[]; className?: string }) {
@@ -241,6 +295,77 @@ export function AnimatedSection({
   );
 }
 
+/* ── Floating Element (Subtle Animation) ── */
+export function FloatingElement({ 
+  children, 
+  delay = 0, 
+  duration = 4,
+  yOffset = 20,
+  className = "" 
+}: { 
+  children: React.ReactNode; 
+  delay?: number; 
+  duration?: number;
+  yOffset?: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      animate={{
+        y: [0, -yOffset, 0],
+      }}
+      transition={{
+        duration,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay,
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ── Snowfall Effect ── */
+export function Snowfall() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
+      {[...Array(30)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ 
+            opacity: 0,
+            x: Math.random() * 100 + "%",
+            y: -20,
+            scale: Math.random() * 0.5 + 0.3
+          }}
+          animate={{ 
+            opacity: [0, 1, 1, 0],
+            y: "110vh",
+            x: (Math.random() * 100 - 50) + "vw"
+          }}
+          transition={{
+            duration: Math.random() * 10 + 10,
+            repeat: Infinity,
+            ease: "linear",
+            delay: Math.random() * 20
+          }}
+          className="absolute w-2 h-2 bg-white/20 rounded-full blur-[1px]"
+        />
+      ))}
+    </div>
+  );
+}
+
 
 /* ── Quotes Section ── */
 export function QuotesSection({ 
@@ -350,10 +475,16 @@ export function AudioPlayer({
   src,
   activeColor = 'bg-stone-800 text-[#f5f0eb] hover:bg-stone-700',
   inactiveColor = 'bg-white/80 text-stone-800 hover:bg-white',
+  isPreview = false,
+  isPlayingProp,
+  onPlayChange,
 }: {
   src: string;
   activeColor?: string;
   inactiveColor?: string;
+  isPreview?: boolean;
+  isPlayingProp?: boolean;
+  onPlayChange?: (isPlaying: boolean) => void;
 }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -363,25 +494,47 @@ export function AudioPlayer({
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
+        onPlayChange?.(false);
       } else {
         audioRef.current.play().then(() => {
           setIsPlaying(true);
+          onPlayChange?.(true);
         }).catch((err) => {
           console.error('Audio playback error:', err);
           setIsPlaying(false);
+          onPlayChange?.(false);
         });
       }
     }
   };
 
+  // Sync internal state with external control prop (for cover page autoplay)
+  useEffect(() => {
+    if (isPlayingProp !== undefined) {
+      setIsPlaying(isPlayingProp);
+      if (audioRef.current) {
+        if (isPlayingProp) {
+          audioRef.current.play().catch((err) => {
+            console.log('Autoplay blocked or deferred:', err);
+          });
+        } else {
+          audioRef.current.pause();
+        }
+      }
+    }
+  }, [isPlayingProp]);
+
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) {
-      const handleEnded = () => setIsPlaying(false);
+      const handleEnded = () => {
+        setIsPlaying(false);
+        onPlayChange?.(false);
+      };
       audio.addEventListener('ended', handleEnded);
       return () => audio.removeEventListener('ended', handleEnded);
     }
-  }, []);
+  }, [onPlayChange]);
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
@@ -608,21 +761,203 @@ function GuestWelcomeContent({ defaultText }: { defaultText: string }) {
 }
 
 /* ── Helper: Icon Mapper ── */
-export function IconMapper({ name, className }: { name: string; className?: string }) {
-  switch (name) {
+export function IconMapper({ name, className, size = 20, strokeWidth = 2 }: { name: string; className?: string; size?: number; strokeWidth?: number }) {
+  const iconName = name.toLowerCase();
+  switch (iconName) {
     case 'clock':
-      return <Clock className={className} />;
+    case 'time':
+      return <Clock className={className} size={size} strokeWidth={strokeWidth} />;
     case 'heart':
-      return <Heart className={className} />;
+    case 'love':
+      return <Heart className={className} size={size} strokeWidth={strokeWidth} />;
     case 'glasses':
-      return <Glasses className={className} />;
+      return <Glasses className={className} size={size} strokeWidth={strokeWidth} />;
     case 'calendar':
-      return <Calendar className={className} />;
+    case 'date':
+      return <Calendar className={className} size={size} strokeWidth={strokeWidth} />;
+    case 'calendar-days':
+      return <CalendarDays className={className} size={size} strokeWidth={strokeWidth} />;
     case 'music':
-      return <Music className={className} />;
+      return <Music className={className} size={size} strokeWidth={strokeWidth} />;
     case 'camera':
-      return <Camera className={className} />;
+      return <Camera className={className} size={size} strokeWidth={strokeWidth} />;
+    case 'map-pin':
+    case 'location':
+      return <MapPin className={className} size={size} strokeWidth={strokeWidth} />;
+    case 'coffee':
+      return <Coffee className={className} size={size} strokeWidth={strokeWidth} />;
+    case 'utensils':
+    case 'food':
+      return <Utensils className={className} size={size} strokeWidth={strokeWidth} />;
     default:
-      return <Heart className={className} />;
+      return <Heart className={className} size={size} strokeWidth={strokeWidth} />;
   }
+}
+
+export function DetailItem({ icon: Icon, label, value, className = "" }: { icon: any, label: string, value: string, className?: string }) {
+  return (
+    <div className={`flex items-center gap-3 ${className}`}>
+      <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+        <Icon className="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <p className="text-[10px] opacity-60 uppercase tracking-widest leading-none mb-1">{label}</p>
+        <p className="font-medium text-sm leading-tight text-white">{value}</p>
+      </div>
+    </div>
+  );
+}
+export function WishesSection({ invitation }: { invitation: Invitation }) {
+  const [wishes, setWishes] = useState<Guest[]>(invitation.guests || []);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING' | 'PENDING'>('ATTENDING');
+  const [sending, setSending] = useState(false);
+  const [guestId, setGuestId] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    try {
+      const res = await fetch(`/api/invitations/${invitation.slug}/rsvp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, message, status }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setWishes([data.data, ...wishes]);
+        setGuestId(data.data.id);
+        setIsSubmitted(true);
+        setName('');
+        setPhone('');
+        setMessage('');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const isQrAvailable = (invitation.tier === 'PREMIUM' || invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED') && invitation.qrEnabled !== false;
+
+  if (isSubmitted && isQrAvailable && status === 'ATTENDING' && guestId) {
+    return (
+       <div className="max-w-md mx-auto text-center bg-white p-10 rounded-[3rem] shadow-xl border border-stone-100 animate-fade-in">
+
+          <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6">
+             <Check className="h-8 w-8 text-emerald-500" />
+          </div>
+          <h3 className="text-xl font-display font-bold text-stone-800 mb-2">Terima Kasih!</h3>
+          <p className="text-sm text-stone-500 mb-8 px-4">Kehadiran Anda sangat berarti bagi kami. Berikut QR Code untuk check-in:</p>
+          
+          <div className="bg-white p-4 rounded-3xl border border-stone-50 inline-block shadow-sm">
+             <QRCodeSVG value={guestId} size={180} level="H" />
+          </div>
+          
+          <p className="mt-8 text-[10px] text-stone-400 uppercase tracking-widest leading-loose">
+            Simpan QR Code ini untuk<br />ditunjukkan pada saat acara
+          </p>
+          
+          <button 
+            onClick={() => setIsSubmitted(false)}
+            className="mt-10 text-xs font-bold text-rose-500 uppercase tracking-widest hover:opacity-70 transition-opacity"
+          >
+            Lihat Ucapan Lainnya
+          </button>
+       </div>
+    );
+  }
+
+  return (
+    <div className="space-y-12">
+      <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4 text-left bg-white p-8 rounded-[2rem] shadow-sm border border-stone-100">
+        <div>
+          <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Nama Lengkap</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Masukkan nama Anda"
+            required
+            className="w-full px-6 py-4 rounded-2xl bg-stone-50 border-none focus:ring-1 focus:ring-stone-200 transition-all text-stone-800 placeholder:text-stone-300"
+          />
+        </div>
+
+        <div>
+          <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Nomor WhatsApp *</label>
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Contoh: 08123456789"
+            required
+            className="w-full px-6 py-4 rounded-2xl bg-stone-50 border-none focus:ring-1 focus:ring-stone-200 transition-all text-stone-800 placeholder:text-stone-300"
+          />
+        </div>
+
+
+        <div>
+          <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Kehadiran</label>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { id: 'ATTENDING', label: 'Hadir', icon: '😊' },
+              { id: 'NOT_ATTENDING', label: 'Maaf, Tidak Bisa', icon: '😔' }
+            ].map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setStatus(opt.id as any)}
+                className={`py-4 rounded-2xl text-xs font-bold transition-all border ${status === opt.id ? 'bg-stone-800 text-white border-stone-800' : 'bg-white text-stone-400 border-stone-100 hover:border-stone-200'}`}
+              >
+                <span className="block mb-1 text-lg">{opt.icon}</span>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Ucapan & Doa</label>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Tulis ucapan selamat & doa..."
+            rows={4}
+            className="w-full px-6 py-4 rounded-2xl bg-stone-50 border-none focus:ring-1 focus:ring-stone-200 transition-all text-stone-800 placeholder:text-stone-300 resize-none"
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={sending || !name.trim() || !message.trim()}
+          className="w-full py-4 bg-[#1c1c1c] text-white rounded-2xl font-bold hover:bg-stone-800 transition-all disabled:opacity-50 shadow-lg active:scale-95"
+        >
+          {sending ? 'Mengirim...' : 'Kirim Ucapan'}
+        </button>
+      </form>
+
+      <div className="max-w-2xl mx-auto space-y-6 max-h-[400px] overflow-y-auto no-scrollbar px-2">
+        {wishes.map((wish, i) => (
+          <motion.div
+            key={wish.id || i}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 text-left relative overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-1 h-full bg-stone-200" />
+            <div className="flex justify-between items-start mb-2">
+              <h4 className="font-bold text-stone-800 text-sm">{wish.name}</h4>
+              <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter ${wish.rsvpStatus === 'ATTENDING' ? 'bg-emerald-50 text-emerald-600' : 'bg-stone-50 text-stone-400'}`}>
+                {wish.rsvpStatus === 'ATTENDING' ? 'Hadir' : 'Absen'}
+              </span>
+            </div>
+            <p className="text-sm text-stone-500 leading-relaxed italic">"{wish.message}"</p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
 }
