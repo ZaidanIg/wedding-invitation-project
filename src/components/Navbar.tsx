@@ -43,15 +43,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="p-2 rounded-xl bg-rose-gradient shadow-lg shadow-rose-500/20 transition-all duration-300 group-hover:scale-105 group-hover:rotate-3">
-              <Heart className="h-4 w-4 text-white" fill="currentColor" />
-            </div>
-            <div className="flex flex-col -space-y-1">
-              <span className="font-display text-xl font-bold text-[#1c1c1c] tracking-tight group-hover:text-rose-500 transition-colors">
-                Sahin
-              </span>
-            </div>
+          <Link href="/" className="relative flex items-center justify-center h-16 w-44 overflow-hidden group">
+            <Image 
+              src="/images/logo.png" 
+              alt="Sahin Logo" 
+              width={1500} 
+              height={1500} 
+              className="absolute w-[420px] h-[420px] max-w-none object-contain transition-transform duration-300 group-hover:scale-105"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}

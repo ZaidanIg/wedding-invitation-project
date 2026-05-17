@@ -29,6 +29,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "uploadthing": "^7.7.4",
+    "zod": "^4.4.3",
     "zustand": "^5.0.13"
   },
   "devDependencies": {

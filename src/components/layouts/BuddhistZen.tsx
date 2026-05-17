@@ -47,29 +47,71 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   groomName: string; brideName: string; guestName: string; onOpen: () => void;
 }) {
   return (
-    <motion.div exit={{ y: '-100%', opacity: 0, transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } }}
-      className="absolute inset-0 z-[600] bg-[#fdfbf7] flex flex-col items-center justify-center p-8 text-center overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
-      </div>
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }} className="relative z-10">
-        <div className="mb-12">
-           <LotusIcon className="mx-auto text-[#a3b18a] animate-pulse" size={64} />
-        </div>
-        <p className="text-[#a3b18a] text-[10px] uppercase tracking-[0.5em] mb-6 font-bold">Namo Buddhaya</p>
-        <h1 className="text-4xl font-display font-bold text-[#3d4432] mb-1 leading-tight">{groomName}</h1>
-        <span className="text-xl font-serif italic text-[#a3b18a] block my-2">&amp;</span>
-        <h1 className="text-4xl font-display font-bold text-[#3d4432]">{brideName}</h1>
-        <div className="flex items-center justify-center gap-3 my-10">
-          <div className="h-px w-10 bg-[#a3b18a]/20" /><Leaf className="h-3 w-3 text-[#a3b18a]" /><div className="h-px w-10 bg-[#a3b18a]/20" />
-        </div>
-        <p className="text-xs text-[#3d4432]/50 mb-1">Kepada Yth.</p>
-        <p className="text-lg font-display font-semibold text-[#3d4432] mb-10 italic">{guestName}</p>
-        <button onClick={onOpen}
-          className="px-12 py-5 rounded-full bg-[#3d4432] text-white font-bold text-xs tracking-widest uppercase transition-all hover:bg-[#a3b18a] shadow-xl">
-          Buka Undangan
-        </button>
+    <motion.div 
+      style={{ zIndex: 9999 }}
+      className="absolute inset-0 w-full h-full overflow-hidden pointer-events-auto z-[9999]"
+    >
+      {/* Left Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '-100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#fdfbf7' }}
+        className="absolute left-0 top-0 w-1/2 h-full border-r border-[#a3b18a]/20 z-10"
+      >
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
       </motion.div>
+
+      {/* Right Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#fdfbf7' }}
+        className="absolute right-0 top-0 w-1/2 h-full border-l border-[#a3b18a]/20 z-10"
+      >
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
+      </motion.div>
+
+      {/* Centered Content overlay (z-30) inside separate flex wrapper to avoid Safari flexbug */}
+      <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none z-30">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.6 } }} 
+          transition={{ delay: 0.2, duration: 0.8 }} 
+          className="flex flex-col items-center px-6 max-w-md text-center pointer-events-auto"
+        >
+          <div className="w-24 h-24 rounded-full bg-stone-50 text-[#a3b18a] flex items-center justify-center border-2 border-[#a3b18a]/20 mb-8 relative">
+            <LotusIcon className="animate-pulse drop-shadow-md text-[#a3b18a]" size={48} />
+          </div>
+
+          <p className="text-[#a3b18a] text-[10px] uppercase tracking-[0.5em] mb-6 font-bold">Namo Buddhaya</p>
+          <h1 className="text-4xl font-display font-bold text-[#3d4432] mb-1 leading-tight">{groomName}</h1>
+          <span className="text-xl font-serif italic text-[#a3b18a] block my-2">&</span>
+          <h1 className="text-4xl font-display font-bold text-[#3d4432]">{brideName}</h1>
+          
+          <div className="flex items-center justify-center gap-3 my-10">
+            <div className="h-px w-10 bg-[#a3b18a]/20" />
+            <Leaf className="h-3 w-3 text-[#a3b18a]" />
+            <div className="h-px w-10 bg-[#a3b18a]/20" />
+          </div>
+          
+          <div className="space-y-1.5 mb-10">
+            <p className="text-[9px] text-[#3d4432]/40 uppercase tracking-[0.2em] font-sans">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+            <p className="text-2xl font-display font-bold text-[#3d4432] tracking-wide">{guestName}</p>
+          </div>
+          
+          <motion.button 
+            onClick={onOpen} 
+            whileHover={{ scale: 1.05 }} 
+            whileTap={{ scale: 0.95 }}
+            className="px-14 py-5 rounded-full bg-[#3d4432] text-white font-bold text-xs tracking-widest uppercase transition-all hover:bg-[#a3b18a] shadow-xl cursor-pointer"
+          >
+            Buka Undangan
+          </motion.button>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
@@ -109,11 +151,17 @@ function BottomNav({ visible }: { visible: boolean }) {
 }
 
 export default function BuddhistZen({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
-  const [isOpened, setIsOpened] = useState(isPreview);
+  const [mounted, setMounted] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const { formattedDate } = formatEventDate(invitation.eventDate);
   const { heroPhoto, galleryPhotos } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isPreview) {
@@ -123,14 +171,71 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
     }
   }, [isPreview]);
 
+  const handleOpen = () => {
+    setIsOpened(true);
+    setIsPlaying(true);
+  };
+
+  if (!mounted) {
+    return (
+      <div className="w-full max-w-lg mx-auto bg-[#fdfbf7] text-[#3d4432] relative shadow-2xl font-sans h-screen overflow-hidden">
+        {/* Left Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#fdfbf7' }}
+          className="absolute left-0 top-0 w-1/2 h-full border-r border-[#a3b18a]/20 z-10"
+        >
+          <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
+        </div>
+
+        {/* Right Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#fdfbf7' }}
+          className="absolute right-0 top-0 w-1/2 h-full border-l border-[#a3b18a]/20 z-10"
+        >
+          <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
+        </div>
+
+        {/* Centered Content overlay inside separate flex wrapper */}
+        <div style={{ zIndex: 9999 }} className="absolute inset-0 w-full h-full flex items-center justify-center z-30">
+          <div className="flex flex-col items-center px-6 max-w-md text-center">
+            <div className="w-24 h-24 rounded-full bg-stone-50 text-[#a3b18a] flex items-center justify-center border-2 border-[#a3b18a]/20 mb-8 relative">
+              <LotusIcon className="animate-pulse drop-shadow-md text-[#a3b18a]" size={48} />
+            </div>
+
+            <p className="text-[#a3b18a] text-[10px] uppercase tracking-[0.5em] mb-6 font-bold">Namo Buddhaya</p>
+            <h1 className="text-4xl font-display font-bold text-[#3d4432] mb-1 leading-tight">{invitation.groomName}</h1>
+            <span className="text-xl font-serif italic text-[#a3b18a] block my-2">&</span>
+            <h1 className="text-4xl font-display font-bold text-[#3d4432]">{invitation.brideName}</h1>
+            
+            <div className="flex items-center justify-center gap-3 my-10">
+              <div className="h-px w-10 bg-[#a3b18a]/20" />
+              <div className="h-px w-10 bg-[#a3b18a]/20" />
+            </div>
+            
+            <div className="space-y-1.5 mb-10">
+              <p className="text-[9px] text-[#3d4432]/40 uppercase tracking-[0.2em] font-sans">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+              <p className="text-2xl font-display font-bold text-[#3d4432] tracking-wide">{guestName}</p>
+            </div>
+            
+            <button 
+              className="px-14 py-5 rounded-full bg-[#3d4432] text-white font-bold text-xs tracking-widest uppercase transition-all shadow-xl cursor-pointer"
+            >
+              Buka Undangan
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`w-full max-w-lg mx-auto bg-[#fdfbf7] text-[#3d4432] relative shadow-2xl font-sans ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
       
       <AnimatePresence>
-        {!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={() => setIsOpened(true)} />}
+        {!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={handleOpen} />}
       </AnimatePresence>
 
-      <div className="relative">
+      <div className="relative z-0">
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
@@ -367,7 +472,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
         </section>
 
         <div className="h-24 bg-white" />
-        {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} />}
+        {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
         <BottomNav visible={isOpened} />
       </div>
     </div>

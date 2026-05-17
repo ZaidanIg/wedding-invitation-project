@@ -104,6 +104,7 @@ model Invitation {
   digitalGifts Json           @default("[]")
   quotes       String?
   tier         InvitationTier @default(DRAFT)
+  qrEnabled    Boolean        @default(true)
   guests       Guest[]
   user         User?          @relation(fields: [userId], references: [id])
   transactions Transaction[]

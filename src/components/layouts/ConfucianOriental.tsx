@@ -23,38 +23,93 @@ import {
   LockedSection,
   ParallaxSection,
   ParallaxImage,
-  DigitalGiftSection
+  DigitalGiftSection,
+  IconMapper
 } from './shared';
+
+function GoldPeonyCorner({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 100 100" className={`fill-current text-[#FFD700]/30 absolute ${className}`} width="40" height="40">
+      <path d="M0 0 C 15 5, 20 25, 25 35 C 30 20, 50 15, 60 0 C 45 10, 40 30, 35 45 C 50 35, 75 40, 100 30 C 80 40, 60 50, 45 55 C 55 70, 70 85, 90 100 C 70 95, 60 80, 50 65 C 40 80, 20 90, 0 100 C 15 85, 25 70, 30 55 C 15 60, 5 80, 0 100 C 5 75, 20 50, 35 35 C 20 40, 5 30, 0 0 Z" />
+    </svg>
+  );
+}
 
 function CoverPage({ groomName, brideName, guestName, onOpen }: {
   groomName: string; brideName: string; guestName: string; onOpen: () => void;
 }) {
   return (
-    <motion.div exit={{ y: '-100%', opacity: 0, transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } }}
-      className="absolute inset-0 z-[600] bg-[#8B0000] flex flex-col items-center justify-center p-8 text-center overflow-hidden">
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]" />
-      </div>
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }} className="relative z-10">
-        <div className="mb-10">
-           <Scroll className="mx-auto text-[#FFD700] animate-pulse drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]" size={80} />
-        </div>
-        <p className="text-[#FFD700]/70 text-[10px] uppercase tracking-[0.6em] mb-8 font-black italic">Wei De Dong Tian</p>
-        <h1 className="text-5xl font-display font-bold text-white mb-2 leading-tight drop-shadow-lg">{groomName}</h1>
-        <span className="text-3xl font-display italic text-[#FFD700] block my-4 drop-shadow-md">囍</span>
-        <h1 className="text-5xl font-display font-bold text-white drop-shadow-lg">{brideName}</h1>
-        <div className="flex items-center justify-center gap-4 my-12">
-          <div className="h-px w-12 bg-[#FFD700]/30" /><Heart className="h-4 w-4 text-[#FFD700] animate-heartbeat" fill="currentColor" /><div className="h-px w-12 bg-[#FFD700]/30" />
-        </div>
-        <div className="space-y-1 mb-12">
-          <p className="text-[10px] text-white/40 uppercase tracking-widest font-black">Kepada Yth.</p>
-          <p className="text-xl font-display font-semibold text-[#FFD700] italic">{guestName}</p>
-        </div>
-        <motion.button onClick={onOpen} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-          className="px-14 py-5 rounded-full bg-[#FFD700] text-[#8B0000] font-black text-xs tracking-[0.3em] uppercase transition-all hover:bg-white hover:text-[#8B0000] shadow-[0_0_30px_rgba(255,215,0,0.3)]">
-          Buka Undangan
-        </motion.button>
+    <motion.div 
+      style={{ zIndex: 9999 }}
+      className="absolute inset-0 w-full h-full overflow-hidden pointer-events-auto "
+    >
+      {/* Left Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '-100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#8B0000' }}
+        className="absolute left-0 top-0 w-1/2 h-full border-r border-[#FFD700]/30 z-10"
+      >
+        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]" />
+        <GoldPeonyCorner className="top-8 left-8" />
+        <GoldPeonyCorner className="bottom-8 left-8 rotate-270" />
       </motion.div>
+
+      {/* Right Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#8B0000' }}
+        className="absolute right-0 top-0 w-1/2 h-full border-l border-[#FFD700]/30 z-10"
+      >
+        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]" />
+        <GoldPeonyCorner className="top-8 right-8 rotate-90" />
+        <GoldPeonyCorner className="bottom-8 right-8 rotate-180" />
+      </motion.div>
+
+      {/* Centered Content overlay (z-30) inside separate flex wrapper to avoid Safari flexbug */}
+      <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none z-30">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.6 } }} 
+          transition={{ delay: 0.2, duration: 0.8 }} 
+          className="flex flex-col items-center px-6 max-w-md text-center pointer-events-auto"
+        >
+          {/* Glowing Double Happiness Crest */}
+          <div className="w-28 h-28 rounded-full bg-[#FFD700] text-[#8B0000] flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.5)] border-4 border-[#FFD700] mb-8 relative">
+            <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#8B0000]/40 animate-spin-slow" />
+            <span className="text-5xl font-display font-bold select-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]">囍</span>
+          </div>
+
+          <p className="text-[#FFD700] text-[10px] uppercase tracking-[0.6em] mb-6 font-black italic drop-shadow-md">Wei De Dong Tian</p>
+          <h1 className="text-4xl sm:text-5xl font-display font-bold text-white mb-2 leading-tight drop-shadow-2xl">{groomName}</h1>
+          <span className="text-2xl font-serif italic text-[#FFD700] block my-3 drop-shadow-md">&</span>
+          <h1 className="text-4xl sm:text-5xl font-display font-bold text-white drop-shadow-2xl">{brideName}</h1>
+          
+          <div className="flex items-center justify-center gap-4 my-10">
+            <div className="h-px w-10 bg-[#FFD700]/30" />
+            <Heart className="h-4 w-4 text-[#FFD700] animate-heartbeat" fill="currentColor" />
+            <div className="h-px w-10 bg-[#FFD700]/30" />
+          </div>
+          
+          <div className="space-y-1.5 mb-10">
+            <p className="text-[9px] text-[#FFD700]/60 uppercase tracking-[0.25em] font-black drop-shadow-sm">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+            <p className="text-2xl font-display font-semibold text-white drop-shadow-md italic">{guestName}</p>
+          </div>
+          
+          <motion.button 
+            onClick={onOpen} 
+            whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(255, 215, 0, 0.6)' }} 
+            whileTap={{ scale: 0.95 }}
+            className="px-14 py-5 rounded-full bg-[#FFD700] text-[#8B0000] font-black text-xs tracking-[0.3em] uppercase transition-all shadow-[0_0_30px_rgba(255,215,0,0.35)] cursor-pointer"
+          >
+            Buka Undangan
+          </motion.button>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
@@ -94,11 +149,17 @@ function BottomNav({ visible }: { visible: boolean }) {
 }
 
 export default function ConfucianOriental({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
-  const [isOpened, setIsOpened] = useState(isPreview);
+  const [mounted, setMounted] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const { formattedDate, dayName, dayNumber, monthName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, galleryPhotos, photo2 } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isPreview) {
@@ -108,14 +169,72 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
     }
   }, [isPreview]);
 
+  const handleOpen = () => {
+    setIsOpened(true);
+    setIsPlaying(true);
+  };
+
+  if (!mounted) {
+    return (
+      <div className="w-full max-w-lg mx-auto bg-[#fffcf5] text-[#8B0000] relative shadow-2xl font-sans h-screen overflow-hidden">
+        {/* Left Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#8B0000' }}
+          className="absolute left-0 top-0 w-1/2 h-full border-r border-[#FFD700]/30 z-10"
+        >
+          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]" />
+        </div>
+
+        {/* Right Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#8B0000' }}
+          className="absolute right-0 top-0 w-1/2 h-full border-l border-[#FFD700]/30 z-10"
+        >
+          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]" />
+        </div>
+
+        {/* Centered Content overlay inside separate flex wrapper */}
+        <div style={{ zIndex: 9999 }} className="absolute inset-0 w-full h-full flex items-center justify-center z-30">
+          <div className="flex flex-col items-center px-6 max-w-md text-center">
+            {/* Medallion */}
+            <div className="w-28 h-28 rounded-full bg-[#FFD700] text-[#8B0000] flex items-center justify-center border-4 border-[#FFD700] mb-8 relative">
+              <span className="text-5xl font-display font-bold select-none">囍</span>
+            </div>
+
+            <p className="text-[#FFD700] text-[10px] uppercase tracking-[0.6em] mb-6 font-black italic">Wei De Dong Tian</p>
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-white mb-2 leading-tight">{invitation.groomName.split(' ')[0]}</h1>
+            <span className="text-2xl font-serif italic text-[#FFD700] block my-3">&</span>
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-white">{invitation.brideName.split(' ')[0]}</h1>
+            
+            <div className="flex items-center justify-center gap-4 my-10">
+              <div className="h-px w-10 bg-[#FFD700]/30" />
+              <div className="h-px w-10 bg-[#FFD700]/30" />
+            </div>
+            
+            <div className="space-y-1.5 mb-10">
+              <p className="text-[9px] text-[#FFD700]/60 uppercase tracking-[0.25em] font-black">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+              <p className="text-2xl font-display font-semibold text-white italic">{guestName}</p>
+            </div>
+            
+            <button 
+              className="px-14 py-5 rounded-full bg-[#FFD700] text-[#8B0000] font-black text-xs tracking-[0.3em] uppercase transition-all shadow-[0_0_30px_rgba(255,215,0,0.35)]"
+            >
+              Buka Undangan
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`w-full max-w-lg mx-auto bg-[#fffcf5] text-[#8B0000] relative shadow-2xl font-sans ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen pb-24'}`}>
       
       <AnimatePresence>
-        {!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={() => setIsOpened(true)} />}
+        {!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={handleOpen} />}
       </AnimatePresence>
 
-      <div className="relative">
+      <div className="relative z-0">
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
@@ -140,22 +259,67 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
            </div>
         </section>
 
-        {/* Opening Verse */}
-        <section className="py-32 px-10 text-center relative overflow-hidden bg-white/50 border-y border-[#8B0000]/5">
-           <div className="absolute -left-24 -top-24 text-[#8B0000]/5 rotate-12 pointer-events-none animate-spin-slow">
-              <Scroll size={320} />
-           </div>
-           <AnimatedSection>
-              <span className="text-5xl text-[#FFD700] mb-10 block drop-shadow-md">囍</span>
-              <p className="text-[#8B0000] text-lg leading-relaxed italic mb-10 font-serif px-6 drop-shadow-sm">
-                {invitation.quotes || '"Tian Di Zhi De, Wan Wu Zhi Qing. The virtues of heaven and earth are reflected in the love that binds all things."'}
-              </p>
-              <div className="flex items-center justify-center gap-6">
-                 <div className="h-px w-10 bg-[#FFD700]/30" />
-                 <span className="text-xs font-black uppercase tracking-[0.3em] text-[#8B0000]/60">Confucius</span>
-                 <div className="h-px w-10 bg-[#FFD700]/30" />
+        {/* Parchment Scroll Letter Section */}
+        <section className="py-32 px-6 text-center relative overflow-hidden bg-[#fffcf5]">
+          <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]" />
+          <AnimatedSection className="max-w-md mx-auto">
+            <div className="border-4 border-double border-[#8B0000]/25 rounded-[3.5rem] py-16 px-8 relative bg-white/40 shadow-xl backdrop-blur-sm">
+              <GoldPeonyCorner className="top-4 left-4" />
+              <GoldPeonyCorner className="top-4 right-4 rotate-90" />
+              <GoldPeonyCorner className="bottom-4 left-4 rotate-270" />
+              <GoldPeonyCorner className="bottom-4 right-4 rotate-180" />
+
+              <div className="text-center mb-4">
+                <span className="font-serif text-xl sm:text-2xl tracking-[0.25em] text-[#8B0000]/70 font-bold border-b border-[#FFD700]/40 pb-2.5 inline-block uppercase">
+                  {invitation.groomName.trim().charAt(0)} & {invitation.brideName.trim().charAt(0)}
+                </span>
               </div>
-           </AnimatedSection>
+
+              <span className="text-5xl text-[#FFD700] mb-8 block drop-shadow-md animate-pulse">囍</span>
+
+              {/* Salam Pembuka / Greeting */}
+              <div className="mb-10 px-2">
+                <p className="text-[#8B0000] text-lg font-serif italic leading-relaxed drop-shadow-sm">
+                  {invitation.greeting || 'Dengan penuh hormat dan ucapan syukur, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri perayaan penyatuan cinta kasih kami.'}
+                </p>
+              </div>
+
+              {/* Decorative Vector Divider */}
+              <div className="flex items-center justify-center gap-3 my-8 opacity-40">
+                <div className="h-px w-10 bg-[#8B0000]" />
+                <Heart size={14} className="text-[#FFD700] animate-heartbeat" fill="currentColor" />
+                <div className="h-px w-10 bg-[#8B0000]" />
+              </div>
+
+              {/* Isi Undangan / Main Body */}
+              <div className="mb-10 px-2">
+                <p className="text-sm text-[#8B0000]/95 font-medium leading-relaxed">
+                  {invitation.mainBody || 'Penyatuan dua jiwa menjadi satu, melangkah bersama dalam mahligai rumah tangga yang harmonis. Kehadiran Anda adalah berkah dan kehormatan yang tak terhingga bagi kami.'}
+                </p>
+              </div>
+
+              {/* Elegant Quote (if any) */}
+              {(invitation.quotes || invitation.fullText) && (
+                <div className="my-10 p-6 rounded-3xl bg-[#8B0000]/5 border border-[#8B0000]/10 italic text-xs text-[#8B0000]/80 font-serif leading-relaxed px-6">
+                  {invitation.quotes || invitation.fullText}
+                </div>
+              )}
+
+              {/* Decorative Vector Divider */}
+              <div className="flex items-center justify-center gap-3 my-8 opacity-40">
+                <div className="h-px w-10 bg-[#8B0000]" />
+                <Heart size={14} className="text-[#FFD700]" fill="currentColor" />
+                <div className="h-px w-10 bg-[#8B0000]" />
+              </div>
+
+              {/* Salam Penutup / Closing */}
+              <div className="px-2">
+                <p className="text-sm text-[#8B0000]/80 font-serif italic leading-relaxed">
+                  {invitation.closing || 'Atas kehadiran dan doa restu yang tulus dari Anda semua, kami mengucapkan terima kasih yang sebesar-besarnya. Semoga kebahagiaan dan keharmonisan selalu menyertai kita semua.'}
+                </p>
+              </div>
+            </div>
+          </AnimatedSection>
         </section>
 
         {/* Couple Section */}
@@ -200,7 +364,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
            </div>
         </section>
 
-        <ParallaxImage src={photo2} className="h-[60vh]" />
+        <ParallaxImage src={photo2} alt="Wedding Portrait" className="h-[60vh] mb-20" />
 
         {/* Love Story */}
         <TierGate 
@@ -352,7 +516,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
         </section>
 
         {/* Footer */}
-        <section className="py-56 px-8 text-center bg-[#8B0000] relative overflow-hidden">
+        <section className="py- px-8 text-center bg-[#8B0000] relative overflow-hidden">
           <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]" />
           <AnimatedSection>
             <Scroll className="mx-auto text-[#FFD700] mb-16 opacity-60 animate-pulse" size={64} />
@@ -369,8 +533,8 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
           </AnimatedSection>
         </section>
 
-        <div className="h-24 bg-[#8B0000]" />
-        {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} />}
+        <div className="relative h-24 bg-[#8B0000]" />
+        {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
         <BottomNav visible={isOpened} />
       </div>
     </div>

@@ -96,28 +96,73 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   groomName: string; brideName: string; guestName: string; onOpen: () => void;
 }) {
   return (
-    <motion.div exit={{ y: '-100%', opacity: 0, transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } }}
-      className="absolute inset-0 z-[600] flex flex-col items-center justify-center bg-[#1a2b23] overflow-hidden px-4">
-      <div className="absolute inset-0 opacity-10 pointer-events-none"
-        style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/islamic-art.png")' }} />
-      <div className="absolute inset-6 border border-[#c5a059]/30 pointer-events-none rounded-[2.5rem]" />
-      
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }} className="text-center relative z-10">
-        <span className="text-[#c5a059] text-6xl mb-8 block">﷽</span>
-        <h2 className="text-[#c5a059] uppercase tracking-[0.4em] text-[10px] mb-6 font-sans font-bold">Walimatul Ursy</h2>
-        <h1 className="text-4xl sm:text-5xl font-display font-bold text-white mb-2 leading-tight">
-          {groomName.split(' ')[0]} <br/> <span className="text-2xl font-serif italic text-[#c5a059]/70">&</span> <br/> {brideName.split(' ')[0]}
-        </h1>
-        <div className="flex items-center justify-center gap-3 my-10">
-          <div className="h-px w-10 bg-[#c5a059]/40" /><Heart className="h-3 w-3 text-[#c5a059] animate-heartbeat" fill="currentColor" /><div className="h-px w-10 bg-[#c5a059]/40" />
-        </div>
-        <p className="text-[#c5a059]/60 text-xs mb-2">Kepada Yth.</p>
-        <p className="text-xl font-display font-semibold text-white mb-10 italic">{guestName}</p>
-        <button onClick={onOpen}
-          className="px-12 py-5 rounded-full bg-[#c5a059] text-[#1a2b23] font-sans font-bold text-xs tracking-widest uppercase transition-all hover:bg-[#d4af37] shadow-[0_0_30px_rgba(197,160,89,0.3)]">
-          Buka Undangan
-        </button>
+    <motion.div 
+      style={{ zIndex: 9999 }}
+      className="absolute inset-0 w-full h-full overflow-hidden pointer-events-auto z-[9999]"
+    >
+      {/* Left Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '-100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#1a2b23' }}
+        className="absolute left-0 top-0 w-1/2 h-full border-r border-[#c5a059]/30 z-10"
+      >
+        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/islamic-art.png')]" />
+        <div className="absolute inset-6 border-r-0 border border-[#c5a059]/20 pointer-events-none rounded-l-[2.5rem]" />
       </motion.div>
+
+      {/* Right Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#1a2b23' }}
+        className="absolute right-0 top-0 w-1/2 h-full border-l border-[#c5a059]/30 z-10"
+      >
+        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/islamic-art.png')]" />
+        <div className="absolute inset-6 border-l-0 border border-[#c5a059]/20 pointer-events-none rounded-r-[2.5rem]" />
+      </motion.div>
+
+      {/* Centered Content overlay (z-30) inside separate flex wrapper to avoid Safari flexbug */}
+      <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none z-30">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.6 } }} 
+          transition={{ delay: 0.2, duration: 0.8 }} 
+          className="flex flex-col items-center px-6 max-w-md text-center pointer-events-auto"
+        >
+          <div className="w-24 h-24 rounded-full bg-[#c5a059]/10 text-[#c5a059] flex items-center justify-center border-2 border-[#c5a059]/30 mb-8 relative animate-pulse-slow">
+            <span className="text-5xl font-bold select-none">﷽</span>
+          </div>
+
+          <h2 className="text-[#c5a059] uppercase tracking-[0.4em] text-[10px] mb-6 font-sans font-bold">Walimatul Ursy</h2>
+          <h1 className="text-4xl sm:text-5xl font-display font-bold text-white mb-2 leading-tight">
+            {groomName.split(' ')[0]} <br/> <span className="text-2xl font-serif italic text-[#c5a059]/70">&</span> <br/> {brideName.split(' ')[0]}
+          </h1>
+          
+          <div className="flex items-center justify-center gap-3 my-10">
+            <div className="h-px w-10 bg-[#c5a059]/40" />
+            <Heart className="h-3 w-3 text-[#c5a059] animate-heartbeat" fill="currentColor" />
+            <div className="h-px w-10 bg-[#c5a059]/40" />
+          </div>
+          
+          <div className="space-y-1.5 mb-10">
+            <p className="text-[9px] text-white/50 uppercase tracking-[0.2em] font-sans">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+            <p className="text-2xl font-display font-bold text-[#c5a059] tracking-wide">{guestName}</p>
+          </div>
+          
+          <motion.button 
+            onClick={onOpen} 
+            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(197, 160, 89, 0.4)' }} 
+            whileTap={{ scale: 0.95 }}
+            className="px-14 py-5 rounded-full bg-[#c5a059] text-[#1a2b23] font-bold text-xs tracking-[0.2em] uppercase transition-all shadow-[0_10px_20px_rgba(197,160,89,0.2)] cursor-pointer"
+          >
+            Buka Undangan
+          </motion.button>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
@@ -157,11 +202,17 @@ function BottomNav({ visible }: { visible: boolean }) {
 }
 
 export default function IslamicGrace({ invitation, isPreview = false }: LayoutProps) {
-  const [isOpened, setIsOpened] = useState(isPreview);
+  const [mounted, setMounted] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isPreview) {
@@ -171,15 +222,74 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
     }
   }, [isPreview]);
 
+  const handleOpen = () => {
+    setIsOpened(true);
+    setIsPlaying(true);
+  };
+
+  if (!mounted) {
+    return (
+      <div className="w-full max-w-lg mx-auto bg-[#fdfcf9] text-[#1a2b23] relative shadow-2xl font-serif h-screen overflow-hidden">
+        {/* Left Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#1a2b23' }}
+          className="absolute left-0 top-0 w-1/2 h-full border-r border-[#c5a059]/30 z-10"
+        >
+          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/islamic-art.png')]" />
+          <div className="absolute inset-6 border-r-0 border border-[#c5a059]/20 rounded-l-[2.5rem]" />
+        </div>
+
+        {/* Right Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#1a2b23' }}
+          className="absolute right-0 top-0 w-1/2 h-full border-l border-[#c5a059]/30 z-10"
+        >
+          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/islamic-art.png')]" />
+          <div className="absolute inset-6 border-l-0 border border-[#c5a059]/20 rounded-r-[2.5rem]" />
+        </div>
+
+        {/* Centered Content overlay inside separate flex wrapper */}
+        <div style={{ zIndex: 9999 }} className="absolute inset-0 w-full h-full flex items-center justify-center z-30">
+          <div className="flex flex-col items-center px-6 max-w-md text-center">
+            <div className="w-24 h-24 rounded-full bg-[#c5a059]/10 text-[#c5a059] flex items-center justify-center border-2 border-[#c5a059]/30 mb-8 relative animate-pulse-slow">
+              <span className="text-5xl font-bold select-none">﷽</span>
+            </div>
+
+            <h2 className="text-[#c5a059] uppercase tracking-[0.4em] text-[10px] mb-6 font-sans font-bold">Walimatul Ursy</h2>
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-white mb-2 leading-tight">
+              {invitation.groomName.split(' ')[0]} <br/> <span className="text-2xl font-serif italic text-[#c5a059]/70">&</span> <br/> {invitation.brideName.split(' ')[0]}
+            </h1>
+            
+            <div className="flex items-center justify-center gap-3 my-10">
+              <div className="h-px w-10 bg-[#c5a059]/40" />
+              <div className="h-px w-10 bg-[#c5a059]/40" />
+            </div>
+            
+            <div className="space-y-1.5 mb-10">
+              <p className="text-[9px] text-white/50 uppercase tracking-[0.2em] font-sans">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+              <p className="text-2xl font-display font-bold text-[#c5a059] tracking-wide">{guestName}</p>
+            </div>
+            
+            <button 
+              className="px-14 py-5 rounded-full bg-[#c5a059] text-[#1a2b23] font-bold text-xs tracking-[0.2em] uppercase transition-all shadow-[0_10px_20px_rgba(197,160,89,0.2)]"
+            >
+              Buka Undangan
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`w-full max-w-lg mx-auto bg-[#fdfcf9] text-[#1a2b23] relative shadow-2xl font-serif ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
       <Snowfall />
 
       <AnimatePresence>
-        {!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={() => setIsOpened(true)} />}
+        {!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={handleOpen} />}
       </AnimatePresence>
 
-      <div className="relative">
+      <div className="relative z-0">
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0">
@@ -389,7 +499,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
         </section>
 
         <BottomNav visible={isOpened} />
-        {isOpened && invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} activeColor="bg-[#c5a059] text-[#1a2b23]" inactiveColor="bg-white/10 text-white backdrop-blur-sm" />}
+        {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} activeColor="bg-[#c5a059] text-[#1a2b23]" inactiveColor="bg-white/10 text-white backdrop-blur-sm" />}
       </div>
     </div>
   );

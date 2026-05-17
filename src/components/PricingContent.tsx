@@ -4,12 +4,35 @@ import { Check, Star, Zap, Crown, Heart, Sparkles, ShieldCheck } from 'lucide-re
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import CheckoutButton from '@/components/CheckoutButton';
+import { useRouter } from 'next/navigation';
 
 interface PricingContentProps {
   invitationId?: string;
 }
 
 export default function PricingContent({ invitationId }: PricingContentProps) {
+  const router = useRouter();
+
+  const handlePlanSelect = (plan: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'DRAFT' | 'PRO_PLAN' | 'ENTERPRISE', planLabel: string) => {
+    const confirmed = window.confirm(`Apakah benar Anda akan membeli item ${planLabel} ini?`);
+    if (!confirmed) return;
+
+    if (plan === 'DRAFT') {
+      router.push(`/create?plan=${plan}`);
+      return;
+    }
+
+    if (plan === 'PRO_PLAN' || plan === 'ENTERPRISE') {
+      router.push(`/checkout?plan=${plan}`);
+      return;
+    }
+
+    if (invitationId) {
+      router.push(`/checkout?plan=${plan}&invitationId=${invitationId}`);
+    } else {
+      router.push(`/create?plan=${plan}`);
+    }
+  };
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -61,139 +84,162 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"
           >
             {/* Free Draft */}
-            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-10 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40">
+            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40">
               <div className="mb-8">
                 <div className="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Zap className="h-6 w-6 text-stone-400" />
                 </div>
-                <h3 className="text-2xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Draft Gratis</h3>
-                <p className="text-[#6b6b6b] text-sm leading-relaxed">Eksplorasi desain sepuasnya tanpa risiko.</p>
+                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Draft Gratis</h3>
+                <p className="text-[#6b6b6b] text-xs leading-relaxed">Eksplorasi desain sepuasnya tanpa risiko.</p>
               </div>
               
               <div className="flex items-baseline gap-1 mb-10">
-                <span className="text-4xl font-display font-bold text-[#1c1c1c]">Rp 0</span>
-                <span className="text-sm text-[#6b6b6b]">/undangan</span>
+                <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 0</span>
+                <span className="text-xs text-[#6b6b6b]">/undangan</span>
               </div>
 
-              <div className="space-y-5 mb-12 flex-1">
+              <div className="space-y-4 mb-10 flex-1">
                 {[
                   'Buat Desain dalam 5 Menit',
-                  'Preview Semua Tema Premium',
+                  'Preview Tema Klasik',
                   'Ganti Tema Sepuasnya',
                   'Tanpa Kartu Kredit'
                 ].map((feature) => (
-                  <div key={feature} className="flex gap-3 text-sm text-[#1c1c1c]/70">
-                    <Check className="h-5 w-5 text-emerald-500 shrink-0" />
+                  <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
+                    <Check className="h-4.5 w-4.5 text-emerald-500 shrink-0" />
                     <span>{feature}</span>
                   </div>
                 ))}
               </div>
 
-              <Link href="/create" className="w-full py-4 px-6 rounded-2xl bg-stone-100 text-[#1c1c1c] font-bold text-center hover:bg-stone-200 transition-all duration-300">
+              <Link href="/create?plan=DRAFT" className="w-full py-3.5 px-6 rounded-2xl bg-stone-100 text-[#1c1c1c] text-sm font-bold text-center hover:bg-stone-200 transition-all duration-300">
                 Mulai Sekarang
               </Link>
+            </motion.div>
+
+            {/* Minimalist */}
+            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40">
+              <div className="mb-8">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Sparkles className="h-6 w-6 text-blue-500" />
+                </div>
+                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Minimalist</h3>
+                <p className="text-[#6b6b6b] text-xs leading-relaxed">Undangan minimalis yang modern dan berkelas.</p>
+              </div>
+              
+              <div className="flex items-baseline gap-1 mb-10">
+                <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 75rb</span>
+                <span className="text-xs text-[#6b6b6b]">/undangan</span>
+              </div>
+
+              <div className="space-y-4 mb-10 flex-1">
+                {[
+                  'Hapus Semua Watermark',
+                  '2 Foto Mempelai Utama',
+                  'Galeri 2 Foto Tambahan',
+                  'Navigasi Peta Google Maps',
+                  'Semua Pilihan Tema Klasik'
+                ].map((feature) => (
+                  <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
+                    <Check className="h-4.5 w-4.5 text-blue-500 shrink-0" />
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button 
+                onClick={() => handlePlanSelect('BASIC', 'Minimalist Plan')} 
+                className="w-full py-3.5 px-6 rounded-2xl bg-stone-900 text-white text-sm font-bold text-center hover:bg-stone-800 transition-all duration-300 cursor-pointer"
+              >
+                {invitationId ? 'Aktifkan Minimalist' : 'Pilih Minimalist'}
+              </button>
             </motion.div>
 
             {/* Premium */}
             <motion.div variants={itemVariants} className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-rose-500 to-pink-600 rounded-[2.6rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative glass rounded-[2.5rem] p-10 flex flex-col h-full border-rose-500/20 shadow-xl shadow-rose-500/10">
-                <div className="absolute top-0 right-10 transform -translate-y-1/2 bg-rose-500 text-white px-5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg shadow-rose-500/25 flex items-center gap-1.5">
-                  <Star className="h-3 w-3 fill-white" /> Paling Populer
+              <div className="relative glass rounded-[2.5rem] p-8 flex flex-col h-full border-rose-500/20 shadow-xl shadow-rose-500/10">
+                <div className="absolute top-0 right-8 transform -translate-y-1/2 bg-rose-500 text-white px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-lg shadow-rose-500/25 flex items-center gap-1">
+                  <Star className="h-2.5 w-2.5 fill-white" /> Paling Populer
                 </div>
 
                 <div className="mb-8">
                   <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <Heart className="h-6 w-6 text-rose-500" fill="currentColor" />
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Premium</h3>
-                  <p className="text-[#6b6b6b] text-sm leading-relaxed">Sentuhan elegan untuk hari bahagia Anda.</p>
+                  <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Premium</h3>
+                  <p className="text-[#6b6b6b] text-xs leading-relaxed">Sentuhan romantis dan elegan yang lengkap.</p>
                 </div>
 
                 <div className="flex items-baseline gap-1 mb-10">
-                  <span className="text-4xl font-display font-bold text-[#1c1c1c]">Rp 100rb</span>
-                  <span className="text-sm text-[#6b6b6b]">/undangan</span>
+                  <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 150rb</span>
+                  <span className="text-xs text-[#6b6b6b]">/undangan</span>
                 </div>
 
-                <div className="space-y-5 mb-12 flex-1">
+                <div className="space-y-4 mb-10 flex-1">
                   {[
-                    'Hapus Semua Watermark',
+                    'Semua Fitur Minimalist',
                     'Galeri 10 Foto Premium',
-                    'Love Story Timeline',
+                    'Kisah Cinta (Love Story)',
                     'Countdown Timer Eksklusif',
-                    'Navigasi Peta Google Maps',
-                    'Pilihan Tema Eksklusif'
+                    'Musik Latar Belakang Kustom'
                   ].map((feature) => (
-                    <div key={feature} className="flex gap-3 text-sm text-[#1c1c1c]">
-                      <Check className="h-5 w-5 text-rose-500 shrink-0" />
+                    <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]">
+                      <Check className="h-4.5 w-4.5 text-rose-500 shrink-0" />
                       <span className="font-medium">{feature}</span>
                     </div>
                   ))}
                 </div>
 
-                {invitationId ? (
-                  <CheckoutButton 
-                    plan="PREMIUM" 
-                    invitationId={invitationId}
-                    className="w-full py-4 px-6 rounded-2xl bg-rose-gradient text-white font-bold text-center hover:shadow-lg hover:shadow-rose-500/30 transition-all duration-300 scale-105"
-                  >
-                    Aktifkan Premium
-                  </CheckoutButton>
-                ) : (
-                  <Link href="/create" className="w-full py-4 px-6 rounded-2xl bg-rose-gradient text-white font-bold text-center hover:shadow-lg hover:shadow-rose-500/30 transition-all duration-300 scale-105">
-                    Mulai Buat Undangan
-                  </Link>
-                )}
+                <button 
+                  onClick={() => handlePlanSelect('PREMIUM', 'Premium Plan')} 
+                  className="w-full py-3.5 px-6 rounded-2xl bg-rose-gradient text-white text-sm font-bold text-center hover:shadow-lg hover:shadow-rose-500/30 transition-all duration-300 scale-105 cursor-pointer"
+                >
+                  {invitationId ? 'Aktifkan Premium' : 'Pilih Premium'}
+                </button>
               </div>
             </motion.div>
 
             {/* Ultimate */}
-            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-10 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40">
+            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40">
               <div className="mb-8">
                 <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <ShieldCheck className="h-6 w-6 text-rose-400" />
                 </div>
-                <h3 className="text-2xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Ultimate</h3>
-                <p className="text-[#6b6b6b] text-sm leading-relaxed">Pengalaman termewah tanpa batas.</p>
+                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Ultimate</h3>
+                <p className="text-[#6b6b6b] text-xs leading-relaxed">Fitur termewah dengan teknologi modern.</p>
               </div>
 
               <div className="flex items-baseline gap-1 mb-10">
-                <span className="text-4xl font-display font-bold text-[#1c1c1c]">Rp 200rb</span>
-                <span className="text-sm text-[#6b6b6b]">/undangan</span>
+                <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 250rb</span>
+                <span className="text-xs text-[#6b6b6b]">/undangan</span>
               </div>
 
-              <div className="space-y-5 mb-12 flex-1">
+              <div className="space-y-4 mb-10 flex-1">
                 {[
                   'Semua Fitur Premium',
-                  'Galeri Foto Unlimited',
+                  'Galeri Foto Tanpa Batas',
                   'Sistem QR Check-in Tamu',
-                  'Link Personalisasi Per Tamu',
-                  'WA Blast Integration',
-                  'Admin RSVP Dashboard Pro'
+                  'Link Personalisasi Tamu',
+                  'Integrasi WA Blast',
+                  'Akses Semua Tema Premium'
                 ].map((feature) => (
-                  <div key={feature} className="flex gap-3 text-sm text-[#1c1c1c]/70">
-                    <Check className="h-5 w-5 text-rose-500 shrink-0" />
+                  <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
+                    <Check className="h-4.5 w-4.5 text-rose-500 shrink-0" />
                     <span>{feature}</span>
                   </div>
                 ))}
               </div>
 
-              {invitationId ? (
-                <CheckoutButton 
-                  plan="ULTIMATE" 
-                  invitationId={invitationId}
-                  className="w-full py-4 px-6 rounded-2xl bg-stone-900 text-white font-bold text-center hover:bg-stone-800 transition-all duration-300"
-                >
-                  Pilih Paket Ultimate
-                </CheckoutButton>
-              ) : (
-                <Link href="/create" className="w-full py-4 px-6 rounded-2xl bg-stone-900 text-white font-bold text-center hover:bg-stone-800 transition-all duration-300">
-                  Pilih Paket Ultimate
-                </Link>
-              )}
+              <button 
+                onClick={() => handlePlanSelect('ULTIMATE', 'Ultimate Plan')} 
+                className="w-full py-3.5 px-6 rounded-2xl bg-stone-900 text-white text-sm font-bold text-center hover:bg-stone-800 transition-all duration-300 cursor-pointer"
+              >
+                {invitationId ? 'Aktifkan Ultimate' : 'Pilih Ultimate'}
+              </button>
             </motion.div>
           </motion.div>
         </div>
@@ -233,12 +279,12 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
                 ))}
               </ul>
 
-              <CheckoutButton 
-                plan="PRO_PLAN"
-                className="w-full py-3.5 px-6 rounded-xl border-2 border-rose-500 text-rose-500 font-bold hover:bg-rose-500 hover:text-white transition-all duration-300"
+              <button 
+                onClick={() => handlePlanSelect('PRO_PLAN', 'Paket Pro')}
+                className="w-full py-3.5 px-6 rounded-xl border-2 border-rose-500 text-rose-500 font-bold hover:bg-rose-500 hover:text-white transition-all duration-300 cursor-pointer"
               >
                 Berlangganan Sekarang
-              </CheckoutButton>
+              </button>
             </motion.div>
 
             {/* Enterprise */}
@@ -272,12 +318,12 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
                 ))}
               </ul>
 
-              <CheckoutButton 
-                plan="ENTERPRISE"
-                className="w-full py-3.5 px-6 rounded-xl bg-amber-400 text-[#1c1c1c] font-bold hover:bg-amber-300 transition-all duration-300 relative z-10 shadow-lg shadow-amber-400/20"
+              <button 
+                onClick={() => handlePlanSelect('ENTERPRISE', 'Enterprise')}
+                className="w-full py-3.5 px-6 rounded-xl bg-amber-400 text-[#1c1c1c] font-bold hover:bg-amber-300 transition-all duration-300 relative z-10 shadow-lg shadow-amber-400/20 cursor-pointer"
               >
                 Beli Akses Seumur Hidup
-              </CheckoutButton>
+              </button>
             </motion.div>
           </div>
         </div>

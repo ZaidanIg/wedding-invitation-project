@@ -1,9 +1,18 @@
-import NextAuth from 'next-auth';
+import NextAuth, { CredentialsSignin } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
+import { checkRateLimit } from '@/lib/rate-limiter';
+import { headers } from 'next/headers';
+
+class CustomAuthError extends CredentialsSignin {
+  constructor(code: string) {
+    super();
+    this.code = code;
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -22,25 +31,44 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email and password are required');
+          throw new CustomAuthError('EMAIL_PASSWORD_REQUIRED');
+        }
+
+        const email = credentials.email as string;
+
+        // Rate Limiting by IP to prevent automated credential stuffing
+        const headersList = await headers();
+        const forwarded = headersList.get('x-forwarded-for');
+        const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown';
+
+        const ipLimiter = checkRateLimit(`login:ip:${ip}`);
+        if (!ipLimiter.allowed) {
+          throw new CustomAuthError('TOO_MANY_REQUESTS');
+        }
+
+        // Rate Limiting by Email to prevent targeted brute-forcing
+        const emailLimiter = checkRateLimit(`login:email:${email}`);
+        if (!emailLimiter.allowed) {
+          throw new CustomAuthError('TOO_MANY_REQUESTS');
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
+          where: { email },
         });
 
+        // Prevention of User Enumeration: return same error for user-not-found vs wrong-password
         if (!user || !user.password) {
-          throw new Error('No user found with this email');
+          throw new CustomAuthError('INVALID_EMAIL_OR_PASSWORD');
         }
 
         if (!user.emailVerified) {
-          throw new Error('Please check your email and verify your account before logging in');
+          throw new CustomAuthError('EMAIL_NOT_VERIFIED');
         }
 
         const isValid = await bcrypt.compare(credentials.password as string, user.password);
 
         if (!isValid) {
-          throw new Error('Invalid password');
+          throw new CustomAuthError('INVALID_EMAIL_OR_PASSWORD');
         }
 
         return {

@@ -94,9 +94,9 @@ const steps = [
 
 const tiers = [
   { id: 'DRAFT', name: 'Free Demo', price: 'Gratis', description: 'Coba fitur dasar dan lihat pratinjau desain Anda.', features: ['1 Foto Header', 'Ganti Tema Klasik', 'Preview RSVP', 'Tidak Bisa Disimpan'], color: 'text-stone-500', bg: 'bg-stone-50' },
-  { id: 'BASIC', name: 'Basic Plan', price: 'Rp 50.000', description: 'Sangat cocok untuk undangan minimalis yang elegan.', features: ['Hapus Watermark', '2 Foto Mempelai', '2 Foto Galeri', 'Aktif Selamanya', 'Semua Tema Klasik'], color: 'text-blue-500', bg: 'bg-blue-50' },
-  { id: 'PREMIUM', name: 'Premium Plan', price: 'Rp 100.000', description: 'Fitur lengkap untuk momen pernikahan yang tak terlupakan.', features: ['10 Foto Galeri', 'Love Story Section', 'Countdown Timer', 'Musik Latar Kustom', 'Akses Tema Klasik'], color: 'text-rose-500', bg: 'bg-rose-50' },
-  { id: 'ULTIMATE', name: 'Ultimate Plan', price: 'Rp 200.000', description: 'Justifikasi termewah dengan fitur manajemen tamu modern.', features: ['Akses Tema Premium', 'Sistem QR Check-in', 'Link Per Tamu', 'WA Blast Integration', 'Unlimited Galeri Foto'], color: 'text-amber-500', bg: 'bg-amber-50/50' },
+  { id: 'BASIC', name: 'Minimalist Plan', price: 'Rp 75.000', description: 'Sangat cocok untuk undangan minimalis yang elegan.', features: ['Hapus Watermark', '2 Foto Mempelai', '2 Foto Galeri', 'Aktif Selamanya', 'Semua Tema Klasik'], color: 'text-blue-500', bg: 'bg-blue-50' },
+  { id: 'PREMIUM', name: 'Premium Plan', price: 'Rp 150.000', description: 'Fitur lengkap untuk momen pernikahan yang tak terlupakan.', features: ['10 Foto Galeri', 'Love Story Section', 'Countdown Timer', 'Musik Latar Kustom', 'Akses Tema Klasik'], color: 'text-rose-500', bg: 'bg-rose-50' },
+  { id: 'ULTIMATE', name: 'Ultimate Plan', price: 'Rp 250.000', description: 'Justifikasi termewah dengan fitur manajemen tamu modern.', features: ['Akses Tema Premium', 'Sistem QR Check-in', 'Link Per Tamu', 'WA Blast Integration', 'Unlimited Galeri Foto'], color: 'text-amber-500', bg: 'bg-amber-50/50' },
 ];
 
 export default function InvitationForm() {
@@ -105,7 +105,10 @@ export default function InvitationForm() {
   const router = useRouter();
   const [subStep, setSubStep] = useState(1);
   const [userAccountType, setUserAccountType] = useState<string>('B2C_FREE');
-  const [showPlanSelection, setShowPlanSelection] = useState(true);
+  const [showPlanSelection, setShowPlanSelection] = useState(false);
+  const [aiMode, setAiMode] = useState<'auto' | 'custom'>(
+    store.stylePreferences.additionalNotes ? 'custom' : 'auto'
+  );
 
   useEffect(() => {
     if (session === null) {
@@ -115,16 +118,33 @@ export default function InvitationForm() {
     }
   }, [session, router]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const planParam = params.get('plan');
+      if (planParam) {
+        store.setTargetTier(planParam as any);
+        setShowPlanSelection(false);
+      }
+    }
+  }, []);
+
   const fetchUserStats = async () => {
     try {
       const res = await fetch('/api/invitations');
       const data = await res.json();
-      if (data.success) {
-        setUserAccountType(data.user.accountType);
+      if (data.success && data.data?.user) {
+        setUserAccountType(data.data.user.accountType);
         // If B2B, automatically set to PREMIUM features and skip plan selection
-        if (data.user.accountType === 'B2B_PRO' || data.user.accountType === 'B2B_ALL_TIME') {
+        if (data.data.user.accountType === 'B2B_PRO' || data.data.user.accountType === 'B2B_ALL_TIME') {
           store.setTargetTier('PREMIUM');
           setShowPlanSelection(false);
+        } else {
+          // If B2C and no plan parameter in URL, redirect to pricing to choose a plan
+          const params = new URLSearchParams(window.location.search);
+          if (!params.get('plan')) {
+            router.push('/pricing');
+          }
         }
       }
     } catch (e) { console.error(e); }
@@ -143,7 +163,7 @@ export default function InvitationForm() {
         }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Gagal memproses data');
+      if (!response.ok) throw new Error(data.message || 'Gagal memproses data');
       store.setGeneratedInvitation(data.data);
       showToast('success', 'Teks berhasil di-generate!');
     } catch (error) {
@@ -155,6 +175,7 @@ export default function InvitationForm() {
 
   const handleSave = async () => {
     if (store.targetTier === 'DRAFT') {
+       showToast('info', 'Silakan pilih paket berbayar untuk menyimpan dan mempublikasikan undangan Anda.');
        router.push('/pricing');
        return;
     }
@@ -183,10 +204,23 @@ export default function InvitationForm() {
           loveStory: store.eventDetails.loveStory,
           digitalGifts: store.eventDetails.digitalGifts,
           quotes: store.eventDetails.quotes,
+          qrEnabled: store.qrEnabled,
         }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Gagal menyimpan');
+      if (!response.ok) throw new Error(data.message || 'Gagal menyimpan');
+
+      // If B2C paid plan (BASIC, PREMIUM, ULTIMATE), redirect to custom checkout page
+      const isPaidB2C = userAccountType === 'B2C_FREE' && (store.targetTier === 'BASIC' || store.targetTier === 'PREMIUM' || store.targetTier === 'ULTIMATE');
+      
+      if (isPaidB2C) {
+        showToast('success', 'Undangan disimpan! Mengalihkan ke pembayaran...');
+        setTimeout(() => {
+          window.location.href = `/checkout?plan=${store.targetTier}&invitationId=${data.data.id}`;
+        }, 1500);
+        return;
+      }
+
       showToast('success', 'Undangan disimpan! Mengalihkan...');
       setTimeout(() => { window.location.href = `/invitation/${data.data.slug}`; }, 1500);
     } catch (error) {
@@ -213,6 +247,7 @@ export default function InvitationForm() {
     language: store.stylePreferences.language,
     layout: store.stylePreferences.layout,
     musicUrl: store.stylePreferences.musicUrl === 'custom' ? '' : store.stylePreferences.musicUrl,
+    qrEnabled: store.qrEnabled,
     id: 'preview',
     slug: 'preview',
     viewCount: 0,
@@ -220,11 +255,16 @@ export default function InvitationForm() {
     updatedAt: new Date().toISOString(),
   } as any;
 
-  // Dynamic constraints based on tier
-  const isFree = store.targetTier === 'DRAFT';
-  const isBasic = store.targetTier === 'BASIC';
-  const isPremium = store.targetTier === 'PREMIUM';
-  const isUltimate = store.targetTier === 'ULTIMATE';
+  // Dynamic constraints based on tier (inclusive hierarchy)
+  const activeTier = store.targetTier;
+  const isFree = activeTier === 'DRAFT';
+  const isBasic = activeTier === 'BASIC';
+  const isPremium = activeTier === 'PREMIUM';
+  const isUltimate = activeTier === 'ULTIMATE';
+
+  const hasBasic = activeTier === 'BASIC' || activeTier === 'PREMIUM' || activeTier === 'ULTIMATE';
+  const hasPremium = activeTier === 'PREMIUM' || activeTier === 'ULTIMATE';
+  const hasUltimate = activeTier === 'ULTIMATE';
 
   if (showPlanSelection) {
     return (
@@ -313,7 +353,7 @@ export default function InvitationForm() {
             <Card className="bg-white border-[#eceae4] shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-rose-500" />
               <div className="flex border-b border-[#eceae4] bg-[#fcfbf8]/50">
-                {[{ id: 1, label: 'LOKASI', icon: MapPin }, { id: 2, label: 'AGENDA', icon: ListChecks }, { id: 3, label: 'CERITA', icon: Sparkles }, { id: 4, label: 'KADO', icon: Heart }].map((s) => (
+                {[{ id: 1, label: 'LOKASI', icon: MapPin }, { id: 2, label: 'AGENDA', icon: ListChecks }, { id: 3, label: `CERITA ${!hasPremium ? '🔒' : ''}`, icon: Sparkles }, { id: 4, label: `KADO ${!hasBasic ? '🔒' : ''}`, icon: Heart }].map((s) => (
                   <button key={s.id} onClick={() => setSubStep(s.id)} className={`flex-1 py-4 flex flex-col items-center gap-1 transition-all relative ${subStep === s.id ? 'text-rose-500' : 'text-[#1c1c1c]/40 hover:text-[#1c1c1c]/60'}`}>
                     <s.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${subStep === s.id ? 'animate-pulse' : ''}`} /><span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider">{s.label}</span>
                     {subStep === s.id && <motion.div layoutId="subIndicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-500" />}
@@ -324,8 +364,90 @@ export default function InvitationForm() {
                 <AnimatePresence mode="wait">
                   {subStep === 1 && (<motion.div key="sub1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Input label="Tanggal Acara" type="date" value={store.eventDetails.eventDate} onChange={(e) => store.setEventDetails({ ...store.eventDetails, eventDate: e.target.value })} /><Input label="Waktu Mulai" type="time" value={store.eventDetails.eventTime} onChange={(e) => store.setEventDetails({ ...store.eventDetails, eventTime: e.target.value })} /></div><Input label="Nama Lokasi" placeholder="The Grand Ballroom Sumedang" value={store.eventDetails.venueName} onChange={(e) => store.setEventDetails({ ...store.eventDetails, venueName: e.target.value })} /><Textarea label="Alamat Lengkap" placeholder="Jl. Pangeran Kornel No. 123, Sumedang Selatan" rows={3} value={store.eventDetails.venueAddress} onChange={(e) => store.setEventDetails({ ...store.eventDetails, venueAddress: e.target.value })} /></motion.div>)}
                   {subStep === 2 && (<motion.div key="sub2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="flex items-center justify-between"><h3 className="font-bold text-sm">Rangkaian Acara</h3><Button variant="ghost" size="sm" onClick={() => store.setEventDetails({ ...store.eventDetails, schedule: [...store.eventDetails.schedule, { id: Date.now().toString(), time: '', label: '', icon: 'heart' }] })} className="text-rose-500"><Plus className="h-4 w-4 mr-1" /> Tambah</Button></div><div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">{store.eventDetails.schedule.map((item, index) => (<div key={item.id} className="bg-[#fcfbf8] p-4 border border-[#eceae4] rounded-2xl space-y-3"><div className="grid grid-cols-1 sm:grid-cols-2 gap-3"><Input label="Jam" type="time" value={item.time} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].time = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /><Select label="Ikon" options={iconOptions} value={item.icon} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].icon = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /></div><div className="flex gap-2"><Input label="Kegiatan" placeholder="Contoh: Akad Nikah" className="flex-1" value={item.label} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].label = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /><button className="mt-8 text-red-400 p-2" onClick={() => { const n = store.eventDetails.schedule.filter((_, i) => i !== index); store.setEventDetails({ ...store.eventDetails, schedule: n }); }}><Trash2 className="h-4 w-4" /></button></div></div>))}</div></motion.div>)}
-                  {subStep === 3 && (<motion.div key="sub3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="flex items-center justify-between"><h3 className="font-bold text-sm">Kisah Cinta</h3><Button variant="ghost" size="sm" onClick={() => store.setEventDetails({ ...store.eventDetails, loveStory: [...store.eventDetails.loveStory, { id: Date.now().toString(), year: '', title: '', description: '' }] })} className="text-rose-500"><Plus className="h-4 w-4 mr-1" /> Tambah</Button></div><div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">{store.eventDetails.loveStory.map((item, index) => (<div key={item.id} className="bg-[#fcfbf8] p-5 border border-[#eceae4] rounded-2xl space-y-4"><div className="grid grid-cols-2 gap-4"><Input label="Tahun" placeholder="2020" value={item.year} onChange={(e) => { const n = [...store.eventDetails.loveStory]; n[index].year = e.target.value; store.setEventDetails({ ...store.eventDetails, loveStory: n }); }} /><Input label="Judul" placeholder="Pertemuan Pertama" value={item.title} onChange={(e) => { const n = [...store.eventDetails.loveStory]; n[index].title = e.target.value; store.setEventDetails({ ...store.eventDetails, loveStory: n }); }} /></div><div className="flex gap-2"><Textarea label="Cerita" placeholder="Menceritakan momen indah..." rows={2} className="flex-1" value={item.description} onChange={(e) => { const n = [...store.eventDetails.loveStory]; n[index].description = e.target.value; store.setEventDetails({ ...store.eventDetails, loveStory: n }); }} /><button className="mt-8 text-red-400 p-2" onClick={() => { const n = store.eventDetails.loveStory.filter((_, i) => i !== index); store.setEventDetails({ ...store.eventDetails, loveStory: n }); }}><Trash2 className="h-5 w-5" /></button></div></div>))}</div></motion.div>)}
-                  {subStep === 4 && (<motion.div key="sub4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="flex items-center justify-between"><h3 className="font-bold text-sm">Kado Digital</h3><Button variant="ghost" size="sm" onClick={() => { const n = [...(store.eventDetails.digitalGifts || [])]; n.push({ bankName: '', accountNumber: '', accountHolder: '' }); store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }} className="text-rose-500"><Plus className="h-4 w-4 mr-1" /> Rekening</Button></div><div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">{(store.eventDetails.digitalGifts || []).map((gift: any, index: number) => (<div key={index} className="bg-[#fcfbf8] p-5 border border-[#eceae4] rounded-2xl"><div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4"><Input label="Bank / Wallet" placeholder="BCA" value={gift.bankName} onChange={(e) => { const n = [...store.eventDetails.digitalGifts]; n[index].bankName = e.target.value; store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }} /><Input label="Nomor Rekening" placeholder="1234567890" value={gift.accountNumber} onChange={(e) => { const n = [...store.eventDetails.digitalGifts]; n[index].accountNumber = e.target.value; store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }} /></div><div className="flex items-end gap-3"><div className="flex-1"><Input label="Atas Nama" placeholder="John Doe" value={gift.accountHolder} onChange={(e) => { const n = [...store.eventDetails.digitalGifts]; n[index].accountHolder = e.target.value; store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }} /></div><button className="h-12 w-12 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-xl transition-colors border border-[#eceae4] bg-white" onClick={() => { const n = store.eventDetails.digitalGifts.filter((_: any, i: number) => i !== index); store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }}><Trash2 className="h-5 w-5" /></button></div></div>))}</div></motion.div>)}
+                  {subStep === 3 && (
+                    <motion.div key="sub3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                      {!hasPremium ? (
+                        <div className="bg-stone-50 border border-stone-200 p-8 rounded-3xl text-center space-y-4">
+                          <Sparkles className="h-8 w-8 mx-auto text-amber-500 animate-pulse" />
+                          <h4 className="font-bold text-base text-[#1c1c1c]">Fitur Kisah Cinta Terkunci 🔒</h4>
+                          <p className="text-xs text-stone-500 max-w-sm mx-auto">
+                            Kisah Cinta (Love Story) hanya tersedia untuk Paket Premium & Ultimate. Upgrade sekarang untuk mengabadikan perjalanan cinta Anda dengan indah.
+                          </p>
+                          <Button size="sm" onClick={() => setShowPlanSelection(true)} className="bg-rose-500 text-white rounded-xl">
+                            Upgrade Paket
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-bold text-sm">Kisah Cinta</h3>
+                            <Button variant="ghost" size="sm" onClick={() => store.setEventDetails({ ...store.eventDetails, loveStory: [...store.eventDetails.loveStory, { id: Date.now().toString(), year: '', title: '', description: '' }] })} className="text-rose-500">
+                              <Plus className="h-4 w-4 mr-1" /> Tambah
+                            </Button>
+                          </div>
+                          <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
+                            {store.eventDetails.loveStory.map((item, index) => (
+                              <div key={item.id} className="bg-[#fcfbf8] p-5 border border-[#eceae4] rounded-2xl space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                  <Input label="Tahun" placeholder="2020" value={item.year} onChange={(e) => { const n = [...store.eventDetails.loveStory]; n[index].year = e.target.value; store.setEventDetails({ ...store.eventDetails, loveStory: n }); }} />
+                                  <Input label="Judul" placeholder="Pertemuan Pertama" value={item.title} onChange={(e) => { const n = [...store.eventDetails.loveStory]; n[index].title = e.target.value; store.setEventDetails({ ...store.eventDetails, loveStory: n }); }} />
+                                </div>
+                                <div className="flex gap-2">
+                                  <Textarea label="Cerita" placeholder="Menceritakan momen indah..." rows={2} className="flex-1" value={item.description} onChange={(e) => { const n = [...store.eventDetails.loveStory]; n[index].description = e.target.value; store.setEventDetails({ ...store.eventDetails, loveStory: n }); }} />
+                                  <button className="mt-8 text-red-400 p-2" onClick={() => { const n = store.eventDetails.loveStory.filter((_, i) => i !== index); store.setEventDetails({ ...store.eventDetails, loveStory: n }); }}>
+                                    <Trash2 className="h-5 w-5" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </motion.div>
+                  )}
+                  {subStep === 4 && (
+                    <motion.div key="sub4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                      {!hasBasic ? (
+                        <div className="bg-stone-50 border border-stone-200 p-8 rounded-3xl text-center space-y-4">
+                          <Heart className="h-8 w-8 mx-auto text-rose-500 animate-pulse" />
+                          <h4 className="font-bold text-base text-[#1c1c1c]">Fitur Kado Digital Terkunci 🔒</h4>
+                          <p className="text-xs text-stone-500 max-w-sm mx-auto">
+                            Hubungkan rekening bank atau e-wallet Anda agar tamu dapat mengirimkan kado secara instan. Fitur ini hanya tersedia untuk Paket Basic ke atas.
+                          </p>
+                          <Button size="sm" onClick={() => setShowPlanSelection(true)} className="bg-[#1c1c1c] text-white rounded-xl">
+                            Upgrade Paket
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-bold text-sm">Kado Digital</h3>
+                            <Button variant="ghost" size="sm" onClick={() => { const n = [...(store.eventDetails.digitalGifts || [])]; n.push({ bankName: '', accountNumber: '', accountHolder: '' }); store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }} className="text-rose-500">
+                              <Plus className="h-4 w-4 mr-1" /> Rekening
+                            </Button>
+                          </div>
+                          <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
+                            {(store.eventDetails.digitalGifts || []).map((gift: any, index: number) => (
+                              <div key={index} className="bg-[#fcfbf8] p-5 border border-[#eceae4] rounded-2xl">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                                  <Input label="Bank / Wallet" placeholder="BCA" value={gift.bankName} onChange={(e) => { const n = [...store.eventDetails.digitalGifts]; n[index].bankName = e.target.value; store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }} />
+                                  <Input label="Nomor Rekening" placeholder="1234567890" value={gift.accountNumber} onChange={(e) => { const n = [...store.eventDetails.digitalGifts]; n[index].accountNumber = e.target.value; store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }} />
+                                </div>
+                                <div className="flex items-end gap-3">
+                                  <div className="flex-1">
+                                    <Input label="Atas Nama" placeholder="John Doe" value={gift.accountHolder} onChange={(e) => { const n = [...store.eventDetails.digitalGifts]; n[index].accountHolder = e.target.value; store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }} />
+                                  </div>
+                                  <button className="h-12 w-12 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-xl transition-colors border border-[#eceae4] bg-white" onClick={() => { const n = store.eventDetails.digitalGifts.filter((_: any, i: number) => i !== index); store.setEventDetails({ ...store.eventDetails, digitalGifts: n } as any); }}>
+                                    <Trash2 className="h-5 w-5" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </motion.div>
+                  )}
                 </AnimatePresence>
                 <div className="flex flex-col-reverse sm:flex-row justify-between mt-12 gap-3"><Button variant="secondary" className="h-12 sm:h-auto" onClick={() => subStep > 1 ? setSubStep(subStep - 1) : store.prevStep()}><ChevronLeft className="h-4 w-4 mr-1" /> {subStep === 1 ? 'Kembali Ke Pasangan' : 'Kembali'}</Button><Button size="lg" className="h-14 sm:h-auto bg-[#1c1c1c] text-white" onClick={() => subStep < 4 ? setSubStep(subStep + 1) : store.nextStep()} disabled={subStep === 1 && !canProceedStep2}>{subStep === 4 ? 'Lanjut Ke Foto' : 'Lanjut'}</Button></div>
               </div>
@@ -342,7 +464,7 @@ export default function InvitationForm() {
                 <div className="space-y-12">
                   {/* Header Photo: Only for BASIC & PREMIUM */}
                   <div className="space-y-4">
-                    <h3 className="font-bold text-sm flex items-center gap-2">Foto Header / Sampul {!isPremium && !isBasic && <Lock className="h-3 w-3 text-stone-300" />}</h3>
+                    <h3 className="font-bold text-sm flex items-center gap-2">Foto Header / Sampul {!hasBasic && <Lock className="h-3 w-3 text-stone-300" />}</h3>
                     {isFree ? (
                       <div className="bg-stone-50 border border-stone-200 p-6 rounded-3xl text-center">
                         <Lock className="h-6 w-6 mx-auto mb-2 text-stone-300" />
@@ -369,7 +491,11 @@ export default function InvitationForm() {
                       <div className="space-y-4">
                         {(isBasic && store.photoUrls.length >= 2) ? (
                           <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
-                             <AlertCircle className="h-4 w-4" /> Batas galeri Paket Basic tercapai (2 foto).
+                             <AlertCircle className="h-4 w-4" /> Batas galeri Paket Minimalist tercapai (2 foto).
+                          </div>
+                        ) : (isPremium && store.photoUrls.length >= 10) ? (
+                          <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
+                             <AlertCircle className="h-4 w-4" /> Batas galeri Paket Premium tercapai (10 foto).
                           </div>
                         ) : (
                           <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-8 rounded-3xl">
@@ -398,7 +524,7 @@ export default function InvitationForm() {
                     <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#1c1c1c]/50">Pilih Tema</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                       {layoutOptions.map((opt) => {
-                        const isLocked = opt.category === 'premium' && !isUltimate;
+                        const isLocked = opt.category === 'premium' && !hasPremium;
                         return (
                           <button 
                             key={opt.value} 
@@ -424,16 +550,119 @@ export default function InvitationForm() {
                   
                   {/* Music: Restricted */}
                   <div className="relative">
-                    <Select label="Musik Latar" options={isPremium ? musicOptions : [{ value: '', label: '🔇 Tanpa Musik (Upgrade ke Premium)' }]} value={isPremium ? store.stylePreferences.musicUrl : ''} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, musicUrl: e.target.value })} disabled={!isPremium} />
-                    {!isPremium && <Lock className="absolute top-10 right-10 h-4 w-4 text-stone-300" />}
-                    {!isPremium && <p className="text-[9px] text-stone-400 mt-1">* Musik hanya tersedia pada Paket Premium</p>}
+                    <Select label="Musik Latar" options={hasPremium ? musicOptions : [{ value: '', label: '🔇 Tanpa Musik (Upgrade ke Premium)' }]} value={hasPremium ? store.stylePreferences.musicUrl : ''} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, musicUrl: e.target.value })} disabled={!hasPremium} />
+                    {!hasPremium && <Lock className="absolute top-10 right-10 h-4 w-4 text-stone-300" />}
+                    {!hasPremium && <p className="text-[9px] text-stone-400 mt-1">* Musik hanya tersedia pada Paket Premium</p>}
                   </div>
 
                   <div className="pt-6 border-t border-[#eceae4] space-y-6">
-                    <div className="flex items-center justify-between"><h3 className="font-bold flex items-center gap-2"><FileText className="h-4 w-4 text-rose-500" /> Teks Undangan</h3><Button variant="ghost" size="sm" onClick={handleGenerateAI} isLoading={store.isGenerating} className="text-rose-500 hover:bg-rose-50"><RotateCcw className={`h-4 w-4 mr-2 ${store.isGenerating ? 'animate-spin' : ''}`} />{store.generatedInvitation ? 'Ganti Teks (AI)' : 'Generate Teks (AI)'}</Button></div>
-                    {store.generatedInvitation ? (<motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><Textarea label="Salam Pembuka" value={store.generatedInvitation.greeting} onChange={(e) => store.setGeneratedInvitation({ ...store.generatedInvitation!, greeting: e.target.value })} rows={3} /><Textarea label="Narasi Utama" value={store.generatedInvitation.mainBody} onChange={(e) => store.setGeneratedInvitation({ ...store.generatedInvitation!, mainBody: e.target.value })} rows={5} /><Textarea label="Info Acara" value={store.generatedInvitation.eventInfo} onChange={(e) => store.setGeneratedInvitation({ ...store.generatedInvitation!, eventInfo: e.target.value })} rows={3} /><Textarea label="Salam Penutup" value={store.generatedInvitation.closing} onChange={(e) => store.setGeneratedInvitation({ ...store.generatedInvitation!, closing: e.target.value })} rows={3} /></motion.div>) : (<div className="bg-[#fcfbf8] border border-[#eceae4] border-dashed rounded-2xl p-8 text-center"><p className="text-sm text-[#5f5f5d]">Gunakan AI untuk membuat teks undangan secara otomatis.</p></div>)}
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-rose-500" /> Teks Undangan
+                      </h3>
+                      <Button variant="ghost" size="sm" onClick={handleGenerateAI} isLoading={store.isGenerating} className="text-rose-500 hover:bg-rose-50">
+                        {!store.isGenerating && <RotateCcw className="h-4 w-4 mr-2" />}
+                        {store.generatedInvitation ? 'Ganti Teks (AI)' : 'Generate Teks (AI)'}
+                      </Button>
+                    </div>
+
+                    {/* Mode Selector for AI Generation */}
+                    <div className="bg-[#fcfbf8] p-1.5 rounded-2xl border border-[#eceae4] flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAiMode('auto');
+                          store.setStylePreferences({ ...store.stylePreferences, additionalNotes: '' });
+                        }}
+                        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider rounded-xl transition-all ${
+                          aiMode === 'auto'
+                            ? 'bg-[#1c1c1c] text-[#fcfbf8] shadow-sm'
+                            : 'text-stone-500 hover:text-stone-800'
+                        }`}
+                      >
+                        ⚡ Auto-Generate (Instan)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAiMode('custom')}
+                        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider rounded-xl transition-all ${
+                          aiMode === 'custom'
+                            ? 'bg-[#1c1c1c] text-[#fcfbf8] shadow-sm'
+                            : 'text-stone-500 hover:text-stone-800'
+                        }`}
+                      >
+                        ✍️ Tulis Petunjuk Khusus
+                      </button>
+                    </div>
+
+                    {/* Custom Prompt Input */}
+                    {aiMode === 'custom' && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="space-y-2 overflow-hidden"
+                      >
+                        <Textarea
+                          label="Petunjuk Khusus AI (Opsional)"
+                          placeholder="Tuliskan petunjuk khusus, misal: 'Gunakan kutipan QS Ar-Rum ayat 21, sebutkan resepsi dengan adat Jawa, dan ajak tamu mendoakan restu'."
+                          value={store.stylePreferences.additionalNotes || ''}
+                          onChange={(e) =>
+                            store.setStylePreferences({
+                              ...store.stylePreferences,
+                              additionalNotes: e.target.value,
+                            })
+                          }
+                          rows={3}
+                        />
+                        <p className="text-[10px] text-stone-400">
+                          * Petunjuk ini akan langsung memandu kecerdasan buatan untuk merangkai kata undangan sesuai keinginan Anda.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {store.generatedInvitation ? (
+                      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                        <Textarea label="Salam Pembuka" value={store.generatedInvitation.greeting} onChange={(e) => store.setGeneratedInvitation({ ...store.generatedInvitation!, greeting: e.target.value })} rows={3} />
+                        <Textarea label="Narasi Utama" value={store.generatedInvitation.mainBody} onChange={(e) => store.setGeneratedInvitation({ ...store.generatedInvitation!, mainBody: e.target.value })} rows={5} />
+                        <Textarea label="Info Acara" value={store.generatedInvitation.eventInfo} onChange={(e) => store.setGeneratedInvitation({ ...store.generatedInvitation!, eventInfo: e.target.value })} rows={3} />
+                        <Textarea label="Salam Penutup" value={store.generatedInvitation.closing} onChange={(e) => store.setGeneratedInvitation({ ...store.generatedInvitation!, closing: e.target.value })} rows={3} />
+                      </motion.div>
+                    ) : (
+                      <div className="bg-[#fcfbf8] border border-[#eceae4] border-dashed rounded-2xl p-8 text-center">
+                        <p className="text-sm text-[#5f5f5d]">
+                          {aiMode === 'custom' && !store.stylePreferences.additionalNotes
+                            ? 'Tuliskan petunjuk khusus di atas, lalu klik tombol Generate di kanan atas.'
+                            : 'Gunakan AI untuk membuat teks undangan secara otomatis.'}
+                        </p>
+                      </div>
+                    )}
                   </div>
                   <Textarea label="Quotes favorit" placeholder="Dan di antara tanda-tanda kekuasaan-Nya..." rows={2} value={store.eventDetails.quotes} onChange={(e) => store.setEventDetails({ ...store.eventDetails, quotes: e.target.value })} />
+
+                  {/* QR Check-in Toggle: Only visible/active for Premium or Ultimate tiers */}
+                  {hasPremium && (
+                    <div className="pt-6 border-t border-[#eceae4] flex items-center justify-between bg-stone-50/50 p-6 rounded-3xl border border-stone-200/50">
+                      <div className="space-y-1">
+                        <label className="text-sm font-bold text-stone-900 block">Fitur QR Code Check-in 🎟️</label>
+                        <p className="text-xs text-stone-500 leading-relaxed max-w-md">
+                          Aktifkan kode QR unik pada setiap undangan tamu Anda untuk mempercepat pencatatan kehadiran menggunakan scanner di lokasi acara.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => store.setQrEnabled(!store.qrEnabled)}
+                        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                          store.qrEnabled ? 'bg-emerald-500' : 'bg-stone-200'
+                        }`}
+                      >
+                        <span
+                          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                            store.qrEnabled ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col-reverse sm:flex-row justify-between mt-12 gap-3"><Button variant="secondary" className="h-12 sm:h-auto" onClick={() => store.prevStep()}><ChevronLeft className="h-4 w-4 mr-1" /> Kembali</Button><Button onClick={() => store.nextStep()} disabled={!store.generatedInvitation} className="h-14 sm:h-auto bg-[#1c1c1c] text-white">Lihat Hasil Akhir <Sparkles className="h-4 w-4 ml-1" /></Button></div>
               </div>
@@ -447,12 +676,38 @@ export default function InvitationForm() {
               <h2 className="text-3xl font-display font-bold">Undangan Siap Dilihat</h2>
               {isFree && <div className="mt-2 bg-amber-50 text-amber-600 px-4 py-2 rounded-full text-xs font-bold border border-amber-100 flex items-center gap-2"><AlertCircle className="h-4 w-4" /> Ini adalah mode Demo. Silakan upgrade untuk menyimpan & membagikan.</div>}
             </div>
-            <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[360px] flex justify-center"><div className="relative w-full aspect-[9/19] rounded-[3.5rem] border-[12px] border-[#1c1c1c] bg-[#1c1c1c] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden"><div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-[#1c1c1c] rounded-b-3xl z-50 flex items-center justify-center"><div className="w-12 h-1 bg-white/10 rounded-full" /></div><div className="absolute inset-0 bg-white overflow-y-auto no-scrollbar scroll-smooth"><InvitationPreview invitation={mockInvitation} /></div><div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full z-50" /></div></div>
+            <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[360px] flex justify-center">
+              <div 
+                className="relative w-full aspect-[9/19] rounded-[3.5rem] border-[12px] border-[#1c1c1c] bg-[#1c1c1c] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden"
+                style={{ transform: 'translate3d(0, 0, 0)' }}
+              >
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-[#1c1c1c] rounded-b-3xl z-50 flex items-center justify-center">
+                  <div className="w-12 h-1 bg-white/10 rounded-full" />
+                </div>
+                <div className="absolute inset-0 bg-white overflow-y-auto no-scrollbar scroll-smooth">
+                  <InvitationPreview invitation={mockInvitation} />
+                </div>
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full z-50" />
+              </div>
+            </div>
             <div className="max-w-md w-full space-y-4">
-              <Button onClick={handleSave} isLoading={store.isSaving} size="lg" className={`w-full ${isFree ? 'bg-rose-500' : 'bg-[#1c1c1c]'} text-white py-8 text-xl font-display tracking-widest shadow-2xl transition-all`}>
-                {isFree ? 'UPGRADE UNTUK PUBLIKASI' : store.isSaving ? 'MENYIMPAN...' : 'SIMPAN & PUBLIKASIKAN'}
+              <Button onClick={handleSave} isLoading={store.isSaving} size="lg" className={`w-full ${userAccountType === 'B2C_FREE' ? 'bg-rose-500 hover:bg-rose-600' : 'bg-[#1c1c1c] hover:bg-stone-850'} text-white py-8 text-xl font-display tracking-widest shadow-2xl transition-all`}>
+                {store.isSaving 
+                  ? 'MENYIMPAN...' 
+                  : userAccountType === 'B2C_FREE' 
+                    ? 'LANJUTKAN KE PEMBAYARAN' 
+                    : 'SIMPAN & PUBLIKASIKAN'
+                }
               </Button>
-              <div className="flex gap-4"><Button variant="secondary" onClick={() => store.setStep(4)} className="flex-1 py-4">Edit Gaya & Teks</Button><Button variant="secondary" onClick={handleGenerateAI} isLoading={store.isGenerating} className="flex-1 py-4"><RotateCcw className="h-4 w-4 mr-2" /> Regenerasi Teks</Button></div>
+              <div className="flex gap-4">
+                <Button variant="secondary" onClick={() => store.setStep(4)} className="flex-1 py-4">
+                  Edit Gaya & Teks
+                </Button>
+                <Button variant="secondary" onClick={handleGenerateAI} isLoading={store.isGenerating} className="flex-1 py-4">
+                  {!store.isGenerating && <RotateCcw className="h-4 w-4 mr-2" />}
+                  Regenerasi Teks
+                </Button>
+              </div>
             </div>
           </motion.div>
         )}

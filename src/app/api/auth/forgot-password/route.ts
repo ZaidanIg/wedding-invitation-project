@@ -1,7 +1,6 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { sendPasswordResetEmail } from '@/lib/email';
-import crypto from 'crypto';
+import { successResponse, errorResponse } from '@/lib/api-response';
+import { handleServiceError } from '@/lib/errors';
+import { authService } from '@/modules/auth/server/service';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limiter';
 
 export async function POST(request: Request) {
@@ -11,47 +10,19 @@ export async function POST(request: Request) {
     const limiter = checkRateLimit(`forgot-password:${ip}`);
     
     if (!limiter.allowed) {
-      return NextResponse.json(
-        { success: false, error: `Terlalu banyak permintaan. Silakan coba lagi dalam ${limiter.retryAfter} detik.` },
-        { status: 429 }
+      return errorResponse(
+        `Terlalu banyak permintaan. Silakan coba lagi dalam ${limiter.retryAfter} detik.`,
+        429,
+        'RATE_LIMIT_ERROR'
       );
     }
 
-    const { email } = await request.json();
+    const body = await request.json();
+    const result = await authService.forgotPassword(body);
 
-    if (!email) {
-      return NextResponse.json({ success: false, error: 'Email is required' }, { status: 400 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    // We return success even if user not found for security reasons (don't leak emails)
-    if (!user || !user.password) {
-      return NextResponse.json({ success: true, message: 'Jika email terdaftar, instruksi reset akan dikirim.' });
-    }
-
-    const token = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 3600000); // 1 hour
-
-    await prisma.passwordResetToken.create({
-      data: {
-        email,
-        token,
-        expires,
-      },
-    });
-
-    const emailSent = await sendPasswordResetEmail(email, token);
-
-    if (!emailSent) {
-      return NextResponse.json({ success: false, error: 'Failed to send email' }, { status: 500 });
-    }
-
-    return NextResponse.json({ success: true, message: 'Email reset kata sandi telah dikirim.' });
+    return successResponse(result, result.message, 200);
   } catch (error) {
-    console.error('[Forgot Password Error]:', error);
-    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
+    const { message, status, code } = handleServiceError(error);
+    return errorResponse(message, status, code);
   }
 }

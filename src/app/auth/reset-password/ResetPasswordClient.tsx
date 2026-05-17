@@ -47,7 +47,7 @@ export default function ResetPasswordPage() {
         setStatus({ type: 'success', text: 'Kata sandi berhasil diperbarui! Silakan login kembali.' });
         setTimeout(() => router.push('/auth/signin'), 3000);
       } else {
-        setStatus({ type: 'error', text: data.error || 'Gagal mereset kata sandi' });
+        setStatus({ type: 'error', text: data.message || 'Gagal mereset kata sandi' });
       }
     } catch (error) {
       setStatus({ type: 'error', text: 'Gagal menghubungi server' });

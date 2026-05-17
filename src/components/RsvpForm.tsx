@@ -9,9 +9,10 @@ import { QRCodeSVG } from 'qrcode.react';
 interface RsvpFormProps {
   slug: string;
   tier?: string;
+  qrEnabled?: boolean;
 }
 
-export default function RsvpForm({ slug, tier }: RsvpFormProps) {
+export default function RsvpForm({ slug, tier, qrEnabled }: RsvpFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -41,7 +42,7 @@ export default function RsvpForm({ slug, tier }: RsvpFormProps) {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to submit');
+      if (!res.ok) throw new Error(data.message || 'Failed to submit');
       
       if (data.data?.id) {
         setGuestId(data.data.id);
@@ -66,7 +67,7 @@ export default function RsvpForm({ slug, tier }: RsvpFormProps) {
         <h3 className="text-lg font-display font-semibold text-stone-800 mb-2">Terima Kasih!</h3>
         <p className="text-sm text-stone-500 mb-8">Konfirmasi kehadiran Anda telah tersimpan.</p>
 
-        {(tier === 'ULTIMATE' || tier === 'B2B_GENERATED') && status === 'ATTENDING' && guestId && (
+        {((tier === 'PREMIUM' || tier === 'ULTIMATE' || tier === 'B2B_GENERATED') && qrEnabled !== false) && status === 'ATTENDING' && guestId && (
           <div className="mt-6 p-6 bg-white border border-stone-100 rounded-3xl shadow-sm inline-block animate-fade-in">
             <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-4 flex items-center justify-center gap-2">
               <QrCode className="h-3 w-3" /> QR Check-in Anda

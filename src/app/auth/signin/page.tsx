@@ -1,10 +1,38 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import { Heart, Mail, Lock, User, ArrowRight, Check, X } from 'lucide-react';
+import { Heart, Mail, Lock, User, ArrowRight, Check, X, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { z } from 'zod';
+
+// Frontend validation schemas
+const sendCodeSchema = z.object({
+  email: z.string().email('Format email tidak valid'),
+});
+
+const loginFormSchema = z.object({
+  email: z.string().email('Format email tidak valid'),
+  password: z.string().min(1, 'Kata sandi wajib diisi'),
+});
+
+const registerFormSchema = z.object({
+  name: z.string().min(3, 'Nama minimal 3 karakter'),
+  email: z.string().email('Format email tidak valid'),
+  code: z.string().length(6, 'Kode verifikasi harus 6 digit'),
+  password: z
+    .string()
+    .min(8, 'Kata sandi minimal 8 karakter')
+    .regex(/[A-Z]/, 'Kata sandi harus mengandung minimal 1 huruf besar')
+    .regex(/[a-z]/, 'Kata sandi harus mengandung minimal 1 huruf kecil')
+    .regex(/[0-9]/, 'Kata sandi harus mengandung minimal 1 angka')
+    .regex(/[^A-Za-z0-9]/, 'Kata sandi harus mengandung minimal 1 karakter spesial'),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Konfirmasi kata sandi tidak cocok',
+  path: ['confirmPassword'],
+});
 
 export default function SignInPage() {
   const router = useRouter();
@@ -14,6 +42,9 @@ export default function SignInPage() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [cooldown, setCooldown] = useState(0);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -32,6 +63,27 @@ export default function SignInPage() {
     return () => clearTimeout(timer);
   }, [cooldown]);
 
+  // Read NextAuth errors from URL search parameters on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlError = params.get('error');
+      if (urlError) {
+        if (
+          urlError === 'OAuthAccountNotLinked' ||
+          urlError === 'OAuthNotLinked' ||
+          urlError.toLowerCase().includes('oauth')
+        ) {
+          setError('Email Anda sudah terdaftar menggunakan Google. Silakan masuk dengan menekan tombol "Masuk dengan Google" di bawah.');
+        } else if (urlError === 'CredentialsSignin') {
+          setError('Email atau kata sandi Anda salah.');
+        } else {
+          setError('Terjadi kesalahan saat masuk. Silakan coba lagi.');
+        }
+      }
+    }
+  }, []);
+
   // Password strength logic
   const getPasswordStrength = (pass: string) => {
     let score = 0;
@@ -42,22 +94,38 @@ export default function SignInPage() {
     if (/[0-9]/.test(pass)) score += 1;
     if (/[^A-Za-z0-9]/.test(pass)) score += 1;
 
-    if (score <= 2) return { score, label: 'Weak', color: 'bg-rose-500' };
-    if (score === 3 || score === 4) return { score, label: 'Good', color: 'bg-amber-400' };
-    return { score, label: 'Strong', color: 'bg-emerald-500' };
+    if (score <= 2) return { score, label: 'Lemah', color: 'bg-rose-500' };
+    if (score === 3 || score === 4) return { score, label: 'Sedang', color: 'bg-amber-400' };
+    return { score, label: 'Kuat', color: 'bg-emerald-500' };
   };
 
   const strength = getPasswordStrength(formData.password);
   const isMatch = formData.password && formData.confirmPassword === formData.password;
 
-  const handleSendCode = async () => {
-    if (!formData.email) {
-      setError('Please enter your email first to receive a code.');
-      return;
+  const handleInputChange = (field: string, value: string) => {
+    setFormData({ ...formData, [field]: value });
+    if (validationErrors[field]) {
+      setValidationErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[field];
+        return copy;
+      });
     }
-    setIsSendingCode(true);
+  };
+
+  const handleSendCode = async () => {
+    setValidationErrors({});
     setError('');
     setSuccessMsg('');
+
+    const parsed = sendCodeSchema.safeParse({ email: formData.email });
+    if (!parsed.success) {
+      const err = parsed.error.issues[0];
+      setValidationErrors({ email: err.message });
+      return;
+    }
+
+    setIsSendingCode(true);
 
     try {
       const res = await fetch('/api/auth/send-code', {
@@ -68,13 +136,13 @@ export default function SignInPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Failed to send code.');
+        setError(data.message || 'Gagal mengirim kode verifikasi.');
       } else {
-        setSuccessMsg('Code sent! Please check your email.');
+        setSuccessMsg(data.message || 'Kode verifikasi berhasil dikirim! Silakan periksa email Anda.');
         setCooldown(60);
       }
     } catch (err) {
-      setError('An error occurred while sending the code.');
+      setError('Terjadi kesalahan saat mengirimkan kode verifikasi.');
     } finally {
       setIsSendingCode(false);
     }
@@ -86,7 +154,7 @@ export default function SignInPage() {
     try {
       await signIn('google', { callbackUrl: '/dashboard' });
     } catch {
-      setError('Failed to sign in with Google');
+      setError('Gagal masuk menggunakan Google');
       setIsLoading(false);
     }
   };
@@ -96,10 +164,27 @@ export default function SignInPage() {
     setIsLoading(true);
     setError('');
     setSuccessMsg('');
+    setValidationErrors({});
 
     try {
       if (isLogin) {
-        // Login
+        // Validate login on client
+        const parsed = loginFormSchema.safeParse({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (!parsed.success) {
+          const errors: Record<string, string> = {};
+          parsed.error.issues.forEach((err) => {
+            if (err.path[0]) errors[err.path[0].toString()] = err.message;
+          });
+          setValidationErrors(errors);
+          setIsLoading(false);
+          return;
+        }
+
+        // Login NextAuth
         const res = await signIn('credentials', {
           redirect: false,
           email: formData.email,
@@ -107,15 +192,43 @@ export default function SignInPage() {
         });
 
         if (res?.error) {
-          setError(res.error);
+          // Map custom error codes to beautiful user-friendly Indonesian messages
+          if (res.error === 'EMAIL_NOT_VERIFIED') {
+            setError('Akun Anda belum diverifikasi. Silakan periksa email Anda.');
+          } else if (res.error === 'EMAIL_PASSWORD_REQUIRED') {
+            setError('Email dan kata sandi wajib diisi.');
+          } else if (res.error === 'TOO_MANY_REQUESTS') {
+            setError('Terlalu banyak percobaan masuk. Silakan coba lagi dalam 1 menit.');
+          } else if (
+            res.error === 'OAuthAccountNotLinked' ||
+            res.error === 'OAuthNotLinked' ||
+            res.error.toLowerCase().includes('oauth')
+          ) {
+            setError('Email ini sudah terdaftar menggunakan Google. Silakan masuk menggunakan tombol "Masuk dengan Google" di bawah.');
+          } else if (
+            res.error === 'INVALID_EMAIL_OR_PASSWORD' || 
+            res.error === 'CredentialsSignin' || 
+            res.error.toLowerCase().includes('configure') || 
+            res.error.toLowerCase().includes('callback')
+          ) {
+            setError('Email atau kata sandi Anda salah.');
+          } else {
+            setError(res.error);
+          }
           setIsLoading(false);
         } else {
           router.push('/dashboard');
         }
       } else {
-        // Register
-        if (formData.password !== formData.confirmPassword) {
-          setError('Passwords do not match');
+        // Validate registration on client
+        const parsed = registerFormSchema.safeParse(formData);
+
+        if (!parsed.success) {
+          const errors: Record<string, string> = {};
+          parsed.error.issues.forEach((err) => {
+            if (err.path[0]) errors[err.path[0].toString()] = err.message;
+          });
+          setValidationErrors(errors);
           setIsLoading(false);
           return;
         }
@@ -134,12 +247,12 @@ export default function SignInPage() {
         const data = await res.json();
 
         if (!res.ok) {
-          setError(data.error || 'Failed to register');
+          setError(data.message || 'Gagal mendaftarkan akun');
           setIsLoading(false);
           return;
         }
 
-        // Auto login after successful registration since email is already verified by the code
+        // Auto login after successful registration
         const loginRes = await signIn('credentials', {
           redirect: false,
           email: formData.email,
@@ -147,14 +260,14 @@ export default function SignInPage() {
         });
 
         if (loginRes?.error) {
-          setError('Registered successfully, but failed to log in');
+          setError('Registrasi berhasil, tetapi gagal masuk otomatis. Silakan masuk secara manual.');
           setIsLoading(false);
         } else {
           router.push('/dashboard');
         }
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError('Terjadi kesalahan yang tidak terduga.');
       setIsLoading(false);
     }
   };
@@ -176,23 +289,24 @@ export default function SignInPage() {
               <Heart className="h-6 w-6 text-white" fill="white" />
             </div>
             <h1 className="text-2xl font-display font-bold text-foreground mb-2">
-              {isLogin ? 'Welcome Back' : 'Create an Account'}
+              {isLogin ? 'Selamat Datang Kembali' : 'Buat Akun Baru'}
             </h1>
             <p className="text-sm text-foreground/50">
               {isLogin
-                ? 'Sign in to access your Sahin invitations'
-                : 'Sign up to create your perfect wedding invitation with Sahin'}
+                ? 'Masuk ke akun Sahin untuk mengelola undangan Anda'
+                : 'Daftar akun Sahin untuk membuat undangan pernikahan premium'}
             </p>
           </div>
 
           {error && (
-            <div className="mb-6 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm text-center">
-              {error}
+            <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm flex items-start gap-2.5">
+              <AlertCircle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
+              <span>{error}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="mb-6 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm text-center">
+            <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm text-center">
               {successMsg}
             </div>
           )}
@@ -201,7 +315,7 @@ export default function SignInPage() {
           <form onSubmit={handleSubmit} className="space-y-4 mb-6">
             {!isLogin && (
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground/80">Name</label>
+                <label className="text-sm font-medium text-foreground/80">Nama Lengkap</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User className="h-4 w-4 text-foreground/40" />
@@ -210,16 +324,21 @@ export default function SignInPage() {
                     type="text"
                     required={!isLogin}
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground"
-                    placeholder="Your name"
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    className={`w-full pl-10 pr-4 py-2.5 bg-white/5 border ${
+                      validationErrors.name ? 'border-rose-500/50' : 'border-white/10'
+                    } rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
+                    placeholder="Nama Anda"
                   />
                 </div>
+                {validationErrors.name && (
+                  <p className="text-xs text-rose-500 mt-1 ml-1 font-medium">{validationErrors.name}</p>
+                )}
               </div>
             )}
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground/80">Email</label>
+              <label className="text-sm font-medium text-foreground/80">Alamat Email</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-4 w-4 text-foreground/40" />
@@ -228,11 +347,16 @@ export default function SignInPage() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground"
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  className={`w-full pl-10 pr-4 py-2.5 bg-white/5 border ${
+                    validationErrors.email ? 'border-rose-500/50' : 'border-white/10'
+                  } rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
                   placeholder="you@example.com"
                 />
               </div>
+              {validationErrors.email && (
+                <p className="text-xs text-rose-500 mt-1 ml-1 font-medium">{validationErrors.email}</p>
+              )}
               
               {!isLogin && (
                 <div className="pt-1 flex justify-end">
@@ -240,9 +364,9 @@ export default function SignInPage() {
                     type="button"
                     onClick={handleSendCode}
                     disabled={isSendingCode || cooldown > 0 || !formData.email}
-                    className="text-xs px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 font-medium transition-colors disabled:opacity-50"
+                    className="text-xs px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 font-semibold transition-colors disabled:opacity-50"
                   >
-                    {isSendingCode ? 'Sending...' : cooldown > 0 ? `Resend in ${cooldown}s` : 'Send Code'}
+                    {isSendingCode ? 'Mengirim...' : cooldown > 0 ? `Kirim ulang dalam ${cooldown}s` : 'Kirim Kode Verifikasi'}
                   </button>
                 </div>
               )}
@@ -250,38 +374,60 @@ export default function SignInPage() {
 
             {!isLogin && (
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground/80">Verification Code</label>
+                <label className="text-sm font-medium text-foreground/80">Kode Verifikasi</label>
                 <input
                   type="text"
                   required={!isLogin}
                   maxLength={6}
                   value={formData.code}
-                  onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-center tracking-[0.5em] font-mono focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground"
+                  onChange={(e) => handleInputChange('code', e.target.value)}
+                  className={`w-full px-4 py-2.5 bg-white/5 border ${
+                    validationErrors.code ? 'border-rose-500/50' : 'border-white/10'
+                  } rounded-xl text-sm text-center tracking-[0.5em] font-mono focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
                   placeholder="------"
                 />
+                {validationErrors.code && (
+                  <p className="text-xs text-rose-500 mt-1 text-center font-medium">{validationErrors.code}</p>
+                )}
               </div>
             )}
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground/80">Password</label>
+              <label className="text-sm font-medium text-foreground/80">Kata Sandi</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-4 w-4 text-foreground/40" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
-                  minLength={6}
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground"
+                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  className={`w-full pl-10 pr-10 py-2.5 bg-white/5 border ${
+                    validationErrors.password ? 'border-rose-500/50' : 'border-white/10'
+                  } rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-foreground/40 hover:text-foreground/80 transition-colors focus:outline-none cursor-pointer"
+                  title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4.5 w-4.5 animate-eye-blink" />
+                  ) : (
+                    <Eye className="h-4.5 w-4.5 animate-eye-blink" />
+                  )}
+                </button>
               </div>
+              {validationErrors.password && (
+                <p className="text-xs text-rose-500 mt-1 ml-1 font-medium">{validationErrors.password}</p>
+              )}
+
               {isLogin && (
                 <div className="pt-1 flex justify-end">
-                  <Link href="/auth/forgot-password" className="text-xs text-rose-500 hover:text-rose-400 font-medium transition-colors">
+                  <Link href="/auth/forgot-password" className="text-xs text-rose-500 hover:text-rose-400 font-semibold transition-colors">
                     Lupa Kata Sandi?
                   </Link>
                 </div>
@@ -298,10 +444,10 @@ export default function SignInPage() {
                       />
                     ))}
                   </div>
-                  <p className={`text-xs mt-1 text-right ${
-                    strength.label === 'Weak' ? 'text-rose-500' : strength.label === 'Good' ? 'text-amber-500' : 'text-emerald-500'
+                  <p className={`text-xs mt-1 text-right font-medium ${
+                    strength.label === 'Lemah' ? 'text-rose-500' : strength.label === 'Sedang' ? 'text-amber-500' : 'text-emerald-500'
                   }`}>
-                    {strength.label}
+                    Kekuatan Kata Sandi: {strength.label}
                   </p>
                 </div>
               )}
@@ -309,19 +455,33 @@ export default function SignInPage() {
 
             {!isLogin && (
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground/80">Re-type Password</label>
+                <label className="text-sm font-medium text-foreground/80">Ketik Ulang Kata Sandi</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock className="h-4 w-4 text-foreground/40" />
                   </div>
                   <input
-                    type="password"
+                    type={showConfirmPassword ? 'text' : 'password'}
                     required={!isLogin}
                     value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    className="w-full pl-10 pr-10 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground"
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                    className={`w-full pl-10 pr-16 py-2.5 bg-white/5 border ${
+                      validationErrors.confirmPassword ? 'border-rose-500/50' : 'border-white/10'
+                    } rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
                     placeholder="••••••••"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-7 pr-1 flex items-center text-foreground/40 hover:text-foreground/80 transition-colors focus:outline-none cursor-pointer"
+                    title={showConfirmPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4.5 w-4.5 animate-eye-blink" />
+                    ) : (
+                      <Eye className="h-4.5 w-4.5 animate-eye-blink" />
+                    )}
+                  </button>
                   {formData.confirmPassword.length > 0 && (
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                       {isMatch ? (
@@ -332,19 +492,22 @@ export default function SignInPage() {
                     </div>
                   )}
                 </div>
+                {validationErrors.confirmPassword && (
+                  <p className="text-xs text-rose-500 mt-1 ml-1 font-medium">{validationErrors.confirmPassword}</p>
+                )}
               </div>
             )}
 
             <button
               type="submit"
-              disabled={isLoading || (!isLogin && (!isMatch || formData.code.length !== 6))}
-              className="w-full flex items-center justify-center gap-2 mt-2 px-5 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-white font-medium text-sm hover:opacity-90 transition-all duration-200 shadow-md shadow-rose-500/20 disabled:opacity-50"
+              disabled={isLoading || (!isLogin && (formData.code.length !== 6))}
+              className="w-full flex items-center justify-center gap-2 mt-2 px-5 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold text-sm hover:opacity-90 transition-all duration-200 shadow-md shadow-rose-500/20 disabled:opacity-50"
             >
               {isLoading ? (
                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  {isLogin ? 'Sign In' : 'Sign Up'}
+                  {isLogin ? 'Masuk Sekarang' : 'Daftar Sekarang'}
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
@@ -354,7 +517,7 @@ export default function SignInPage() {
           {/* Divider */}
           <div className="flex items-center gap-3 mb-6">
             <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-foreground/30">or</span>
+            <span className="text-xs text-foreground/30">atau</span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
@@ -363,7 +526,7 @@ export default function SignInPage() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl bg-white text-gray-800 font-medium text-sm hover:bg-gray-100 transition-all duration-200 shadow-md disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl bg-white text-gray-800 font-bold text-sm hover:bg-gray-100 transition-all duration-200 shadow-md disabled:opacity-50"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -371,22 +534,23 @@ export default function SignInPage() {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
-            Continue with Google
+            Masuk dengan Google
           </button>
 
           {/* Toggle */}
           <p className="mt-8 text-center text-sm text-foreground/50">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
+            {isLogin ? "Belum punya akun?" : "Sudah punya akun?"}{' '}
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
                 setError('');
                 setSuccessMsg('');
+                setValidationErrors({});
                 setFormData({ name: '', email: '', password: '', confirmPassword: '', code: '' });
               }}
-              className="text-rose-500 hover:text-rose-400 font-medium transition-colors"
+              className="text-rose-500 hover:text-rose-400 font-bold transition-colors"
             >
-              {isLogin ? 'Sign up' : 'Sign in'}
+              {isLogin ? 'Daftar' : 'Masuk'}
             </button>
           </p>
         </div>

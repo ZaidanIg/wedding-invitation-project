@@ -50,7 +50,7 @@ export interface GeneratedInvitation {
 
 // ---- Database Models (mirrors Prisma, used on the client side) ----
 export interface Invitation {
-  stylePreferences: any;
+  stylePreferences?: Record<string, unknown>;
   id: string;
   userId?: string | null;
   groomName: string;
@@ -81,6 +81,7 @@ export interface Invitation {
   slug: string;
   viewCount: number;
   tier: InvitationTier;
+  qrEnabled?: boolean;
   createdAt: string;
   updatedAt: string;
   guests?: Guest[];
@@ -208,4 +209,5 @@ export interface FormWizardState {
   generatedInvitation: GeneratedInvitation | null;
   isGenerating: boolean;
   isSaving: boolean;
+  qrEnabled: boolean;
 }

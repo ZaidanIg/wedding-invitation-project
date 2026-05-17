@@ -33,13 +33,14 @@ export default function AddGuestModal({ onClose, onSuccess, invitationSlug }: Ad
         }),
       });
 
-      if (!res.ok) throw new Error('Failed to add guest');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || 'Gagal menambahkan tamu');
       
       showToast('success', 'Tamu berhasil ditambahkan!');
       onSuccess();
       onClose();
-    } catch (error) {
-      showToast('error', 'Gagal menambahkan tamu');
+    } catch (error: any) {
+      showToast('error', error.message || 'Gagal menambahkan tamu');
     } finally {
       setIsSubmitting(false);
     }

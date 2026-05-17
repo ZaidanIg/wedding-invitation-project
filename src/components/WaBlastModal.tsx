@@ -25,8 +25,6 @@ export default function WaBlastModal({ guests, onClose, invitationUrl }: WaBlast
   };
 
   const handleSend = () => {
-    // In a real app, this would iterate and send via a WA Gateway
-    // For now, we'll just mock it or provide links
     alert(`Membuka WhatsApp untuk ${selectedGuests.length} tamu...`);
     
     selectedGuests.forEach((gid, index) => {

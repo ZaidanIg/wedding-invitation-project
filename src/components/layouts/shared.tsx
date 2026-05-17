@@ -476,11 +476,15 @@ export function AudioPlayer({
   activeColor = 'bg-stone-800 text-[#f5f0eb] hover:bg-stone-700',
   inactiveColor = 'bg-white/80 text-stone-800 hover:bg-white',
   isPreview = false,
+  isPlayingProp,
+  onPlayChange,
 }: {
   src: string;
   activeColor?: string;
   inactiveColor?: string;
   isPreview?: boolean;
+  isPlayingProp?: boolean;
+  onPlayChange?: (isPlaying: boolean) => void;
 }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -490,28 +494,50 @@ export function AudioPlayer({
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
+        onPlayChange?.(false);
       } else {
         audioRef.current.play().then(() => {
           setIsPlaying(true);
+          onPlayChange?.(true);
         }).catch((err) => {
           console.error('Audio playback error:', err);
           setIsPlaying(false);
+          onPlayChange?.(false);
         });
       }
     }
   };
 
+  // Sync internal state with external control prop (for cover page autoplay)
+  useEffect(() => {
+    if (isPlayingProp !== undefined) {
+      setIsPlaying(isPlayingProp);
+      if (audioRef.current) {
+        if (isPlayingProp) {
+          audioRef.current.play().catch((err) => {
+            console.log('Autoplay blocked or deferred:', err);
+          });
+        } else {
+          audioRef.current.pause();
+        }
+      }
+    }
+  }, [isPlayingProp]);
+
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) {
-      const handleEnded = () => setIsPlaying(false);
+      const handleEnded = () => {
+        setIsPlaying(false);
+        onPlayChange?.(false);
+      };
       audio.addEventListener('ended', handleEnded);
       return () => audio.removeEventListener('ended', handleEnded);
     }
-  }, []);
+  }, [onPlayChange]);
 
   return (
-    <div className={`${isPreview ? 'absolute' : 'fixed'} bottom-6 right-6 z-50`}>
+    <div className="fixed bottom-6 right-6 z-50">
       <audio ref={audioRef} src={src} loop preload="auto" />
       <button
         onClick={togglePlay}
@@ -816,7 +842,9 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
     }
   };
 
-  if (isSubmitted && (invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED') && status === 'ATTENDING' && guestId) {
+  const isQrAvailable = (invitation.tier === 'PREMIUM' || invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED') && invitation.qrEnabled !== false;
+
+  if (isSubmitted && isQrAvailable && status === 'ATTENDING' && guestId) {
     return (
        <div className="max-w-md mx-auto text-center bg-white p-10 rounded-[3rem] shadow-xl border border-stone-100 animate-fade-in">
 
@@ -922,8 +950,8 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
             <div className="absolute top-0 left-0 w-1 h-full bg-stone-200" />
             <div className="flex justify-between items-start mb-2">
               <h4 className="font-bold text-stone-800 text-sm">{wish.name}</h4>
-              <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter ${wish.status === 'ATTENDING' ? 'bg-emerald-50 text-emerald-600' : 'bg-stone-50 text-stone-400'}`}>
-                {wish.status === 'ATTENDING' ? 'Hadir' : 'Absen'}
+              <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter ${wish.rsvpStatus === 'ATTENDING' ? 'bg-emerald-50 text-emerald-600' : 'bg-stone-50 text-stone-400'}`}>
+                {wish.rsvpStatus === 'ATTENDING' ? 'Hadir' : 'Absen'}
               </span>
             </div>
             <p className="text-sm text-stone-500 leading-relaxed italic">"{wish.message}"</p>

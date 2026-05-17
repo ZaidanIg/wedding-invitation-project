@@ -68,9 +68,9 @@ export default function RsvpScannerPage() {
       } else {
         setScanResult({
           success: false,
-          message: data.error || 'Check-in Gagal'
+          message: data.message || 'Check-in Gagal'
         });
-        showToast('error', data.error || 'Gagal melakukan check-in');
+        showToast('error', data.message || 'Gagal melakukan check-in');
       }
     } catch (error) {
       console.error('Check-in error:', error);

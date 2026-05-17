@@ -25,6 +25,7 @@ export default function RsvpManagementPage() {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [stats, setStats] = useState<RsvpStats>({ attending: 0, notAttending: 0, pending: 0, totalResponses: 0, estimatedGuests: 0 });
   const [tier, setTier] = useState<string>('');
+  const [qrEnabled, setQrEnabled] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(true);
   const [showBlastModal, setShowBlastModal] = useState(false);
   const [showAddGuestModal, setShowAddGuestModal] = useState(false);
@@ -38,6 +39,7 @@ export default function RsvpManagementPage() {
           setGuests(data.data.guests);
           setStats(data.data.stats);
           setTier(data.data.tier);
+          setQrEnabled(data.data.qrEnabled !== false);
           
           // Auto-open blast modal if requested via URL
           const urlParams = new URLSearchParams(window.location.search);
@@ -79,20 +81,20 @@ export default function RsvpManagementPage() {
         ) : (
           <div className="space-y-8">
             {/* Pro Tools Header */}
-            {(guests.length > 0 || tier === 'ULTIMATE' || tier === 'B2B_GENERATED') && (
+            {(guests.length > 0 || tier === 'PREMIUM' || tier === 'ULTIMATE' || tier === 'B2B_GENERATED') && (
               <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-white border border-[#eceae4] rounded-[2rem] shadow-sm">
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 bg-amber-500/10 rounded-xl text-amber-500">
                     <Sparkles className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[#1c1c1c]">Pro Guest Management</h3>
-                    <p className="text-[10px] text-[#6b6b6b] uppercase tracking-wider">Ultimate Tier Features</p>
+                    <h3 className="text-sm font-bold text-[#1c1c1c]">Guest Management</h3>
+                    <p className="text-[10px] text-[#6b6b6b] uppercase tracking-wider">{tier === 'PREMIUM' ? 'Premium' : 'Ultimate'} Tier Features</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm" 
                     className="rounded-xl border-rose-200 text-rose-500 hover:bg-rose-50"
                     onClick={() => setShowAddGuestModal(true)}
@@ -101,7 +103,7 @@ export default function RsvpManagementPage() {
                     Tambah Tamu
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm" 
                     className="rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50"
                     onClick={() => setShowBlastModal(true)}
@@ -109,13 +111,15 @@ export default function RsvpManagementPage() {
                     <MessageSquare className="h-4 w-4 mr-2" />
                     WA Blast
                   </Button>
-                  <Link href={`${window.location.pathname}/scanner`}>
-                    <Button size="sm" className="bg-amber-500 text-white rounded-xl">
-                      <Eye className="h-4 w-4 mr-2" />
-                      Scan QR
-                    </Button>
-                  </Link>
-                  <Button variant="outline" size="sm" className="rounded-xl border-[#eceae4]" onClick={() => showToast('success', 'Exporting to Excel...')}>
+                  {qrEnabled && (
+                    <Link href={`${window.location.pathname}/scanner`}>
+                      <Button size="sm" className="bg-amber-500 text-white rounded-xl">
+                        <Eye className="h-4 w-4 mr-2" />
+                        Scan QR
+                      </Button>
+                    </Link>
+                  )}
+                  <Button variant="secondary" size="sm" className="rounded-xl border-[#eceae4]" onClick={() => showToast('success', 'Exporting to Excel...')}>
                     Export Excel
                   </Button>
                 </div>

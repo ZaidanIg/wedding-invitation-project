@@ -33,29 +33,71 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   groomName: string; brideName: string; guestName: string; onOpen: () => void;
 }) {
   return (
-    <motion.div exit={{ y: '-100%', opacity: 0, transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } }}
-      className="absolute inset-0 z-[600] bg-white flex flex-col items-center justify-center p-8 text-center overflow-hidden">
-      <div className="absolute inset-6 border border-rose-100/50 pointer-events-none rounded-[3rem]" />
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }} className="relative z-10">
-        <div className="mb-10 inline-flex p-5 rounded-full bg-rose-50 border border-rose-100 shadow-sm">
-          <Heart className="text-rose-400 animate-heartbeat" fill="currentColor" size={40} />
-        </div>
-        <p className="text-[10px] uppercase tracking-[0.5em] text-stone-400 mb-8 font-bold">God Joined Us</p>
-        <h1 className="text-5xl font-display font-bold text-stone-800 mb-2 italic drop-shadow-sm">{groomName}</h1>
-        <span className="text-2xl font-serif italic text-rose-300 block my-4">&amp;</span>
-        <h1 className="text-5xl font-display font-bold text-stone-800 italic drop-shadow-sm">{brideName}</h1>
-        <div className="flex items-center justify-center gap-4 my-12">
-          <div className="h-[1px] w-12 bg-rose-100" /><Heart className="h-4 w-4 text-rose-200" fill="currentColor" /><div className="h-[1px] w-12 bg-rose-100" />
-        </div>
-        <div className="space-y-1 mb-12">
-          <p className="text-[10px] text-stone-400 uppercase tracking-widest">Kepada Yth.</p>
-          <p className="text-xl font-display font-semibold text-stone-800 italic">{guestName}</p>
-        </div>
-        <motion.button onClick={onOpen} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-          className="px-14 py-5 rounded-2xl bg-[#1c1c1c] text-white font-bold text-xs tracking-[0.3em] uppercase transition-all hover:bg-stone-800 shadow-2xl">
-          Buka Undangan
-        </motion.button>
+    <motion.div 
+      style={{ zIndex: 9999 }}
+      className="absolute inset-0 w-full h-full overflow-hidden pointer-events-auto z-[9999]"
+    >
+      {/* Left Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '-100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#ffffff' }}
+        className="absolute left-0 top-0 w-1/2 h-full border-r border-rose-100 z-10"
+      >
+        <div className="absolute inset-6 border-r-0 border border-rose-100/50 pointer-events-none rounded-l-[3rem]" />
       </motion.div>
+
+      {/* Right Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#ffffff' }}
+        className="absolute right-0 top-0 w-1/2 h-full border-l border-rose-100 z-10"
+      >
+        <div className="absolute inset-6 border-l-0 border border-rose-100/50 pointer-events-none rounded-r-[3rem]" />
+      </motion.div>
+
+      {/* Centered Content overlay (z-30) inside separate flex wrapper to avoid Safari flexbug */}
+      <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none z-30">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.6 } }} 
+          transition={{ delay: 0.2, duration: 0.8 }} 
+          className="flex flex-col items-center px-6 max-w-md text-center pointer-events-auto"
+        >
+          <div className="mb-8 inline-flex p-5 rounded-full bg-rose-50 border border-rose-100 shadow-sm relative animate-pulse-slow">
+            <Heart className="text-rose-400 animate-heartbeat" fill="currentColor" size={40} />
+          </div>
+
+          <p className="text-[10px] uppercase tracking-[0.5em] text-stone-400 mb-8 font-bold">God Joined Us</p>
+          <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 mb-2 italic drop-shadow-sm leading-tight">{groomName}</h1>
+          <span className="text-2xl font-serif italic text-rose-300 block my-3">&</span>
+          <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 italic drop-shadow-sm leading-tight">{brideName}</h1>
+          
+          <div className="flex items-center justify-center gap-4 my-10">
+            <div className="h-[1px] w-10 bg-rose-100" />
+            <Heart className="h-3 w-3 text-rose-200" fill="currentColor" />
+            <div className="h-[1px] w-10 bg-rose-100" />
+          </div>
+          
+          <div className="space-y-1.5 mb-10">
+            <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-2 font-bold">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+            <p className="text-2xl font-display font-bold text-stone-800 tracking-wide">{guestName}</p>
+          </div>
+          
+          <motion.button 
+            onClick={onOpen} 
+            whileHover={{ scale: 1.05 }} 
+            whileTap={{ scale: 0.95 }}
+            className="px-14 py-5 rounded-2xl bg-[#1c1c1c] text-white font-bold text-xs tracking-[0.3em] uppercase transition-all hover:bg-stone-800 shadow-2xl cursor-pointer"
+          >
+            Buka Undangan
+          </motion.button>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
@@ -95,11 +137,17 @@ function BottomNav({ visible }: { visible: boolean }) {
 }
 
 export default function ChristianElegant({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
-  const [isOpened, setIsOpened] = useState(isPreview);
+  const [mounted, setMounted] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const { formattedDate, dayName, dayNumber, monthName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, galleryPhotos, photo2, photo3 } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isPreview) {
@@ -109,14 +157,71 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
     }
   }, [isPreview]);
 
+  const handleOpen = () => {
+    setIsOpened(true);
+    setIsPlaying(true);
+  };
+
+  if (!mounted) {
+    return (
+      <div className="w-full max-w-lg mx-auto bg-white text-stone-800 relative shadow-2xl font-sans h-screen overflow-hidden">
+        {/* Left Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#ffffff' }}
+          className="absolute left-0 top-0 w-1/2 h-full border-r border-rose-100 z-10"
+        >
+          <div className="absolute inset-6 border-r-0 border border-rose-100/50 pointer-events-none rounded-l-[3rem]" />
+        </div>
+
+        {/* Right Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#ffffff' }}
+          className="absolute right-0 top-0 w-1/2 h-full border-l border-rose-100 z-10"
+        >
+          <div className="absolute inset-6 border-l-0 border border-rose-100/50 pointer-events-none rounded-r-[3rem]" />
+        </div>
+
+        {/* Centered Content overlay inside separate flex wrapper */}
+        <div style={{ zIndex: 9999 }} className="absolute inset-0 w-full h-full flex items-center justify-center z-30">
+          <div className="flex flex-col items-center px-6 max-w-md text-center">
+            <div className="mb-8 inline-flex p-5 rounded-full bg-rose-50 border border-rose-100 shadow-sm relative animate-pulse-slow">
+              <Heart className="text-rose-400 animate-heartbeat" fill="currentColor" size={40} />
+            </div>
+
+            <p className="text-[10px] uppercase tracking-[0.5em] text-stone-400 mb-8 font-bold">God Joined Us</p>
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 mb-2 italic drop-shadow-sm leading-tight">{invitation.groomName}</h1>
+            <span className="text-2xl font-serif italic text-rose-300 block my-3">&</span>
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 italic drop-shadow-sm leading-tight">{invitation.brideName}</h1>
+            
+            <div className="flex items-center justify-center gap-4 my-10">
+              <div className="h-[1px] w-10 bg-rose-100" />
+              <div className="h-[1px] w-10 bg-rose-100" />
+            </div>
+            
+            <div className="space-y-1.5 mb-10">
+              <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-2 font-bold">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+              <p className="text-2xl font-display font-bold text-stone-800 tracking-wide">{guestName}</p>
+            </div>
+            
+            <button 
+              className="px-14 py-5 rounded-2xl bg-[#1c1c1c] text-white font-bold text-xs tracking-[0.3em] uppercase transition-all shadow-2xl cursor-pointer"
+            >
+              Buka Undangan
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`w-full max-w-lg mx-auto bg-white text-stone-800 relative shadow-2xl font-sans ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen pb-24'}`}>
       
       <AnimatePresence>
-        {!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={() => setIsOpened(true)} />}
+        {!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={handleOpen} />}
       </AnimatePresence>
 
-      <div className="relative">
+      <div className="relative z-0">
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
@@ -360,7 +465,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
           </AnimatedSection>
         </section>
 
-        {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} />}
+        {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
         <BottomNav visible={isOpened} />
       </div>
     </div>
