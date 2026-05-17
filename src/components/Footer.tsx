@@ -12,16 +12,16 @@ export default function Footer() {
     <footer className="border-t border-rose-500/5 bg-[#fdfcf9]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
-          <div className="relative flex items-center justify-center h-14 w-40 overflow-hidden group">
+          <Link href="/" className="flex items-center justify-start h-14 w-40 group">
             <Image 
               src="/images/logo.png" 
               alt="Sahin Logo" 
-              width={900} 
-              height={900} 
-              className="absolute w-[340px] h-[340px] max-w-none object-contain transition-transform duration-300 group-hover:scale-105"
+              width={140} 
+              height={40} 
+              className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               unoptimized
             />
-          </div>
+          </Link>
 
           <p className="text-sm text-[#6b6b6b] font-medium text-center md:text-left">
             Dibuat dengan penuh perasaan — <span className="text-rose-500/60">Artefact Project</span>
