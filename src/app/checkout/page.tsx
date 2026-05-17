@@ -139,6 +139,7 @@ function CheckoutContent() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState<'AUTO'>('AUTO');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [checkoutConfirmOpen, setCheckoutConfirmOpen] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState<{
     orderId?: string;
     grossAmount?: number;
@@ -287,15 +288,16 @@ function CheckoutContent() {
     fetchInvitation();
   }, [invitationId]);
 
-  const handleCheckout = async () => {
+  const handleCheckoutTrigger = () => {
     if (!agreedToTerms) {
       showToast('error', 'Anda harus menyetujui Ketentuan & Lisensi terlebih dahulu');
       return;
     }
+    setCheckoutConfirmOpen(true);
+  };
 
-    const confirmed = window.confirm(`Apakah benar Anda akan melanjutkan ke pembayaran untuk ${plan.name}?`);
-    if (!confirmed) return;
-
+  const executeCheckout = async () => {
+    setCheckoutConfirmOpen(false);
     setIsCheckoutProcessing(true);
     try {
       const response = await fetch('/api/checkout', {
@@ -643,7 +645,7 @@ function CheckoutContent() {
 
               {/* Pay Button */}
               <button
-                onClick={handleCheckout}
+                onClick={handleCheckoutTrigger}
                 disabled={isCheckoutProcessing}
                 className={`w-full py-4 rounded-2xl font-bold text-white shadow-lg transition-all text-sm flex items-center justify-center gap-2 cursor-pointer ${
                   agreedToTerms 
@@ -738,6 +740,51 @@ function CheckoutContent() {
                     Masuk ke Dashboard
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Checkout Confirmation Modal */}
+      <AnimatePresence>
+        {checkoutConfirmOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/40 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              className="relative bg-[#fdfcf9] rounded-[2.5rem] p-8 sm:p-10 max-w-md w-full shadow-2xl border border-rose-500/10 z-10 text-center"
+            >
+              {/* Pulsing Shield/Sparkles Accent */}
+              <div className="w-16 h-16 rounded-full bg-rose-500/5 border border-rose-500/10 flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <ShieldCheck className="h-6 w-6 text-rose-500 animate-pulse" />
+              </div>
+
+              {/* Modal Title */}
+              <h3 className="text-2xl font-display font-bold text-[#1c1c1c] mb-3">
+                Konfirmasi Pembayaran
+              </h3>
+
+              {/* Description */}
+              <p className="text-[#6b6b6b] text-sm leading-relaxed mb-8">
+                Apakah Anda yakin ingin melanjutkan ke proses pembayaran untuk <strong className="text-rose-500 font-bold">{plan.name}</strong> dengan total bayar <strong className="text-stone-900 font-bold">Rp {total.toLocaleString('id-ID')}</strong>?
+              </p>
+
+              {/* CTA Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-stretch gap-3 justify-center">
+                <button
+                  onClick={() => setCheckoutConfirmOpen(false)}
+                  className="py-3.5 px-6 rounded-2xl bg-stone-100 text-[#1c1c1c] text-sm font-bold hover:bg-stone-200 transition-all duration-300 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={executeCheckout}
+                  className="py-3.5 px-8 rounded-2xl bg-rose-gradient text-white text-sm font-bold hover:shadow-lg hover:shadow-rose-500/25 transition-all duration-300 cursor-pointer"
+                >
+                  Ya, Lanjutkan
+                </button>
               </div>
             </motion.div>
           </div>
