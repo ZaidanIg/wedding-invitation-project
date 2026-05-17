@@ -11,7 +11,7 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-rose-500/5 bg-[#fdfcf9]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
           <Link href="/" className="relative flex items-center justify-start h-16 w-48 group">
             <Image
@@ -24,12 +24,21 @@ export default function Footer() {
             />
           </Link>
 
-          <p className="text-sm text-[#6b6b6b] font-medium text-center md:text-left">
-            Dibuat dengan penuh perasaan — <span className="text-rose-500/60">Artefact Project</span>
-          </p>
+          <div className="flex flex-wrap justify-center gap-6 text-xs text-[#6b6b6b] font-semibold">
+            <Link href="/terms" className="hover:text-rose-500 transition-colors">Syarat & Ketentuan</Link>
+            <Link href="/privacy" className="hover:text-rose-500 transition-colors">Kebijakan Privasi</Link>
+            <Link href="/docs" className="hover:text-rose-500 transition-colors">Panduan</Link>
+            <a href="zaidanikhsan.g@gmail.com" className="hover:text-rose-500 transition-colors">Hubungi Kami</a>
+          </div>
 
-          <p className="text-xs text-[#6b6b6b]/40">
+          <p className="text-xs text-[#6b6b6b]/40 text-center md:text-right">
             © {new Date().getFullYear()} Sahinaja. <br className="md:hidden" /> Semua hak dilindungi.
+          </p>
+        </div>
+        
+        <div className="mt-8 pt-8 border-t border-[#eceae4]/30 text-center">
+          <p className="text-[10px] text-[#6b6b6b]/40 uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5">
+            Dibuat dengan penuh perasaan — <span className="text-rose-500/60 font-black">Artefact Project</span>
           </p>
         </div>
       </div>
