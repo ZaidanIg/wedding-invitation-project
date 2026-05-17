@@ -28,7 +28,7 @@ export default function Footer() {
             <Link href="/terms" className="hover:text-rose-500 transition-colors">Syarat & Ketentuan</Link>
             <Link href="/privacy" className="hover:text-rose-500 transition-colors">Kebijakan Privasi</Link>
             <Link href="/docs" className="hover:text-rose-500 transition-colors">Panduan</Link>
-            <a href="zaidanikhsan.g@gmail.com" className="hover:text-rose-500 transition-colors">Hubungi Kami</a>
+            <a href="mailto:zaidanikhsan.g@gmail.com" className="hover:text-rose-500 transition-colors">Hubungi Kami</a>
           </div>
 
           <p className="text-xs text-[#6b6b6b]/40 text-center md:text-right">
