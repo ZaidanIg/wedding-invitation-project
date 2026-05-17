@@ -10,7 +10,7 @@ export const MOCK_INVITATION: Invitation = {
   headerPhotoUrl: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop',
   eventDate: '2024-12-12T09:00:00.000Z',
   eventTime: '09:00',
-  venueName: 'The Grand Ballroom Sahin',
+  venueName: 'The Grand Ballroom Sahinaja',
   venueAddress: 'Jl. Kemewahan No. 1, Jakarta Selatan',
   quotes: 'Cinta bukanlah mencari seseorang untuk hidup bersama, tapi mencari seseorang yang membuatmu tak bisa hidup tanpanya.',
   photoUrls: [

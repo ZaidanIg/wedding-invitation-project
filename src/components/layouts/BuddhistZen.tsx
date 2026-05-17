@@ -434,7 +434,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
                       <h4 className="text-xl font-bold mb-3 italic">Personal Recognition</h4>
                       <p className="text-xs text-white/40 mb-10 leading-relaxed px-4">Each invitation link is individually tailored for every guest.</p>
                       <div className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-[9px] font-mono text-[#a3b18a] truncate">
-                         sahin.id/u/siddharta-vasanti?to=Bodhi+Family
+                         sahinaja.com/u/siddharta-vasanti?to=Bodhi+Family
                       </div>
                    </div>
                 </div>

@@ -16,7 +16,7 @@ export default function Footer() {
           <Link href="/" className="relative flex items-center justify-start h-16 w-48 group">
             <Image
               src="/images/logo.png"
-              alt="Sahin Logo"
+              alt="Sahinaja Logo"
               width={1000}
               height={1000}
               className="absolute w-[200px] h-[200px] max-w-none object-contain left-0 top-1/2 -translate-y-1/2 transition-transform duration-300 group-hover:scale-105"
@@ -29,7 +29,7 @@ export default function Footer() {
           </p>
 
           <p className="text-xs text-[#6b6b6b]/40">
-            © {new Date().getFullYear()} Sahin. <br className="md:hidden" /> Semua hak dilindungi.
+            © {new Date().getFullYear()} Sahinaja. <br className="md:hidden" /> Semua hak dilindungi.
           </p>
         </div>
       </div>

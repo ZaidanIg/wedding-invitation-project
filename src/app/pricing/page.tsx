@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Paket Harga Undangan Digital',
   description: 'Pilih paket harga undangan pernikahan digital yang sesuai dengan kebutuhan Anda. Mulai dari gratis hingga fitur premium lengkap.',
   openGraph: {
-    title: 'Paket Harga Undangan Digital | Sahin',
+    title: 'Paket Harga Undangan Digital | Sahinaja',
     description: 'Pilih paket harga undangan pernikahan digital yang sesuai dengan kebutuhan Anda. Mulai dari gratis hingga fitur premium lengkap.',
   },
 };

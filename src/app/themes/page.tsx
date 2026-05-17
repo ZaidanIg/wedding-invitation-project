@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Koleksi Tema Undangan',
   description: 'Jelajahi koleksi tema undangan pernikahan digital premium dengan desain mewah dan elegan.',
   openGraph: {
-    title: 'Koleksi Tema Undangan | Sahin',
+    title: 'Koleksi Tema Undangan | Sahinaja',
     description: 'Jelajahi koleksi tema undangan pernikahan digital premium dengan desain mewah dan elegan.',
   },
 };

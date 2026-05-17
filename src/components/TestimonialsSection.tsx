@@ -10,14 +10,14 @@ const testimonials = [
     name: 'Anisa & Rizky',
     role: 'Pasangan Pengantin',
     image: 'https://images.unsplash.com/photo-1623091423319-578d99dd9cc7?q=80&w=200&h=200&auto=format&fit=crop',
-    text: 'Awalnya ragu buat undangan digital, tapi Sahin bikin semuanya jadi gampang banget. Desain Islamic Grace-nya mewah banget, banyak tamu yang nanya bikin di mana!',
+    text: 'Awalnya ragu buat undangan digital, tapi Sahinaja bikin semuanya jadi gampang banget. Desain Islamic Grace-nya mewah banget, banyak tamu yang nanya bikin di mana!',
     rating: 5,
   },
   {
     name: 'Budi Santoso',
     role: 'Wedding Organizer',
     image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&h=200&auto=format&fit=crop',
-    text: 'Paket Pro Sahin bener-bener ngebantu bisnis WO saya. Manajemen klien jadi lebih rapi dan hasilnya selalu bikin klien puas. Worth every penny!',
+    text: 'Paket Pro Sahinaja bener-bener ngebantu bisnis WO saya. Manajemen klien jadi lebih rapi dan hasilnya selalu bikin klien puas. Worth every penny!',
     rating: 5,
   },
   {
@@ -51,7 +51,7 @@ export default function TestimonialsSection() {
             Dipercaya Oleh <span className="text-rose-500 italic font-normal">Ribuan</span> Pasangan
           </h2>
           <p className="text-[#6b6b6b] text-lg max-w-2xl mx-auto">
-            Bergabunglah dengan pasangan yang telah mewujudkan momen tak terlupakan mereka bersama Sahin.
+            Bergabunglah dengan pasangan yang telah mewujudkan momen tak terlupakan mereka bersama Sahinaja.
           </p>
         </div>
 

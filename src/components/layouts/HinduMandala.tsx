@@ -437,7 +437,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
                       <h4 className="text-2xl font-display font-bold mb-4 italic leading-tight">Exclusive Guest Recognition</h4>
                       <p className="text-xs text-white/50 leading-relaxed mb-12 px-8 italic">Every digital invitation is uniquely crafted to reflect your importance to us.</p>
                       <div className="w-full px-8 py-5 rounded-3xl bg-white/5 border border-white/10 text-[10px] font-mono text-amber-200 truncate shadow-inner">
-                         sahin.id/u/arya-shanti?to=The+Royal+Family
+                         sahinaja.com/u/arya-shanti?to=The+Royal+Family
                       </div>
                    </div>
                 </div>

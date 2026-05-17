@@ -425,7 +425,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
                       <h4 className="text-2xl font-display font-bold mb-3 italic">Personalized Invitation</h4>
                       <p className="text-xs text-white/40 mb-12 leading-relaxed px-6 italic">Individualized digital experiences crafted uniquely for every guest on our list.</p>
                       <div className="px-8 py-4 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-rose-200 w-full truncate text-center">
-                         sahin.id/u/alex-emily?to=The+Simpsons
+                         sahinaja.com/u/alex-emily?to=The+Simpsons
                       </div>
                    </div>
                 </div>
