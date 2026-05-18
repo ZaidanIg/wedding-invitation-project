@@ -336,7 +336,7 @@ export default function InvitationForm() {
           <motion.div key="step1" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
             <Card className="bg-white border-[#eceae4] shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-rose-500" />
-              <div className="p-6 sm:p-10">
+              <div className="p-3 sm:p-10">
                 <div className="text-center mb-10"><div className="w-14 h-14 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4"><Heart className="h-7 w-7 text-rose-500" /></div><h2 className="text-2xl sm:text-3xl font-display font-bold text-[#1c1c1c]">Data Pasangan</h2></div>
                 <div className="space-y-8">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8"><Input label="Nama Mempelai Pria" placeholder="John Doe" value={store.coupleDetails.groomName} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, groomName: e.target.value })} /><Input label="Orang Tua Pria" placeholder="Bapak John & Ibu Jane" value={store.coupleDetails.groomParents} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, groomParents: e.target.value })} /></div>
@@ -360,7 +360,7 @@ export default function InvitationForm() {
                   </button>
                 ))}
               </div>
-              <div className="p-6 sm:p-10">
+              <div className="p-3 sm:p-10">
                 <AnimatePresence mode="wait">
                   {subStep === 1 && (<motion.div key="sub1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Input label="Tanggal Acara" type="date" value={store.eventDetails.eventDate} onChange={(e) => store.setEventDetails({ ...store.eventDetails, eventDate: e.target.value })} /><Input label="Waktu Mulai" type="time" value={store.eventDetails.eventTime} onChange={(e) => store.setEventDetails({ ...store.eventDetails, eventTime: e.target.value })} /></div><Input label="Nama Lokasi" placeholder="The Grand Ballroom Sumedang" value={store.eventDetails.venueName} onChange={(e) => store.setEventDetails({ ...store.eventDetails, venueName: e.target.value })} /><Textarea label="Alamat Lengkap" placeholder="Jl. Pangeran Kornel No. 123, Sumedang Selatan" rows={3} value={store.eventDetails.venueAddress} onChange={(e) => store.setEventDetails({ ...store.eventDetails, venueAddress: e.target.value })} /></motion.div>)}
                   {subStep === 2 && (<motion.div key="sub2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="flex items-center justify-between"><h3 className="font-bold text-sm">Rangkaian Acara</h3><Button variant="ghost" size="sm" onClick={() => store.setEventDetails({ ...store.eventDetails, schedule: [...store.eventDetails.schedule, { id: Date.now().toString(), time: '', label: '', icon: 'heart' }] })} className="text-rose-500"><Plus className="h-4 w-4 mr-1" /> Tambah</Button></div><div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">{store.eventDetails.schedule.map((item, index) => (<div key={item.id} className="bg-[#fcfbf8] p-4 border border-[#eceae4] rounded-2xl space-y-3"><div className="grid grid-cols-1 sm:grid-cols-2 gap-3"><Input label="Jam" type="time" value={item.time} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].time = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /><Select label="Ikon" options={iconOptions} value={item.icon} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].icon = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /></div><div className="flex gap-2"><Input label="Kegiatan" placeholder="Contoh: Akad Nikah" className="flex-1" value={item.label} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].label = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /><button className="mt-8 text-red-400 p-2" onClick={() => { const n = store.eventDetails.schedule.filter((_, i) => i !== index); store.setEventDetails({ ...store.eventDetails, schedule: n }); }}><Trash2 className="h-4 w-4" /></button></div></div>))}</div></motion.div>)}
@@ -459,7 +459,7 @@ export default function InvitationForm() {
           <motion.div key="step3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
             <Card className="bg-white border-[#eceae4] shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-rose-500" />
-              <div className="p-6 sm:p-10 max-h-[75vh] overflow-y-auto no-scrollbar">
+              <div className="p-3 sm:p-10 max-h-[75vh] overflow-y-auto no-scrollbar">
                 <div className="text-center mb-10"><Camera className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Galeri Foto</h2></div>
                 <div className="space-y-12">
                   {/* Header Photo: Only for BASIC & PREMIUM */}
@@ -517,7 +517,7 @@ export default function InvitationForm() {
           <motion.div key="step4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
             <Card className="bg-white border-[#eceae4] shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-rose-500" />
-              <div className="p-6 sm:p-10 max-h-[85vh] overflow-y-auto no-scrollbar">
+              <div className="p-3 sm:p-10 max-h-[85vh] overflow-y-auto no-scrollbar">
                 <div className="text-center mb-10"><Palette className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Gaya & Teks</h2></div>
                 <div className="space-y-10">
                   <div className="space-y-4">
@@ -529,10 +529,10 @@ export default function InvitationForm() {
                           <button 
                             key={opt.value} 
                             onClick={() => !isLocked && store.setStylePreferences({ ...store.stylePreferences, layout: opt.value })} 
-                            className={`p-4 border rounded-2xl flex flex-col items-center gap-3 transition-all relative ${isLocked ? 'opacity-60 cursor-not-allowed bg-stone-50' : store.stylePreferences.layout === opt.value ? 'ring-2 ring-rose-500 bg-rose-50/20 border-rose-200' : 'hover:bg-[#fcfbf8] border-[#eceae4]'}`}
+                            className={`p-2.5 sm:p-4 border rounded-2xl flex flex-col items-center gap-2.5 transition-all relative ${isLocked ? 'opacity-60 cursor-not-allowed bg-stone-50' : store.stylePreferences.layout === opt.value ? 'ring-2 ring-rose-500 bg-rose-50/20 border-rose-200' : 'hover:bg-[#fcfbf8] border-[#eceae4]'}`}
                           >
                             <div className={`w-10 h-14 rounded-lg border-2 ${opt.bg} ${opt.border} shadow-sm`} />
-                            <span className="text-[9px] font-bold uppercase tracking-wider">{opt.label}</span>
+                            <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-center break-words w-full px-0.5">{opt.label}</span>
                             {isLocked && (
                               <div className="absolute top-2 right-2">
                                 <Lock className="h-3 w-3 text-stone-400" />
