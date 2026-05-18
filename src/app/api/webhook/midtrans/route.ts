@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import { sendInvoiceEmail } from '@/lib/email';
+import { PRICING } from '@/modules/billing/server/constants';
 
 export async function POST(request: Request) {
   try {
@@ -103,14 +104,28 @@ export async function POST(request: Request) {
       // Send Invoice/Receipt Email outside of transaction block to avoid SMTP latency holding database locks
       if (userEmail) {
         let planName = 'Premium Plan';
-        if (transaction.tier === 'BASIC') planName = 'Minimalist Plan';
-        if (transaction.tier === 'PREMIUM') planName = 'Premium Plan';
-        if (transaction.tier === 'ULTIMATE') planName = 'Ultimate Plan';
+        let subtotal: number = PRICING.PREMIUM;
 
-        const subtotal = transaction.amount;
+        if (transaction.tier === 'BASIC') {
+          planName = 'Minimalist Plan';
+          subtotal = PRICING.BASIC;
+        } else if (transaction.tier === 'PREMIUM') {
+          planName = 'Premium Plan';
+          subtotal = PRICING.PREMIUM;
+        } else if (transaction.tier === 'ULTIMATE') {
+          planName = 'Ultimate Plan';
+          subtotal = PRICING.ULTIMATE;
+        } else if (transaction.accountType === 'B2B_PRO') {
+          planName = 'Paket Pro (Bulanan)';
+          subtotal = PRICING.PRO_PLAN;
+        } else if (transaction.accountType === 'B2B_ALL_TIME') {
+          planName = 'Enterprise (Seumur Hidup)';
+          subtotal = PRICING.ENTERPRISE;
+        }
+
         const ppn = Math.round(subtotal * 0.11);
         const adminFee = 2500;
-        const total = subtotal + ppn + adminFee;
+        const total = transaction.amount; // Use actual amount saved in DB as total for perfect consistency
 
         try {
           await sendInvoiceEmail(userEmail, {

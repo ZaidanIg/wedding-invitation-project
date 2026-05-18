@@ -17,31 +17,31 @@ export default function HeroSection() {
           className="object-cover object-center opacity-90 transition-opacity duration-1000"
           priority
         />
-        {/* Left-to-right fade out gradient using brand bg color #f7f4ed */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#f7f4ed] via-[#f7f4ed]/95 md:via-[#f7f4ed]/60 to-[#f7f4ed]/10 z-10" />
+        {/* Responsive gradient overlay using brand bg color #f7f4ed */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f4ed]/90 via-[#f7f4ed]/95 to-[#f7f4ed]/60 md:bg-gradient-to-r md:from-[#f7f4ed] md:via-[#f7f4ed]/95 md:to-[#f7f4ed]/10 z-10" />
       </div>
 
       {/* Content */}
-      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-left">
-        <div className="max-w-3xl">
+      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center md:text-left flex justify-center md:justify-start">
+        <div className="max-w-3xl flex flex-col items-center md:items-start w-full">
           {/* Subtle Accent */}
-          <div className="mb-6 flex items-center justify-start gap-3 animate-fade-in">
-            <span className="font-handwriting text-2xl text-rose-600/80 text-left">- Suratan pertama untuk cerita kasih selamanya -</span>
+          <div className="mb-6 flex items-center justify-center md:justify-start gap-3 animate-fade-in">
+            <span className="font-handwriting text-2xl text-rose-600/80 text-center md:text-left">- Suratan pertama untuk cerita kasih selamanya -</span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-4xl sm:text-[72px] md:text-[84px] font-display font-bold leading-[1.0] tracking-tight sm:tracking-[-0.03em] text-[#1c1c1c] mb-8 animate-fade-in-up text-left">
+          <h1 className="text-4xl sm:text-[72px] md:text-[84px] font-display font-bold leading-[1.0] tracking-tight sm:tracking-[-0.03em] text-[#1c1c1c] mb-8 animate-fade-in-up text-center md:text-left">
             Rayakan Momen <br />
             <span className="text-rose-500 italic font-normal">Terindah</span> Bersama
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg text-[#5f5f5d] max-w-xl mb-12 leading-relaxed animate-fade-in-up delay-200 text-balance text-left">
+          <p className="text-base sm:text-lg text-[#5f5f5d] max-w-xl mb-12 leading-relaxed animate-fade-in-up delay-200 text-balance text-center md:text-left mx-auto md:mx-0">
             Izinkan kami membantu mewujudkan cita dan harapan Anda mengarungi perjalanan panjang bersama dengan undangan digital mewah, elegan, dan menyenangkan hati.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-4 sm:gap-6 animate-fade-in-up delay-300 w-full">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center md:justify-start gap-4 sm:gap-6 animate-fade-in-up delay-300 w-full sm:w-auto">
           <Link
               href="/create"
               className="group relative inline-flex items-center justify-center gap-3 px-10 py-4.5 text-base font-bold rounded-2xl bg-rose-gradient text-white shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 hover:scale-[1.02] transition-all duration-500 animate-glow-pulse"
