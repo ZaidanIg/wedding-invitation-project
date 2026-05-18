@@ -94,7 +94,7 @@ export default function InvitationCard({ invitation, accountType, onDelete }: In
                   </Badge>
                 ) : invitation.tier === 'BASIC' ? (
                   <Badge className="bg-blue-500/10 text-blue-600 border-blue-200 text-[10px] uppercase tracking-widest font-bold px-3 py-1">
-                    Aktif (Gratis)
+                    Minimalist
                   </Badge>
                 ) : (invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED') ? (
                   <Badge className="bg-amber-500 text-white border-amber-500 text-[10px] uppercase tracking-widest font-bold px-3 py-1 shadow-lg shadow-amber-500/20">

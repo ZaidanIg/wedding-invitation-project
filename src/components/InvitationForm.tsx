@@ -266,37 +266,7 @@ export default function InvitationForm() {
   const hasPremium = activeTier === 'PREMIUM' || activeTier === 'ULTIMATE';
   const hasUltimate = activeTier === 'ULTIMATE';
 
-  if (showPlanSelection) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-           <h1 className="text-4xl font-display font-bold text-[#1c1c1c] mb-4">Pilih Paket Undangan</h1>
-           <p className="text-stone-500">Sesuaikan fitur dengan kebutuhan hari bahagia Anda</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {tiers.map((t) => (
-            <Card key={t.id} onClick={() => { store.setTargetTier(t.id as any); setShowPlanSelection(false); }} className={`cursor-pointer transition-all hover:scale-[1.02] border-2 ${store.targetTier === t.id ? 'border-rose-500 shadow-xl' : 'border-[#eceae4]'} flex flex-col`}>
-              <div className={`p-6 ${t.bg} border-b border-[#eceae4]`}>
-                <h3 className={`text-xl font-bold ${t.color}`}>{t.name}</h3>
-                <div className="text-2xl font-display font-bold mt-2">{t.price}</div>
-              </div>
-              <div className="p-6 flex-1 flex flex-col">
-                <p className="text-sm text-stone-500 mb-6">{t.description}</p>
-                <ul className="space-y-3 flex-1">
-                  {t.features.map((f, i) => (
-                    <li key={i} className="text-xs flex items-center gap-2 text-stone-600">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {f}
-                    </li>
-                  ))}
-                </ul>
-                <Button className="w-full mt-8 bg-[#1c1c1c] text-white rounded-xl">Pilih Paket</Button>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-0">
@@ -311,7 +281,7 @@ export default function InvitationForm() {
             <div className="text-sm font-bold text-[#1c1c1c]">{tiers.find(t => t.id === store.targetTier)?.name}</div>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={() => setShowPlanSelection(true)} className="text-rose-500 text-xs font-bold">
+        <Button variant="ghost" size="sm" onClick={() => router.push('/pricing')} className="text-rose-500 text-xs font-bold">
           Ganti Paket
         </Button>
       </div>
@@ -373,7 +343,7 @@ export default function InvitationForm() {
                           <p className="text-xs text-stone-500 max-w-sm mx-auto">
                             Kisah Cinta (Love Story) hanya tersedia untuk Paket Premium & Ultimate. Upgrade sekarang untuk mengabadikan perjalanan cinta Anda dengan indah.
                           </p>
-                          <Button size="sm" onClick={() => setShowPlanSelection(true)} className="bg-rose-500 text-white rounded-xl">
+                          <Button size="sm" onClick={() => router.push('/pricing')} className="bg-rose-500 text-white rounded-xl">
                             Upgrade Paket
                           </Button>
                         </div>
@@ -416,7 +386,7 @@ export default function InvitationForm() {
                           <p className="text-xs text-stone-500 max-w-sm mx-auto">
                             Hubungkan rekening bank atau e-wallet Anda agar tamu dapat mengirimkan kado secara instan. Fitur ini hanya tersedia untuk Paket Basic ke atas.
                           </p>
-                          <Button size="sm" onClick={() => setShowPlanSelection(true)} className="bg-[#1c1c1c] text-white rounded-xl">
+                          <Button size="sm" onClick={() => router.push('/pricing')} className="bg-[#1c1c1c] text-white rounded-xl">
                             Upgrade Paket
                           </Button>
                         </div>
@@ -471,7 +441,7 @@ export default function InvitationForm() {
                       <div className="bg-stone-50 border border-stone-200 p-6 rounded-3xl text-center">
                         <Lock className="h-6 w-6 mx-auto mb-2 text-stone-300" />
                         <p className="text-[10px] uppercase font-bold tracking-widest text-stone-400">Terkunci di Paket Gratis</p>
-                        <Button variant="ghost" size="sm" onClick={() => setShowPlanSelection(true)} className="text-rose-500 mt-2 text-xs">Upgrade Paket</Button>
+                        <Button variant="ghost" size="sm" onClick={() => router.push('/pricing')} className="text-rose-500 mt-2 text-xs">Upgrade Paket</Button>
                       </div>
                     ) : (
                       <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-6 rounded-3xl">{store.headerPhotoUrl ? (<div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg"><Image src={store.headerPhotoUrl} alt="H" fill className="object-cover" unoptimized /><button className="absolute top-3 right-3 p-2 bg-white rounded-full text-red-500 shadow-xl" onClick={() => store.setHeaderPhotoUrl('')}><Trash2 className="h-4 w-4" /></button></div>) : (<UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-rose-500 text-[10px] uppercase font-bold tracking-widest px-8 py-2.5 rounded-xl', container: 'p-6 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setHeaderPhotoUrl(res[0].ufsUrl); }} />)}</div>
