@@ -107,7 +107,7 @@ export default function PrivacyPolicyPage() {
               Apabila terdapat pertanyaan, masukan hukum, keraguan, atau keluhan terkait dengan tata cara pengelolaan kerahasiaan data di sistem kami, silakan menghubungi divisi pengawasan pelindungan data kami:
             </p>
             <div className="bg-stone-50 border border-stone-200/50 p-6 rounded-2xl font-mono text-xs text-[#6b6b6b]">
-              <p>✉️ <strong>Divisi Perlindungan Data:</strong> <a href="mailto:zaidanikhsan.g@gmail.com" className="text-rose-500 hover:underline">zaidanikhsan.g@gmail.com</a></p>
+              <p>✉️ <strong>Divisi Perlindungan Data:</strong> <a href="mailto:official@sahinaja.com" className="text-rose-500 hover:underline">official@sahinaja.com</a></p>
               <p>📍 <strong>Alamat Kantor Terdaftar:</strong> Jln. Pager betis dsn, Jl. Tenjolaya No.15, RT.03/RW.01, Sukagalih, Kec. Sumedang selatan, Kabupaten Sumedang, Jawa Barat 45311</p>
             </div>
           </div>

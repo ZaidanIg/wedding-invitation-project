@@ -14,12 +14,12 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`;
 
   const mailOptions = {
-    from: process.env.SMTP_FROM || 'WeddingAI <noreply@weddingai.com>',
+    from: process.env.SMTP_FROM || 'Sahinaja <official@sahinaja.com>',
     to: email,
-    subject: 'Verify your email address - WeddingAI',
+    subject: 'Verify your email address - Sahinaja',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
-        <h2 style="color: #e11d48; text-align: center;">Welcome to WeddingAI!</h2>
+        <h2 style="color: #e11d48; text-align: center;">Welcome to Sahinaja!</h2>
         <p style="font-size: 16px; color: #333;">Hi there,</p>
         <p style="font-size: 16px; color: #333;">Thank you for registering. To complete your registration and unlock all features, please verify your email address by clicking the button below:</p>
         <div style="text-align: center; margin: 30px 0;">
@@ -45,12 +45,12 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
 export const sendVerificationCodeEmail = async (email: string, code: string) => {
   const mailOptions = {
-    from: process.env.SMTP_FROM || 'WeddingAI <noreply@weddingai.com>',
+    from: process.env.SMTP_FROM || 'Sahinaja <official@sahinaja.com>',
     to: email,
-    subject: 'Your Verification Code - WeddingAI',
+    subject: 'Your Verification Code - Sahinaja',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
-        <h2 style="color: #e11d48; text-align: center;">WeddingAI Verification</h2>
+        <h2 style="color: #e11d48; text-align: center;">Sahinaja Verification</h2>
         <p style="font-size: 16px; color: #333;">Hi there,</p>
         <p style="font-size: 16px; color: #333;">Your 6-digit verification code is:</p>
         <div style="text-align: center; margin: 30px 0;">
@@ -77,14 +77,14 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password?token=${token}`;
 
   const mailOptions = {
-    from: process.env.SMTP_FROM || 'WeddingAI <noreply@weddingai.com>',
+    from: process.env.SMTP_FROM || 'Sahinaja <official@sahinaja.com>',
     to: email,
-    subject: 'Reset your password - WeddingAI',
+    subject: 'Reset your password - Sahinaja',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
         <h2 style="color: #e11d48; text-align: center;">Reset Password</h2>
         <p style="font-size: 16px; color: #333;">Hi,</p>
-        <p style="font-size: 16px; color: #333;">Kami menerima permintaan untuk mereset kata sandi akun WeddingAI Anda. Klik tombol di bawah ini untuk melanjutkan:</p>
+        <p style="font-size: 16px; color: #333;">Kami menerima permintaan untuk mereset kata sandi akun Sahinaja Anda. Klik tombol di bawah ini untuk melanjutkan:</p>
         <div style="text-align: center; margin: 30px 0;">
           <a href="${resetUrl}" style="background-color: #e11d48; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Reset Kata Sandi</a>
         </div>
@@ -116,7 +116,7 @@ export const sendInvoiceEmail = async (email: string, invoiceDetails: {
   coupleNames: string;
 }) => {
   const mailOptions = {
-    from: process.env.SMTP_FROM || 'Sahinaja <noreply@sahinaja.com>',
+    from: process.env.SMTP_FROM || 'Sahinaja <official@sahinaja.com>',
     to: email,
     subject: `Bukti Pembayaran Sukses — Sahinaja #${invoiceDetails.orderId}`,
     html: `
@@ -168,7 +168,7 @@ export const sendInvoiceEmail = async (email: string, invoiceDetails: {
 
         <div style="text-align: center; color: #666; font-size: 12px; line-height: 1.5;">
           <p>Terima kasih atas kepercayaan Anda menggunakan Sahinaja untuk mengabadikan momen terindah hidup Anda.</p>
-          <p>Jika ada pertanyaan, hubungi kami di <a href="mailto:zaidanikhsan.g@gmail.com" style="color: #e11d48; text-decoration: none;">zaidanikhsan.g@gmail.com</a>.</p>
+          <p>Jika ada pertanyaan, hubungi kami di <a href="mailto:official@sahinaja.com" style="color: #e11d48; text-decoration: none;">official@sahinaja.com</a>.</p>
           <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;" />
           <p style="color: #999;">📍 Jln. Pager betis dsn, Jl. Tenjolaya No.15, RT.03/RW.01, Sukagalih, Kec. Sumedang selatan, Kabupaten Sumedang, Jawa Barat 45311</p>
         </div>

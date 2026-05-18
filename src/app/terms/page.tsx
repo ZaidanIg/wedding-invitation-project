@@ -82,7 +82,7 @@ export default function TermsOfServicePage() {
                   <li>Terjadi kegagalan teknis fatal pada infrastruktur sistem kami yang mengakibatkan undangan premium tidak dapat diakses publik secara permanen selama lebih dari 3x24 jam kerja sejak konfirmasi pembayaran diterima.</li>
                 </ul>
               </li>
-              <li><strong>Prosedur Pengajuan Resmi:</strong> Pengajuan pengembalian dana wajib dikirimkan secara tertulis ke email resmi kami <strong>zaidanikhsan.g@gmail.com</strong> menggunakan alamat email terdaftar akun Anda, melampirkan bukti transfer pembayaran dari gerbang pembayaran resmi, dan diajukan selambat-lambatnya 7 (tujuh) hari kalender sejak transaksi dilakukan. Pengembalian dana yang disetujui akan ditransfer ke rekening asal Pengguna dalam jangka waktu maksimal 7 (tujuh) hari kerja.</li>
+              <li><strong>Prosedur Pengajuan Resmi:</strong> Pengajuan pengembalian dana wajib dikirimkan secara tertulis ke email resmi kami <strong>official@sahinaja.com</strong> menggunakan alamat email terdaftar akun Anda, melampirkan bukti transfer pembayaran dari gerbang pembayaran resmi, dan diajukan selambat-lambatnya 7 (tujuh) hari kalender sejak transaksi dilakukan. Pengembalian dana yang disetujui akan ditransfer ke rekening asal Pengguna dalam jangka waktu maksimal 7 (tujuh) hari kerja.</li>
             </ul>
           </div>
 
@@ -139,7 +139,7 @@ export default function TermsOfServicePage() {
             </p>
             <div className="bg-stone-50 border border-stone-200/50 p-6 rounded-2xl space-y-2 font-mono text-xs text-[#6b6b6b]">
               <p>📍 <strong>Alamat Kantor Terdaftar:</strong> Jln. Pager betis dsn, Jl. Tenjolaya No.15, RT.03/RW.01, Sukagalih, Kec. Sumedang selatan, Kabupaten Sumedang, Jawa Barat 45311</p>
-              <p>✉️ <strong>Email Resmi:</strong> <a href="mailto:zaidanikhsan.g@gmail.com" className="text-rose-500 hover:underline">zaidanikhsan.g@gmail.com</a></p>
+              <p>✉️ <strong>Email Resmi:</strong> <a href="mailto:official@sahinaja.com" className="text-rose-500 hover:underline">official@sahinaja.com</a></p>
               <p>💬 <strong>WhatsApp CS:</strong> <a href="https://wa.me/6282116179745" target="_blank" rel="noopener noreferrer" className="text-rose-500 hover:underline">+62 821-1617-9745</a></p>
             </div>
           </div>
