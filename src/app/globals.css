@@ -382,4 +382,19 @@ html {
   animation: eye-blink 4s ease-in-out infinite;
 }
 
+/* Fix iOS Safari Date & Time picker native width overflow and alignment */
+input[type="date"],
+input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+input::-webkit-date-and-time-value {
+  text-align: left;
+  min-height: 1.5em;
+  margin: 0;
+  padding: 0;
+}
+
 
