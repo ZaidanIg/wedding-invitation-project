@@ -99,7 +99,11 @@ const tiers = [
   { id: 'ULTIMATE', name: 'Ultimate Plan', price: 'Rp 250.000', description: 'Justifikasi termewah dengan fitur manajemen tamu modern.', features: ['Akses Tema Premium', 'Sistem QR Check-in', 'Link Per Tamu', 'WA Blast Integration', 'Unlimited Galeri Foto'], color: 'text-amber-500', bg: 'bg-amber-50/50' },
 ];
 
-export default function InvitationForm() {
+interface InvitationFormProps {
+  activeProjects?: Array<{ id: string; name: string; status: string }>;
+}
+
+export default function InvitationForm({ activeProjects = [] }: InvitationFormProps) {
   const store = useInvitationStore();
   const { data: session } = useSession();
   const router = useRouter();
@@ -135,9 +139,10 @@ export default function InvitationForm() {
       const data = await res.json();
       if (data.success && data.data?.user) {
         setUserAccountType(data.data.user.accountType);
-        // If B2B, automatically set to PREMIUM features and skip plan selection
-        if (data.data.user.accountType === 'B2B_PRO' || data.data.user.accountType === 'B2B_ALL_TIME') {
-          store.setTargetTier('PREMIUM');
+        // If B2B/Agency, automatically set to ULTIMATE features to unlock all platform capabilities and skip plan selection
+        const isUserAgency = data.data.user.role === 'AGENCY' || (data.data.user.accountType && !data.data.user.accountType.startsWith('B2C'));
+        if (isUserAgency && !data.data.user.accountType.startsWith('B2C')) {
+          store.setTargetTier('ULTIMATE');
           setShowPlanSelection(false);
         } else {
           // If B2C and no plan parameter in URL, redirect to pricing to choose a plan
@@ -192,6 +197,7 @@ export default function InvitationForm() {
           ...store.coupleDetails,
           ...store.eventDetails,
           ...store.generatedInvitation,
+          projectId: store.projectId || undefined,
           photoUrls: store.photoUrls,
           headerPhotoUrl: store.headerPhotoUrl,
           groomPhotoUrl: store.groomPhotoUrl,
@@ -230,7 +236,10 @@ export default function InvitationForm() {
     }
   };
 
-  const canProceedStep1 = store.coupleDetails.groomName.trim().length >= 2 && store.coupleDetails.brideName.trim().length >= 2;
+  const isAgency = session?.user?.role === 'AGENCY' && userAccountType !== 'B2C_FREE' && !userAccountType.startsWith('B2C');
+  const canProceedStep1 = store.coupleDetails.groomName.trim().length >= 2 &&
+    store.coupleDetails.brideName.trim().length >= 2 &&
+    (!isAgency || (store.projectId && store.projectId.trim().length > 0));
   const canProceedStep2 = store.eventDetails.eventDate && store.eventDetails.eventTime && store.eventDetails.venueName.trim().length >= 2 && store.eventDetails.venueAddress.trim().length >= 5;
 
   if (!session) return null;
@@ -309,6 +318,21 @@ export default function InvitationForm() {
               <div className="p-3 sm:p-10">
                 <div className="text-center mb-10"><div className="w-14 h-14 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-4"><Heart className="h-7 w-7 text-rose-500" /></div><h2 className="text-2xl sm:text-3xl font-display font-bold text-[#1c1c1c]">Data Pasangan</h2></div>
                 <div className="space-y-8">
+                  {isAgency && (
+                    <div className="space-y-2">
+                      <Select
+                        label="Pilih Proyek Undangan"
+                        options={[
+                          { value: '', label: 'Silakan pilih proyek pernikahan...' },
+                          ...(activeProjects || []).map((p) => ({ value: p.id, label: p.name }))
+                        ]}
+                        value={store.projectId || ''}
+                        onChange={(e) => store.setProjectId(e.target.value)}
+                        error={!store.projectId ? 'Proyek wajib dipilih sebelum membuat undangan' : undefined}
+                        helperText="Hubungkan undangan ini dengan salah satu proyek aktif Anda."
+                      />
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8"><Input label="Nama Mempelai Pria" placeholder="John Doe" value={store.coupleDetails.groomName} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, groomName: e.target.value })} /><Input label="Orang Tua Pria" placeholder="Bapak John & Ibu Jane" value={store.coupleDetails.groomParents} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, groomParents: e.target.value })} /></div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8"><Input label="Nama Mempelai Wanita" placeholder="Jane Doe" value={store.coupleDetails.brideName} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, brideName: e.target.value })} /><Input label="Orang Tua Wanita" placeholder="Bapak Doe & Ibu Doe" value={store.coupleDetails.brideParents} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, brideParents: e.target.value })} /></div>
                 </div>
@@ -333,7 +357,7 @@ export default function InvitationForm() {
               <div className="p-3 sm:p-10">
                 <AnimatePresence mode="wait">
                   {subStep === 1 && (<motion.div key="sub1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Input label="Tanggal Acara" type="date" value={store.eventDetails.eventDate} onChange={(e) => store.setEventDetails({ ...store.eventDetails, eventDate: e.target.value })} /><Input label="Waktu Mulai" type="time" value={store.eventDetails.eventTime ? store.eventDetails.eventTime.replace('.', ':') : ''} onChange={(e) => store.setEventDetails({ ...store.eventDetails, eventTime: e.target.value })} /></div><Input label="Nama Lokasi" placeholder="The Grand Ballroom Sumedang" value={store.eventDetails.venueName} onChange={(e) => store.setEventDetails({ ...store.eventDetails, venueName: e.target.value })} /><Textarea label="Alamat Lengkap" placeholder="Jl. Pangeran Kornel No. 123, Sumedang Selatan" rows={3} value={store.eventDetails.venueAddress} onChange={(e) => store.setEventDetails({ ...store.eventDetails, venueAddress: e.target.value })} /></motion.div>)}
-                  {subStep === 2 && (<motion.div key="sub2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="flex items-center justify-between"><h3 className="font-bold text-sm">Rangkaian Acara</h3><Button variant="ghost" size="sm" onClick={() => store.setEventDetails({ ...store.eventDetails, schedule: [...store.eventDetails.schedule, { id: Date.now().toString(), time: '', label: '', icon: 'heart' }] })} className="text-rose-500"><Plus className="h-4 w-4 mr-1" /> Tambah</Button></div><div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">{store.eventDetails.schedule.map((item, index) => (<div key={item.id} className="bg-[#fcfbf8] p-4 border border-[#eceae4] rounded-2xl space-y-3"><div className="grid grid-cols-1 sm:grid-cols-2 gap-3"><Input label="Jam" type="time" value={item.time ? item.time.replace('.', ':') : ''} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].time = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /><Select label="Ikon" options={iconOptions} value={item.icon} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].icon = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /></div><div className="flex items-end gap-2"><div className="flex-1"><Input label="Kegiatan" placeholder="Contoh: Akad Nikah" value={item.label} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].label = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /></div><button className="h-[46px] w-[46px] flex items-center justify-center text-red-400 hover:bg-red-50 rounded-xl transition-colors border border-[#eceae4] bg-white flex-shrink-0" onClick={() => { const n = store.eventDetails.schedule.filter((_, i) => i !== index); store.setEventDetails({ ...store.eventDetails, schedule: n }); }}><Trash2 className="h-4 w-4" /></button></div></div>))}</div></motion.div>)}
+                  {subStep === 2 && (<motion.div key="sub2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="flex items-center justify-between"><h3 className="font-bold text-sm">Rangkaian Acara</h3><Button variant="ghost" size="sm" onClick={() => store.setEventDetails({ ...store.eventDetails, schedule: [...store.eventDetails.schedule, { id: Date.now().toString(), time: '', label: '', icon: 'heart' }] })} className="text-rose-500"><Plus className="h-4 w-4 mr-1" /> Tambah</Button></div><div className="relative space-y-4 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">{store.eventDetails.schedule.map((item, index) => (<div key={item.id} className="bg-[#fcfbf8] p-4 border border-[#eceae4] rounded-2xl space-y-3"><div className="grid grid-cols-1 sm:grid-cols-2 gap-3"><Input label="Jam" type="time" value={item.time ? item.time.replace('.', ':') : ''} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].time = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /><Select label="Ikon" options={iconOptions} value={item.icon} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].icon = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /></div><div className="flex items-end gap-2"><div className="flex-1"><Input label="Kegiatan" placeholder="Contoh: Akad Nikah" value={item.label} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].label = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /></div><button className="h-[46px] w-[46px] flex items-center justify-center text-red-400 hover:bg-red-50 rounded-xl transition-colors border border-[#eceae4] bg-white flex-shrink-0" onClick={() => { const n = store.eventDetails.schedule.filter((_, i) => i !== index); store.setEventDetails({ ...store.eventDetails, schedule: n }); }}><Trash2 className="h-4 w-4" /></button></div></div>))}</div></motion.div>)}
                   {subStep === 3 && (
                     <motion.div key="sub3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                       {!hasPremium ? (
@@ -355,7 +379,7 @@ export default function InvitationForm() {
                               <Plus className="h-4 w-4 mr-1" /> Tambah
                             </Button>
                           </div>
-                          <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
+                          <div className="relative space-y-6 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
                             {store.eventDetails.loveStory.map((item, index) => (
                               <div key={item.id} className="bg-[#fcfbf8] p-5 border border-[#eceae4] rounded-2xl space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
@@ -398,7 +422,7 @@ export default function InvitationForm() {
                               <Plus className="h-4 w-4 mr-1" /> Rekening
                             </Button>
                           </div>
-                          <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
+                          <div className="relative space-y-6 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
                             {(store.eventDetails.digitalGifts || []).map((gift: any, index: number) => (
                               <div key={index} className="bg-[#fcfbf8] p-5 border border-[#eceae4] rounded-2xl">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -431,7 +455,7 @@ export default function InvitationForm() {
           <motion.div key="step3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
             <Card className="bg-white border-[#eceae4] shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-rose-500" />
-              <div className="p-3 sm:p-10 max-h-[75vh] overflow-y-auto no-scrollbar">
+              <div className="relative p-3 sm:p-10 max-h-[75vh] overflow-y-auto no-scrollbar">
                 <div className="text-center mb-10"><Camera className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Galeri Foto</h2></div>
                 <div className="space-y-12">
                   {/* Header Photo: Only for BASIC & PREMIUM */}
@@ -489,7 +513,7 @@ export default function InvitationForm() {
           <motion.div key="step4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
             <Card className="bg-white border-[#eceae4] shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-rose-500" />
-              <div className="p-3 sm:p-10 max-h-[85vh] overflow-y-auto no-scrollbar">
+              <div className="relative p-3 sm:p-10 max-h-[85vh] overflow-y-auto no-scrollbar">
                 <div className="text-center mb-10"><Palette className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Gaya & Teks</h2></div>
                 <div className="space-y-10">
                   <div className="space-y-4">
@@ -667,7 +691,7 @@ export default function InvitationForm() {
                 {store.isSaving 
                   ? 'MENYIMPAN...' 
                   : userAccountType === 'B2C_FREE' 
-                    ? 'LANJUTKAN KE PEMBAYARAN' 
+                    ? 'BAYAR & SIMPAN UNDANGAN' 
                     : 'SIMPAN & PUBLIKASIKAN'
                 }
               </Button>

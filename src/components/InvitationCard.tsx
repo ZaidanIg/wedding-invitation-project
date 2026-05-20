@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Eye, Users, Calendar, Trash2, ExternalLink, Copy, Sparkles, MapPin, Share2, QrCode, Download, MessageSquare } from 'lucide-react';
+import { Eye, Users, Calendar, Trash2, ExternalLink, Copy, Sparkles, MapPin, Share2, QrCode, Download, MessageSquare, FolderKanban } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
@@ -84,7 +84,13 @@ export default function InvitationCard({ invitation, accountType, onDelete }: In
               <h3 className="text-2xl font-display font-bold text-[#1c1c1c] tracking-tight">
                 {invitation.groomName} & {invitation.brideName}
               </h3>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
+                {invitation.project && (
+                  <Badge className="bg-rose-500/10 text-rose-700 border-rose-200/50 text-[10px] uppercase tracking-wider font-extrabold px-3 py-1 flex items-center gap-1.5 shadow-sm">
+                    <FolderKanban className="h-3 w-3 text-rose-500" />
+                    Proyek: {invitation.project.name}
+                  </Badge>
+                )}
                 <Badge className="bg-[#1c1c1c]/5 text-[#1c1c1c]/60 border-[#eceae4] text-[10px] uppercase tracking-widest font-bold px-3 py-1">
                   {invitation.tone}
                 </Badge>

@@ -44,7 +44,8 @@ Required JSON keys (values must be strings):
 
 Rules:
 - Respond with pure JSON, no markdown codeblocks, no intro/outro text.
-- Be highly concise, poetic, and avoid verbose filler.`;
+- Be highly concise, poetic, and avoid verbose filler.
+- CRITICAL: Never use unescaped straight double quotes (") inside JSON string values (for example, quoting scriptures, verses, or speech). Instead, use curly quotes (“...”) or single quotes ('...') inside values so the JSON remains 100% valid.`;
 }
 
 function buildUserPrompt(input: {
@@ -126,7 +127,7 @@ export const aiService = {
       ],
       model: MODEL,
       temperature: 0.7,
-      max_tokens: 512,
+      max_tokens: 2048,
       response_format: { type: 'json_object' },
     });
 

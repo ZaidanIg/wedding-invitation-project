@@ -48,8 +48,20 @@ export interface GeneratedInvitation {
   fullText: string;
 }
 
+export interface ProjectMetadata {
+  id?: string;
+  name?: string;
+  status?: string;
+  isWhiteLabel?: boolean;
+  hasQrScanner?: boolean;
+  agency?: {
+    ownerId: string;
+  } | null;
+}
+
 // ---- Database Models (mirrors Prisma, used on the client side) ----
 export interface Invitation {
+  project?: ProjectMetadata | null;
   stylePreferences?: Record<string, unknown>;
   id: string;
   userId?: string | null;
@@ -85,6 +97,7 @@ export interface Invitation {
   createdAt: string;
   updatedAt: string;
   guests?: Guest[];
+  showWatermark?: boolean;
 }
 
 export interface Guest {
@@ -179,6 +192,7 @@ export interface PaginatedResponse<T> {
 // ---- Form Wizard State ----
 export interface FormWizardState {
   step: number;
+  projectId?: string;
   coupleDetails: {
     groomName: string;
     groomParents: string;

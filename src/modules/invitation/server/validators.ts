@@ -8,6 +8,7 @@ const VALID_TONES = ['formal', 'romantic', 'modern', 'playful'] as const;
 const VALID_LANGUAGES = ['id', 'en'] as const;
 
 export const createInvitationSchema = z.object({
+  projectId: z.string().min(1, "Proyek wajib dipilih sebelum membuat undangan"),
   groomName: z.string().min(2, 'Groom name is required (min 2 characters)'),
   groomParents: z.string().optional(),
   brideName: z.string().min(2, 'Bride name is required (min 2 characters)'),

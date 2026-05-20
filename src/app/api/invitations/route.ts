@@ -31,8 +31,8 @@ export async function GET(request: Request) {
       return errorResponse('Authentication required', 401, 'UNAUTHORIZED');
     }
 
-    // Automatically reconcile pending payments before fetching!
-    await billingService.reconcilePendingTransactions(session.user.id).catch((err) => {
+    // Automatically reconcile pending payments in the background!
+    billingService.reconcilePendingTransactions(session.user.id).catch((err) => {
       console.error('[Reconciliation Error]:', err);
     });
 

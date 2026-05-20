@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Check, Star, Zap, Crown, Heart, Sparkles, ShieldCheck } from 'lucide-react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import CheckoutButton from '@/components/CheckoutButton';
+import { Check, X, QrCode, Palette, Globe, Heart, Building2, Sparkles, ArrowRight, Users, CalendarDays, Zap, Crown, Image as ImageIcon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+
+type Audience = 'b2c' | 'b2b';
 
 interface PricingContentProps {
   invitationId?: string;
@@ -13,401 +13,416 @@ interface PricingContentProps {
 
 export default function PricingContent({ invitationId }: PricingContentProps) {
   const router = useRouter();
+  const [audience, setAudience] = useState<Audience>('b2c');
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<{
-    code: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'DRAFT' | 'PRO_PLAN' | 'ENTERPRISE';
-    label: string;
-  } | null>(null);
-
-  const handlePlanSelect = (plan: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'DRAFT' | 'PRO_PLAN' | 'ENTERPRISE', planLabel: string) => {
-    setSelectedPlan({ code: plan, label: planLabel });
-    setModalOpen(true);
-  };
-
-  const executePlanSelect = () => {
-    if (!selectedPlan) return;
-    const { code: plan } = selectedPlan;
-    setModalOpen(false);
-
-    if (plan === 'DRAFT') {
-      router.push(`/create?plan=${plan}`);
-      return;
-    }
-
-    if (plan === 'PRO_PLAN' || plan === 'ENTERPRISE') {
-      router.push(`/checkout?plan=${plan}`);
-      return;
-    }
-
+  const handleB2CSelect = (plan: string) => {
     if (invitationId) {
       router.push(`/checkout?plan=${plan}&invitationId=${invitationId}`);
     } else {
       router.push(`/create?plan=${plan}`);
     }
   };
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
 
   return (
-    <div className="min-h-screen bg-[#fdfcf9] py-32 px-4 relative overflow-hidden">
-      {/* Decorative background blurs */}
+    <div className="min-h-screen bg-[#fdfcf9] py-16 md:py-24 lg:py-32 px-4 md:px-6 lg:px-8 relative overflow-hidden">
+      {/* Decorative blurs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-rose-500/5 blur-[120px] rounded-full animate-float" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-pink-500/5 blur-[150px] rounded-full animate-float-delayed" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#f43f5e 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-rose-500/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-amber-500/5 blur-[150px] rounded-full" />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.015] pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(#f43f5e 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
+        />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div 
+      <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        {/* Header */}
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-24"
+          transition={{ duration: 0.7 }}
+          className="text-center mb-14"
         >
-          <h1 className="text-[42px] md:text-[72px] font-display font-bold text-[#1c1c1c] tracking-[-0.03em] leading-[1.1] mb-8 text-balance">
-            Satu Sentuhan Indah <br /> Untuk Mengabarkan <span className="text-rose-500 italic font-normal">Hari Istimewa Anda</span>
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-[#1c1c1c] tracking-[-0.03em] leading-[1.1] mb-6 text-balance">
+            Harga yang <span className="text-rose-500 italic font-normal">Transparan</span>
           </h1>
-          <p className="text-lg md:text-xl text-[#6b6b6b] max-w-2xl mx-auto leading-relaxed text-balance">
-            Temukan paket terbaik untuk mengabadikan momen terindah Anda. <br className="hidden md:block" />
-            Tanpa biaya tersembunyi, tanpa langganan—cukup sekali bayar untuk selamanya.
+          <p className="text-base md:text-lg text-[#6b6b6b] max-w-xl mx-auto leading-relaxed">
+            Pilih paket yang sesuai dengan kebutuhan Anda.
           </p>
         </motion.div>
 
-        {/* B2C Plans */}
-        <div className="mb-32 ">
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        {/* Toggle Switcher */}
+        <div className="flex justify-center mb-16">
+          <div className="relative inline-flex bg-stone-100 rounded-2xl p-1.5 shadow-inner">
+            {/* Animated pill background */}
+            <motion.div
+              layout
+              className="absolute top-1.5 bottom-1.5 rounded-[14px] bg-white shadow-md shadow-stone-200/50"
+              style={{ width: 'calc(50% - 6px)' }}
+              animate={{ x: audience === 'b2c' ? 0 : 'calc(100% + 6px)' }}
+              transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+            />
 
-            {/* Free Draft */}
-            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40 shadow-sm shadow-[#1c1c1c]/5">
-              <div className="mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Zap className="h-6 w-6 text-stone-400" />
-                </div>
-                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Draf Percobaan</h3>
-                <p className="text-[#6b6b6b] text-xs leading-relaxed">Eksplorasi ribuan kemungkinan desain sesuka hati, tanpa batas waktu.</p>
-              </div>
-              
-              <div className="flex items-baseline gap-1 mb-10">
-                <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 0</span>
-                <span className="text-xs text-[#6b6b6b]">/undangan</span>
-              </div>
-
-              <div className="space-y-4 mb-10 flex-1">
-                {[
-                  'Buat Desain dalam 5 Menit',
-                  'Preview Tema Klasik',
-                  'Ganti Tema Sepuasnya',
-                  'Tanpa Kartu Kredit'
-                ].map((feature) => (
-                  <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
-                    <Check className="h-4.5 w-4.5 text-emerald-500 shrink-0" />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <Link href="/create?plan=DRAFT" className="w-full py-3.5 px-6 rounded-2xl bg-stone-100 text-[#1c1c1c] text-sm font-bold text-center hover:bg-stone-200 transition-all duration-300">
-                Mulai Sekarang
-              </Link>
-            </motion.div>
-
-            {/* Minimalist */}
-            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40 shadow-sm shadow-[#1c1c1c]/5">
-              <div className="mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Sparkles className="h-6 w-6 text-blue-500" />
-                </div>
-                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Minimalist</h3>
-                <p className="text-[#6b6b6b] text-xs leading-relaxed">Desain esensial yang bersih, bersahaja, namun tetap memikat pandangan.</p>
-              </div>
-              
-              <div className="flex items-baseline gap-1 mb-10">
-                <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 75rb</span>
-                <span className="text-xs text-[#6b6b6b]">/undangan</span>
-              </div>
-
-              <div className="space-y-4 mb-10 flex-1">
-                {[
-                  'Hapus Semua Watermark',
-                  '2 Foto Mempelai Utama',
-                  'Galeri 2 Foto Tambahan',
-                  'Navigasi Peta Google Maps',
-                  'Semua Pilihan Tema Klasik'
-                ].map((feature) => (
-                  <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
-                    <Check className="h-4.5 w-4.5 text-blue-500 shrink-0" />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button 
-                onClick={() => handlePlanSelect('BASIC', 'Minimalist Plan')} 
-                className="w-full py-3.5 px-6 rounded-2xl bg-stone-900 text-white text-sm font-bold text-center hover:bg-stone-800 transition-all duration-300 cursor-pointer"
-              >
-                {invitationId ? 'Aktifkan Minimalist' : 'Pilih Minimalist'}
-              </button>
-            </motion.div>
-
-            {/* Premium */}
-            <motion.div variants={itemVariants} className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-rose-500 to-pink-600 rounded-[2.6rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative glass rounded-[2.5rem] p-8 flex flex-col h-full border-rose-500/20 shadow-xl shadow-rose-500/10 animate-card-glow">
-                <div className="absolute top-0 right-8 transform -translate-y-1/2 bg-rose-500 text-white px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider shadow-lg shadow-rose-500/25 flex items-center gap-1">
-                  <Star className="h-2.5 w-2.5 fill-white" /> Paling Populer
-                </div>
-
-                <div className="mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <Heart className="h-6 w-6 text-rose-500" fill="currentColor" />
-                  </div>
-                  <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Premium</h3>
-                  <p className="text-[#6b6b6b] text-xs leading-relaxed">Penyampaian kisah cinta yang utuh dengan balutan musik syahdu dan galeri elok.</p>
-                </div>
-
-                <div className="flex items-baseline gap-1 mb-10">
-                  <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 150rb</span>
-                  <span className="text-xs text-[#6b6b6b]">/undangan</span>
-                </div>
-
-                <div className="space-y-4 mb-10 flex-1">
-                  {[
-                    'Semua Fitur Minimalist',
-                    'Galeri 10 Foto Premium',
-                    'Kisah Cinta (Love Story)',
-                    'Countdown Timer Eksklusif',
-                    'Musik Latar Belakang Kustom'
-                  ].map((feature) => (
-                    <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]">
-                      <Check className="h-4.5 w-4.5 text-rose-500 shrink-0" />
-                      <span className="font-medium">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <button 
-                  onClick={() => handlePlanSelect('PREMIUM', 'Premium Plan')} 
-                  className="w-full py-3.5 px-6 rounded-2xl bg-rose-gradient text-white text-sm font-bold text-center hover:shadow-lg hover:shadow-rose-500/30 transition-all duration-300 scale-105 cursor-pointer"
-                >
-                  {invitationId ? 'Aktifkan Premium' : 'Pilih Premium'}
-                </button>
-              </div>
-            </motion.div>
-
-            {/* Ultimate */}
-            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40 shadow-sm shadow-[#1c1c1c]/5">
-              <div className="mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <ShieldCheck className="h-6 w-6 text-rose-400" />
-                </div>
-                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Ultimate</h3>
-                <p className="text-[#6b6b6b] text-xs leading-relaxed">Kemewahan tanpa kompromi, dilengkapi RSVP pintar dan interaksi tamu eksklusif.</p>
-              </div>
-
-              <div className="flex items-baseline gap-1 mb-10">
-                <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 250rb</span>
-                <span className="text-xs text-[#6b6b6b]">/undangan</span>
-              </div>
-
-              <div className="space-y-4 mb-10 flex-1">
-                {[
-                  'Semua Fitur Premium',
-                  'Galeri Foto Tanpa Batas',
-                  'Sistem QR Check-in Tamu',
-                  'Link Personalisasi Tamu',
-                  'Integrasi WA Blast',
-                  'Akses Semua Tema Premium'
-                ].map((feature) => (
-                  <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
-                    <Check className="h-4.5 w-4.5 text-rose-500 shrink-0" />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button 
-                onClick={() => handlePlanSelect('ULTIMATE', 'Ultimate Plan')} 
-                className="w-full py-3.5 px-6 rounded-2xl bg-stone-900 text-white text-sm font-bold text-center hover:bg-stone-800 transition-all duration-300 cursor-pointer"
-              >
-                {invitationId ? 'Aktifkan Ultimate' : 'Pilih Ultimate'}
-              </button>
-            </motion.div>
-          </motion.div>
+            <button
+              onClick={() => setAudience('b2c')}
+              className={`relative z-10 flex items-center gap-2 px-6 py-2.5 rounded-[14px] text-sm font-bold transition-colors duration-200 cursor-pointer ${
+                audience === 'b2c' ? 'text-rose-500' : 'text-[#8c8885] hover:text-[#4a4745]'
+              }`}
+            >
+              <Heart className="h-3.5 w-3.5" />
+              Pasangan Pengantin
+            </button>
+            <button
+              onClick={() => setAudience('b2b')}
+              className={`relative z-10 flex items-center gap-2 px-6 py-2.5 rounded-[14px] text-sm font-bold transition-colors duration-200 cursor-pointer ${
+                audience === 'b2b' ? 'text-[#1c1c1c]' : 'text-[#8c8885] hover:text-[#4a4745]'
+              }`}
+            >
+              <Building2 className="h-3.5 w-3.5" />
+              Mitra
+            </button>
+          </div>
         </div>
 
-        {/* B2B Section - Hidden For Now */}
-        {false && (
-          <div className="relative pt-32 border-t border-rose-500/10">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-display font-bold text-[#1c1c1c] mb-4">Untuk Profesional</h2>
-              <p className="text-[#6b6b6b]">Paket khusus untuk Wedding Organizer & Agency.</p>
+        {/* Content */}
+        <AnimatePresence mode="wait">
+          {audience === 'b2c' ? (
+            <B2CView key="b2c" onSelect={handleB2CSelect} />
+          ) : (
+            <B2BView key="b2b" onStart={() => router.push('/auth/signin')} />
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   B2C VIEW — Elegant Multi-Tier Cards
+   ═══════════════════════════════════════════════════════════════════════ */
+function B2CView({ onSelect }: { onSelect: (plan: string) => void }) {
+  const b2cPlans = [
+    {
+      id: 'BASIC',
+      name: 'Basic Plan',
+      price: 'Rp 75.000',
+      description: 'Desain minimalis, bersih, dan modern untuk hari bahagia Anda.',
+      features: [
+        'Desain Klasik & Elegan',
+        'Galeri 3 Foto Mempelai',
+        'Informasi Acara Lengkap',
+        'Integrasi Google Maps Aktif',
+        'Buku Tamu Digital Standar',
+        'Masa Aktif 1 Tahun'
+      ],
+      icon: Heart,
+      color: 'text-blue-500',
+      bg: 'bg-blue-500/5',
+      border: 'border-blue-500/10',
+      iconBg: 'bg-blue-500/10',
+      popular: false,
+    },
+    {
+      id: 'PREMIUM',
+      name: 'Premium Plan',
+      price: 'Rp 150.000',
+      description: 'Rekomendasi terbaik dengan fitur interaktif romantis dan kisah cinta Anda.',
+      features: [
+        'Semua Fitur Minimalist',
+        'Galeri 10 Foto Premium',
+        'Kisah Cinta Romantis (Love Story)',
+        'Countdown Timer Pernikahan',
+        'Musik Latar Kustom (Instrumental)',
+        'Masa Aktif Selamanya'
+      ],
+      icon: Zap,
+      color: 'text-rose-500',
+      bg: 'bg-rose-500/5',
+      border: 'border-rose-500/20',
+      iconBg: 'bg-rose-500/10',
+      popular: true,
+    },
+    {
+      id: 'ULTIMATE',
+      name: 'Ultimate Plan',
+      price: 'Rp 250.000',
+      description: 'Kemewahan tanpa batas dengan integrasi WA Blast & QR Check-in.',
+      features: [
+        'Semua Fitur Premium',
+        'Galeri Foto Tanpa Batas',
+        'Sistem QR Code Check-in Tamu',
+        'Link Personalisasi Tamu Spesial',
+        'Integrasi Layanan WA Blast',
+        'Akses Semua Tema Premium'
+      ],
+      icon: Crown,
+      color: 'text-amber-500',
+      bg: 'bg-amber-500/5',
+      border: 'border-amber-500/10',
+      iconBg: 'bg-amber-500/10',
+      popular: false,
+    }
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.4 }}
+      className="space-y-8"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl mx-auto items-stretch">
+        {b2cPlans.map((plan) => {
+          const PlanIcon = plan.icon;
+          return (
+            <div key={plan.id} className="relative group flex flex-col">
+              {plan.popular && (
+                <div className="absolute -top-[15px] left-1/2 -translate-x-1/2 z-20">
+                  <span className="bg-rose-gradient text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-md shadow-rose-500/10">
+                    Paling Populer
+                  </span>
+                </div>
+              )}
+
+              {/* Glow effect for popular card */}
+              {plan.popular && (
+                <div className="absolute -inset-[2px] bg-gradient-to-br from-rose-500/20 to-amber-500/10 rounded-[2.6rem] blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              )}
+
+              <div className={`flex flex-col h-full glass rounded-[2.5rem] p-6 sm:p-8 border-white/40 shadow-xl relative overflow-hidden group hover:shadow-2xl transition-all duration-500 ${
+                plan.popular ? 'border-rose-500/20 bg-white/60 shadow-rose-500/5' : 'bg-white/40 shadow-stone-500/5'
+              }`}>
+                {/* Subtle shimmer */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-br from-rose-50/0 via-stone-50/20 to-rose-50/0" />
+
+                <div className="relative z-10 flex flex-col h-full">
+                  {/* Card Header */}
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${plan.iconBg}`}>
+                      <PlanIcon className={`h-5 w-5 ${plan.color}`} />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-display font-bold text-[#1c1c1c]">{plan.name}</h3>
+                      <p className="text-[9px] uppercase tracking-widest text-[#8c8885] font-bold">Paket Mandiri</p>
+                    </div>
+                  </div>
+
+                  {/* Price */}
+                  <div className="flex items-baseline gap-1 mt-2 mb-3">
+                    <span className="text-3xl font-display font-bold text-[#1c1c1c]">{plan.price}</span>
+                    <span className="text-xs text-[#8c8885] font-medium">/undangan</span>
+                  </div>
+                  <p className="text-[11px] text-[#6b6b6b] leading-relaxed mb-6 font-medium">
+                    {plan.description}
+                  </p>
+
+                  <div className="h-px bg-stone-200/50 my-2" />
+
+                  {/* Features List */}
+                  <div className="space-y-3.5 my-6 flex-1">
+                    {plan.features.map((feature, i) => (
+                      <div key={i} className="flex items-start gap-2.5">
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${plan.iconBg}`}>
+                          <Check className={`h-3 w-3 ${plan.color}`} />
+                        </div>
+                        <span className="text-xs text-[#1c1c1c] font-medium leading-normal">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Buy Button */}
+                  <button
+                    onClick={() => onSelect(plan.id)}
+                    className={`group/btn w-full py-4 rounded-2xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                      plan.popular
+                        ? 'bg-rose-gradient text-white shadow-lg shadow-rose-500/15 hover:shadow-rose-500/30'
+                        : 'bg-[#1c1c1c] text-white hover:bg-stone-800'
+                    }`}
+                  >
+                    Buat Undangan Sekarang
+                    <ArrowRight className="h-3.5 w-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </div>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {/* Pro Plan */}
-              <motion.div 
-                whileHover={{ y: -5 }}
-                className="glass rounded-[2rem] p-10 border-white/40 shadow-xl"
-              >
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 rounded-xl bg-rose-500/5 flex items-center justify-center">
-                    <Zap className="h-6 w-6 text-rose-500" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-[#1c1c1c]">Paket Pro</h3>
-                    <p className="text-xs text-[#6b6b6b]">Berlangganan Bulanan</p>
-                  </div>
-                </div>
-                
-                <div className="text-3xl font-display font-bold text-[#1c1c1c] mb-8">
-                  Rp 500rb<span className="text-sm text-[#6b6b6b] font-normal"> /bulan</span>
-                </div>
-
-                <ul className="space-y-4 mb-10">
-                  {['5 Undangan Aktif', 'Masa Aktif Selamanya', 'Manajemen Dashboard Pro'].map(f => (
-                    <li key={f} className="flex items-center gap-3 text-sm text-[#1c1c1c]/70">
-                      <Check className="h-4 w-4 text-rose-500" /> {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <button 
-                  onClick={() => handlePlanSelect('PRO_PLAN', 'Paket Pro')}
-                  className="w-full py-3.5 px-6 rounded-xl border-2 border-rose-500 text-rose-500 font-bold hover:bg-rose-500 hover:text-white transition-all duration-300 cursor-pointer"
-                >
-                  Berlangganan Sekarang
-                </button>
-              </motion.div>
-
-              {/* Enterprise */}
-              <motion.div 
-                whileHover={{ y: -5 }}
-                className="glass-dark rounded-[2rem] p-10 shadow-2xl relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-4 opacity-10 rotate-12">
-                  <Crown className="h-32 w-32 text-amber-400" />
-                </div>
-                
-                <div className="flex items-center gap-4 mb-8 relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-amber-400/10 flex items-center justify-center">
-                    <Crown className="h-6 w-6 text-amber-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white">Enterprise</h3>
-                    <p className="text-xs text-white/50">Seumur Hidup</p>
-                  </div>
-                </div>
-
-                <div className="text-3xl font-display font-bold text-white mb-8 relative z-10">
-                  Rp 2.5jt<span className="text-sm text-white/40 font-normal"> /sekali bayar</span>
-                </div>
-
-                <ul className="space-y-4 mb-10 relative z-10">
-                  {['Akses Selamanya', 'Tanpa Branding (White-label)', 'Custom Domain Support'].map(f => (
-                    <li key={f} className="flex items-center gap-3 text-sm text-white/70">
-                      <Check className="h-4 w-4 text-amber-400" /> {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <button 
-                  onClick={() => handlePlanSelect('ENTERPRISE', 'Enterprise')}
-                  className="w-full py-3.5 px-6 rounded-xl bg-amber-400 text-[#1c1c1c] font-bold hover:bg-amber-300 transition-all duration-300 relative z-10 shadow-lg shadow-amber-400/20 cursor-pointer"
-                >
-                  Beli Akses Seumur Hidup
-                </button>
-              </motion.div>
-            </div>
-          </div>
-        )}
+          );
+        })}
       </div>
 
-      {/* Custom Premium Confirmation Modal */}
-      {modalOpen && selectedPlan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop Blur */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute inset-0 bg-[#1c1c1c]/40 backdrop-blur-[4px]"
-            onClick={() => setModalOpen(false)}
-          />
+      <p className="text-center text-xs text-[#8c8885] pt-4">
+        Butuh bantuan memilih? Konsultasikan kebutuhan Anda melalui{' '}
+        <a href="/contact" className="text-rose-500 font-bold hover:underline">
+          Tim Layanan
+        </a>.
+      </p>
+    </motion.div>
+  );
+}
 
-          {/* Modal Content Box */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className="relative bg-[#fdfcf9] rounded-[2.5rem] p-8 sm:p-10 max-w-md w-full shadow-2xl border border-rose-500/10 z-10 text-center"
-          >
-            {/* Pulsing Sparkles Accent */}
-            <div className="w-16 h-16 rounded-full bg-rose-500/5 border border-rose-500/10 flex items-center justify-center mx-auto mb-6 shadow-sm">
-              <Sparkles className="h-6 w-6 text-rose-500 animate-pulse" />
-            </div>
+/* ═══════════════════════════════════════════════════════════════════════
+   B2B VIEW — Dashboard + Add-on Menu (2-column)
+   ═══════════════════════════════════════════════════════════════════════ */
+function B2BView({ onStart }: { onStart: () => void }) {
+  const dashboardFeatures = [
+    'Manajemen proyek klien tanpa batas',
+    'Pembuatan akun pengantin otomatis',
+    'Kapasitas tamu tanpa batasan kuota',
+    'Unggah aset visual tak terbatas',
+    'Pemantauan status RSVP terpusat',
+  ];
 
-            {/* Modal Title */}
-            <h3 className="text-2xl font-display font-bold text-[#1c1c1c] mb-3">
-              Konfirmasi Pilihan Paket
-            </h3>
+  const dashboardLocks = [
+    'Identitas visual Sahinaja aktif',
+    'Fitur pemindaian hari-H terkunci',
+  ];
 
-            {/* Description */}
-            <p className="text-[#6b6b6b] text-sm leading-relaxed mb-8">
-              Apakah Anda yakin ingin memilih paket <strong className="text-rose-500 font-bold">{selectedPlan.label}</strong> untuk hari bahagia Anda?
-            </p>
+  const addOns = [
+    {
+      name: 'D-Day QR Scanner',
+      desc: 'Pemindai kehadiran tamu instan di lokasi acara',
+      price: 'Rp 50.000',
+      bg: 'bg-rose-50/60',
+      border: 'border-rose-100',
+      iconBg: 'bg-rose-500/10',
+      iconColor: 'text-rose-500',
+      priceColor: 'text-rose-500',
+      icon: QrCode,
+    },
+    {
+      name: 'Hapus Identitas Merek',
+      desc: 'Label merek Sahinaja sepenuhnya dihilangkan',
+      price: 'Rp 75.000',
+      bg: 'bg-amber-50/60',
+      border: 'border-amber-100',
+      iconBg: 'bg-amber-500/10',
+      iconColor: 'text-amber-600',
+      priceColor: 'text-amber-600',
+      icon: Palette,
+    },
+    {
+      name: 'Domain Khusus',
+      desc: 'Undangan tampil di domain agensi Anda',
+      price: 'Rp 150.000',
+      bg: 'bg-blue-50/60',
+      border: 'border-blue-100',
+      iconBg: 'bg-blue-500/10',
+      iconColor: 'text-blue-500',
+      priceColor: 'text-blue-600',
+      icon: Globe,
+    },
+  ];
 
-            {/* Custom CTA Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch gap-3 justify-center">
-              <button
-                onClick={() => setModalOpen(false)}
-                className="py-3.5 px-6 rounded-2xl bg-stone-100 text-[#1c1c1c] text-sm font-bold hover:bg-stone-200 transition-all duration-300 cursor-pointer"
-              >
-                Kembali
-              </button>
-              <button
-                onClick={executePlanSelect}
-                className="py-3.5 px-8 rounded-2xl bg-rose-gradient text-white text-sm font-bold hover:shadow-lg hover:shadow-rose-500/25 transition-all duration-300 cursor-pointer"
-              >
-                Ya, Pilih Paket
-              </button>
-            </div>
-          </motion.div>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.4 }}
+      className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-7xl mx-auto"
+    >
+      {/* Card 1: Dashboard Agensi (Free) */}
+      <div className="glass rounded-[2.5rem] p-8 sm:p-9 flex flex-col border-white/40 shadow-sm shadow-[#1c1c1c]/5 hover:shadow-xl transition-all duration-500 group">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-stone-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Building2 className="h-5 w-5 text-[#4a4745]" />
+          </div>
+          <div>
+            <h3 className="text-lg font-display font-bold text-[#1c1c1c]">Dashboard Agensi</h3>
+            <p className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold">Gratis Selamanya</p>
+          </div>
         </div>
-      )}
 
-      {/* Premium Card Glow Animation Style */}
-      <style>{`
-        @keyframes card-glow {
-          0%, 100% {
-            box-shadow: 0 20px 25px -5px rgba(244, 63, 94, 0.08), 0 8px 10px -6px rgba(244, 63, 94, 0.08);
-            border-color: rgba(244, 63, 94, 0.15);
-          }
-          50% {
-            box-shadow: 0 25px 45px -2px rgba(244, 63, 94, 0.22), 0 12px 22px -3px rgba(244, 63, 94, 0.12);
-            border-color: rgba(244, 63, 94, 0.35);
-          }
-        }
-        .animate-card-glow {
-          animation: card-glow 3s infinite ease-in-out;
-        }
-      `}</style>
-    </div>
+        <div className="flex items-baseline gap-1.5 mb-8">
+          <span className="text-4xl font-display font-bold text-[#1c1c1c]">Rp 0</span>
+          <span className="text-sm text-[#8c8885]">/ bulan</span>
+        </div>
+
+        <div className="space-y-3 mb-5 flex-1">
+          {dashboardFeatures.map((f) => (
+            <div key={f} className="flex gap-2.5 text-sm text-[#1c1c1c]">
+              <Check className="h-4.5 w-4.5 text-emerald-500 shrink-0 mt-0.5" />
+              <span>{f}</span>
+            </div>
+          ))}
+
+          <div className="pt-4 mt-2 border-t border-stone-200/60">
+            <p className="text-[10px] font-bold text-[#8c8885] uppercase tracking-wider mb-2">Fitur Terkunci</p>
+            {dashboardLocks.map((f) => (
+              <div key={f} className="flex gap-2.5 text-sm text-[#a09d99] mb-2">
+                <X className="h-4.5 w-4.5 text-stone-300 shrink-0 mt-0.5" />
+                <span>{f}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button
+          onClick={onStart}
+          className="w-full py-3.5 rounded-2xl bg-[#1c1c1c] text-white text-sm font-bold hover:bg-[#333] transition-all duration-300 cursor-pointer"
+        >
+          Daftar Gratis Sekarang
+        </button>
+      </div>
+
+      {/* Card 2: Add-on Menu */}
+      <div className="relative group">
+        {/* Glow ring */}
+        <div className="absolute -inset-[3px] bg-gradient-to-br from-rose-500/20 via-amber-500/15 to-blue-500/20 rounded-[2.6rem] blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        <div className="relative glass rounded-[2.5rem] p-8 sm:p-9 flex flex-col h-full border-rose-500/10 shadow-sm hover:shadow-xl transition-all duration-500">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Sparkles className="h-5 w-5 text-amber-500" />
+            </div>
+            <div>
+              <h3 className="text-lg font-display font-bold text-[#1c1c1c]">Fitur Tambahan</h3>
+              <p className="text-[10px] uppercase tracking-widest text-amber-600 font-bold">Bayar Per-Proyek</p>
+            </div>
+          </div>
+
+          <p className="text-xs text-[#6b6b6b] leading-relaxed mt-3 mb-8">
+            Aktifkan hanya untuk proyek yang memerlukan. Tanpa langganan, tanpa biaya berulang.
+          </p>
+
+          <div className="space-y-4 flex-1">
+            {addOns.map((addon) => (
+              <div
+                key={addon.name}
+                className={`flex items-start gap-3.5 p-4 rounded-xl ${addon.bg} border ${addon.border} transition-all hover:scale-[1.01]`}
+              >
+                <div className={`w-9 h-9 rounded-lg ${addon.iconBg} flex items-center justify-center shrink-0`}>
+                  <addon.icon className={`h-4.5 w-4.5 ${addon.iconColor}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#1c1c1c]">{addon.name}</p>
+                  <p className="text-xs text-[#6b6b6b] mt-0.5">{addon.desc}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className={`text-sm font-bold ${addon.priceColor}`}>{addon.price}</p>
+                  <p className="text-[10px] text-[#8c8885]">/proyek</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 pt-5 border-t border-stone-200/60">
+            <button
+              onClick={onStart}
+              className="group/btn w-full py-3.5 rounded-2xl bg-rose-gradient text-white text-sm font-bold shadow-lg shadow-rose-500/15 hover:shadow-rose-500/30 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              Mulai Gratis, Upgrade Nanti
+              <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+            </button>
+            <p className="text-center text-[10px] text-[#8c8885] mt-3">
+              Add-on dapat diaktifkan kapan saja dari Dashboard Anda.
+            </p>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 }

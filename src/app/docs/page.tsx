@@ -57,7 +57,7 @@ export default function DocsPage() {
               Daftar Paket Harga
             </h2>
             <p className="mb-6">
-              Kami menghadirkan paket sekali bayar yang sangat terjangkau bagi para calon pengantin, serta pilihan paket khusus untuk rekanan Wedding Organizer.
+              Kami menghadirkan paket sekali bayar yang sangat terjangkau bagi para calon pengantin, serta pilihan paket khusus untuk Mitra.
             </p>
             
             <div className="space-y-6">

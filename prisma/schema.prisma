@@ -18,7 +18,7 @@ model User {
   accountType       AccountType   @default(B2C_FREE)
   freeGeneratesUsed Int           @default(0)
   accounts          Account[]
-  invitations       Invitation[]
+  agencies          Agency[]
   sessions          Session[]
   transactions      Transaction[]
 }
@@ -71,66 +71,146 @@ model PasswordResetToken {
   @@unique([email, token])
 }
 
+model Agency {
+  id                 String   @id @default(cuid())
+  name               String
+  ownerId            String
+  subscriptionStatus String   @default("ACTIVE")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  owner    User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  projects Project[]
+  leads    Lead[]
+
+  @@index([ownerId])
+}
+
+model Project {
+  id              String   @id @default(cuid())
+  name            String
+  agencyId        String
+  status          String   @default("DRAFT")
+  hasQrScanner    Boolean  @default(false)
+  isWhiteLabel    Boolean  @default(false)
+  hasCustomDomain Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  agency         Agency          @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  clientAccounts ClientAccount[]
+  invitations    Invitation[]
+  guests         Guest[]
+  addOnOrders    AddOnOrder[]
+
+  @@index([agencyId])
+}
+
+model AddOnOrder {
+  id        String   @id @default(cuid())
+  projectId String
+  addOnType String
+  pricePaid Int
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model ClientAccount {
+  id           String   @id @default(cuid())
+  projectId    String
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model Lead {
+  id               String   @id @default(cuid())
+  clientName       String
+  phone            String
+  eventDate        DateTime
+  budget           Float
+  guestCount       Int
+  status           String   @default("NEW")
+  assignedAgencyId String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  assignedAgency Agency? @relation(fields: [assignedAgencyId], references: [id], onDelete: SetNull)
+
+  @@index([assignedAgencyId])
+}
+
 model Invitation {
-  id           String         @id @default(cuid())
-  groomName    String
-  groomParents String?
-  brideName    String
-  brideParents String?
-  eventDate    DateTime
-  eventTime    String
-  venueName    String
-  venueAddress String
-  greeting     String
-  mainBody     String
-  eventInfo    String
-  closing      String
-  fullText     String
-  tone         String         @default("formal")
-  language     String         @default("id")
-  slug         String         @unique @default(cuid())
-  viewCount    Int            @default(0)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  photoUrls    String[]       @default([])
+  id             String         @id @default(cuid())
+  groomName      String
+  groomParents   String?
+  brideName      String
+  brideParents   String?
+  eventDate      DateTime
+  eventTime      String
+  venueName      String
+  venueAddress   String
+  greeting       String
+  mainBody       String
+  eventInfo      String
+  closing        String
+  fullText       String
+  tone           String         @default("formal")
+  language       String         @default("id")
+  slug           String         @unique @default(cuid())
+  viewCount      Int            @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  photoUrls      String[]       @default([])
   headerPhotoUrl String?
   groomPhotoUrl  String?
   bridePhotoUrl  String?
-  userId       String?
-  musicUrl     String?
-  layout       String         @default("elegant-cream")
-  schedule     Json           @default("[]")
-  loveStory    Json           @default("[]")
-  digitalGifts Json           @default("[]")
-  quotes       String?
-  tier         InvitationTier @default(DRAFT)
-  qrEnabled    Boolean        @default(true)
-  guests       Guest[]
-  user         User?          @relation(fields: [userId], references: [id])
-  transactions Transaction[]
+  projectId      String?
+  musicUrl       String?
+  layout         String         @default("elegant-cream")
+  schedule       Json           @default("[]")
+  loveStory      Json           @default("[]")
+  digitalGifts   Json           @default("[]")
+  quotes         String?
+  tier           InvitationTier @default(DRAFT)
+  qrEnabled      Boolean        @default(true)
+  guests         Guest[]
+  project        Project?       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  transactions   Transaction[]
 
   @@index([slug])
-  @@index([userId])
+  @@index([projectId])
   @@index([createdAt])
 }
 
 model Guest {
   id           String     @id @default(cuid())
   invitationId String
+  projectId    String?
   name         String
   email        String?
   phone        String?
   rsvpStatus   RsvpStatus @default(PENDING)
 
-  message      String?
-  attendees    Int        @default(1)
-  checkedIn    Boolean    @default(false)
-  createdAt    DateTime   @default(now())
+  message   String?
+  attendees Int      @default(1)
+  checkedIn Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  updatedAt    DateTime   @updatedAt
-  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  updatedAt  DateTime   @updatedAt
+  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  project    Project?   @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([invitationId])
+  @@index([projectId])
   @@index([rsvpStatus])
 }
 

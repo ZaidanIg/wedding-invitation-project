@@ -38,7 +38,11 @@ export async function POST(request: Request, { params }: RouteParams) {
     const invitation = await prisma.invitation.findFirst({
       where: {
         OR: [{ id }, { slug: id }],
-        userId: session.user.id,
+        project: {
+          agency: {
+            ownerId: session.user.id,
+          },
+        },
       },
     });
 

@@ -24,13 +24,13 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-32 px-4 bg-[#fcfbf8] overflow-hidden border-y border-[#eceae4]">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-16 md:py-24 lg:py-32 px-4 md:px-6 lg:px-8 bg-[#fcfbf8] overflow-hidden border-y border-[#eceae4]">
+      <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-24">
-          <h2 className="text-3xl sm:text-[54px] font-display font-bold text-[#1c1c1c] tracking-tight sm:tracking-[-1.5px] mb-6">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-[#1c1c1c] tracking-tight sm:tracking-[-1.5px] mb-6">
             Langkah Sederhana Menuju <br /> <span className="italic font-normal">Momen Sempurna</span>
           </h2>
-          <p className="text-[#5f5f5d] max-w-2xl mx-auto text-lg leading-relaxed">
+          <p className="text-base md:text-lg text-[#5f5f5d] max-w-2xl mx-auto leading-relaxed">
             Kami menyediakan layanan yang mudah dan cepat. Cukup dengan hitungan detik menuju kisah cinta tanpa titik.
           </p>
         </div>

@@ -92,22 +92,22 @@ export default function ShowcaseSection({ fullGallery = false }: { fullGallery?:
   const activeTheme = themes.find(t => t.slug === selectedTheme);
 
   return (
-    <section className={`${fullGallery ? 'py-12' : 'py-32'} px-4 bg-[#fdfcf9] overflow-hidden relative`}>
+    <section className={`${fullGallery ? 'py-12' : 'py-16 md:py-24 lg:py-32'} px-4 md:px-6 lg:px-8 bg-[#fdfcf9] overflow-hidden relative`}>
       {/* Subtle blurs */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-rose-500/[0.03] blur-[100px] rounded-full" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-500/[0.03] blur-[100px] rounded-full" />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         {!fullGallery && (
           <div className="flex flex-col items-center text-center mb-24 gap-10">
             <div className="max-w-3xl mx-auto">
-              <div className="font-handwriting text-3xl text-rose-500/40 mb-4 animate-fade-in">Tentukan pilihan kanvas untuk kisah cinta Anda</div>
-              <h2 className="text-[40px] sm:text-[64px] font-display font-bold text-[#1c1c1c] tracking-tight sm:tracking-[-0.03em] leading-[1.1] mb-8 text-balance">
+              <div className="font-handwriting text-2xl md:text-3xl lg:text-4xl text-rose-500/40 mb-4 animate-fade-in">Tentukan pilihan kanvas untuk kisah cinta Anda</div>
+              <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-[#1c1c1c] tracking-tight sm:tracking-[-0.03em] leading-[1.1] mb-8 text-balance">
                 Koleksi Desain <br /> <span className="text-rose-500 italic font-normal underline decoration-rose-500/10 underline-offset-8">Sepenuh Jiwa</span>
               </h2>
-              <p className="text-[#6b6b6b] text-lg leading-relaxed max-w-2xl mx-auto text-balance">
+              <p className="text-base md:text-lg text-[#6b6b6b] leading-relaxed max-w-2xl mx-auto text-balance">
                 Ceritakan tentang diri Anda dan pasangan melalui pilihan tema yang kami suguhkan. Bukan hanya sekadar undangan, namun ini adalah kisah yang telah digariskan, cinta yang telah diutuhkan.
               </p>
             </div>

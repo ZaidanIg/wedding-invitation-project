@@ -42,7 +42,7 @@ export const invitationRepository = {
     skip: number;
     take: number;
   }) {
-    const where = params.userId ? { userId: params.userId } : {};
+    const where = params.userId ? { project: { agency: { ownerId: params.userId } } } : {};
 
     const [invitations, total] = await Promise.all([
       prisma.invitation.findMany({
@@ -56,6 +56,13 @@ export const invitationRepository = {
             orderBy: { createdAt: 'desc' },
             take: 1,
           },
+          project: {
+            select: {
+              id: true,
+              name: true,
+              status: true
+            }
+          }
         },
       }),
       prisma.invitation.count({ where }),
@@ -70,6 +77,7 @@ export const invitationRepository = {
       include: {
         guests: { orderBy: { createdAt: 'desc' } },
         _count: { select: { guests: true } },
+        project: { select: { agency: { select: { ownerId: true } } } },
       },
     });
   },
@@ -79,6 +87,13 @@ export const invitationRepository = {
       where: { slug },
       include: {
         guests: { orderBy: { createdAt: 'desc' } },
+        project: {
+          select: {
+            isWhiteLabel: true,
+            hasQrScanner: true,
+            agency: { select: { ownerId: true } },
+          },
+        },
       },
     });
   },

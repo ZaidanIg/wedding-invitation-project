@@ -60,7 +60,11 @@ export const guestRepository = {
         id: guestId,
         invitation: {
           OR: [{ id: invitationIdOrSlug }, { slug: invitationIdOrSlug }],
-          userId,
+          project: {
+            agency: {
+              ownerId: userId
+            }
+          }
         },
       },
       include: { invitation: true },

@@ -53,7 +53,7 @@ export const billingService = {
 
       // Verify ownership
       const invitation = await billingRepository.findInvitationForCheckout(invitationId);
-      if (!invitation || invitation.userId !== user.id) {
+      if (!invitation || invitation.project?.agency?.ownerId !== user.id) {
         throw new NotFoundError('Invitation not found');
       }
 

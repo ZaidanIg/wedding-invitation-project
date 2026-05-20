@@ -7,7 +7,8 @@ import { NotFoundError, ForbiddenError, ValidationError } from '@/lib/errors';
 import { invitationRepository } from './repository';
 import { createInvitationSchema, updateInvitationSchema } from './validators';
 import { invitationMapper } from './mapper';
-import type { ZodError } from 'zod';
+import { z } from 'zod';
+import { getSystemAgencyId } from '@/lib/system-agency';
 
 function formatZodError(error: any): string {
   const issues = error?.issues || error?.errors || [];
@@ -21,13 +22,6 @@ export const invitationService = {
    * Determines tier and enforces photo limits based on account type.
    */
   async create(payload: unknown, userId: string) {
-    // Validate input
-    const parsed = createInvitationSchema.safeParse(payload);
-    if (!parsed.success) {
-      throw new ValidationError(formatZodError(parsed.error));
-    }
-    const data = parsed.data;
-
     // Determine tier and photo limits from user account
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -38,15 +32,26 @@ export const invitationService = {
       throw new NotFoundError('User not found');
     }
 
+    const isAgency = !user.accountType.startsWith('B2C');
+
+    // Dynamically extend schema: required for Agency, optional for B2C
+    const schema = isAgency
+      ? createInvitationSchema
+      : createInvitationSchema.extend({
+          projectId: z.string().optional(),
+        });
+
+    const parsed = schema.safeParse(payload);
+    if (!parsed.success) {
+      throw new ValidationError(formatZodError(parsed.error));
+    }
+    const data = parsed.data;
+
     let tier = 'DRAFT';
     let maxPhotos = 99;
 
-    if (user.accountType === 'B2B_PRO') {
+    if (isAgency) {
       tier = 'B2B_GENERATED';
-      maxPhotos = 6;
-    } else if (user.accountType === 'B2B_ALL_TIME') {
-      tier = 'B2B_GENERATED';
-      maxPhotos = 99;
     }
 
     if (data.photoUrls && data.photoUrls.length > maxPhotos) {
@@ -55,22 +60,78 @@ export const invitationService = {
       );
     }
 
-    const entity = await invitationRepository.create({
-      ...data,
-      eventDate: new Date(data.eventDate),
-      photoUrls: data.photoUrls ?? [],
-      headerPhotoUrl: data.headerPhotoUrl ?? null,
-      groomPhotoUrl: data.groomPhotoUrl ?? null,
-      bridePhotoUrl: data.bridePhotoUrl ?? null,
-      groomParents: data.groomParents ?? null,
-      brideParents: data.brideParents ?? null,
-      musicUrl: data.musicUrl ?? null,
-      quotes: data.quotes ?? null,
-      schedule: data.schedule ?? [],
-      loveStory: data.loveStory ?? [],
-      digitalGifts: data.digitalGifts ?? [],
-      userId,
-      tier,
+    // Resolve system agency ID outside of the transaction block if user is B2C
+    const systemAgencyId = isAgency ? null : await getSystemAgencyId();
+
+    // Perform inside transaction to instantiate baseline project for B2C
+    const entity = await prisma.$transaction(async (tx) => {
+      let finalProjectId = data.projectId;
+
+      if (isAgency) {
+        if (!finalProjectId) {
+          throw new ValidationError('Proyek wajib dipilih sebelum membuat undangan');
+        }
+
+        // Security Guardrail: Validate project ownership
+        const project = await tx.project.findUnique({
+          where: { id: finalProjectId },
+          select: {
+            agency: {
+              select: {
+                ownerId: true,
+              }
+            }
+          }
+        });
+
+        if (!project || project.agency.ownerId !== userId) {
+          throw new ForbiddenError('Unauthorized project selection');
+        }
+      } else {
+        // B2C auto-generation of baseline project
+        const b2cProject = await tx.project.create({
+          data: {
+            name: `${data.brideName} & ${data.groomName} (DIY B2C)`,
+            agencyId: systemAgencyId!,
+            status: 'DRAFT',
+          },
+        });
+        finalProjectId = b2cProject.id;
+      }
+
+      // Omit projectId from data if it was spread, to avoid passing it twice
+      const { projectId: _, ...restData } = data;
+
+      return tx.invitation.create({
+        data: {
+          ...restData,
+          project: {
+            connect: { id: finalProjectId }
+          },
+          eventDate: new Date(data.eventDate),
+          photoUrls: data.photoUrls ?? [],
+          headerPhotoUrl: data.headerPhotoUrl ?? null,
+          groomPhotoUrl: data.groomPhotoUrl ?? null,
+          bridePhotoUrl: data.bridePhotoUrl ?? null,
+          groomParents: data.groomParents ?? null,
+          brideParents: data.brideParents ?? null,
+          musicUrl: data.musicUrl ?? null,
+          quotes: data.quotes ?? null,
+          schedule: data.schedule ?? [],
+          loveStory: data.loveStory ?? [],
+          digitalGifts: data.digitalGifts ?? [],
+          tier,
+        } as any,
+        include: {
+          project: {
+            select: {
+              id: true,
+              name: true,
+              status: true,
+            }
+          }
+        }
+      });
     });
 
     return invitationMapper.toResponse(entity);
@@ -140,12 +201,12 @@ export const invitationService = {
       throw new NotFoundError('Invitation not found');
     }
 
-    if (existing.userId !== userId) {
+    if (existing.project?.agency?.ownerId !== userId) {
       throw new ForbiddenError('Unauthorized to edit this invitation');
     }
 
     // Strip sensitive fields that should not be updated via API
-    const { tier, userId: _, slug, viewCount, ...safeData } = parsed.data as Record<string, unknown>;
+    const { tier, projectId: _, slug, viewCount, project, ...safeData } = parsed.data as Record<string, unknown>;
     
     if (safeData.eventDate && typeof safeData.eventDate === 'string') {
       safeData.eventDate = new Date(safeData.eventDate as string) as any;
@@ -164,7 +225,7 @@ export const invitationService = {
       throw new NotFoundError('Invitation not found');
     }
 
-    if (existing.userId !== userId) {
+    if (existing.project?.agency?.ownerId !== userId) {
       throw new ForbiddenError('Unauthorized to delete this invitation');
     }
 

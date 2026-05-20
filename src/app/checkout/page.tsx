@@ -94,7 +94,7 @@ const PLANS: Record<string, PlanDetails> = {
   PRO_PLAN: {
     name: 'Paket Pro (Bulanan)',
     price: 500000,
-    description: 'Sangat cocok untuk Wedding Organizer profesional untuk kelola banyak undangan.',
+    description: 'Sangat cocok untuk mitra mengelola banyak undangan.',
     features: [
       'Hingga 5 Undangan Aktif/Bulan',
       'Akses Semua Fitur Premium & Ultimate',
@@ -115,7 +115,7 @@ const PLANS: Record<string, PlanDetails> = {
       'Undangan Aktif Tanpa Batas',
       'Akses Fitur Premium Selamanya',
       'White-label Kustom Sempurna',
-      'Dukungan API Integrasi WO',
+      'Dukungan API',
       'Customer Service Prioritas Utama',
       'Lisensi Bisnis Komersial Penuh'
     ],

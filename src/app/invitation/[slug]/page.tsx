@@ -87,16 +87,21 @@ export default async function InvitationPage({ params }: PageProps) {
   // Increment view count (fire-and-forget)
   invitationRepository.incrementViewCount(slug).catch(() => {});
 
+  // Determine watermark enforcement from project feature flags
+  const isWhiteLabel = invitation.project?.isWhiteLabel ?? false;
+  const showWatermark = !isWhiteLabel;
+
   // Serialize for client components
   const serialized: Invitation = {
     ...invitation,
-    schedule: (invitation.schedule as any) || [],
-    loveStory: (invitation.loveStory as any) || [],
-    digitalGifts: (invitation.digitalGifts as any) || [],
+    schedule: (invitation.schedule as unknown as Invitation['schedule']) || [],
+    loveStory: (invitation.loveStory as unknown as Invitation['loveStory']) || [],
+    digitalGifts: (invitation.digitalGifts as unknown as Invitation['digitalGifts']) || [],
     eventDate: invitation.eventDate.toISOString(),
     createdAt: invitation.createdAt.toISOString(),
     updatedAt: invitation.updatedAt.toISOString(),
-    guests: (invitation.guests || []).map((g: any) => ({
+    showWatermark,
+    guests: (invitation.guests || []).map((g) => ({
       ...g,
       createdAt: g.createdAt.toISOString(),
       updatedAt: g.updatedAt.toISOString(),

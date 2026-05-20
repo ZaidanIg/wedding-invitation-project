@@ -9,6 +9,7 @@ interface FormWizardActions {
   setStep: (step: number) => void;
   nextStep: () => void;
   prevStep: () => void;
+  setProjectId: (id: string) => void;
   setCoupleDetails: (details: FormWizardState['coupleDetails']) => void;
   setEventDetails: (details: FormWizardState['eventDetails']) => void;
   setStylePreferences: (prefs: FormWizardState['stylePreferences']) => void;
@@ -29,6 +30,7 @@ interface FormWizardActions {
 
 const initialState: FormWizardState = {
   step: 1,
+  projectId: '',
   coupleDetails: {
     groomName: '',
     groomParents: '',
@@ -79,6 +81,7 @@ export const useInvitationStore = create<FormWizardState & FormWizardActions>(
     setStep: (step) => set({ step }),
     nextStep: () => set((state) => ({ step: Math.min(state.step + 1, 5) })),
     prevStep: () => set((state) => ({ step: Math.max(state.step - 1, 1) })),
+    setProjectId: (projectId) => set({ projectId }),
 
     setCoupleDetails: (coupleDetails) => set({ coupleDetails }),
     setEventDetails: (eventDetails) => set({ eventDetails }),

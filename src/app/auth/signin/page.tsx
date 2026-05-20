@@ -282,7 +282,7 @@ export default function SignInPage() {
         </div>
 
         {/* Card */}
-        <div className="relative bg-white/5 backdrop-blur-2xl rounded-3xl border border-white/10 p-8 shadow-2xl shadow-rose-500/5">
+        <div className="relative glass bg-white/80 backdrop-blur-2xl rounded-3xl border border-rose-500/10 p-8 shadow-2xl shadow-rose-500/5">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex p-3 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 mb-4 shadow-lg shadow-rose-500/25">
@@ -291,7 +291,7 @@ export default function SignInPage() {
             <h1 className="text-2xl font-display font-bold text-foreground mb-2">
               {isLogin ? 'Selamat Datang Kembali' : 'Buat Akun Baru'}
             </h1>
-            <p className="text-sm text-foreground/50">
+            <p className="text-sm text-stone-500">
               {isLogin
                 ? 'Masuk ke akun Sahinaja untuk mengelola undangan Anda'
                 : 'Daftar akun Sahinaja untuk membuat undangan pernikahan premium'}
@@ -315,19 +315,19 @@ export default function SignInPage() {
           <form onSubmit={handleSubmit} className="space-y-4 mb-6">
             {!isLogin && (
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground/80">Nama Lengkap</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-stone-700">Nama Lengkap</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-4 w-4 text-foreground/40" />
+                    <User className="h-4 w-4 text-stone-400" />
                   </div>
                   <input
                     type="text"
                     required={!isLogin}
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 bg-white/5 border ${
-                      validationErrors.name ? 'border-rose-500/50' : 'border-white/10'
-                    } rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
+                    className={`w-full pl-10 pr-4 py-2.5 bg-white border ${
+                      validationErrors.name ? 'border-rose-500/50 focus:border-rose-500' : 'border-stone-200 focus:border-rose-500/50'
+                    } rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-rose-500/5 transition-all text-stone-900 placeholder:text-stone-400 shadow-[0_2px_4px_rgba(0,0,0,0.02)]`}
                     placeholder="Nama Anda"
                   />
                 </div>
@@ -338,19 +338,19 @@ export default function SignInPage() {
             )}
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground/80">Alamat Email</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-stone-700">Alamat Email</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-4 w-4 text-foreground/40" />
+                  <Mail className="h-4 w-4 text-stone-400" />
                 </div>
                 <input
                   type="email"
                   required
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2.5 bg-white/5 border ${
-                    validationErrors.email ? 'border-rose-500/50' : 'border-white/10'
-                  } rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
+                  className={`w-full pl-10 pr-4 py-2.5 bg-white border ${
+                    validationErrors.email ? 'border-rose-500/50 focus:border-rose-500' : 'border-stone-200 focus:border-rose-500/50'
+                  } rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-rose-500/5 transition-all text-stone-900 placeholder:text-stone-400 shadow-[0_2px_4px_rgba(0,0,0,0.02)]`}
                   placeholder="you@example.com"
                 />
               </div>
@@ -374,16 +374,16 @@ export default function SignInPage() {
 
             {!isLogin && (
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground/80">Kode Verifikasi</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-stone-700">Kode Verifikasi</label>
                 <input
                   type="text"
                   required={!isLogin}
                   maxLength={6}
                   value={formData.code}
                   onChange={(e) => handleInputChange('code', e.target.value)}
-                  className={`w-full px-4 py-2.5 bg-white/5 border ${
-                    validationErrors.code ? 'border-rose-500/50' : 'border-white/10'
-                  } rounded-xl text-sm text-center tracking-[0.5em] font-mono focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
+                  className={`w-full px-4 py-2.5 bg-white border ${
+                    validationErrors.code ? 'border-rose-500/50 focus:border-rose-500' : 'border-stone-200 focus:border-rose-500/50'
+                  } rounded-xl text-sm text-center tracking-[0.5em] font-mono focus:outline-none focus:ring-4 focus:ring-rose-500/5 transition-all text-stone-900 placeholder:text-stone-400 shadow-[0_2px_4px_rgba(0,0,0,0.02)]`}
                   placeholder="------"
                 />
                 {validationErrors.code && (
@@ -393,25 +393,25 @@ export default function SignInPage() {
             )}
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground/80">Kata Sandi</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-stone-700">Kata Sandi</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-4 w-4 text-foreground/40" />
+                  <Lock className="h-4 w-4 text-stone-400" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className={`w-full pl-10 pr-10 py-2.5 bg-white/5 border ${
-                    validationErrors.password ? 'border-rose-500/50' : 'border-white/10'
-                  } rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
+                  className={`w-full pl-10 pr-10 py-2.5 bg-white border ${
+                    validationErrors.password ? 'border-rose-500/50 focus:border-rose-500' : 'border-stone-200 focus:border-rose-500/50'
+                  } rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-rose-500/5 transition-all text-stone-900 placeholder:text-stone-400 shadow-[0_2px_4px_rgba(0,0,0,0.02)]`}
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-foreground/40 hover:text-foreground/80 transition-colors focus:outline-none cursor-pointer"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-800 transition-colors focus:outline-none cursor-pointer"
                   title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
                 >
                   {showPassword ? (
@@ -434,7 +434,7 @@ export default function SignInPage() {
               )}
               {!isLogin && formData.password.length > 0 && (
                 <div className="pt-2">
-                  <div className="flex gap-1 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="flex gap-1 h-1.5 w-full bg-stone-100 rounded-full overflow-hidden">
                     {[1, 2, 3, 4, 5].map((i) => (
                       <div
                         key={i}
@@ -455,25 +455,25 @@ export default function SignInPage() {
 
             {!isLogin && (
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground/80">Ketik Ulang Kata Sandi</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-stone-700">Ketik Ulang Kata Sandi</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-4 w-4 text-foreground/40" />
+                    <Lock className="h-4 w-4 text-stone-400" />
                   </div>
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     required={!isLogin}
                     value={formData.confirmPassword}
                     onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                    className={`w-full pl-10 pr-16 py-2.5 bg-white/5 border ${
-                      validationErrors.confirmPassword ? 'border-rose-500/50' : 'border-white/10'
-                    } rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50 transition-all text-foreground`}
+                    className={`w-full pl-10 pr-16 py-2.5 bg-white border ${
+                      validationErrors.confirmPassword ? 'border-rose-500/50 focus:border-rose-500' : 'border-stone-200 focus:border-rose-500/50'
+                    } rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-rose-500/5 transition-all text-stone-900 placeholder:text-stone-400 shadow-[0_2px_4px_rgba(0,0,0,0.02)]`}
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-7 pr-1 flex items-center text-foreground/40 hover:text-foreground/80 transition-colors focus:outline-none cursor-pointer"
+                    className="absolute inset-y-0 right-7 pr-1 flex items-center text-stone-400 hover:text-stone-800 transition-colors focus:outline-none cursor-pointer"
                     title={showConfirmPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
                   >
                     {showConfirmPassword ? (
@@ -501,7 +501,7 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={isLoading || (!isLogin && (formData.code.length !== 6))}
-              className="w-full flex items-center justify-center gap-2 mt-2 px-5 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold text-sm hover:opacity-90 transition-all duration-200 shadow-md shadow-rose-500/20 disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 mt-2 px-5 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold text-sm hover:opacity-90 transition-all duration-200 shadow-md shadow-rose-500/20 disabled:opacity-50 cursor-pointer"
             >
               {isLoading ? (
                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -516,9 +516,9 @@ export default function SignInPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-foreground/30">atau</span>
-            <div className="flex-1 h-px bg-white/10" />
+            <div className="flex-1 h-px bg-stone-200" />
+            <span className="text-xs text-stone-400">atau</span>
+            <div className="flex-1 h-px bg-stone-200" />
           </div>
 
           {/* Google Sign In */}
@@ -526,7 +526,7 @@ export default function SignInPage() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl bg-white text-gray-800 font-bold text-sm hover:bg-gray-100 transition-all duration-200 shadow-md disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl bg-white text-gray-800 font-bold text-sm hover:bg-gray-100 border border-stone-200/80 transition-all duration-200 shadow-sm disabled:opacity-50 cursor-pointer"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -538,7 +538,7 @@ export default function SignInPage() {
           </button>
 
           {/* Toggle */}
-          <p className="mt-8 text-center text-sm text-foreground/50">
+          <p className="mt-8 text-center text-sm text-stone-500">
             {isLogin ? "Belum punya akun?" : "Sudah punya akun?"}{' '}
             <button
               onClick={() => {
@@ -548,7 +548,7 @@ export default function SignInPage() {
                 setValidationErrors({});
                 setFormData({ name: '', email: '', password: '', confirmPassword: '', code: '' });
               }}
-              className="text-rose-500 hover:text-rose-400 font-bold transition-colors"
+              className="text-rose-500 hover:text-rose-400 font-bold transition-colors cursor-pointer"
             >
               {isLogin ? 'Daftar' : 'Masuk'}
             </button>

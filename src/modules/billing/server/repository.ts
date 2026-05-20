@@ -24,7 +24,16 @@ export const billingRepository = {
   async findInvitationForCheckout(invitationId: string) {
     return prisma.invitation.findUnique({
       where: { id: invitationId },
-      select: { userId: true, tier: true },
+      select: { 
+        tier: true,
+        project: {
+          select: {
+            agency: {
+              select: { ownerId: true }
+            }
+          }
+        }
+      },
     });
   },
 };

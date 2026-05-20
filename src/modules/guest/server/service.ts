@@ -29,6 +29,13 @@ export const guestService = {
       throw new NotFoundError('Invitation not found');
     }
 
+    if (invitation.tier === 'BASIC') {
+      const stats = await guestRepository.getStats(invitation.id);
+      if (stats.estimatedGuests >= 150) {
+        throw new ConflictError('Batas maksimal RSVP (150 tamu) untuk tier BASIC telah tercapai.');
+      }
+    }
+
     const guest = await guestRepository.create({
       invitationId: invitation.id,
       name: parsed.data.name,
@@ -54,8 +61,8 @@ export const guestService = {
     const [guests, stats, owner] = await Promise.all([
       guestRepository.findManyByInvitation(invitation.id),
       guestRepository.getStats(invitation.id),
-      invitation.userId
-        ? prisma.user.findUnique({ where: { id: invitation.userId } })
+      invitation.project?.agency?.ownerId
+        ? prisma.user.findUnique({ where: { id: invitation.project.agency.ownerId } })
         : null,
     ]);
 

@@ -35,6 +35,7 @@ export interface InvitationResponseDto {
   guestCount: number;
   createdAt: string;
   transactions?: any[];
+  project?: { id: string; name: string; status: string } | null;
 }
 
 export interface InvitationListItemDto {
@@ -68,4 +69,5 @@ export interface InvitationListItemDto {
   guestCount: number;
   createdAt: string;
   transactions?: any[];
+  project?: { id: string; name: string; status: string } | null;
 }

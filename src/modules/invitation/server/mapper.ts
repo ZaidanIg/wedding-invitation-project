@@ -47,6 +47,11 @@ export const invitationMapper = {
         ? entity.createdAt.toISOString()
         : String(entity.createdAt),
       transactions: entity.transactions ?? [],
+      project: entity.project ? {
+        id: entity.project.id,
+        name: entity.project.name,
+        status: entity.project.status,
+      } : null,
     };
   },
 
@@ -89,6 +94,11 @@ export const invitationMapper = {
         ? entity.createdAt.toISOString()
         : String(entity.createdAt),
       transactions: entity.transactions ?? [],
+      project: entity.project ? {
+        id: entity.project.id,
+        name: entity.project.name,
+        status: entity.project.status,
+      } : null,
     };
   },
 };
