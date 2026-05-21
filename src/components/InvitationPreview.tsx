@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import type { Invitation } from '@/types';
 import { layouts } from './layouts';
 import Link from 'next/link';
@@ -13,6 +14,20 @@ interface InvitationPreviewProps {
 export default function InvitationPreview({ invitation, isPreview = false }: InvitationPreviewProps) {
   const LayoutComponent = (layouts as any)[invitation.layout] || layouts['elegant-cream'];
   const isDraft = !invitation.isPaid;
+
+  useEffect(() => {
+    if (!isPreview && invitation.slug) {
+      fetch('/api/invitations/view', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ slug: invitation.slug }),
+      }).catch((err) => {
+        console.error('Failed to record view:', err);
+      });
+    }
+  }, [isPreview, invitation.slug]);
 
   return (
     <TierProvider tier={invitation.tier} isPreview={isPreview}>

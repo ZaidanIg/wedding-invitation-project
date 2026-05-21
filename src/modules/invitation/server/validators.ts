@@ -56,5 +56,11 @@ export const createInvitationSchema = z.object({
 
 export const updateInvitationSchema = createInvitationSchema.partial();
 
+export const recordViewSchema = z.object({
+  slug: z.string().min(1, 'Slug is required'),
+});
+
 export type CreateInvitationInput = z.infer<typeof createInvitationSchema>;
 export type UpdateInvitationInput = z.infer<typeof updateInvitationSchema>;
+export type RecordViewInput = z.infer<typeof recordViewSchema>;
+

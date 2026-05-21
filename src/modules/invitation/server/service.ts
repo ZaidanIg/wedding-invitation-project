@@ -247,4 +247,31 @@ export const invitationService = {
   async incrementViewCount(slug: string) {
     return invitationRepository.incrementViewCount(slug);
   },
+
+  /**
+   * Handle safe view recording with bot filtering, cookie state, and owner bypass check.
+   */
+  async recordView(
+    slug: string,
+    userAgent: string,
+    requestingUserId?: string,
+    requestingUserRole?: string,
+    hasViewedCookie?: boolean
+  ) {
+    const entity = await invitationRepository.findBySlug(slug);
+    if (!entity) {
+      throw new NotFoundError('Invitation not found');
+    }
+
+    const isBot = /bot|crawler|spider|crawling|whatsapp|telegram|facebook|twitter|slack/i.test(userAgent);
+    const isOwner = requestingUserId && entity.userId === requestingUserId;
+    const isAdmin = requestingUserRole === 'ADMIN';
+
+    if (!isBot && !isOwner && !isAdmin && !hasViewedCookie) {
+      await invitationRepository.incrementViewCount(slug);
+      return { incremented: true };
+    }
+
+    return { incremented: false };
+  },
 };
