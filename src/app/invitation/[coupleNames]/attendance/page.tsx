@@ -2,12 +2,12 @@ import { notFound, redirect } from 'next/navigation';
 import { invitationService } from '@/modules/invitation/server/service';
 import { getCoupleSlug } from '@/lib/utils';
 
-export default async function BlastRedirectPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function AttendanceRedirectPage({ params }: { params: Promise<{ coupleNames: string }> }) {
+  const { coupleNames } = await params;
   try {
-    const invitation = await invitationService.getBySlug(slug);
+    const invitation = await invitationService.getBySlug(coupleNames);
     const coupleSlug = getCoupleSlug(invitation.groomName, invitation.brideName);
-    redirect(`/invitation/${coupleSlug}/${slug}/blast`);
+    redirect(`/invitation/${coupleSlug}/${coupleNames}/attendance`);
   } catch {
     notFound();
   }
