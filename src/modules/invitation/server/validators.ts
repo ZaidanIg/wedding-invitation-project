@@ -28,6 +28,8 @@ export const createInvitationSchema = z.object({
   tone: z.enum(VALID_TONES).default('formal'),
   language: z.enum(VALID_LANGUAGES).default('id'),
   musicUrl: z.string().optional(),
+  videoUrl: z.string().optional(),
+  tier: z.enum(['DRAFT', 'BASIC', 'PREMIUM', 'ULTIMATE']).optional().default('DRAFT'),
   layout: z.string().optional().default('elegant-cream'),
   schedule: z.array(z.object({
     id: z.string(),
@@ -54,5 +56,11 @@ export const createInvitationSchema = z.object({
 
 export const updateInvitationSchema = createInvitationSchema.partial();
 
+export const recordViewSchema = z.object({
+  slug: z.string().min(1, 'Slug is required'),
+});
+
 export type CreateInvitationInput = z.infer<typeof createInvitationSchema>;
 export type UpdateInvitationInput = z.infer<typeof updateInvitationSchema>;
+export type RecordViewInput = z.infer<typeof recordViewSchema>;
+

@@ -11,6 +11,7 @@ import ChristianElegant from './ChristianElegant';
 import HinduMandala from './HinduMandala';
 import BuddhistZen from './BuddhistZen';
 import ConfucianOriental from './ConfucianOriental';
+import PremiumCharcoal from './PremiumCharcoal';
 
 export const layouts = {
   'elegant-cream': ElegantCream,
@@ -26,6 +27,7 @@ export const layouts = {
   'hindu-mandala': HinduMandala,
   'buddhist-zen': BuddhistZen,
   'confucian-oriental': ConfucianOriental,
+  'premium-charcoal': PremiumCharcoal,
 } as const;
 
 export type LayoutType = keyof typeof layouts;

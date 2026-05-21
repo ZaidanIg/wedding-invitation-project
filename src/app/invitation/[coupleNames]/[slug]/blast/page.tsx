@@ -32,7 +32,7 @@ import { showToast } from '@/components/ui/Toast';
 import type { Guest } from '@/types';
 
 export default function StandaloneBlastPage() {
-  const params = useParams<{ slug: string }>();
+  const params = useParams<{ coupleNames: string; slug: string }>();
   const router = useRouter();
   
   const [guests, setGuests] = useState<Guest[]>([]);
@@ -187,7 +187,7 @@ export default function StandaloneBlastPage() {
     setSendingStatus(prev => ({ ...prev, [guestId]: 'sending' }));
 
     try {
-      const invitationUrl = `${window.location.origin}/invitation/${params.slug}`;
+      const invitationUrl = `${window.location.origin}/invitation/${params.coupleNames}/${params.slug}`;
       const personalizedMsg = messageTemplate
         .replace('[NAMA]', guest.name)
         .replace('[LINK]', `${invitationUrl}?to=${encodeURIComponent(guest.name)}`);
@@ -256,7 +256,7 @@ export default function StandaloneBlastPage() {
     const guest = guests.find(g => g.id === gid);
     if (!guest) return;
 
-    const invitationUrl = `${window.location.origin}/invitation/${params.slug}`;
+    const invitationUrl = `${window.location.origin}/invitation/${params.coupleNames}/${params.slug}`;
     const personalizedMsg = messageTemplate
       .replace('[NAMA]', guest.name)
       .replace('[LINK]', `${invitationUrl}?to=${encodeURIComponent(guest.name)}`);

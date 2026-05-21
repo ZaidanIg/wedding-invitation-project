@@ -4,24 +4,27 @@ import { useState } from 'react';
 
 import { showToast } from '@/components/ui/Toast';
 import { Heart, Send, Check, X, QrCode } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 
 interface RsvpFormProps {
   slug: string;
   tier?: string;
   qrEnabled?: boolean;
+  initialSubmitted?: boolean;
+  initialGuestId?: string | null;
+  initialStatus?: 'ATTENDING' | 'NOT_ATTENDING' | null;
 }
 
-export default function RsvpForm({ slug, tier, qrEnabled }: RsvpFormProps) {
+export default function RsvpForm({ slug, tier, qrEnabled, initialSubmitted, initialGuestId, initialStatus }: RsvpFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [attendees, setAttendees] = useState(1);
-  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING' | null>(null);
+  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING' | null>(initialStatus || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [guestId, setGuestId] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(initialSubmitted || false);
+  const [guestId, setGuestId] = useState<string | null>(initialGuestId || null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +76,7 @@ export default function RsvpForm({ slug, tier, qrEnabled }: RsvpFormProps) {
               <QrCode className="h-3 w-3" /> QR Check-in Anda
             </p>
             <div className="bg-white p-3 rounded-2xl border border-stone-50 inline-block">
-              <QRCodeSVG value={guestId} size={150} level="H" />
+              <SafeQRCodeSVG value={guestId} size={150} level="H" />
             </div>
             <p className="mt-4 text-[10px] text-stone-400 leading-relaxed max-w-[200px] mx-auto">
               Tunjukkan QR Code ini kepada petugas penerima tamu saat acara.

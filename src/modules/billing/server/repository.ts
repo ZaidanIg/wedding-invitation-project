@@ -9,12 +9,20 @@ export const billingRepository = {
     userId: string;
     invitationId: string | null;
     amount: number;
-    type: string;
-    tier: string | null;
-    accountType: string | null;
-    status: string;
+    type: any;
+    tier: any | null;
+    status: any;
   }) {
-    return prisma.transaction.create({ data: data as any });
+    return prisma.transaction.create({
+      data: {
+        userId: data.userId,
+        invitationId: data.invitationId,
+        amount: data.amount,
+        type: data.type,
+        tier: data.tier,
+        status: data.status,
+      }
+    });
   },
 
   async updateTransaction(id: string, data: Record<string, unknown>) {
@@ -24,7 +32,7 @@ export const billingRepository = {
   async findInvitationForCheckout(invitationId: string) {
     return prisma.invitation.findUnique({
       where: { id: invitationId },
-      select: { userId: true, tier: true },
+      select: { userId: true, tier: true, isPaid: true },
     });
   },
 };

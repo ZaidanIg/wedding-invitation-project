@@ -82,20 +82,37 @@ export async function POST(request: Request) {
         // 3. Apply Upgrades
         let names = 'Upgrade Paket Layanan';
         if (transaction.type === 'INVITATION_UPGRADE' && transaction.invitationId && transaction.tier) {
+          // Calculate expiresAt
+          const invData = await tx.invitation.findUnique({
+            where: { id: transaction.invitationId },
+            select: { eventDate: true }
+          });
+          
+          let expiresAt: Date | null = null;
+          if (invData?.eventDate) {
+            const eventDate = new Date(invData.eventDate);
+            let addedDays = 0;
+            if (transaction.tier === 'BASIC') addedDays = 7;
+            else if (transaction.tier === 'PREMIUM') addedDays = 14;
+            else if (transaction.tier === 'ULTIMATE') addedDays = 30;
+            
+            if (addedDays > 0) {
+              expiresAt = new Date(eventDate.getTime() + addedDays * 24 * 60 * 60 * 1000);
+            }
+          }
+
           const inv = await tx.invitation.update({
             where: { id: transaction.invitationId },
-            data: { tier: transaction.tier },
+            data: { 
+              tier: transaction.tier,
+              isPaid: true,
+              ...(expiresAt ? { expiresAt } : {})
+            },
             select: { groomName: true, brideName: true }
           });
           if (inv) {
             names = `${inv.groomName} & ${inv.brideName}`;
           }
-        } else if (transaction.type === 'ACCOUNT_UPGRADE' && transaction.accountType) {
-          await tx.user.update({
-            where: { id: transaction.userId },
-            data: { accountType: transaction.accountType },
-          });
-          names = `Akun WO (${transaction.accountType})`;
         }
 
         return { userEmail: email, coupleNames: names };
@@ -115,12 +132,6 @@ export async function POST(request: Request) {
         } else if (transaction.tier === 'ULTIMATE') {
           planName = 'Ultimate Plan';
           subtotal = PRICING.ULTIMATE;
-        } else if (transaction.accountType === 'B2B_PRO') {
-          planName = 'Paket Pro (Bulanan)';
-          subtotal = PRICING.PRO_PLAN;
-        } else if (transaction.accountType === 'B2B_ALL_TIME') {
-          planName = 'Enterprise (Seumur Hidup)';
-          subtotal = PRICING.ENTERPRISE;
         }
 
         const ppn = Math.round(subtotal * 0.11);

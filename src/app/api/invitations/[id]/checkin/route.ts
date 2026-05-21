@@ -18,7 +18,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     const { id } = await params;
     const body = await request.json();
-    const result = await guestService.checkin(id, body, session.user.id);
+    const result = await guestService.checkin(id, body, session.user.id, session.user.role);
 
     return successResponse(result, 'Guest checked in');
   } catch (error) {

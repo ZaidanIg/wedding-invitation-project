@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import ToastContainer from '@/components/ui/Toast';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import Providers from '@/components/Providers';
+import WhatsAppFloat from '@/components/WhatsAppFloat';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -126,6 +127,7 @@ export default function RootLayout({
               <Navbar />
               <main className="flex-1 w-full overflow-x-hidden">{children}</main>
               <Footer />
+              <WhatsAppFloat />
             </div>
             <ToastContainer />
           </ErrorBoundary>

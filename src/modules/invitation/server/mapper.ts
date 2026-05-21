@@ -2,7 +2,7 @@
 // Invitation Mapper — Entity to DTO
 // ============================================================
 
-import type { InvitationResponseDto } from './dto';
+import type { InvitationResponseDto, InvitationListItemDto } from './dto';
 
 /**
  * Map a raw Prisma invitation entity to a response DTO.
@@ -35,13 +35,16 @@ export const invitationMapper = {
       tone: entity.tone,
       language: entity.language,
       musicUrl: entity.musicUrl ?? null,
+      videoUrl: entity.videoUrl ?? null,
       layout: entity.layout ?? 'elegant-cream',
       schedule: entity.schedule ?? [],
       loveStory: entity.loveStory ?? [],
       digitalGifts: entity.digitalGifts ?? [],
       quotes: entity.quotes ?? null,
       viewCount: entity.viewCount ?? 0,
-      tier: entity.tier ?? 'DRAFT',
+      tier: entity.tier ?? 'BASIC',
+      isPaid: entity.isPaid ?? false,
+      aiRegenCount: entity.aiRegenCount ?? 0,
       guestCount: entity._count?.guests ?? entity.guests?.length ?? 0,
       createdAt: entity.createdAt instanceof Date
         ? entity.createdAt.toISOString()
@@ -53,7 +56,7 @@ export const invitationMapper = {
   /**
    * Map for list responses (lightweight, no fullText/greeting/etc).
    */
-  toListItem(entity: Record<string, any>) {
+  toListItem(entity: Record<string, any>): InvitationListItemDto {
     return {
       id: entity.id,
       slug: entity.slug,
@@ -77,13 +80,16 @@ export const invitationMapper = {
       tone: entity.tone,
       language: entity.language,
       musicUrl: entity.musicUrl ?? null,
+      videoUrl: entity.videoUrl ?? null,
       layout: entity.layout ?? 'elegant-cream',
       schedule: entity.schedule ?? [],
       loveStory: entity.loveStory ?? [],
       digitalGifts: entity.digitalGifts ?? [],
       quotes: entity.quotes ?? null,
       viewCount: entity.viewCount ?? 0,
-      tier: entity.tier ?? 'DRAFT',
+      tier: entity.tier ?? 'BASIC',
+      isPaid: entity.isPaid ?? false,
+      aiRegenCount: entity.aiRegenCount ?? 0,
       guestCount: entity._count?.guests ?? 0,
       createdAt: entity.createdAt instanceof Date
         ? entity.createdAt.toISOString()

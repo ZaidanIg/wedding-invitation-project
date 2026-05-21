@@ -1,4 +1,5 @@
 'use client';
+import { getCoupleSlug } from '@/lib/utils';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -9,7 +10,8 @@ import {
   Users, QrCode, Leaf, Wind, Home, CalendarDays, Pause
 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import type { Invitation } from '@/types';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import type { Invitation, Guest } from '@/types';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -116,13 +118,13 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible }: { visible: boolean }) {
+function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'couple', icon: Users, label: 'Mempelai' },
     { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    { id: 'gallery', icon: Camera, label: 'Galeri' },
+    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
     { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
   ];
 
@@ -151,6 +153,7 @@ function BottomNav({ visible }: { visible: boolean }) {
 }
 
 export default function BuddhistZen({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -167,9 +170,20 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
     if (!isPreview) {
       const p = new URLSearchParams(window.location.search);
       const to = p.get('to');
-      if (to) setGuestName(decodeURIComponent(to));
+      if (to) {
+        setGuestName(decodeURIComponent(to));
+        if (invitation.guests) {
+          const decodedTo = decodeURIComponent(to).trim().toLowerCase();
+          const guest = invitation.guests.find(
+            (g) => g.name.trim().toLowerCase() === decodedTo
+          );
+          if (guest) {
+            setMatchedGuest(guest);
+          }
+        }
+      }
     }
-  }, [isPreview]);
+  }, [isPreview, invitation.guests]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -376,21 +390,23 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-32 px-4 bg-[#fdfbf7]">
-           <AnimatedSection className="text-center mb-12">
-             <Camera className="mx-auto text-[#a3b18a] mb-4 opacity-40" size={32} />
-             <p className="text-[10px] uppercase tracking-[0.3em] text-[#a3b18a] font-bold">Zen Gallery</p>
-           </AnimatedSection>
-           <div className="columns-2 gap-3 space-y-3">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
-                  <div className="relative overflow-hidden rounded-[2rem] shadow-sm grayscale-[0.2] hover:grayscale-0 transition-all duration-700">
-                     <img src={src} alt="Gallery" className="w-full" />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-32 px-4 bg-[#fdfbf7]">
+             <AnimatedSection className="text-center mb-12">
+               <Camera className="mx-auto text-[#a3b18a] mb-4 opacity-40" size={32} />
+               <p className="text-[10px] uppercase tracking-[0.3em] text-[#a3b18a] font-bold">Zen Gallery</p>
+             </AnimatedSection>
+             <div className="columns-2 gap-3 space-y-3">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
+                    <div className="relative overflow-hidden rounded-[2rem] shadow-sm grayscale-[0.2] hover:grayscale-0 transition-all duration-700">
+                       <img src={src} alt="Gallery" className="w-full" />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* Ultimate: VIP Zen Management */}
         <TierGate 
@@ -469,11 +485,32 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
             </h3>
             <p className="text-[#a3b18a] font-bold tracking-[0.6em] uppercase text-[10px] mt-12">{formattedDate}</p>
           </AnimatedSection>
+
+          {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+            <AnimatedSection delay="delay-500">
+              <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
+                <div className="bg-white p-3.5 rounded-[2rem] inline-block shadow-lg border border-[#a3b18a]/30">
+                  <SafeQRCodeSVG
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
+                    size={130}
+                    level="H"
+                    fgColor="#3d4432"
+                  />
+                </div>
+                <p className="text-xs text-[#3d4432] font-semibold mt-1">
+                  QR Code Buku Tamu (Attendance)
+                </p>
+                <p className="text-[9px] text-[#3d4432]/60 leading-relaxed font-sans max-w-[240px] text-center">
+                  Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+                </p>
+              </div>
+            </AnimatedSection>
+          )}
         </section>
 
         <div className="h-24 bg-white" />
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
-        <BottomNav visible={isOpened} />
+        <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
       </div>
     </div>
   );

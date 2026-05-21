@@ -46,15 +46,8 @@ export async function POST(request: Request, { params }: RouteParams) {
       return errorResponse('Undangan tidak ditemukan atau Anda tidak memiliki akses.', 404, 'NOT_FOUND');
     }
 
-    // Get the user's latest accountType
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id }
-    });
-
-    const isB2B = user?.accountType === 'B2B_PRO' || user?.accountType === 'B2B_ALL_TIME';
-
-    // WA Blast is exclusive to ULTIMATE tier, B2B generated tiers, or any invitation owned by a B2B user
-    const isAllowedTier = invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED' || isB2B;
+    // WA Blast is exclusive to ULTIMATE tier
+    const isAllowedTier = invitation.tier === 'ULTIMATE';
     if (!isAllowedTier) {
       return errorResponse(
         'Fitur WhatsApp Blast otomatis hanya tersedia untuk Paket Ultimate.',
@@ -79,8 +72,9 @@ export async function POST(request: Request, { params }: RouteParams) {
       return errorResponse(`Tamu ${guest.name} tidak memiliki nomor WhatsApp yang valid.`, 400, 'BAD_REQUEST');
     }
 
-    // 5. Send message via Fonnte
+    // 5. Send message via Fonnte with 15-second dispatch delay/throttle backend guardrail
     try {
+      await new Promise((resolve) => setTimeout(resolve, 15000));
       await sendWhatsAppMessage(guest.phone, message);
     } catch (err: any) {
       const errMsg = err.message || '';

@@ -41,18 +41,19 @@ export default function Navbar() {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#fdfcf9]/80 backdrop-blur-xl border-b border-rose-500/10 py-2' : 'bg-transparent py-4'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between min-h-16">
           {/* Logo */}
-          <Link href="/" className="relative flex items-center justify-start h-16 w-56 group">
-            <Image 
-              src="/images/logo.png" 
-              alt="Sahinaja Logo" 
-              width={1000} 
-              height={1000} 
-              className="absolute w-[220px] h-[220px] max-w-none object-contain left-0 top-1/2 -translate-y-1/2 transition-transform duration-300 group-hover:scale-105"
-              priority
-              unoptimized
-            />
+          <Link href="/" className="flex items-center group">
+            <div className="relative overflow-hidden w-52 h-16 flex-shrink-0">
+              <Image 
+                src="/images/logo.png" 
+                alt="Sahinaja Logo" 
+                fill
+                className="object-contain scale-[3.5] transition-transform duration-300 group-hover:scale-[3.65]"
+                priority
+                unoptimized
+              />
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

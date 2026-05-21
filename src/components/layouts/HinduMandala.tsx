@@ -1,4 +1,5 @@
 'use client';
+import { getCoupleSlug } from '@/lib/utils';
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -9,7 +10,8 @@ import {
   Music, Share2, Users, QrCode, Flower2,
   Home, CalendarDays, Pause
 } from 'lucide-react';
-import type { Invitation } from '@/types';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import type { Invitation, Guest } from '@/types';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -100,13 +102,13 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible }: { visible: boolean }) {
+function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'couple', icon: Users, label: 'Mempelai' },
     { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    { id: 'gallery', icon: Camera, label: 'Galeri' },
+    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
     { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
   ];
 
@@ -135,6 +137,7 @@ function BottomNav({ visible }: { visible: boolean }) {
 }
 
 export default function HinduMandala({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -151,9 +154,20 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
     if (!isPreview) {
       const p = new URLSearchParams(window.location.search);
       const to = p.get('to');
-      if (to) setGuestName(decodeURIComponent(to));
+      if (to) {
+        setGuestName(decodeURIComponent(to));
+        if (invitation.guests) {
+          const decodedTo = decodeURIComponent(to).trim().toLowerCase();
+          const guest = invitation.guests.find(
+            (g) => g.name.trim().toLowerCase() === decodedTo
+          );
+          if (guest) {
+            setMatchedGuest(guest);
+          }
+        }
+      }
     }
-  }, [isPreview]);
+  }, [isPreview, invitation.guests]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -376,23 +390,25 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-40 px-4 bg-[#fffcf5] relative">
-           <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/handmade-paper.png')]" />
-           <AnimatedSection className="text-center mb-24 relative z-10">
-             <Camera className="mx-auto text-amber-600 mb-6 opacity-40 animate-pulse" size={48} />
-             <p className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-black italic">Sacred Moments</p>
-           </AnimatedSection>
-           <div className="grid grid-cols-2 gap-4 relative z-10">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                  <div className={`relative overflow-hidden rounded-[3rem] shadow-3xl border-4 border-white group ${idx === 0 ? 'h-80' : 'h-56'}`}>
-                     <Image src={src} alt="Gallery" fill className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" unoptimized />
-                     <div className="absolute inset-0 bg-amber-900/10 group-hover:opacity-0 transition-opacity" />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-40 px-4 bg-[#fffcf5] relative">
+             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/handmade-paper.png')]" />
+             <AnimatedSection className="text-center mb-24 relative z-10">
+               <Camera className="mx-auto text-amber-600 mb-6 opacity-40 animate-pulse" size={48} />
+               <p className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-black italic">Sacred Moments</p>
+             </AnimatedSection>
+             <div className="grid grid-cols-2 gap-4 relative z-10">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
+                    <div className={`relative overflow-hidden rounded-[3rem] shadow-3xl border-4 border-white group ${idx === 0 ? 'h-80' : 'h-56'}`}>
+                       <Image src={src} alt="Gallery" fill className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" unoptimized />
+                       <div className="absolute inset-0 bg-amber-900/10 group-hover:opacity-0 transition-opacity" />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* Ultimate: VIP Mandala Experience */}
         <TierGate 
@@ -475,10 +491,31 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
             <div className="h-[1px] w-24 bg-amber-200 mx-auto mt-16 mb-8" />
             <p className="text-amber-700/60 font-black tracking-[0.7em] uppercase text-[10px] drop-shadow-sm">{formattedDate}</p>
           </AnimatedSection>
+
+          {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+            <AnimatedSection delay="delay-500">
+              <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
+                <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-amber-200">
+                  <SafeQRCodeSVG
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
+                    size={130}
+                    level="H"
+                    fgColor="#78350f"
+                  />
+                </div>
+                <p className="text-xs text-amber-900 font-semibold mt-1">
+                  QR Code Buku Tamu (Attendance)
+                </p>
+                <p className="text-[9px] text-amber-700/60 leading-relaxed font-sans max-w-[240px] text-center">
+                  Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+                </p>
+              </div>
+            </AnimatedSection>
+          )}
         </section>
 
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
-        <BottomNav visible={isOpened} />
+        <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
       </div>
     </div>
   );

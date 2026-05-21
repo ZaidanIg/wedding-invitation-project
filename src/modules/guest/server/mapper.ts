@@ -15,6 +15,7 @@ export const guestMapper = {
       message: entity.message ?? null,
       attendees: entity.attendees ?? 1,
       checkedIn: entity.checkedIn ?? false,
+      isVip: entity.isVip ?? false,
       createdAt: entity.createdAt instanceof Date
         ? entity.createdAt.toISOString()
         : String(entity.createdAt),

@@ -7,20 +7,19 @@ datasource db {
 }
 
 model User {
-  id                String        @id @default(cuid())
-  name              String?
-  email             String        @unique
-  emailVerified     DateTime?
-  image             String?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  password          String?
-  accountType       AccountType   @default(B2C_FREE)
-  freeGeneratesUsed Int           @default(0)
-  accounts          Account[]
-  invitations       Invitation[]
-  sessions          Session[]
-  transactions      Transaction[]
+  id            String        @id @default(cuid())
+  name          String?
+  email         String        @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  password      String?
+  role          Role          @default(USER)
+  accounts      Account[]
+  invitations   Invitation[]
+  sessions      Session[]
+  transactions  Transaction[]
 }
 
 model Account {
@@ -72,46 +71,51 @@ model PasswordResetToken {
 }
 
 model Invitation {
-  id           String         @id @default(cuid())
-  groomName    String
-  groomParents String?
-  brideName    String
-  brideParents String?
-  eventDate    DateTime
-  eventTime    String
-  venueName    String
-  venueAddress String
-  greeting     String
-  mainBody     String
-  eventInfo    String
-  closing      String
-  fullText     String
-  tone         String         @default("formal")
-  language     String         @default("id")
-  slug         String         @unique @default(cuid())
-  viewCount    Int            @default(0)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  photoUrls    String[]       @default([])
+  id             String        @id @default(cuid())
+  groomName      String
+  groomParents   String?
+  brideName      String
+  brideParents   String?
+  eventDate      DateTime
+  eventTime      String
+  venueName      String
+  venueAddress   String
+  greeting       String
+  mainBody       String
+  eventInfo      String
+  closing        String
+  fullText       String
+  tone           String        @default("formal")
+  language       String        @default("id")
+  slug           String        @unique @default(cuid())
+  viewCount      Int           @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  photoUrls      String[]      @default([])
   headerPhotoUrl String?
   groomPhotoUrl  String?
   bridePhotoUrl  String?
-  userId       String?
-  musicUrl     String?
-  layout       String         @default("elegant-cream")
-  schedule     Json           @default("[]")
-  loveStory    Json           @default("[]")
-  digitalGifts Json           @default("[]")
-  quotes       String?
-  tier         InvitationTier @default(DRAFT)
-  qrEnabled    Boolean        @default(true)
-  guests       Guest[]
-  user         User?          @relation(fields: [userId], references: [id])
-  transactions Transaction[]
+  userId         String
+  musicUrl       String?
+  videoUrl       String?
+  layout         String        @default("elegant-cream")
+  schedule       Json          @default("[]")
+  loveStory      Json          @default("[]")
+  digitalGifts   Json          @default("[]")
+  quotes         String?
+  tier           Tier          @default(DRAFT)
+  isPaid         Boolean       @default(false)
+  aiRegenCount   Int           @default(0)
+  qrEnabled      Boolean       @default(true)
+  expiresAt      DateTime?
+  guests         Guest[]
+  user           User          @relation(fields: [userId], references: [id])
+  transactions   Transaction[]
 
   @@index([slug])
   @@index([userId])
   @@index([createdAt])
+  @@index([expiresAt])
 }
 
 model Guest {
@@ -122,13 +126,14 @@ model Guest {
   phone        String?
   rsvpStatus   RsvpStatus @default(PENDING)
 
-  message      String?
-  attendees    Int        @default(1)
-  checkedIn    Boolean    @default(false)
-  createdAt    DateTime   @default(now())
+  message   String?
+  attendees Int      @default(1)
+  checkedIn Boolean  @default(false)
+  isVip     Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  updatedAt    DateTime   @updatedAt
-  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  updatedAt  DateTime   @updatedAt
+  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
 
   @@index([invitationId])
   @@index([rsvpStatus])
@@ -141,8 +146,7 @@ model Transaction {
   amount       Int
   type         TransactionType
   status       TransactionStatus @default(PENDING)
-  tier         InvitationTier?
-  accountType  AccountType?
+  tier         Tier?
   paymentUrl   String?
   midtransId   String?           @unique
   createdAt    DateTime          @default(now())
@@ -154,18 +158,16 @@ model Transaction {
   @@index([invitationId])
 }
 
-enum AccountType {
-  B2C_FREE
-  B2B_PRO
-  B2B_ALL_TIME
+enum Role {
+  USER
+  ADMIN
 }
 
-enum InvitationTier {
+enum Tier {
   DRAFT
   BASIC
   PREMIUM
   ULTIMATE
-  B2B_GENERATED
 }
 
 enum TransactionStatus {

@@ -5,17 +5,48 @@ import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen, MapPin
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Lock, Sparkles, MessageCircle, Check } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 
-import type { InvitationTier, Invitation, Guest } from '@/types';
+import type { Tier, Invitation, Guest } from '@/types';
+import { createContext, useContext } from 'react';
+
+/* ── Tier Context & Hooks ── */
+export interface TierContextType {
+  tier: Tier;
+  isPreview: boolean;
+}
+
+export const TierContext = createContext<TierContextType>({
+  tier: 'BASIC',
+  isPreview: false,
+});
+
+export function TierProvider({
+  tier,
+  isPreview,
+  children,
+}: {
+  tier: Tier;
+  isPreview: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <TierContext.Provider value={{ tier, isPreview }}>
+      {children}
+    </TierContext.Provider>
+  );
+}
+
+export function useTier() {
+  return useContext(TierContext);
+}
 
 /* ── Tier Ranking ── */
-export const TIER_RANK: Record<InvitationTier, number> = {
+export const TIER_RANK: Record<Tier, number> = {
   'DRAFT': 0,
   'BASIC': 1,
   'PREMIUM': 2,
-  'ULTIMATE': 3,
-  'B2B_GENERATED': 3
+  'ULTIMATE': 3
 };
 
 export function TierGate({ 
@@ -24,18 +55,19 @@ export function TierGate({
   children,
   fallback = null 
 }: { 
-  tier: InvitationTier; 
-  minTier: InvitationTier; 
+  tier: Tier; 
+  minTier: Tier; 
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }) {
-  const isAllowed = TIER_RANK[tier] >= TIER_RANK[minTier];
-  
-  if (!isAllowed) {
-    return fallback as any;
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK[minTier] || 0;
+
+  if (currentRank >= requiredRank) {
+    return <>{children}</>;
   }
-  
-  return children;
+
+  return <>{fallback}</>;
 }
 
 export function LockedSection({ 
@@ -150,6 +182,21 @@ export function LoveStorySection({
   textColor?: string;
   floralImage?: string;
 }) {
+  const { tier, isPreview } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
+  if (currentRank < requiredRank) {
+    if (isPreview) {
+      return (
+        <div className="py-12 px-6 max-w-lg mx-auto">
+          <LockedSection title="Love Story Timeline" requiredTier="Premium" className={`p-8 rounded-3xl ${bgColor} border border-white/10`} />
+        </div>
+      );
+    }
+    return null;
+  }
+
   if (!story || story.length === 0) return null;
 
   return (
@@ -417,6 +464,10 @@ export function CountdownTimer({
   labelColor?: string;
   separatorColor?: string;
 }) {
+  const { tier, isPreview } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [mounted, setMounted] = useState(false);
 
@@ -441,6 +492,13 @@ export function CountdownTimer({
   }, [targetDate]);
 
   if (!mounted) return null;
+
+  if (currentRank < requiredRank) {
+    if (isPreview) {
+      return <LockedSection title="Countdown Timer" requiredTier="Premium" className="my-6 mx-auto max-w-xs bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-4 text-center text-stone-800" />;
+    }
+    return null;
+  }
 
   const blocks = [
     { value: timeLeft.days, label: 'Days' },
@@ -486,8 +544,16 @@ export function AudioPlayer({
   isPlayingProp?: boolean;
   onPlayChange?: (isPlaying: boolean) => void;
 }) {
+  const { tier } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  if (currentRank < requiredRank) {
+    return null;
+  }
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -617,12 +683,20 @@ export function resolvePhotos(invitation: any) {
   const groomPhoto = invitation.groomPhotoUrl || photos[0];
   const bridePhoto = invitation.bridePhotoUrl || photos[0];
   
+  // Enforce tier-based gallery photos limit
+  const tier = invitation.tier || 'BASIC';
+  let limit = 0;
+  if (tier === 'PREMIUM') limit = 3;
+  else if (tier === 'ULTIMATE') limit = 7;
+  
+  const galleryPhotos = photos.slice(0, limit);
+  
   return {
     photos,
     heroPhoto: headerPhoto,
     photo2: photos[1] || photos[0],
     photo3: photos[2] || photos[0],
-    galleryPhotos: photos,
+    galleryPhotos,
     groomPhoto,
     bridePhoto,
   };
@@ -808,31 +882,57 @@ export function DetailItem({ icon: Icon, label, value, className = "" }: { icon:
   );
 }
 export function WishesSection({ invitation }: { invitation: Invitation }) {
+  const { tier, isPreview } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
   const [wishes, setWishes] = useState<Guest[]>(invitation.guests || []);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState(invitation.rsvpName || '');
+  const [phone, setPhone] = useState(invitation.rsvpPhone || '');
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING' | 'PENDING'>('ATTENDING');
+  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING' | 'PENDING'>(invitation.rsvpStatus || 'ATTENDING');
   const [sending, setSending] = useState(false);
-  const [guestId, setGuestId] = useState<string | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [guestId, setGuestId] = useState<string | null>(invitation.rsvpGuestId || null);
+  const [isSubmitted, setIsSubmitted] = useState(invitation.rsvpSubmitted || false);
+
+  if (currentRank < requiredRank) {
+    if (isPreview) {
+      return (
+        <div className="max-w-md mx-auto my-6">
+          <LockedSection title="RSVP & Wishes" requiredTier="Premium" className="bg-white border border-stone-100 rounded-3xl p-6 text-center" />
+        </div>
+      );
+    }
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (invitation.rsvpSubmitted) {
+      if (!message.trim()) return;
+    } else {
+      if (!name.trim() || !phone.trim() || !message.trim()) return;
+    }
     setSending(true);
     try {
       const res = await fetch(`/api/invitations/${invitation.slug}/rsvp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone, message, status }),
+        body: JSON.stringify({
+          name: invitation.rsvpSubmitted ? invitation.rsvpName : name.trim(),
+          phone: invitation.rsvpSubmitted ? invitation.rsvpPhone : phone.trim(),
+          message: message.trim(),
+          rsvpStatus: invitation.rsvpSubmitted ? invitation.rsvpStatus : status,
+          attendees: 1,
+        }),
       });
       const data = await res.json();
       if (data.success) {
         setWishes([data.data, ...wishes]);
         setGuestId(data.data.id);
         setIsSubmitted(true);
-        setName('');
-        setPhone('');
+        setName(data.data.name);
+        setPhone(data.data.phone);
         setMessage('');
       }
     } catch (err) {
@@ -842,7 +942,7 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
     }
   };
 
-  const isQrAvailable = (invitation.tier === 'PREMIUM' || invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED') && invitation.qrEnabled !== false;
+  const isQrAvailable = (invitation.tier === 'PREMIUM' || invitation.tier === 'ULTIMATE') && invitation.qrEnabled !== false;
 
   if (isSubmitted && isQrAvailable && status === 'ATTENDING' && guestId) {
     return (
@@ -855,7 +955,7 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
           <p className="text-sm text-stone-500 mb-8 px-4">Kehadiran Anda sangat berarti bagi kami. Berikut QR Code untuk check-in:</p>
           
           <div className="bg-white p-4 rounded-3xl border border-stone-50 inline-block shadow-sm">
-             <QRCodeSVG value={guestId} size={180} level="H" />
+             <SafeQRCodeSVG value={guestId} size={180} level="H" />
           </div>
           
           <p className="mt-8 text-[10px] text-stone-400 uppercase tracking-widest leading-loose">
@@ -875,50 +975,60 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
   return (
     <div className="space-y-12">
       <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4 text-left bg-white p-8 rounded-[2rem] shadow-sm border border-stone-100">
-        <div>
-          <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Nama Lengkap</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Masukkan nama Anda"
-            required
-            className="w-full px-6 py-4 rounded-2xl bg-stone-50 border-none focus:ring-1 focus:ring-stone-200 transition-all text-stone-800 placeholder:text-stone-300"
-          />
-        </div>
-
-        <div>
-          <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Nomor WhatsApp *</label>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Contoh: 08123456789"
-            required
-            className="w-full px-6 py-4 rounded-2xl bg-stone-50 border-none focus:ring-1 focus:ring-stone-200 transition-all text-stone-800 placeholder:text-stone-300"
-          />
-        </div>
-
-
-        <div>
-          <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Kehadiran</label>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { id: 'ATTENDING', label: 'Hadir', icon: '😊' },
-              { id: 'NOT_ATTENDING', label: 'Maaf, Tidak Bisa', icon: '😔' }
-            ].map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setStatus(opt.id as any)}
-                className={`py-4 rounded-2xl text-xs font-bold transition-all border ${status === opt.id ? 'bg-stone-800 text-white border-stone-800' : 'bg-white text-stone-400 border-stone-100 hover:border-stone-200'}`}
-              >
-                <span className="block mb-1 text-lg">{opt.icon}</span>
-                {opt.label}
-              </button>
-            ))}
+        {invitation.rsvpSubmitted ? (
+          <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-center mb-4">
+            <p className="text-xs font-bold text-emerald-600 mb-1">✓ Anda Telah Mengisi RSVP</p>
+            <p className="text-[10px] text-stone-500 font-medium">
+              Nama: <span className="font-bold text-stone-700">{invitation.rsvpName}</span> • Kehadiran: <span className="font-bold text-stone-700">{invitation.rsvpStatus === 'ATTENDING' ? 'Hadir' : 'Absen'}</span>
+            </p>
           </div>
-        </div>
+        ) : (
+          <>
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Nama Lengkap</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Masukkan nama Anda"
+                required
+                className="w-full px-6 py-4 rounded-2xl bg-stone-50 border-none focus:ring-1 focus:ring-stone-200 transition-all text-stone-800 placeholder:text-stone-300"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Nomor WhatsApp *</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Contoh: 08123456789"
+                required
+                className="w-full px-6 py-4 rounded-2xl bg-stone-50 border-none focus:ring-1 focus:ring-stone-200 transition-all text-stone-800 placeholder:text-stone-300"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Kehadiran</label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: 'ATTENDING', label: 'Hadir', icon: '😊' },
+                  { id: 'NOT_ATTENDING', label: 'Maaf, Tidak Bisa', icon: '😔' }
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setStatus(opt.id as any)}
+                    className={`py-4 rounded-2xl text-xs font-bold transition-all border ${status === opt.id ? 'bg-stone-800 text-white border-stone-800' : 'bg-white text-stone-400 border-stone-100 hover:border-stone-200'}`}
+                  >
+                    <span className="block mb-1 text-lg">{opt.icon}</span>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
         <div>
           <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">Ucapan & Doa</label>
@@ -932,7 +1042,7 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
         </div>
         <button
           type="submit"
-          disabled={sending || !name.trim() || !message.trim()}
+          disabled={sending || (!invitation.rsvpSubmitted && !name.trim()) || !message.trim()}
           className="w-full py-4 bg-[#1c1c1c] text-white rounded-2xl font-bold hover:bg-stone-800 transition-all disabled:opacity-50 shadow-lg active:scale-95"
         >
           {sending ? 'Mengirim...' : 'Kirim Ucapan'}

@@ -21,7 +21,7 @@ interface RsvpStats {
 }
 
 export default function RsvpManagementPage() {
-  const params = useParams<{ slug: string }>();
+  const params = useParams<{ coupleNames: string; slug: string }>();
   const [guests, setGuests] = useState<Guest[]>([]);
   const [stats, setStats] = useState<RsvpStats>({ attending: 0, notAttending: 0, pending: 0, totalResponses: 0, estimatedGuests: 0 });
   const [tier, setTier] = useState<string>('');
@@ -30,33 +30,32 @@ export default function RsvpManagementPage() {
   const [showBlastModal, setShowBlastModal] = useState(false);
   const [showAddGuestModal, setShowAddGuestModal] = useState(false);
 
-  useEffect(() => {
-    const fetchRsvps = async () => {
-      try {
-        const res = await fetch(`/api/invitations/${params.slug}/rsvp`);
-        const data = await res.json();
-        if (data.success) {
-          setGuests(data.data.guests);
-          setStats(data.data.stats);
-          setTier(data.data.tier);
-          setQrEnabled(data.data.qrEnabled !== false);
-          
-          // Auto-open blast modal if requested via URL
-          const urlParams = new URLSearchParams(window.location.search);
-          if (urlParams.get('blast') === 'true') {
-            setShowBlastModal(true);
-          }
-        }
-
-
-      } catch (error) {
-        console.error('Failed to fetch RSVPs:', error);
-      } finally {
-        setIsLoading(false);
+  const fetchRsvps = async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
+    try {
+      const res = await fetch(`/api/invitations/${params.slug}/rsvp`);
+      const data = await res.json();
+      if (data.success) {
+        setGuests(data.data.guests);
+        setStats(data.data.stats);
+        setTier(data.data.tier);
+        setQrEnabled(data.data.qrEnabled !== false);
       }
-    };
+    } catch (error) {
+      console.error('Failed to fetch RSVPs:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchRsvps();
+  useEffect(() => {
+    fetchRsvps(true);
+    
+    // Auto-open blast modal if requested via URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('blast') === 'true') {
+      setShowBlastModal(true);
+    }
   }, [params.slug]);
 
   return (
@@ -71,8 +70,8 @@ export default function RsvpManagementPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-display font-bold text-foreground">RSVP Management</h1>
-            <p className="text-sm text-foreground/40 mt-0.5">Track your guest responses</p>
+            <h1 className="text-2xl font-display font-bold text-foreground">Buku Tamu</h1>
+            <p className="text-sm text-foreground/40 mt-0.5">Daftar kehadiran dan rsvp tamu</p>
           </div>
         </div>
 
@@ -88,7 +87,7 @@ export default function RsvpManagementPage() {
                     <Sparkles className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[#1c1c1c]">Guest Management</h3>
+                    <h3 className="text-sm font-bold text-[#1c1c1c]">Buku Tamu</h3>
                     <p className="text-[10px] text-[#6b6b6b] uppercase tracking-wider">{tier === 'PREMIUM' ? 'Premium' : 'Ultimate'} Tier Features</p>
                   </div>
                 </div>
@@ -135,8 +134,8 @@ export default function RsvpManagementPage() {
             invitationSlug={params.slug}
             onClose={() => setShowAddGuestModal(false)}
             onSuccess={() => {
-               // Re-fetch guests to update the list
-               window.location.reload(); 
+               // Re-fetch guests to update the list in-place without reloading the page
+               fetchRsvps(); 
             }}
           />
         )}
@@ -145,7 +144,7 @@ export default function RsvpManagementPage() {
           <WaBlastModal 
             guests={guests} 
             onClose={() => setShowBlastModal(false)} 
-            invitationUrl={`${window.location.origin}/invitation/${params.slug}`}
+            invitationUrl={`${window.location.origin}/invitation/${params.coupleNames}/${params.slug}`}
           />
         )}
       </div>

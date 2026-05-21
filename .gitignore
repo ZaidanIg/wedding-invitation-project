@@ -48,6 +48,7 @@ test-db.js
 
 # Excluded by request
 scratch/
+scripts/
 AGENTS.md
 CLAUDE.md
 DESIGN.md

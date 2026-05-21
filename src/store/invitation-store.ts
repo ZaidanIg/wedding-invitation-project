@@ -22,8 +22,8 @@ interface FormWizardActions {
   setIsGenerating: (val: boolean) => void;
   setIsSaving: (val: boolean) => void;
   setQrEnabled: (val: boolean) => void;
-  targetTier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE';
-  setTargetTier: (tier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE') => void;
+  targetTier: 'BASIC' | 'PREMIUM' | 'ULTIMATE';
+  setTargetTier: (tier: 'BASIC' | 'PREMIUM' | 'ULTIMATE') => void;
   reset: () => void;
 }
 
@@ -98,7 +98,7 @@ export const useInvitationStore = create<FormWizardState & FormWizardActions>(
     setIsSaving: (isSaving) => set({ isSaving }),
     setQrEnabled: (qrEnabled) => set({ qrEnabled }),
 
-    targetTier: 'DRAFT' as any,
+    targetTier: 'BASIC',
     setTargetTier: (targetTier) => set({ targetTier }),
     reset: () => set(initialState),
   }),

@@ -1,4 +1,5 @@
 'use client';
+import { getCoupleSlug } from '@/lib/utils';
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -33,6 +34,7 @@ const Lantern = ({ className, size = 24 }: { className?: string; size?: number }
     <path d="M11 12h2M12 11v2" />
   </svg>
 );
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import {
   AnimatedSection,
@@ -167,13 +169,13 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible }: { visible: boolean }) {
+function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', icon: 'Home', label: 'Home' },
     { id: 'couple', icon: 'Users', label: 'Mempelai' },
     { id: 'date', icon: 'Calendar', label: 'Tanggal' },
-    { id: 'gallery', icon: 'Camera', label: 'Galeri' },
+    ...(hasGallery ? [{ id: 'gallery', icon: 'Camera', label: 'Galeri' }] : []),
     { id: 'wishes', icon: 'MessageCircle', label: 'Ucapan' },
   ];
 
@@ -206,6 +208,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
   const [isOpened, setIsOpened] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
@@ -215,12 +218,22 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
   }, []);
 
   useEffect(() => {
-    if (!isPreview) {
-      const p = new URLSearchParams(window.location.search);
-      const to = p.get('to');
-      if (to) setGuestName(decodeURIComponent(to));
+    const p = new URLSearchParams(window.location.search);
+    const to = p.get('to');
+    if (to) {
+      const decoded = decodeURIComponent(to);
+      setGuestName(decoded);
+      if (invitation.guests) {
+        const decodedTo = decoded.trim().toLowerCase();
+        const guest = invitation.guests.find(
+          (g) => g.name.trim().toLowerCase() === decodedTo
+        );
+        if (guest) {
+          setMatchedGuest(guest);
+        }
+      }
     }
-  }, [isPreview]);
+  }, [invitation.guests]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -417,22 +430,24 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
         </section>
 
         {/* Gallery */}
-        <section id="gallery" className="py-24 px-4 bg-[#fdfcf9]">
-           <AnimatedSection className="text-center mb-16">
-              <h2 className="text-3xl font-display font-bold text-[#1a2b23] mb-4">Galeri Momen</h2>
-              <div className="h-px w-16 bg-[#c5a059] mx-auto" />
-           </AnimatedSection>
-           
-           <div className="grid grid-cols-2 gap-2">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                  <div className={`relative overflow-hidden rounded-3xl ${idx === 0 ? 'h-72' : 'h-48'} border-4 border-white shadow-xl`}>
-                     <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-24 px-4 bg-[#fdfcf9]">
+             <AnimatedSection className="text-center mb-16">
+                <h2 className="text-3xl font-display font-bold text-[#1a2b23] mb-4">Galeri Momen</h2>
+                <div className="h-px w-16 bg-[#c5a059] mx-auto" />
+             </AnimatedSection>
+             
+             <div className="grid grid-cols-2 gap-2">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
+                    <div className={`relative overflow-hidden rounded-3xl ${idx === 0 ? 'h-72' : 'h-48'} border-4 border-white shadow-xl`}>
+                       <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* VIP Section */}
         <TierGate 
@@ -495,10 +510,28 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
               {invitation.groomName.split(' ')[0]} <span className="text-[#c5a059]">&</span> {invitation.brideName.split(' ')[0]}
             </h3>
             <p className="text-[#c5a059] font-sans font-bold tracking-[0.5em] uppercase text-xs">{formattedDate}</p>
+
+            {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+              <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto relative z-10">
+                <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-[#c5a059]/40">
+                  <SafeQRCodeSVG
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
+                    size={130}
+                    level="H"
+                  />
+                </div>
+                <p className="text-xs text-[#c5a059] font-semibold mt-1">
+                  QR Code Buku Tamu (Attendance)
+                </p>
+                <p className="text-[9px] text-white/50 leading-relaxed font-sans max-w-[240px] text-center">
+                  Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+                </p>
+              </div>
+            )}
           </AnimatedSection>
         </section>
 
-        <BottomNav visible={isOpened} />
+        <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} activeColor="bg-[#c5a059] text-[#1a2b23]" inactiveColor="bg-white/10 text-white backdrop-blur-sm" />}
       </div>
     </div>

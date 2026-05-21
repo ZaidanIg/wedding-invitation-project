@@ -1,4 +1,5 @@
 'use client';
+import { getCoupleSlug } from '@/lib/utils';
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -18,6 +19,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import type { Invitation, Guest } from '@/types';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import {
   AnimatedSection,
   LoveStorySection,
@@ -84,17 +86,28 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 export default function IslamicClassic({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
   const [isOpened, setIsOpened] = useState(isPreview);
   const [guestName, setGuestName] = useState('Tamu Undangan');
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   useEffect(() => {
-    if (!isPreview) {
-      const p = new URLSearchParams(window.location.search);
-      const to = p.get('to');
-      if (to) setGuestName(decodeURIComponent(to));
+    const p = new URLSearchParams(window.location.search);
+    const to = p.get('to');
+    if (to) {
+      const decoded = decodeURIComponent(to);
+      setGuestName(decoded);
+      if (invitation.guests) {
+        const decodedTo = decoded.trim().toLowerCase();
+        const guest = invitation.guests.find(
+          (g) => g.name.trim().toLowerCase() === decodedTo
+        );
+        if (guest) {
+          setMatchedGuest(guest);
+        }
+      }
     }
-  }, [isPreview]);
+  }, [invitation.guests]);
 
   return (
     <div className={`w-full max-w-lg mx-auto bg-[#fdfcf9] text-stone-800 relative shadow-2xl font-outfit ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
@@ -200,22 +213,24 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-24 px-4 text-center">
-           <AnimatedSection className="mb-12">
-              <h2 className="text-2xl font-display font-bold text-stone-800 mb-2">Our Moments</h2>
-              <div className="w-12 h-[1px] bg-[#d4af37] mx-auto" />
-           </AnimatedSection>
-           
-           <div className="grid grid-cols-2 gap-2">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                  <div className={`relative overflow-hidden rounded-lg ${idx === 0 ? 'h-[300px]' : 'h-[180px]'}`}>
-                     <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-24 px-4 text-center">
+             <AnimatedSection className="mb-12">
+                <h2 className="text-2xl font-display font-bold text-stone-800 mb-2">Our Moments</h2>
+                <div className="w-12 h-[1px] bg-[#d4af37] mx-auto" />
+             </AnimatedSection>
+             
+             <div className="grid grid-cols-2 gap-2">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
+                    <div className={`relative overflow-hidden rounded-lg ${idx === 0 ? 'h-[300px]' : 'h-[180px]'}`}>
+                       <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* RSVP Section */}
         <section id="wishes" className="py-24 px-8 bg-stone-50">
@@ -243,6 +258,24 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
               {invitation.groomName.split(' ')[0]} & {invitation.brideName.split(' ')[0]}
             </h3>
             <p className="text-[10px] font-bold text-[#d4af37] tracking-[0.4em] uppercase">{formattedDate}</p>
+
+            {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+              <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto relative z-10">
+                <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-[#d4af37]/40">
+                  <SafeQRCodeSVG
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
+                    size={130}
+                    level="H"
+                  />
+                </div>
+                <p className="text-xs text-[#d4af37] font-semibold mt-1">
+                  QR Code Buku Tamu (Attendance)
+                </p>
+                <p className="text-[9px] text-stone-500 leading-relaxed font-sans max-w-[240px] text-center">
+                  Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+                </p>
+              </div>
+            )}
           </AnimatedSection>
         </section>
 
