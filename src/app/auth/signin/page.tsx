@@ -68,21 +68,29 @@ export default function SignInPage() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const urlError = params.get('error');
-      if (urlError) {
+      const urlCode = params.get('code');
+      // NextAuth v5 beta: custom code may be in 'code' param, error type in 'error'
+      const errorKey = urlCode || urlError;
+      if (errorKey) {
         if (
-          urlError === 'OAuthAccountNotLinked' ||
-          urlError === 'OAuthNotLinked' ||
-          urlError.toLowerCase().includes('oauth')
+          errorKey === 'OAuthAccountNotLinked' ||
+          errorKey === 'OAuthNotLinked' ||
+          errorKey.toLowerCase().includes('oauth')
         ) {
           setError('Email Anda sudah terdaftar menggunakan Google. Silakan masuk dengan menekan tombol "Masuk dengan Google" di bawah.');
-        } else if (urlError === 'USER_NOT_FOUND') {
+        } else if (errorKey === 'USER_NOT_FOUND') {
           setError('Akun dengan email ini tidak terdaftar. Silakan daftar terlebih dahulu.');
-        } else if (urlError === 'EMAIL_NOT_VERIFIED') {
+        } else if (errorKey === 'EMAIL_NOT_VERIFIED') {
           setError('Akun Anda belum diverifikasi. Silakan periksa email Anda untuk tautan verifikasi.');
-        } else if (urlError === 'TOO_MANY_REQUESTS') {
+        } else if (errorKey === 'TOO_MANY_REQUESTS') {
           setError('Terlalu banyak percobaan masuk. Silakan coba lagi dalam 1 menit.');
-        } else {
-          // Hide all internal/technical errors (e.g. 'Configuration', 'AccessDenied')
+        } else if (errorKey === 'INVALID_EMAIL_OR_PASSWORD') {
+          setError('Kata sandi yang Anda masukkan salah. Silakan periksa kembali.');
+        } else if (errorKey === 'CallbackRouteError' || urlError === 'CallbackRouteError') {
+          // Jangan tampilkan error teknis NextAuth ke user
+          setError('Terjadi kesalahan saat masuk. Silakan coba lagi.');
+        } else if (urlError && urlError !== 'CallbackRouteError') {
+          // Hide semua internal/technical error lainnya
           setError('Terjadi kesalahan saat masuk. Silakan coba lagi.');
         }
       }
@@ -197,25 +205,28 @@ export default function SignInPage() {
         });
 
         if (res?.error) {
+          // NextAuth v5 beta: custom error code is in res.code, res.error = 'CallbackRouteError'
+          const errorCode = (res as any).code || res.error;
+
           // Map custom error codes to user-friendly Indonesian messages
-          if (res.error === 'USER_NOT_FOUND') {
+          if (errorCode === 'USER_NOT_FOUND') {
             setError('Akun dengan email ini tidak terdaftar. Silakan daftar terlebih dahulu.');
-          } else if (res.error === 'INVALID_EMAIL_OR_PASSWORD') {
+          } else if (errorCode === 'INVALID_EMAIL_OR_PASSWORD') {
             setError('Kata sandi yang Anda masukkan salah. Silakan periksa kembali.');
-          } else if (res.error === 'EMAIL_NOT_VERIFIED') {
+          } else if (errorCode === 'EMAIL_NOT_VERIFIED') {
             setError('Akun Anda belum diverifikasi. Silakan periksa email Anda untuk tautan verifikasi.');
-          } else if (res.error === 'EMAIL_PASSWORD_REQUIRED') {
+          } else if (errorCode === 'EMAIL_PASSWORD_REQUIRED') {
             setError('Email dan kata sandi wajib diisi.');
-          } else if (res.error === 'TOO_MANY_REQUESTS') {
+          } else if (errorCode === 'TOO_MANY_REQUESTS') {
             setError('Terlalu banyak percobaan masuk. Silakan coba lagi dalam 1 menit.');
           } else if (
-            res.error === 'OAuthAccountNotLinked' ||
-            res.error === 'OAuthNotLinked' ||
-            res.error.toLowerCase().includes('oauth')
+            errorCode === 'OAuthAccountNotLinked' ||
+            errorCode === 'OAuthNotLinked' ||
+            (typeof errorCode === 'string' && errorCode.toLowerCase().includes('oauth'))
           ) {
             setError('Email ini sudah terdaftar menggunakan Google. Silakan masuk menggunakan tombol "Masuk dengan Google" di bawah.');
           } else {
-            // Catch-all: never expose raw NextAuth internal codes (e.g. 'Configuration', 'AccessDenied')
+            // Catch-all: jangan tampilkan error teknis seperti 'CallbackRouteError' ke user
             setError('Terjadi kesalahan saat masuk. Silakan coba lagi atau hubungi dukungan.');
           }
           setIsLoading(false);
