@@ -1,4 +1,5 @@
 'use client';
+import { getCoupleSlug } from '@/lib/utils';
 
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -484,7 +485,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
               <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
                 <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-rose-100">
                   <QRCodeSVG
-                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}/attendance`}
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
                     size={130}
                     level="H"
                     fgColor="#1c1c1c"

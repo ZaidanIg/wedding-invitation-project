@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { MessageSquare, Copy, ExternalLink, Send } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
+import { getCoupleSlug } from '@/lib/utils';
+
 
 interface WhatsAppGeneratorProps {
   invitationSlug: string;
@@ -15,7 +17,8 @@ export default function WhatsAppGenerator({ invitationSlug, groomName, brideName
   const [isOpen, setIsOpen] = useState(false);
   const [guestName, setGuestName] = useState('');
 
-  const invitationUrl = `${window.location.origin}/invitation/${invitationSlug}`;
+  const coupleSlug = getCoupleSlug(groomName, brideName);
+  const invitationUrl = `${window.location.origin}/invitation/${coupleSlug}/${invitationSlug}`;
   const personalizedUrl = guestName.trim() 
     ? `${invitationUrl}?to=${encodeURIComponent(guestName.trim())}`
     : invitationUrl;

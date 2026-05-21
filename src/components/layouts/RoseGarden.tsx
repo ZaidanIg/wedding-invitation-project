@@ -1,4 +1,5 @@
 'use client';
+import { getCoupleSlug } from '@/lib/utils';
 
 import { useState, useEffect } from 'react';
 import { Heart, MapPin, Clock, Calendar, Music, Camera, ChevronDown, Glasses } from 'lucide-react';
@@ -280,7 +281,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
             <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
               <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-pink-200">
                 <QRCodeSVG
-                  value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}/attendance`}
+                  value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
                   size={130}
                   level="H"
                 />

@@ -13,6 +13,8 @@ import { showToast } from '@/components/ui/Toast';
 import WhatsAppGenerator from './WhatsAppGenerator';
 import { QRCodeSVG } from 'qrcode.react';
 import type { Invitation, Tier } from '@/types';
+import { getCoupleSlug } from '@/lib/utils';
+
 
 interface InvitationCardProps {
   invitation: Invitation & {
@@ -57,7 +59,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
     day: 'numeric', month: 'long', year: 'numeric',
   });
 
-  const invitationUrl = `/invitation/${invitation.slug}`;
+  const coupleSlug = getCoupleSlug(invitation.groomName, invitation.brideName);
+  const invitationUrl = `/invitation/${coupleSlug}/${invitation.slug}`;
 
   const pendingTx = invitation.transactions?.find((tx: any) => tx.status === 'PENDING');
   const paymentLink = pendingTx?.paymentUrl
@@ -384,7 +387,7 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
             <div className="bg-white p-4 rounded-2xl inline-block shadow-lg border border-amber-100">
               <QRCodeSVG
                 id={`qr-inv-${invitation.id}`}
-                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}/attendance`}
+                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${coupleSlug}/${invitation.slug}/attendance`}
                 size={180}
                 level="H"
               />
