@@ -30,31 +30,32 @@ export default function RsvpManagementPage() {
   const [showBlastModal, setShowBlastModal] = useState(false);
   const [showAddGuestModal, setShowAddGuestModal] = useState(false);
 
-  useEffect(() => {
-    const fetchRsvps = async () => {
-      try {
-        const res = await fetch(`/api/invitations/${params.slug}/rsvp`);
-        const data = await res.json();
-        if (data.success) {
-          setGuests(data.data.guests);
-          setStats(data.data.stats);
-          setTier(data.data.tier);
-          setQrEnabled(data.data.qrEnabled !== false);
-          
-          // Auto-open blast modal if requested via URL
-          const urlParams = new URLSearchParams(window.location.search);
-          if (urlParams.get('blast') === 'true') {
-            setShowBlastModal(true);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch RSVPs:', error);
-      } finally {
-        setIsLoading(false);
+  const fetchRsvps = async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
+    try {
+      const res = await fetch(`/api/invitations/${params.slug}/rsvp`);
+      const data = await res.json();
+      if (data.success) {
+        setGuests(data.data.guests);
+        setStats(data.data.stats);
+        setTier(data.data.tier);
+        setQrEnabled(data.data.qrEnabled !== false);
       }
-    };
+    } catch (error) {
+      console.error('Failed to fetch RSVPs:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchRsvps();
+  useEffect(() => {
+    fetchRsvps(true);
+    
+    // Auto-open blast modal if requested via URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('blast') === 'true') {
+      setShowBlastModal(true);
+    }
   }, [params.slug]);
 
   return (
@@ -133,8 +134,8 @@ export default function RsvpManagementPage() {
             invitationSlug={params.slug}
             onClose={() => setShowAddGuestModal(false)}
             onSuccess={() => {
-               // Re-fetch guests to update the list
-               window.location.reload(); 
+               // Re-fetch guests to update the list in-place without reloading the page
+               fetchRsvps(); 
             }}
           />
         )}

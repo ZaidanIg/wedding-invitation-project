@@ -410,21 +410,9 @@ function CheckoutContent() {
                   {plan.icon}
                 </div>
               </div>
-              <p className="text-sm text-[#6b6b6b] leading-relaxed mb-6 font-medium">
-                {plan.description}
+              <p className="text-xs text-[#6b6b6b] font-medium mt-1">
+                Paket {plan.name} — Rp {plan.price.toLocaleString('id-ID')}
               </p>
-              
-              <div className="h-px bg-stone-200/50 my-6" />
-
-              <h3 className="text-sm font-bold text-[#1c1c1c] uppercase tracking-wider mb-4">FITUR UTAMA YANG DIAPLIKASIKAN:</h3>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {plan.features.map((feature, i) => (
-                  <div key={i} className="flex gap-2.5 items-center text-xs text-[#1c1c1c]/70 font-medium">
-                    <Check className={`h-4 w-4 shrink-0 ${plan.textClass}`} />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Personalization Info Card (If invitationId exists) */}
@@ -494,44 +482,6 @@ function CheckoutContent() {
                 </div>
               </div>
 
-              <div className="space-y-4 mb-6">
-                <div className="flex items-start gap-3">
-                  <div className="p-1 rounded bg-[#fdfcf9] border border-stone-200/50 mt-0.5 shrink-0 shadow-sm">
-                    <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-[#1c1c1c] mb-0.5">Masa Aktif Undangan Selamanya</h4>
-                    <p className="text-xs text-[#6b6b6b] leading-relaxed font-medium">
-                      Undangan pernikahan digital Anda akan tetap aktif secara permanen dan dapat diakses oleh kerabat kapan saja tanpa ada biaya tambahan atau biaya langganan di kemudian hari.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="p-1 rounded bg-[#fdfcf9] border border-stone-200/50 mt-0.5 shrink-0 shadow-sm">
-                    <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-[#1c1c1c] mb-0.5">Perlindungan Data & Kerahasiaan Penuh</h4>
-                    <p className="text-xs text-[#6b6b6b] leading-relaxed font-medium">
-                      Kami menjamin kerahasiaan seluruh data pribadi Anda, pasangan, serta daftar tamu undangan melalui sistem pengamanan data terenkripsi yang aman dan tepercaya.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="p-1 rounded bg-[#fdfcf9] border border-stone-200/50 mt-0.5 shrink-0 shadow-sm">
-                    <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-[#1c1c1c] mb-0.5">Akses Cepat & Stabil</h4>
-                    <p className="text-xs text-[#6b6b6b] leading-relaxed font-medium">
-                      Sistem kami dirancang secara khusus untuk memastikan undangan pernikahan Anda dapat dibuka dengan sangat cepat, stabil, dan lancar oleh para tamu undangan di mana pun mereka berada.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
               <label className="flex items-start gap-3 p-4 bg-[#fdfcf9]/80 border border-stone-200/50 rounded-2xl cursor-pointer hover:bg-stone-50/50 transition-all shadow-sm">
                 <input 
                   type="checkbox" 
@@ -540,7 +490,27 @@ function CheckoutContent() {
                   className="mt-1 h-4 w-4 rounded border-stone-300 text-rose-500 focus:ring-rose-500 cursor-pointer"
                 />
                 <span className="text-xs text-[#1c1c1c]/80 leading-relaxed font-semibold">
-                  Saya memahami dan menyetujui seluruh Ketentuan Layanan, Lisensi Selamanya, serta Kebijakan Privasi yang berlaku pada platform Sahinaja.
+                  Saya telah membaca dan menyetujui{' '}
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-rose-500 underline underline-offset-2 hover:text-rose-600 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Syarat &amp; Ketentuan Layanan
+                  </Link>
+                  {' '}serta{' '}
+                  <Link
+                    href="/terms#privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-rose-500 underline underline-offset-2 hover:text-rose-600 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Kebijakan Privasi
+                  </Link>
+                  {' '}yang berlaku pada platform Sahinaja.
                 </span>
               </label>
             </div>

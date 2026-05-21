@@ -27,8 +27,6 @@ export default function Footer() {
 
           <div className="flex flex-wrap justify-center gap-6 text-xs text-[#6b6b6b] font-semibold">
             <Link href="/terms" className="hover:text-rose-500 transition-colors">Syarat & Ketentuan</Link>
-            <Link href="/privacy" className="hover:text-rose-500 transition-colors">Kebijakan Privasi</Link>
-            <Link href="/docs" className="hover:text-rose-500 transition-colors">Panduan</Link>
             <a href="mailto:official@sahinaja.com" className="hover:text-rose-500 transition-colors">Hubungi Kami</a>
           </div>
         </div>

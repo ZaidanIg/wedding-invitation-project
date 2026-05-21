@@ -207,7 +207,7 @@ export const invitationService = {
       throw new ForbiddenError('Unauthorized to edit this invitation');
     }
 
-    const tier = existing.tier as 'BASIC' | 'PREMIUM' | 'ULTIMATE';
+    const tier = existing.tier as 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE';
 
     // Strip sensitive fields that should not be updated via user API
     const { tier: _, isPaid, aiRegenCount, userId: __, slug, viewCount, ...safeData } = parsed.data as Record<string, any>;
@@ -218,6 +218,19 @@ export const invitationService = {
 
     if (safeData.eventDate && typeof safeData.eventDate === 'string') {
       safeData.eventDate = new Date(safeData.eventDate as string) as any;
+    }
+
+    // Recompute expiresAt if eventDate is updated and it's not a draft
+    if (safeData.eventDate && existing.tier !== 'DRAFT') {
+      const eventDateObj = new Date(safeData.eventDate);
+      let addedDays = 0;
+      if (existing.tier === 'BASIC') addedDays = 7;
+      else if (existing.tier === 'PREMIUM') addedDays = 14;
+      else if (existing.tier === 'ULTIMATE') addedDays = 30;
+      
+      if (addedDays > 0) {
+        safeData.expiresAt = new Date(eventDateObj.getTime() + addedDays * 24 * 60 * 60 * 1000);
+      }
     }
 
     const updated = await invitationRepository.update(id, safeData);

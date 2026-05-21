@@ -59,13 +59,8 @@ const iconOptions = [
 
 const musicOptions = [
   { value: '', label: '🔇 Tanpa Musik' },
-  { value: '/music/Epic Spectrum - Sky Clearing (freetouse.com).mp3', label: '🎻 Sky Clearing (Default)' },
-  { value: 'https://docs.google.com/uc?export=download&id=1GCYf7Ch3JLvd3RyzelpQte1FYZyWnngV', label: '🎼 Perfect Symphony (Premium)' },
-  { value: 'https://cdn.pixabay.com/audio/2022/10/25/audio_22dbdcdcc8.mp3', label: '🎹 Romantic Piano' },
-  { value: 'https://cdn.pixabay.com/audio/2024/09/10/audio_517e4f937e.mp3', label: '🕯️ Cinematic Wedding' },
-  { value: 'https://cdn.pixabay.com/audio/2022/11/08/audio_82c2a3e0f9.mp3', label: '🎸 Acoustic Serenade' },
-  { value: 'https://cdn.pixabay.com/audio/2022/01/26/audio_d0c6ff1cbd.mp3', label: '🎻 Classical Wedding' },
-  { value: 'custom', label: '🔗 URL Kustom...' },
+  { value: '/music/Epic Spectrum - Sky Clearing (freetouse.com).mp3', label: '🎻 Sky Clearing' },
+  { value: 'custom', label: '🎵 Upload Musik Saya...' },
 ];
 
 const layoutOptions: { value: Layout; label: string; bg: string; border: string; preview: string; category: 'klasik' | 'premium' }[] = [
@@ -107,6 +102,14 @@ export default function InvitationForm() {
   const [showPlanSelection, setShowPlanSelection] = useState(false);
   const [aiMode, setAiMode] = useState<'auto' | 'custom'>(
     store.stylePreferences.additionalNotes ? 'custom' : 'auto'
+  );
+  // Custom music URL state — separate from the dropdown value
+  const [customMusicUrl, setCustomMusicUrl] = useState(
+    store.stylePreferences.musicUrl && store.stylePreferences.musicUrl !== 'custom' &&
+    store.stylePreferences.musicUrl !== '' &&
+    store.stylePreferences.musicUrl !== '/music/Epic Spectrum - Sky Clearing (freetouse.com).mp3'
+      ? store.stylePreferences.musicUrl
+      : ''
   );
 
   useEffect(() => {
@@ -181,7 +184,7 @@ export default function InvitationForm() {
           tone: store.stylePreferences.tone,
           language: store.stylePreferences.language,
           layout: store.stylePreferences.layout,
-          musicUrl: store.stylePreferences.musicUrl === 'custom' ? '' : store.stylePreferences.musicUrl,
+          musicUrl: store.stylePreferences.musicUrl === 'custom' ? customMusicUrl.trim() : store.stylePreferences.musicUrl,
           schedule: store.eventDetails.schedule,
           loveStory: store.eventDetails.loveStory,
           digitalGifts: store.eventDetails.digitalGifts,
@@ -229,7 +232,7 @@ export default function InvitationForm() {
     tone: store.stylePreferences.tone,
     language: store.stylePreferences.language,
     layout: store.stylePreferences.layout,
-    musicUrl: store.stylePreferences.musicUrl === 'custom' ? '' : store.stylePreferences.musicUrl,
+    musicUrl: store.stylePreferences.musicUrl === 'custom' ? customMusicUrl.trim() : store.stylePreferences.musicUrl,
     qrEnabled: store.qrEnabled,
     id: 'preview',
     slug: 'preview',
@@ -504,10 +507,85 @@ export default function InvitationForm() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Select label="Nuansa" options={toneOptions} value={store.stylePreferences.tone} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, tone: e.target.value as any })} /><Select label="Bahasa" options={languageOptions} value={store.stylePreferences.language} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, language: e.target.value as any })} /></div>
                   
                   {/* Music: Restricted */}
-                  <div className="relative">
-                    <Select label="Musik Latar" options={hasPremium ? musicOptions : [{ value: '', label: '🔇 Tanpa Musik (Upgrade ke Premium)' }]} value={hasPremium ? store.stylePreferences.musicUrl : ''} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, musicUrl: e.target.value })} disabled={!hasPremium} />
-                    {!hasPremium && <Lock className="absolute top-10 right-10 h-4 w-4 text-stone-300" />}
-                    {!hasPremium && <p className="text-[9px] text-stone-400 mt-1">* Musik hanya tersedia pada Paket Premium</p>}
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <Select
+                        label="Musik Latar"
+                        options={hasPremium ? musicOptions : [{ value: '', label: '🔇 Tanpa Musik (Upgrade ke Premium)' }]}
+                        value={hasPremium ? store.stylePreferences.musicUrl : ''}
+                        onChange={(e) => {
+                          store.setStylePreferences({ ...store.stylePreferences, musicUrl: e.target.value });
+                          // Reset custom URL when switching away from custom
+                          if (e.target.value !== 'custom') setCustomMusicUrl('');
+                        }}
+                        disabled={!hasPremium}
+                      />
+                      {!hasPremium && <Lock className="absolute top-10 right-10 h-4 w-4 text-stone-300" />}
+                      {!hasPremium && <p className="text-[9px] text-stone-400 mt-1">* Musik hanya tersedia pada Paket Premium</p>}
+                    </div>
+
+                    {/* Upload audio via UploadThing — shown when 'custom' is selected */}
+                    {hasPremium && store.stylePreferences.musicUrl === 'custom' && (
+                      <div className="space-y-3">
+                        {customMusicUrl ? (
+                          /* Uploaded — show player + change button */
+                          <div className="bg-[#fcfbf8] border border-[#eceae4] rounded-2xl p-4 space-y-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
+                                <Music className="h-4 w-4 text-rose-500" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-semibold text-[#1c1c1c] truncate">
+                                  {customMusicUrl.split('/').pop()?.split('?')[0] || 'Musik Kustom'}
+                                </p>
+                                <p className="text-[10px] text-stone-400">Berhasil diunggah</p>
+                              </div>
+                              <button
+                                onClick={() => setCustomMusicUrl('')}
+                                className="text-[10px] text-red-400 hover:text-red-500 font-medium shrink-0"
+                              >
+                                Ganti
+                              </button>
+                            </div>
+                            <audio
+                              key={customMusicUrl}
+                              controls
+                              className="w-full h-10"
+                              preload="metadata"
+                            >
+                              <source src={customMusicUrl} type="audio/mpeg" />
+                              Browser Anda tidak mendukung audio.
+                            </audio>
+                          </div>
+                        ) : (
+                          /* Not uploaded yet — show dropzone */
+                          <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] rounded-2xl overflow-hidden">
+                            <UploadDropzone
+                              endpoint="weddingMusic"
+                              appearance={{
+                                button: 'bg-rose-500 text-[10px] uppercase font-bold tracking-widest px-6 py-2.5 rounded-xl',
+                                container: 'p-6 border-none bg-transparent',
+                                label: 'text-stone-500 text-xs',
+                                allowedContent: 'text-stone-400 text-[10px]',
+                              }}
+                              content={{
+                                label: 'Seret file audio ke sini, atau klik untuk memilih',
+                                allowedContent: 'MP3, WAV, AAC — Maks 16 MB',
+                              }}
+                              onClientUploadComplete={(res) => {
+                                if (res?.[0]?.ufsUrl) {
+                                  setCustomMusicUrl(res[0].ufsUrl);
+                                  showToast('success', 'Musik berhasil diunggah!');
+                                }
+                              }}
+                              onUploadError={(err) => {
+                                showToast('error', `Gagal mengunggah musik: ${err.message}`);
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="pt-6 border-t border-[#eceae4] space-y-6">

@@ -88,6 +88,11 @@ export interface Invitation {
   createdAt: string;
   updatedAt: string;
   guests?: Guest[];
+  rsvpSubmitted?: boolean;
+  rsvpGuestId?: string | null;
+  rsvpStatus?: RsvpStatus | null;
+  rsvpName?: string;
+  rsvpPhone?: string;
 }
 
 export interface Guest {

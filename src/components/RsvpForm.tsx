@@ -10,18 +10,21 @@ interface RsvpFormProps {
   slug: string;
   tier?: string;
   qrEnabled?: boolean;
+  initialSubmitted?: boolean;
+  initialGuestId?: string | null;
+  initialStatus?: 'ATTENDING' | 'NOT_ATTENDING' | null;
 }
 
-export default function RsvpForm({ slug, tier, qrEnabled }: RsvpFormProps) {
+export default function RsvpForm({ slug, tier, qrEnabled, initialSubmitted, initialGuestId, initialStatus }: RsvpFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [attendees, setAttendees] = useState(1);
-  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING' | null>(null);
+  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING' | null>(initialStatus || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [guestId, setGuestId] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(initialSubmitted || false);
+  const [guestId, setGuestId] = useState<string | null>(initialGuestId || null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

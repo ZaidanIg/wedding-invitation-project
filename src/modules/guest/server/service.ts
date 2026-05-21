@@ -18,7 +18,7 @@ export const guestService = {
   /**
    * Submit an RSVP for an invitation (identified by slug).
    */
-  async submitRsvp(slugOrId: string, payload: unknown) {
+  async submitRsvp(slugOrId: string, payload: unknown, guestIdFromCookie?: string | null) {
     const parsed = submitRsvpSchema.safeParse(payload);
     if (!parsed.success) {
       throw new ValidationError(formatZodError(parsed.error));
@@ -43,6 +43,28 @@ export const guestService = {
       throw new ValidationError('Undangan ini belum aktif dan tidak dapat menerima RSVP.');
     }
 
+    const { name, email, phone, rsvpStatus, message, attendees } = parsed.data;
+
+    // Check if we have an existing guest from cookie first to prevent duplicate/hijacking
+    if (guestIdFromCookie) {
+      const guestByCookie = await prisma.guest.findFirst({
+        where: { id: guestIdFromCookie, invitationId: invitation.id }
+      });
+      if (guestByCookie) {
+        const updated = await prisma.guest.update({
+          where: { id: guestByCookie.id },
+          data: {
+            email: email?.trim() || guestByCookie.email,
+            phone: phone?.trim() || guestByCookie.phone,
+            rsvpStatus: rsvpStatus,
+            message: message?.trim() || guestByCookie.message,
+            attendees: attendees ?? guestByCookie.attendees,
+          }
+        });
+        return guestMapper.toResponse(updated);
+      }
+    }
+
     if (tierLimit !== Infinity) {
       const currentCount = await prisma.guest.count({
         where: { invitationId: invitation.id },
@@ -54,9 +76,7 @@ export const guestService = {
       }
     }
 
-    const { name, email, phone, rsvpStatus, message, attendees } = parsed.data;
-
-    // Check if there is an existing guest under this invitation with the same name or phone
+    // Check if there is an existing guest under this invitation with the same name or phone (fallback)
     const existingGuest = await prisma.guest.findFirst({
       where: {
         invitationId: invitation.id,

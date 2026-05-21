@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 const WHATSAPP_NUMBER = '6282116179745';
 const WHATSAPP_MESSAGE = encodeURIComponent(
@@ -10,6 +11,11 @@ const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`
 
 export default function WhatsAppFloat() {
   const [hovered, setHovered] = useState(false);
+  const pathname = usePathname();
+
+  if (pathname?.startsWith('/invitation')) {
+    return null;
+  }
 
   return (
     <div className="wa-float-wrapper">

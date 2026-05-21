@@ -107,6 +107,7 @@ model Invitation {
   isPaid         Boolean       @default(false)
   aiRegenCount   Int           @default(0)
   qrEnabled      Boolean       @default(true)
+  expiresAt      DateTime?
   guests         Guest[]
   user           User          @relation(fields: [userId], references: [id])
   transactions   Transaction[]
@@ -114,6 +115,7 @@ model Invitation {
   @@index([slug])
   @@index([userId])
   @@index([createdAt])
+  @@index([expiresAt])
 }
 
 model Guest {

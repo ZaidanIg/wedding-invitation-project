@@ -242,13 +242,13 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
   const requiredRank = TIER_RANK['PREMIUM'];
 
   const [wishes, setWishes] = useState<Guest[]>(invitation.guests || []);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState(invitation.rsvpName || '');
+  const [phone, setPhone] = useState(invitation.rsvpPhone || '');
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING'>('ATTENDING');
+  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING'>(invitation.rsvpStatus === 'NOT_ATTENDING' ? 'NOT_ATTENDING' : 'ATTENDING');
   const [sending, setSending] = useState(false);
-  const [guestId, setGuestId] = useState<string | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [guestId, setGuestId] = useState<string | null>(invitation.rsvpGuestId || null);
+  const [isSubmitted, setIsSubmitted] = useState(invitation.rsvpSubmitted || false);
 
   if (currentRank < requiredRank) {
     if (isPreview) {
@@ -263,17 +263,21 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !message.trim() || !phone.trim()) return;
+    if (invitation.rsvpSubmitted) {
+      if (!message.trim()) return;
+    } else {
+      if (!name.trim() || !phone.trim() || !message.trim()) return;
+    }
     setSending(true);
     try {
       const res = await fetch(`/api/invitations/${invitation.slug}/rsvp`, {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          name: name.trim(), 
-          phone: phone.trim(),
+          name: invitation.rsvpSubmitted ? invitation.rsvpName : name.trim(), 
+          phone: invitation.rsvpSubmitted ? invitation.rsvpPhone : phone.trim(),
           message: message.trim(), 
-          rsvpStatus: status, 
+          rsvpStatus: invitation.rsvpSubmitted ? invitation.rsvpStatus : status, 
           attendees: 1 
         }),
       });
@@ -282,8 +286,8 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
         setWishes(prev => [data.data, ...prev]);
         setGuestId(data.data.id);
         setIsSubmitted(true);
-        setName(''); 
-        setPhone('');
+        setName(data.data.name); 
+        setPhone(data.data.phone);
         setMessage('');
       }
     } catch { /* silent */ } finally { setSending(false); }
@@ -330,53 +334,64 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
         <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#d4af37]/5 blur-2xl rounded-full" />
         <h3 className="text-sm font-semibold text-white/90 uppercase tracking-widest text-center border-b border-white/5 pb-3">Kirim Doa Restu & RSVP</h3>
         
-        <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#d4af37] mb-1.5 ml-1">Nama Lengkap</label>
-          <input 
-            type="text"
-            value={name} 
-            onChange={e => setName(e.target.value)} 
-            placeholder="Nama Lengkap Anda" 
-            required
-            className="w-full px-4 py-3 bg-[#111111] border border-white/10 text-sm text-white placeholder:text-white/30 rounded-xl focus:border-[#d4af37] focus:outline-none transition-colors" 
-          />
-        </div>
-
-        <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#d4af37] mb-1.5 ml-1">Nomor WhatsApp *</label>
-          <input 
-            type="tel"
-            value={phone} 
-            onChange={e => setPhone(e.target.value)} 
-            placeholder="Contoh: 08123456789" 
-            required
-            className="w-full px-4 py-3 bg-[#111111] border border-white/10 text-sm text-white placeholder:text-white/30 rounded-xl focus:border-[#d4af37] focus:outline-none transition-colors" 
-          />
-        </div>
-
-        <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#d4af37] mb-1.5 ml-1">Konfirmasi Kehadiran</label>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { id: 'ATTENDING', label: 'Hadir', icon: '😊' },
-              { id: 'NOT_ATTENDING', label: 'Absen', icon: '😔' }
-            ].map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setStatus(opt.id as any)}
-                className={`py-3 rounded-xl text-xs font-bold transition-all border flex flex-col items-center justify-center gap-1 cursor-pointer ${
-                  status === opt.id 
-                    ? 'bg-gradient-to-r from-[#d4af37] to-[#aa8010] text-[#111111] border-[#d4af37]' 
-                    : 'bg-[#111111] text-white/50 border-white/10 hover:border-white/20'
-                }`}
-              >
-                <span className="text-base">{opt.icon}</span>
-                {opt.label}
-              </button>
-            ))}
+        {invitation.rsvpSubmitted ? (
+          <div className="p-4 bg-emerald-500/10 border border-emerald-500/25 rounded-2xl text-center mb-4">
+            <p className="text-xs font-bold text-emerald-400 mb-1">✓ Anda Telah Mengisi RSVP</p>
+            <p className="text-[10px] text-white/60 font-medium">
+              Nama: <span className="font-bold text-white/90">{invitation.rsvpName}</span> • Kehadiran: <span className="font-bold text-white/90">{invitation.rsvpStatus === 'ATTENDING' ? 'Hadir' : 'Absen'}</span>
+            </p>
           </div>
-        </div>
+        ) : (
+          <>
+            <div>
+              <label className="block text-[9px] font-bold uppercase tracking-widest text-[#d4af37] mb-1.5 ml-1">Nama Lengkap</label>
+              <input 
+                type="text"
+                value={name} 
+                onChange={e => setName(e.target.value)} 
+                placeholder="Nama Lengkap Anda" 
+                required
+                className="w-full px-4 py-3 bg-[#111111] border border-white/10 text-sm text-white placeholder:text-white/30 rounded-xl focus:border-[#d4af37] focus:outline-none transition-colors" 
+              />
+            </div>
+
+            <div>
+              <label className="block text-[9px] font-bold uppercase tracking-widest text-[#d4af37] mb-1.5 ml-1">Nomor WhatsApp *</label>
+              <input 
+                type="tel"
+                value={phone} 
+                onChange={e => setPhone(e.target.value)} 
+                placeholder="Contoh: 08123456789" 
+                required
+                className="w-full px-4 py-3 bg-[#111111] border border-white/10 text-sm text-white placeholder:text-white/30 rounded-xl focus:border-[#d4af37] focus:outline-none transition-colors" 
+              />
+            </div>
+
+            <div>
+              <label className="block text-[9px] font-bold uppercase tracking-widest text-[#d4af37] mb-1.5 ml-1">Konfirmasi Kehadiran</label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: 'ATTENDING', label: 'Hadir', icon: '😊' },
+                  { id: 'NOT_ATTENDING', label: 'Absen', icon: '😔' }
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setStatus(opt.id as any)}
+                    className={`py-3 rounded-xl text-xs font-bold transition-all border flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                      status === opt.id 
+                        ? 'bg-gradient-to-r from-[#d4af37] to-[#aa8010] text-[#111111] border-[#d4af37]' 
+                        : 'bg-[#111111] text-white/50 border-white/10 hover:border-white/20'
+                    }`}
+                  >
+                    <span className="text-base">{opt.icon}</span>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
         <div>
           <label className="block text-[9px] font-bold uppercase tracking-widest text-[#d4af37] mb-1.5 ml-1">Ucapan & Doa</label>
@@ -392,7 +407,7 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
         
         <button 
           type="submit"
-          disabled={sending || !name.trim() || !message.trim() || !phone.trim()}
+          disabled={sending || (!invitation.rsvpSubmitted && !name.trim()) || !message.trim() || (!invitation.rsvpSubmitted && !phone.trim())}
           className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#d4af37] to-[#aa8010] text-[#111111] text-xs font-bold uppercase tracking-widest rounded-xl hover:shadow-[0_4px_12px_rgba(212,175,55,0.25)] transition-all disabled:opacity-50 cursor-pointer"
         >
           <Send className="h-3.5 w-3.5 fill-current" />

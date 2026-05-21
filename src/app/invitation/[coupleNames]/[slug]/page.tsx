@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { invitationService } from '@/modules/invitation/server/service';
 import { auth } from '@/lib/auth';
+import { cookies } from 'next/headers';
 import InvitationPreview from '@/components/InvitationPreview';
 import RsvpForm from '@/components/RsvpForm';
 import type { Invitation } from '@/types';
@@ -105,6 +106,32 @@ export default async function InvitationPage({ params, searchParams }: PageProps
 
 
 
+  const cookieStore = await cookies();
+  const rsvpCookie = cookieStore.get(`rsvp_submitted_${slug}`);
+  const rsvpGuestId = rsvpCookie?.value || null;
+
+  let rsvpSubmitted = false;
+  let rsvpStatus = null;
+  let rsvpName = '';
+  let rsvpPhone = '';
+
+  // Serialize for client components
+  const guests = (invitation.guests || []).map((g: any) => ({
+    ...g,
+    createdAt: g.createdAt.toISOString(),
+    updatedAt: g.updatedAt.toISOString(),
+  }));
+
+  if (rsvpGuestId) {
+    const matchedGuest = guests.find((g) => g.id === rsvpGuestId);
+    if (matchedGuest) {
+      rsvpSubmitted = true;
+      rsvpStatus = matchedGuest.rsvpStatus;
+      rsvpName = matchedGuest.name;
+      rsvpPhone = matchedGuest.phone || '';
+    }
+  }
+
   // Serialize for client components
   const serialized: Invitation = {
     ...invitation,
@@ -114,11 +141,12 @@ export default async function InvitationPage({ params, searchParams }: PageProps
     eventDate: invitation.eventDate.toISOString(),
     createdAt: invitation.createdAt.toISOString(),
     updatedAt: invitation.updatedAt.toISOString(),
-    guests: (invitation.guests || []).map((g: any) => ({
-      ...g,
-      createdAt: g.createdAt.toISOString(),
-      updatedAt: g.updatedAt.toISOString(),
-    })),
+    guests,
+    rsvpSubmitted,
+    rsvpGuestId,
+    rsvpStatus: rsvpStatus as any,
+    rsvpName,
+    rsvpPhone,
   };
 
   const showRsvp = serialized.tier !== 'BASIC' && serialized.tier !== 'DRAFT';
@@ -137,7 +165,14 @@ export default async function InvitationPage({ params, searchParams }: PageProps
               <p className="text-[#5f5f5d]">Kami sangat menantikan kehadiran Anda.</p>
             </div>
             <div className="bg-[#f7f4ed] rounded-xl border border-[#eceae4] p-6 sm:p-10 shadow-sm">
-              <RsvpForm slug={slug} tier={serialized.tier} qrEnabled={serialized.qrEnabled} />
+              <RsvpForm 
+                slug={slug} 
+                tier={serialized.tier} 
+                qrEnabled={serialized.qrEnabled} 
+                initialSubmitted={serialized.rsvpSubmitted}
+                initialGuestId={serialized.rsvpGuestId}
+                initialStatus={serialized.rsvpStatus as any}
+              />
             </div>
           </div>
         </section>

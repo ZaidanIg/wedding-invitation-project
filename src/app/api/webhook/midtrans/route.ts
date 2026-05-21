@@ -82,11 +82,31 @@ export async function POST(request: Request) {
         // 3. Apply Upgrades
         let names = 'Upgrade Paket Layanan';
         if (transaction.type === 'INVITATION_UPGRADE' && transaction.invitationId && transaction.tier) {
+          // Calculate expiresAt
+          const invData = await tx.invitation.findUnique({
+            where: { id: transaction.invitationId },
+            select: { eventDate: true }
+          });
+          
+          let expiresAt: Date | null = null;
+          if (invData?.eventDate) {
+            const eventDate = new Date(invData.eventDate);
+            let addedDays = 0;
+            if (transaction.tier === 'BASIC') addedDays = 7;
+            else if (transaction.tier === 'PREMIUM') addedDays = 14;
+            else if (transaction.tier === 'ULTIMATE') addedDays = 30;
+            
+            if (addedDays > 0) {
+              expiresAt = new Date(eventDate.getTime() + addedDays * 24 * 60 * 60 * 1000);
+            }
+          }
+
           const inv = await tx.invitation.update({
             where: { id: transaction.invitationId },
             data: { 
               tier: transaction.tier,
-              isPaid: true
+              isPaid: true,
+              ...(expiresAt ? { expiresAt } : {})
             },
             select: { groomName: true, brideName: true }
           });

@@ -320,13 +320,13 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
   const requiredRank = TIER_RANK['PREMIUM'];
 
   const [wishes, setWishes] = useState<Guest[]>(invitation.guests || []);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState(invitation.rsvpName || '');
+  const [phone, setPhone] = useState(invitation.rsvpPhone || '');
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING'>('ATTENDING');
+  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING'>(invitation.rsvpStatus === 'NOT_ATTENDING' ? 'NOT_ATTENDING' : 'ATTENDING');
   const [sending, setSending] = useState(false);
-  const [guestId, setGuestId] = useState<string | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [guestId, setGuestId] = useState<string | null>(invitation.rsvpGuestId || null);
+  const [isSubmitted, setIsSubmitted] = useState(invitation.rsvpSubmitted || false);
 
   if (currentRank < requiredRank) {
     if (isPreview) {
@@ -341,17 +341,21 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !message.trim() || !phone.trim()) return;
+    if (invitation.rsvpSubmitted) {
+      if (!message.trim()) return;
+    } else {
+      if (!name.trim() || !phone.trim() || !message.trim()) return;
+    }
     setSending(true);
     try {
       const res = await fetch(`/api/invitations/${invitation.slug}/rsvp`, {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          name: name.trim(), 
-          phone: phone.trim(),
+          name: invitation.rsvpSubmitted ? invitation.rsvpName : name.trim(), 
+          phone: invitation.rsvpSubmitted ? invitation.rsvpPhone : phone.trim(),
           message: message.trim(), 
-          rsvpStatus: status, 
+          rsvpStatus: invitation.rsvpSubmitted ? invitation.rsvpStatus : status, 
           attendees: 1 
         }),
       });
@@ -360,8 +364,8 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
         setWishes(prev => [data.data, ...prev]);
         setGuestId(data.data.id);
         setIsSubmitted(true);
-        setName(''); 
-        setPhone('');
+        setName(data.data.name); 
+        setPhone(data.data.phone);
         setMessage('');
       }
     } catch { /* silent */ } finally { setSending(false); }
@@ -402,53 +406,64 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
   return (
     <div className="max-w-sm mx-auto">
       <form onSubmit={handleSubmit} className="space-y-4 mb-6 text-left">
-        <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Nama Lengkap</label>
-          <input 
-            type="text"
-            value={name} 
-            onChange={e => setName(e.target.value)} 
-            placeholder="Nama Anda" 
-            required
-            className="w-full px-4 py-3 bg-white border border-[#d4af37]/20 text-sm text-[#042f2e] placeholder:text-[#042f2e]/30 focus:border-[#d4af37] focus:outline-none transition-colors" 
-          />
-        </div>
-
-        <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Nomor WhatsApp *</label>
-          <input 
-            type="tel"
-            value={phone} 
-            onChange={e => setPhone(e.target.value)} 
-            placeholder="Contoh: 08123456789" 
-            required
-            className="w-full px-4 py-3 bg-white border border-[#d4af37]/20 text-sm text-[#042f2e] placeholder:text-[#042f2e]/30 focus:border-[#d4af37] focus:outline-none transition-colors" 
-          />
-        </div>
-
-        <div>
-          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Konfirmasi Kehadiran</label>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { id: 'ATTENDING', label: 'Hadir', icon: '😊' },
-              { id: 'NOT_ATTENDING', label: 'Absen', icon: '😔' }
-            ].map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setStatus(opt.id as any)}
-                className={`py-2.5 rounded-none text-xs font-bold transition-all border flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
-                  status === opt.id 
-                    ? 'bg-[#042f2e] text-[#d4af37] border-[#042f2e]' 
-                    : 'bg-white text-[#042f2e]/50 border-[#d4af37]/25 hover:border-[#d4af37]'
-                }`}
-              >
-                <span className="text-sm">{opt.icon}</span>
-                {opt.label}
-              </button>
-            ))}
+        {invitation.rsvpSubmitted ? (
+          <div className="p-4 bg-[#042f2e]/5 border border-[#d4af37]/20 rounded-2xl text-center mb-4">
+            <p className="text-xs font-bold text-[#042f2e] mb-1">✓ Anda Telah Mengisi RSVP</p>
+            <p className="text-[10px] text-[#042f2e]/70 font-medium">
+              Nama: <span className="font-bold text-[#042f2e]">{invitation.rsvpName}</span> • Kehadiran: <span className="font-bold text-[#042f2e]">{invitation.rsvpStatus === 'ATTENDING' ? 'Hadir' : 'Absen'}</span>
+            </p>
           </div>
-        </div>
+        ) : (
+          <>
+            <div>
+              <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Nama Lengkap</label>
+              <input 
+                type="text"
+                value={name} 
+                onChange={e => setName(e.target.value)} 
+                placeholder="Nama Anda" 
+                required
+                className="w-full px-4 py-3 bg-white border border-[#d4af37]/20 text-sm text-[#042f2e] placeholder:text-[#042f2e]/30 focus:border-[#d4af37] focus:outline-none transition-colors" 
+              />
+            </div>
+
+            <div>
+              <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Nomor WhatsApp *</label>
+              <input 
+                type="tel"
+                value={phone} 
+                onChange={e => setPhone(e.target.value)} 
+                placeholder="Contoh: 08123456789" 
+                required
+                className="w-full px-4 py-3 bg-white border border-[#d4af37]/20 text-sm text-[#042f2e] placeholder:text-[#042f2e]/30 focus:border-[#d4af37] focus:outline-none transition-colors" 
+              />
+            </div>
+
+            <div>
+              <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Konfirmasi Kehadiran</label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: 'ATTENDING', label: 'Hadir', icon: '😊' },
+                  { id: 'NOT_ATTENDING', label: 'Absen', icon: '😔' }
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setStatus(opt.id as any)}
+                    className={`py-2.5 rounded-none text-xs font-bold transition-all border flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
+                      status === opt.id 
+                        ? 'bg-[#042f2e] text-[#d4af37] border-[#042f2e]' 
+                        : 'bg-white text-[#042f2e]/50 border-[#d4af37]/25 hover:border-[#d4af37]'
+                    }`}
+                  >
+                    <span className="text-sm">{opt.icon}</span>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
         <div>
           <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Ucapan & Doa</label>
@@ -464,7 +479,7 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
         
         <button 
           type="submit"
-          disabled={sending || !name.trim() || !message.trim() || !phone.trim()}
+          disabled={sending || (!invitation.rsvpSubmitted && !name.trim()) || !message.trim() || (!invitation.rsvpSubmitted && !phone.trim())}
           className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#042f2e] text-[#d4af37] text-xs font-bold uppercase tracking-widest hover:bg-[#064e3b] transition-all disabled:opacity-50 cursor-pointer"
         >
           <Send className="h-3.5 w-3.5" />
