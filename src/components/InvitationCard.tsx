@@ -11,7 +11,7 @@ import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
 import WhatsAppGenerator from './WhatsAppGenerator';
-import { QRCodeSVG } from 'qrcode.react';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Tier } from '@/types';
 import { getCoupleSlug } from '@/lib/utils';
 
@@ -385,7 +385,7 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
             <p className="text-[11px] text-stone-500 mb-6">Pindai QR Code di bawah untuk melakukan pengisian Buku Tamu secara digital</p>
             
             <div className="bg-white p-4 rounded-2xl inline-block shadow-lg border border-amber-100">
-              <QRCodeSVG
+              <SafeQRCodeSVG
                 id={`qr-inv-${invitation.id}`}
                 value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${coupleSlug}/${invitation.slug}/attendance`}
                 size={180}

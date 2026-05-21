@@ -10,7 +10,7 @@ import {
   Music, Share2, Users, QrCode, Scroll,
   Home, CalendarDays, Pause
 } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import { 
   formatEventDate, 
@@ -552,7 +552,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
             <AnimatedSection delay="delay-500">
               <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
                 <div className="bg-white p-3.5 rounded-3xl inline-block shadow-2xl border-4 border-[#FFD700]">
-                  <QRCodeSVG
+                  <SafeQRCodeSVG
                     value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
                     size={130}
                     level="H"

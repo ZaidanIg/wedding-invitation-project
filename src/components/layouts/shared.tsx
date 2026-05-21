@@ -5,7 +5,7 @@ import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen, MapPin
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Lock, Sparkles, MessageCircle, Check } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 
 import type { Tier, Invitation, Guest } from '@/types';
 import { createContext, useContext } from 'react';
@@ -944,7 +944,7 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
           <p className="text-sm text-stone-500 mb-8 px-4">Kehadiran Anda sangat berarti bagi kami. Berikut QR Code untuk check-in:</p>
           
           <div className="bg-white p-4 rounded-3xl border border-stone-50 inline-block shadow-sm">
-             <QRCodeSVG value={guestId} size={180} level="H" />
+             <SafeQRCodeSVG value={guestId} size={180} level="H" />
           </div>
           
           <p className="mt-8 text-[10px] text-stone-400 uppercase tracking-widest leading-loose">

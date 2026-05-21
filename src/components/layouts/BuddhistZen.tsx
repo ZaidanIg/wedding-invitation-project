@@ -10,7 +10,7 @@ import {
   Users, QrCode, Leaf, Wind, Home, CalendarDays, Pause
 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import { 
   formatEventDate, 
@@ -490,7 +490,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
             <AnimatedSection delay="delay-500">
               <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
                 <div className="bg-white p-3.5 rounded-[2rem] inline-block shadow-lg border border-[#a3b18a]/30">
-                  <QRCodeSVG
+                  <SafeQRCodeSVG
                     value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
                     size={130}
                     level="H"

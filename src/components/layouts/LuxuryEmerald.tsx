@@ -3,7 +3,7 @@ import { getCoupleSlug } from '@/lib/utils';
 
 import { useState, useEffect, useRef } from 'react';
 import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -381,7 +381,7 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
           <p className="text-xs text-stone-500 mb-6 px-2">Kehadiran Anda sangat berarti bagi kami. Berikut QR Code untuk check-in:</p>
           
           <div className="bg-white p-4 rounded-2xl inline-block shadow-lg border border-[#d4af37]/20">
-            <QRCodeSVG value={guestId} size={150} level="H" />
+            <SafeQRCodeSVG value={guestId} size={150} level="H" />
           </div>
           
           <p className="mt-6 text-[9px] text-[#042f2e]/60 uppercase tracking-widest leading-loose">
@@ -752,7 +752,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
           <AnimatedSection delay="delay-500">
             <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
               <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-[#d4af37]/40">
-                <QRCodeSVG
+                <SafeQRCodeSVG
                   value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
                   size={130}
                   level="H"
