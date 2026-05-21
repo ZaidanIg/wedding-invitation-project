@@ -54,14 +54,42 @@ export const guestService = {
       }
     }
 
+    const { name, email, phone, rsvpStatus, message, attendees } = parsed.data;
+
+    // Check if there is an existing guest under this invitation with the same name or phone
+    const existingGuest = await prisma.guest.findFirst({
+      where: {
+        invitationId: invitation.id,
+        OR: [
+          { name: { equals: name.trim(), mode: 'insensitive' } },
+          ...(phone?.trim() ? [{ phone: phone.trim() }] : [])
+        ]
+      }
+    });
+
+    if (existingGuest) {
+      // Update the existing guest (VIP/Regular) record instead of creating a duplicate!
+      const updated = await prisma.guest.update({
+        where: { id: existingGuest.id },
+        data: {
+          email: email?.trim() || existingGuest.email,
+          phone: phone?.trim() || existingGuest.phone,
+          rsvpStatus: rsvpStatus,
+          message: message?.trim() || existingGuest.message,
+          attendees: attendees ?? existingGuest.attendees,
+        }
+      });
+      return guestMapper.toResponse(updated);
+    }
+
     const guest = await guestRepository.create({
       invitationId: invitation.id,
-      name: parsed.data.name,
-      email: parsed.data.email || null,
-      phone: parsed.data.phone || null,
-      rsvpStatus: parsed.data.rsvpStatus,
-      message: parsed.data.message || null,
-      attendees: parsed.data.attendees,
+      name: name.trim(),
+      email: email || null,
+      phone: phone || null,
+      rsvpStatus: rsvpStatus,
+      message: message || null,
+      attendees: attendees,
       isVip: parsed.data.isVip,
     });
 
@@ -96,7 +124,7 @@ export const guestService = {
   /**
    * Check in a guest with ownership verification.
    */
-  async checkin(invitationIdOrSlug: string, payload: unknown, userId: string) {
+  async checkin(invitationIdOrSlug: string, payload: unknown, userId: string, userRole?: string) {
     const parsed = checkinSchema.safeParse(payload);
     if (!parsed.success) {
       throw new ValidationError(formatZodError(parsed.error));
@@ -106,6 +134,7 @@ export const guestService = {
       parsed.data.guestId,
       invitationIdOrSlug,
       userId,
+      userRole,
     );
 
     if (!guest) {

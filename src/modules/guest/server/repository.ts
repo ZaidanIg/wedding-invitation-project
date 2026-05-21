@@ -56,13 +56,14 @@ export const guestRepository = {
     };
   },
 
-  async findForCheckin(guestId: string, invitationIdOrSlug: string, userId: string) {
+  async findForCheckin(guestId: string, invitationIdOrSlug: string, userId: string, userRole?: string) {
+    const isAdmin = userRole === 'ADMIN';
     return prisma.guest.findFirst({
       where: {
         id: guestId,
         invitation: {
           OR: [{ id: invitationIdOrSlug }, { slug: invitationIdOrSlug }],
-          userId,
+          ...(isAdmin ? {} : { userId }),
         },
       },
       include: { invitation: true },
