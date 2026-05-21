@@ -6,6 +6,7 @@ import InvitationPreview from '@/components/InvitationPreview';
 import RsvpForm from '@/components/RsvpForm';
 import type { Invitation } from '@/types';
 import { NotFoundError, ForbiddenError } from '@/lib/errors';
+import { headers, cookies } from 'next/headers';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -90,8 +91,28 @@ export default async function InvitationPage({ params }: PageProps) {
     notFound();
   }
 
-  // Increment view count (fire-and-forget)
-  invitationService.incrementViewCount(slug).catch(() => {});
+  // Prevent duplicate clicks/views using session cookie, bot filtering, and owner exclusion
+  const cookieStore = await cookies();
+  const headerList = await headers();
+  const userAgent = headerList.get('user-agent') || '';
+  
+  const isBot = /bot|crawler|spider|crawling|whatsapp|telegram|facebook|twitter|slack/i.test(userAgent);
+  const isOwner = requestingUserId && invitation.userId === requestingUserId;
+  const isAdmin = requestingUserRole === 'ADMIN';
+  const cookieName = `viewed_${slug}`;
+  const hasViewed = cookieStore.get(cookieName);
+
+  if (!isBot && !isOwner && !isAdmin && !hasViewed) {
+    // Set a session cookie to expire in 24 hours
+    cookieStore.set(cookieName, 'true', {
+      maxAge: 60 * 60 * 24, // 24 hours
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+    invitationService.incrementViewCount(slug).catch(() => {});
+  }
 
   // Serialize for client components
   const serialized: Invitation = {
