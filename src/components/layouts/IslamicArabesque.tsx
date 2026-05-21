@@ -16,6 +16,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import type { Invitation, Guest } from '@/types';
+import { QRCodeSVG } from 'qrcode.react';
 import {
   AnimatedSection,
   LoveStorySection,
@@ -78,17 +79,28 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 export default function IslamicArabesque({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
   const [isOpened, setIsOpened] = useState(isPreview);
   const [guestName, setGuestName] = useState('Tamu Undangan');
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate } = formatEventDate(invitation.eventDate);
   const { heroPhoto, galleryPhotos } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   useEffect(() => {
-    if (!isPreview) {
-      const p = new URLSearchParams(window.location.search);
-      const to = p.get('to');
-      if (to) setGuestName(decodeURIComponent(to));
+    const p = new URLSearchParams(window.location.search);
+    const to = p.get('to');
+    if (to) {
+      const decoded = decodeURIComponent(to);
+      setGuestName(decoded);
+      if (invitation.guests) {
+        const decodedTo = decoded.trim().toLowerCase();
+        const guest = invitation.guests.find(
+          (g) => g.name.trim().toLowerCase() === decodedTo
+        );
+        if (guest) {
+          setMatchedGuest(guest);
+        }
+      }
     }
-  }, [isPreview]);
+  }, [invitation.guests]);
 
   return (
     <div className={`w-full max-w-lg mx-auto bg-[#f0fdfa] text-stone-800 relative shadow-2xl font-sans ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
@@ -235,6 +247,24 @@ export default function IslamicArabesque({ invitation, isPreview = false }: { in
               {invitation.groomName.split(' ')[0]} & {invitation.brideName.split(' ')[0]}
             </h3>
             <p className="text-[#2dd4bf] font-bold tracking-[0.5em] uppercase text-[10px]">{formattedDate}</p>
+
+            {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+              <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto relative z-10">
+                <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-[#2dd4bf]/40">
+                  <QRCodeSVG
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}/attendance`}
+                    size={130}
+                    level="H"
+                  />
+                </div>
+                <p className="text-xs text-[#0f766e] font-semibold mt-1">
+                  QR Code Buku Tamu (Attendance)
+                </p>
+                <p className="text-[9px] text-stone-500 leading-relaxed font-sans max-w-[240px] text-center">
+                  Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+                </p>
+              </div>
+            )}
           </AnimatedSection>
         </section>
 

@@ -6,7 +6,7 @@ import { NotFoundError, ValidationError, ConflictError } from '@/lib/errors';
 import { invitationRepository } from '@/modules/invitation/server/repository';
 import { prisma } from '@/lib/prisma';
 import { guestRepository } from './repository';
-import { submitRsvpSchema, checkinSchema } from './validators';
+import { submitRsvpSchema, checkinSchema, submitAttendanceSchema } from './validators';
 import { guestMapper } from './mapper';
 import type { ZodError } from 'zod';
 
@@ -62,6 +62,7 @@ export const guestService = {
       rsvpStatus: parsed.data.rsvpStatus,
       message: parsed.data.message || null,
       attendees: parsed.data.attendees,
+      isVip: parsed.data.isVip,
     });
 
     return guestMapper.toResponse(guest);
@@ -119,5 +120,70 @@ export const guestService = {
 
     const updated = await guestRepository.markCheckedIn(parsed.data.guestId);
     return guestMapper.toResponse(updated);
+  },
+
+  /**
+   * Submit guest attendance (public buku tamu).
+   */
+  async submitAttendance(slugOrId: string, payload: unknown) {
+    const parsed = submitAttendanceSchema.safeParse(payload);
+    if (!parsed.success) {
+      throw new ValidationError(formatZodError(parsed.error));
+    }
+
+    const invitation = await invitationRepository.findBySlug(slugOrId);
+    if (!invitation) {
+      throw new NotFoundError('Undangan tidak ditemukan');
+    }
+
+    const { name, phone, attendees, message } = parsed.data;
+
+    // Search if there is an existing guest with the same name or phone under this invitation
+    const existingGuest = await prisma.guest.findFirst({
+      where: {
+        invitationId: invitation.id,
+        OR: [
+          { name: { equals: name.trim(), mode: 'insensitive' } },
+          { phone: phone.trim() }
+        ]
+      }
+    });
+
+    if (existingGuest) {
+      if (existingGuest.checkedIn) {
+        throw new ConflictError(
+          `Tamu sudah check-in pada ${existingGuest.updatedAt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`
+        );
+      }
+
+      // Mark them as checked in
+      const updated = await prisma.guest.update({
+        where: { id: existingGuest.id },
+        data: {
+          checkedIn: true,
+          rsvpStatus: 'ATTENDING',
+          attendees: attendees ?? existingGuest.attendees,
+          message: message?.trim() || existingGuest.message,
+        }
+      });
+
+      return guestMapper.toResponse(updated);
+    }
+
+    // Auto-register as regular guest (Biasa)
+    const newGuest = await prisma.guest.create({
+      data: {
+        invitationId: invitation.id,
+        name: name.trim(),
+        phone: phone.trim(),
+        rsvpStatus: 'ATTENDING',
+        checkedIn: true,
+        isVip: false, // Regular
+        attendees: attendees ?? 1,
+        message: message?.trim() || null,
+      }
+    });
+
+    return guestMapper.toResponse(newGuest);
   },
 };

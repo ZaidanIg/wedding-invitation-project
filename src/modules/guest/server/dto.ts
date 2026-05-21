@@ -11,5 +11,6 @@ export interface GuestResponseDto {
   message: string | null;
   attendees: number;
   checkedIn: boolean;
+  isVip: boolean;
   createdAt: string;
 }

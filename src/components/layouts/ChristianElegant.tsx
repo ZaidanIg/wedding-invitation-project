@@ -10,7 +10,8 @@ import {
   Home, CalendarDays, Pause
 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import type { Invitation } from '@/types';
+import { QRCodeSVG } from 'qrcode.react';
+import type { Invitation, Guest } from '@/types';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -137,6 +138,7 @@ function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: bool
 }
 
 export default function ChristianElegant({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -153,9 +155,20 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
     if (!isPreview) {
       const p = new URLSearchParams(window.location.search);
       const to = p.get('to');
-      if (to) setGuestName(decodeURIComponent(to));
+      if (to) {
+        setGuestName(decodeURIComponent(to));
+        if (invitation.guests) {
+          const decodedTo = decodeURIComponent(to).trim().toLowerCase();
+          const guest = invitation.guests.find(
+            (g) => g.name.trim().toLowerCase() === decodedTo
+          );
+          if (guest) {
+            setMatchedGuest(guest);
+          }
+        }
+      }
     }
-  }, [isPreview]);
+  }, [isPreview, invitation.guests]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -462,9 +475,30 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
               <span className="text-rose-300 font-serif">&amp;</span> <br/>
               {invitation.brideName.split(' ')[0]}
             </h3>
-            <div className="h-[1px] w-20 bg-rose-200 mx-auto mt-12 mb-6" />
+             <div className="h-[1px] w-20 bg-rose-200 mx-auto mt-12 mb-6" />
             <p className="text-[10px] font-black text-stone-400 tracking-[0.6em] uppercase">{formattedDate}</p>
           </AnimatedSection>
+
+          {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+            <AnimatedSection delay="delay-500">
+              <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
+                <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-rose-100">
+                  <QRCodeSVG
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}/attendance`}
+                    size={130}
+                    level="H"
+                    fgColor="#1c1c1c"
+                  />
+                </div>
+                <p className="text-xs text-stone-800 font-semibold mt-1">
+                  QR Code Buku Tamu (Attendance)
+                </p>
+                <p className="text-[9px] text-stone-500 leading-relaxed font-sans max-w-[240px] text-center">
+                  Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+                </p>
+              </div>
+            </AnimatedSection>
+          )}
         </section>
 
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}

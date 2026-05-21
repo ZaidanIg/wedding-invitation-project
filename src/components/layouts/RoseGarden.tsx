@@ -1,7 +1,9 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Heart, MapPin, Clock, Calendar, Music, Camera, ChevronDown, Glasses } from 'lucide-react';
-import type { Invitation } from '@/types';
+import { QRCodeSVG } from 'qrcode.react';
+import type { Invitation, Guest } from '@/types';
 import Image from 'next/image';
 import {
   AnimatedSection,
@@ -54,9 +56,24 @@ function FloralBorder() {
 }
 
 export default function RoseGarden({ invitation, isPreview = false }: LayoutProps) {
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const to = p.get('to');
+    if (to && invitation.guests) {
+      const decodedTo = decodeURIComponent(to).trim().toLowerCase();
+      const guest = invitation.guests.find(
+        (g) => g.name.trim().toLowerCase() === decodedTo
+      );
+      if (guest) {
+        setMatchedGuest(guest);
+      }
+    }
+  }, [invitation.guests]);
 
   return (
     <div className="w-full max-w-lg mx-auto bg-[#fdf2f4] text-rose-950 font-sans overflow-hidden relative shadow-2xl">
@@ -257,6 +274,26 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
           </div>
         </AnimatedSection>
         <AnimatedSection delay="delay-500"><FloralBorder /></AnimatedSection>
+
+        {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+          <AnimatedSection delay="delay-500">
+            <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
+              <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-pink-200">
+                <QRCodeSVG
+                  value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}/attendance`}
+                  size={130}
+                  level="H"
+                />
+              </div>
+              <p className="text-xs text-rose-800 font-semibold mt-1">
+                QR Code Buku Tamu (Attendance)
+              </p>
+              <p className="text-[9px] text-rose-700/60 leading-relaxed font-sans max-w-[240px] text-center">
+                Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+              </p>
+            </div>
+          </AnimatedSection>
+        )}
       </section>
 
       <div className="h-4 bg-[#fdf2f4]" />

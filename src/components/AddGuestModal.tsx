@@ -30,6 +30,7 @@ export default function AddGuestModal({ onClose, onSuccess, invitationSlug }: Ad
           name: name.trim(),
           phone: phone.trim(),
           rsvpStatus: 'ATTENDING', // Manual entry usually means they are attending or pre-registered
+          isVip: true,
         }),
       });
 

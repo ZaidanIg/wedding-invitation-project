@@ -82,6 +82,7 @@ const layoutOptions: { value: Layout; label: string; bg: string; border: string;
   { value: 'hindu-mandala', label: '🕉️ Hindu Mandala', bg: 'bg-[#fff8f0]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/20', category: 'premium' },
   { value: 'buddhist-zen', label: '☸️ Buddhist Zen', bg: 'bg-[#fdfbf7]', border: 'border-[#a3b18a]', preview: 'bg-[#a3b18a]/20', category: 'premium' },
   { value: 'confucian-oriental', label: '🧧 Confucian Oriental', bg: 'bg-[#fffcf9]', border: 'border-[#8b0000]', preview: 'bg-[#8b0000]/20', category: 'premium' },
+  { value: 'premium-charcoal', label: '🖤 Premium Charcoal', bg: 'bg-[#111111]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/30', category: 'premium' },
 ];
 
 const steps = [

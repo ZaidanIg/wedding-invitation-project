@@ -55,7 +55,14 @@ export default function RsvpTable({ guests, stats }: RsvpTableProps) {
                   return (
                     <tr key={guest.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors">
                       <td className="p-4">
-                        <p className="font-medium text-foreground">{guest.name}</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="font-medium text-foreground">{guest.name}</p>
+                          {guest.isVip ? (
+                            <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-500/10 text-amber-600 border border-amber-200 uppercase tracking-wider">VIP</span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-stone-100 text-stone-500 border border-stone-200 uppercase tracking-wider">Biasa</span>
+                          )}
+                        </div>
                         {guest.email && <p className="text-xs text-foreground/30 mt-0.5">{guest.email}</p>}
                       </td>
                       <td className="p-4"><Badge variant={badge.variant}>{badge.label}</Badge></td>

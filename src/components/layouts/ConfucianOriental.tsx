@@ -9,7 +9,8 @@ import {
   Music, Share2, Users, QrCode, Scroll,
   Home, CalendarDays, Pause
 } from 'lucide-react';
-import type { Invitation } from '@/types';
+import { QRCodeSVG } from 'qrcode.react';
+import type { Invitation, Guest } from '@/types';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -149,6 +150,7 @@ function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: bool
 }
 
 export default function ConfucianOriental({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -165,9 +167,20 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
     if (!isPreview) {
       const p = new URLSearchParams(window.location.search);
       const to = p.get('to');
-      if (to) setGuestName(decodeURIComponent(to));
+      if (to) {
+        setGuestName(decodeURIComponent(to));
+        if (invitation.guests) {
+          const decodedTo = decodeURIComponent(to).trim().toLowerCase();
+          const guest = invitation.guests.find(
+            (g) => g.name.trim().toLowerCase() === decodedTo
+          );
+          if (guest) {
+            setMatchedGuest(guest);
+          }
+        }
+      }
     }
-  }, [isPreview]);
+  }, [isPreview, invitation.guests]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -533,6 +546,27 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
             <div className="h-[1px] w-24 bg-[#FFD700]/30 mx-auto mt-16 mb-8" />
             <p className="text-[#FFD700]/70 font-black tracking-[0.7em] uppercase text-[10px] drop-shadow-md">{formattedDate}</p>
           </AnimatedSection>
+
+          {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+            <AnimatedSection delay="delay-500">
+              <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
+                <div className="bg-white p-3.5 rounded-3xl inline-block shadow-2xl border-4 border-[#FFD700]">
+                  <QRCodeSVG
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}/attendance`}
+                    size={130}
+                    level="H"
+                    fgColor="#8B0000"
+                  />
+                </div>
+                <p className="text-xs text-[#FFD700] font-semibold mt-1">
+                  QR Code Buku Tamu (Attendance)
+                </p>
+                <p className="text-[9px] text-white/60 leading-relaxed font-sans max-w-[240px] text-center">
+                  Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+                </p>
+              </div>
+            </AnimatedSection>
+          )}
         </section>
 
         <div className="relative h-24 bg-[#8B0000]" />

@@ -71,8 +71,8 @@ export default function RsvpManagementPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-display font-bold text-foreground">RSVP Management</h1>
-            <p className="text-sm text-foreground/40 mt-0.5">Track your guest responses</p>
+            <h1 className="text-2xl font-display font-bold text-foreground">Buku Tamu</h1>
+            <p className="text-sm text-foreground/40 mt-0.5">Daftar kehadiran dan rsvp tamu</p>
           </div>
         </div>
 
@@ -88,7 +88,7 @@ export default function RsvpManagementPage() {
                     <Sparkles className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[#1c1c1c]">Guest Management</h3>
+                    <h3 className="text-sm font-bold text-[#1c1c1c]">Buku Tamu</h3>
                     <p className="text-[10px] text-[#6b6b6b] uppercase tracking-wider">{tier === 'PREMIUM' ? 'Premium' : 'Ultimate'} Tier Features</p>
                   </div>
                 </div>

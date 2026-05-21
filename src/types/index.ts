@@ -5,7 +5,7 @@
 // ---- Enums ----
 export type Tone = 'formal' | 'romantic' | 'modern' | 'playful';
 export type Language = 'id' | 'en';
-export type Layout = 'elegant-cream' | 'royal-blue' | 'rose-garden' | 'golden-classic' | 'luxury-emerald' | 'islamic-grace' | 'islamic-minimalist' | 'islamic-midnight' | 'islamic-arabesque' | 'christian-elegant' | 'hindu-mandala' | 'buddhist-zen' | 'confucian-oriental';
+export type Layout = 'elegant-cream' | 'royal-blue' | 'rose-garden' | 'golden-classic' | 'luxury-emerald' | 'islamic-grace' | 'islamic-minimalist' | 'islamic-midnight' | 'islamic-arabesque' | 'christian-elegant' | 'hindu-mandala' | 'buddhist-zen' | 'confucian-oriental' | 'premium-charcoal';
 export type RsvpStatus = 'PENDING' | 'ATTENDING' | 'NOT_ATTENDING';
 export type Role = 'USER' | 'ADMIN';
 export type Tier = 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE';
@@ -100,6 +100,7 @@ export interface Guest {
   message: string | null;
   attendees: number;
   checkedIn: boolean;
+  isVip: boolean;
   createdAt: string;
   updatedAt: string;
 }

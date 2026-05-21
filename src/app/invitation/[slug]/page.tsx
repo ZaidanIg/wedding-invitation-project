@@ -112,11 +112,11 @@ export default async function InvitationPage({ params }: PageProps) {
   const showRsvp = serialized.tier !== 'BASIC' && serialized.tier !== 'DRAFT';
 
   return (
-    <div className={`min-h-screen ${serialized.layout === 'luxury-emerald' ? 'bg-[#faf7f0]' : 'bg-[#f7f4ed]'}`}>
+    <div className={`min-h-screen ${['luxury-emerald', 'premium-charcoal'].includes(serialized.layout) ? 'bg-[#111111]' : 'bg-[#f7f4ed]'}`}>
       <InvitationPreview invitation={serialized} isPreview={false} />
 
       {/* Hide external RSVP for themes that have their own integrated version or if tier doesn't support it */}
-      {showRsvp && !['luxury-emerald', 'islamic-grace', 'islamic-minimalist', 'islamic-midnight', 'islamic-arabesque', 'christian-elegant', 'hindu-mandala', 'buddhist-zen', 'confucian-oriental'].includes(serialized.layout) && (
+      {showRsvp && !['luxury-emerald', 'islamic-grace', 'islamic-minimalist', 'islamic-midnight', 'islamic-arabesque', 'christian-elegant', 'hindu-mandala', 'buddhist-zen', 'confucian-oriental', 'premium-charcoal'].includes(serialized.layout) && (
         <section className="py-24 px-4 bg-[#f7f4ed]">
           <div className="max-w-lg mx-auto">
             <div className="text-center mb-10">

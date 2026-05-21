@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause } from 'lucide-react';
+import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import type { Invitation, Guest } from '@/types';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -226,8 +227,8 @@ function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: bool
 
   if (!visible) return null;
   return (
-    <nav className="sticky bottom-0 left-0 right-0 z-[100] w-full max-w-lg mx-auto">
-      <div className="mx-3 mb-3 flex items-center justify-around bg-[#042f2e]/90 backdrop-blur-xl rounded-2xl border border-[#d4af37]/20 px-2 py-2 shadow-2xl">
+    <nav className="fixed bottom-0 left-0 right-0 z-[100] w-full max-w-lg mx-auto pointer-events-none px-4 pb-6">
+      <div className="flex items-center justify-around bg-[#042f2e]/90 backdrop-blur-xl rounded-2xl border border-[#d4af37]/20 px-2 py-2 shadow-2xl pointer-events-auto">
         {items.map((i) => (
           <a key={i.id} href={`#${i.id}`} onClick={(e: React.MouseEvent) => { e.preventDefault(); document.getElementById(i.id)?.scrollIntoView({ behavior: 'smooth' }); }}
             className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-300 ${active === i.id ? 'text-[#d4af37] bg-[#d4af37]/10' : 'text-white/40 hover:text-white/70'}`}>
@@ -312,15 +313,19 @@ function IslamicDivider() {
   );
 }
 
-function WishesSection({ slug, guests: initialGuests }: { slug: string; guests: Guest[] }) {
+function WishesSection({ invitation }: { invitation: Invitation }) {
   const { tier, isPreview } = useTier();
   const currentRank = TIER_RANK[tier] || 0;
   const requiredRank = TIER_RANK['PREMIUM'];
 
+  const [wishes, setWishes] = useState<Guest[]>(invitation.guests || []);
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
+  const [status, setStatus] = useState<'ATTENDING' | 'NOT_ATTENDING'>('ATTENDING');
   const [sending, setSending] = useState(false);
-  const [wishes, setWishes] = useState(initialGuests.filter(g => g.message));
+  const [guestId, setGuestId] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   if (currentRank < requiredRank) {
     if (isPreview) {
@@ -333,38 +338,152 @@ function WishesSection({ slug, guests: initialGuests }: { slug: string; guests: 
     return null;
   }
 
-  const submit = async () => {
-    if (!name.trim() || !message.trim()) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !message.trim() || !phone.trim()) return;
     setSending(true);
     try {
-      const res = await fetch(`/api/invitations/${slug}/rsvp`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, message, rsvpStatus: 'ATTENDING', attendees: 1 }),
+      const res = await fetch(`/api/invitations/${invitation.slug}/rsvp`, {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: name.trim(), 
+          phone: phone.trim(),
+          message: message.trim(), 
+          rsvpStatus: status, 
+          attendees: 1 
+        }),
       });
-      if (res.ok) {
-        const data = await res.json();
+      const data = await res.json();
+      if (res.ok && data.success) {
         setWishes(prev => [data.data, ...prev]);
-        setName(''); setMessage('');
+        setGuestId(data.data.id);
+        setIsSubmitted(true);
+        setName(''); 
+        setPhone('');
+        setMessage('');
       }
     } catch { /* silent */ } finally { setSending(false); }
   };
 
+  const isQrAvailable = (invitation.tier === 'PREMIUM' || invitation.tier === 'ULTIMATE') && invitation.qrEnabled !== false;
+
+  if (isSubmitted && isQrAvailable && status === 'ATTENDING' && guestId) {
+    return (
+      <div className="max-w-sm mx-auto animate-fade-in">
+        <div className="bg-white border-2 border-[#d4af37] p-8 rounded-[2rem] shadow-xl text-center relative overflow-hidden">
+          
+          <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto mb-6">
+            <Check className="h-8 w-8 text-emerald-600 animate-bounce" />
+          </div>
+          <h3 className="text-lg font-bold text-[#042f2e] mb-2 font-display">Terima Kasih!</h3>
+          <p className="text-xs text-stone-500 mb-6 px-2">Kehadiran Anda sangat berarti bagi kami. Berikut QR Code untuk check-in:</p>
+          
+          <div className="bg-white p-4 rounded-2xl inline-block shadow-lg border border-[#d4af37]/20">
+            <QRCodeSVG value={guestId} size={150} level="H" />
+          </div>
+          
+          <p className="mt-6 text-[9px] text-[#042f2e]/60 uppercase tracking-widest leading-loose">
+            Simpan QR Code ini untuk<br />ditunjukkan pada saat acara
+          </p>
+          
+          <button 
+            onClick={() => setIsSubmitted(false)}
+            className="mt-8 text-xs font-bold text-[#d4af37] uppercase tracking-widest hover:opacity-75 transition-opacity cursor-pointer"
+          >
+            Lihat Ucapan Lainnya
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-sm mx-auto">
-      <div className="space-y-3 mb-6 text-left">
-        <input value={name} onChange={e => setName(e.target.value)} placeholder="Nama Anda" className="w-full px-4 py-3 bg-white border border-[#d4af37]/20 text-sm text-[#042f2e] placeholder:text-[#042f2e]/30 focus:border-[#d4af37] focus:outline-none transition-colors" />
-        <textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Tulis ucapan & doa..." rows={3} className="w-full px-4 py-3 bg-white border border-[#d4af37]/20 text-sm text-[#042f2e] placeholder:text-[#042f2e]/30 focus:border-[#d4af37] focus:outline-none transition-colors resize-none" />
-        <button onClick={submit} disabled={sending || !name.trim() || !message.trim()}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#042f2e] text-[#d4af37] text-xs font-semibold uppercase tracking-widest hover:bg-[#064e3b] transition-all disabled:opacity-50">
-          <Send className="h-3.5 w-3.5" />{sending ? 'Mengirim...' : 'Kirim Ucapan'}
+      <form onSubmit={handleSubmit} className="space-y-4 mb-6 text-left">
+        <div>
+          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Nama Lengkap</label>
+          <input 
+            type="text"
+            value={name} 
+            onChange={e => setName(e.target.value)} 
+            placeholder="Nama Anda" 
+            required
+            className="w-full px-4 py-3 bg-white border border-[#d4af37]/20 text-sm text-[#042f2e] placeholder:text-[#042f2e]/30 focus:border-[#d4af37] focus:outline-none transition-colors" 
+          />
+        </div>
+
+        <div>
+          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Nomor WhatsApp *</label>
+          <input 
+            type="tel"
+            value={phone} 
+            onChange={e => setPhone(e.target.value)} 
+            placeholder="Contoh: 08123456789" 
+            required
+            className="w-full px-4 py-3 bg-white border border-[#d4af37]/20 text-sm text-[#042f2e] placeholder:text-[#042f2e]/30 focus:border-[#d4af37] focus:outline-none transition-colors" 
+          />
+        </div>
+
+        <div>
+          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Konfirmasi Kehadiran</label>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { id: 'ATTENDING', label: 'Hadir', icon: '😊' },
+              { id: 'NOT_ATTENDING', label: 'Absen', icon: '😔' }
+            ].map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setStatus(opt.id as any)}
+                className={`py-2.5 rounded-none text-xs font-bold transition-all border flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
+                  status === opt.id 
+                    ? 'bg-[#042f2e] text-[#d4af37] border-[#042f2e]' 
+                    : 'bg-white text-[#042f2e]/50 border-[#d4af37]/25 hover:border-[#d4af37]'
+                }`}
+              >
+                <span className="text-sm">{opt.icon}</span>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-[9px] font-bold uppercase tracking-widest text-[#042f2e] mb-1.5 ml-1">Ucapan & Doa</label>
+          <textarea 
+            value={message} 
+            onChange={e => setMessage(e.target.value)} 
+            placeholder="Tulis ucapan & doa..." 
+            rows={3} 
+            required
+            className="w-full px-4 py-3 bg-white border border-[#d4af37]/20 text-sm text-[#042f2e] placeholder:text-[#042f2e]/30 focus:border-[#d4af37] focus:outline-none transition-colors resize-none" 
+          />
+        </div>
+        
+        <button 
+          type="submit"
+          disabled={sending || !name.trim() || !message.trim() || !phone.trim()}
+          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[#042f2e] text-[#d4af37] text-xs font-bold uppercase tracking-widest hover:bg-[#064e3b] transition-all disabled:opacity-50 cursor-pointer"
+        >
+          <Send className="h-3.5 w-3.5" />
+          {sending ? 'Mengirim...' : 'Kirim Ucapan'}
         </button>
-      </div>
-      {wishes.length > 0 && (
+      </form>
+
+      {wishes.filter(w => w.message).length > 0 && (
         <div className="space-y-3 max-h-[300px] overflow-y-auto no-scrollbar">
-          {wishes.map((w: Guest, i: number) => (
-            <div key={w.id || i} className="bg-white border border-[#d4af37]/10 p-4 text-left">
+          {wishes.filter(w => w.message).map((w: Guest, i: number) => (
+            <div key={w.id || i} className="bg-white border border-[#d4af37]/10 p-4 text-left relative">
+              <div className="absolute top-3 right-3">
+                <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wide ${
+                  w.rsvpStatus === 'ATTENDING' ? 'bg-emerald-50 text-emerald-600' : 'bg-stone-50 text-stone-400'
+                }`}>
+                  {w.rsvpStatus === 'ATTENDING' ? 'Hadir' : 'Absen'}
+                </span>
+              </div>
               <p className="text-xs font-semibold text-[#042f2e]">{w.name}</p>
-              <p className="text-sm text-[#042f2e]/70 mt-1">{w.message}</p>
+              <p className="text-sm text-[#042f2e]/70 mt-1.5 leading-relaxed">{w.message}</p>
             </div>
           ))}
         </div>
@@ -383,6 +502,7 @@ interface LayoutProps {
 export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutProps) {
   const [isOpened, setIsOpened] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
@@ -390,8 +510,20 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     const to = p.get('to');
-    if (to) setGuestName(decodeURIComponent(to));
-  }, []);
+    if (to) {
+      const decoded = decodeURIComponent(to);
+      setGuestName(decoded);
+      if (invitation.guests) {
+        const decodedTo = decoded.trim().toLowerCase();
+        const guest = invitation.guests.find(
+          (g) => g.name.trim().toLowerCase() === decodedTo
+        );
+        if (guest) {
+          setMatchedGuest(guest);
+        }
+      }
+    }
+  }, [invitation.guests]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -597,7 +729,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
           <p className="text-sm text-[#042f2e]/50 mb-6">Sampaikan ucapan dan doa untuk kedua mempelai</p>
         </AnimatedSection>
         <AnimatedSection delay="delay-200">
-          <WishesSection slug={invitation.slug} guests={invitation.guests || []} />
+          <WishesSection invitation={invitation} />
         </AnimatedSection>
       </section>
 
@@ -614,6 +746,26 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
             <p className="text-xs uppercase tracking-[0.3em] text-white/40 mt-4">{formattedDate}</p>
           </div>
         </AnimatedSection>
+
+        {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+          <AnimatedSection delay="delay-500">
+            <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
+              <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-[#d4af37]/40">
+                <QRCodeSVG
+                  value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}/attendance`}
+                  size={130}
+                  level="H"
+                />
+              </div>
+              <p className="text-xs text-[#d4af37] font-semibold mt-1">
+                QR Code Buku Tamu (Attendance)
+              </p>
+              <p className="text-[9px] text-white/50 leading-relaxed font-sans max-w-[240px] text-center">
+                Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+              </p>
+            </div>
+          </AnimatedSection>
+        )}
         <AnimatedSection delay="delay-500"><p className="text-xs text-white/30">Merupakan suatu kehormatan dan kebahagiaan apabila Bapak/Ibu/Saudara/i berkenan hadir</p></AnimatedSection>
       </section>
 

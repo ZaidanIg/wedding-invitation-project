@@ -13,6 +13,7 @@ export const guestRepository = {
     rsvpStatus: string;
     message?: string | null;
     attendees?: number;
+    isVip?: boolean;
   }) {
     return prisma.guest.create({
       data: {
@@ -23,6 +24,7 @@ export const guestRepository = {
         rsvpStatus: data.rsvpStatus as any,
         message: data.message ?? null,
         attendees: data.attendees ?? 1,
+        isVip: data.isVip ?? false,
       },
     });
   },

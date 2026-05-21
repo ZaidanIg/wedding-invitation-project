@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import {
   Eye, Users, Calendar, Trash2, ExternalLink, Copy, Sparkles, MapPin,
@@ -32,6 +33,10 @@ const TIER_CONFIG: Record<Tier, {
 };
 
 export default function InvitationCard({ invitation, onDelete }: InvitationCardProps) {
+  const [qrEnabled, setQrEnabled] = useState(invitation.qrEnabled);
+  const [isActivating, setIsActivating] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false);
+
   const tier = (invitation.tier as Tier) || 'DRAFT';
   const isDraft    = tier === 'DRAFT';
   const isBasic    = tier === 'BASIC';
@@ -44,8 +49,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
   const canShareWA     = isPremium || isUltimate;
   const canManageGuest = isPremium || isUltimate;
   const canWaBlast     = isUltimate;
-  const canQrCheckin   = isUltimate;
-  const canDownloadQR  = isUltimate;
+  const canQrCheckin   = isUltimate && qrEnabled !== false;
+  const canDownloadQR  = isUltimate && qrEnabled !== false;
   const showUpgrade    = isBasic || isPremium;
 
   const formattedDate = new Date(invitation.eventDate).toLocaleDateString('id-ID', {
@@ -63,6 +68,26 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
       await navigator.clipboard.writeText(window.location.origin + invitationUrl);
       showToast('success', 'Link undangan berhasil disalin!');
     } catch { showToast('error', 'Gagal menyalin link'); }
+  };
+
+  const handleGenerateQR = async () => {
+    setIsActivating(true);
+    try {
+      const res = await fetch(`/api/invitations/${invitation.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ qrEnabled: true }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || 'Gagal mengaktifkan QR Code');
+      
+      setQrEnabled(true);
+      showToast('success', 'QR Code check-in berhasil diaktifkan untuk undangan ini!');
+    } catch (error: any) {
+      showToast('error', error.message || 'Gagal mengaktifkan QR Code');
+    } finally {
+      setIsActivating(false);
+    }
   };
 
   const handleDownloadQR = () => {
@@ -206,30 +231,37 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1c1c1c]/40">Kelola & Bagikan</span>
                 </div>
 
-                {/* ULTIMATE — QR download + pro badge */}
-                {canDownloadQR && (
+                {/* ULTIMATE — Dynamic QR activation button + pro badge */}
+                {isUltimate && (
                   <div className="flex items-center gap-3">
-                    <div className="hidden">
-                      <QRCodeSVG
-                        id={`qr-inv-${invitation.id}`}
-                        value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}`}
-                        size={256}
-                      />
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleDownloadQR}
-                      className="h-8 rounded-full bg-amber-500/10 text-amber-600 border-none text-[10px] font-bold uppercase tracking-widest px-4"
-                    >
-                      <Download className="h-3 w-3 mr-2" /> Download QR
-                    </Button>
-                    <div className="flex items-center gap-1 text-[10px] font-bold text-amber-500 bg-amber-500/5 px-3 py-1 rounded-full uppercase tracking-widest border border-amber-200/50">
+                    {qrEnabled === false ? (
+                      <Button
+                        size="sm"
+                        disabled={isActivating}
+                        onClick={handleGenerateQR}
+                        className="h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-[10px] uppercase tracking-widest px-4 cursor-pointer hover:scale-[1.02] transition-all"
+                      >
+                        <QrCode className="h-3.5 w-3.5 mr-1.5 animate-pulse" />
+                        {isActivating ? 'Activating...' : 'Generate QR'}
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowQrModal(true)}
+                        className="h-8 rounded-full bg-amber-500/10 text-amber-600 border-none text-[10px] font-bold uppercase tracking-widest px-4 cursor-pointer hover:bg-amber-500/20 transition-all"
+                      >
+                        <QrCode className="h-3.5 w-3.5 mr-1.5" /> Lihat QR
+                      </Button>
+                    )}
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-amber-500 bg-amber-500/5 px-3 py-1 rounded-full uppercase tracking-widest border border-amber-200/50 shadow-sm">
                       <Crown className="h-3 w-3 fill-amber-500" /> Ultimate
                     </div>
                   </div>
                 )}
               </div>
+
+
 
               {/* Primary actions grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -268,12 +300,12 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
                   </div>
                 )}
 
-                {/* Manajemen Tamu — PREMIUM & ULTIMATE only */}
+                {/* Buku Tamu — PREMIUM & ULTIMATE only */}
                 {canManageGuest ? (
                   <Link href={`${invitationUrl}/rsvp`} className="w-full">
                     <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
                       <Users className="h-5 w-5 mr-3 text-emerald-500 group-hover:text-white transition-colors" />
-                      Manajemen Tamu
+                      Buku Tamu
                     </Button>
                   </Link>
                 ) : (
@@ -330,6 +362,52 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
         </div>
 
       </div>
+
+      {/* QR Code Modal for Ultimate Tier */}
+      {showQrModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white border-2 border-amber-500/30 p-8 rounded-[2.5rem] shadow-2xl text-center max-w-sm w-full relative overflow-hidden">
+            <button 
+              onClick={() => setShowQrModal(false)}
+              className="absolute top-4 right-4 text-stone-400 hover:text-stone-600 font-bold text-lg cursor-pointer"
+            >
+              ✕
+            </button>
+            
+            <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto mb-4">
+              <QrCode className="h-6 w-6" />
+            </div>
+            
+            <h3 className="text-lg font-bold text-[#1c1c1c] mb-1 font-display">QR Code Buku Tamu (Attendance)</h3>
+            <p className="text-[11px] text-stone-500 mb-6">Pindai QR Code di bawah untuk melakukan pengisian Buku Tamu secara digital</p>
+            
+            <div className="bg-white p-4 rounded-2xl inline-block shadow-lg border border-amber-100">
+              <QRCodeSVG
+                id={`qr-inv-${invitation.id}`}
+                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${invitation.slug}/attendance`}
+                size={180}
+                level="H"
+              />
+            </div>
+            
+            <div className="mt-6 flex flex-col gap-2">
+              <Button 
+                onClick={handleDownloadQR}
+                className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-3 rounded-xl shadow-md cursor-pointer"
+              >
+                <Download className="h-4 w-4 mr-2 inline" /> Download PNG
+              </Button>
+              <Button 
+                variant="ghost"
+                onClick={() => setShowQrModal(false)}
+                className="w-full text-stone-500 hover:text-stone-700 font-bold text-xs cursor-pointer"
+              >
+                Tutup
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
