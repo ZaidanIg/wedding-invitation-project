@@ -26,6 +26,7 @@ export const invitationRepository = {
     tone: string;
     language: string;
     musicUrl?: string | null;
+    videoUrl?: string | null;
     layout?: string;
     schedule?: unknown[];
     loveStory?: unknown[];

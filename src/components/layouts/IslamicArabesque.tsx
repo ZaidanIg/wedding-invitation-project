@@ -199,17 +199,19 @@ export default function IslamicArabesque({ invitation, isPreview = false }: { in
         </section>
 
         {/* Gallery */}
-        <section id="gallery" className="py-24 px-4 bg-[#f0fdfa]">
-           <div className="grid grid-cols-2 gap-2">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className={idx % 3 === 0 ? 'col-span-2' : ''}>
-                  <div className={`relative overflow-hidden rounded-3xl ${idx % 3 === 0 ? 'h-72' : 'h-48'}`}>
-                     <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-24 px-4 bg-[#f0fdfa]">
+             <div className="grid grid-cols-2 gap-2">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className={idx % 3 === 0 ? 'col-span-2' : ''}>
+                    <div className={`relative overflow-hidden rounded-3xl ${idx % 3 === 0 ? 'h-72' : 'h-48'}`}>
+                       <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* RSVP & Wishes */}
         <section id="wishes" className="py-24 px-8 bg-white">

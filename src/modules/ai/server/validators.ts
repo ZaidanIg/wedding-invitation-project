@@ -17,6 +17,7 @@ export const generateInputSchema = z.object({
   tone: z.enum(VALID_TONES),
   language: z.enum(VALID_LANGUAGES),
   additionalNotes: z.string().optional(),
+  invitationId: z.string().optional(),
 });
 
 export type GenerateInput = z.infer<typeof generateInputSchema>;

@@ -227,22 +227,24 @@ export default function IslamicMidnight({ invitation, isPreview = false }: { inv
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-32 px-4 text-center bg-[#0d1411]">
-           <AnimatedSection className="mb-16">
-              <h2 className="text-3xl font-display font-bold text-white mb-4 italic">Captured Moments</h2>
-              <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-[#c5a059] to-transparent mx-auto" />
-           </AnimatedSection>
-           
-           <div className="columns-2 gap-2 space-y-2">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
-                  <div className="relative overflow-hidden rounded-2xl border border-white/10">
-                     <Image src={src} alt="Gallery" width={400} height={400} className="w-full h-auto object-cover" unoptimized />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-32 px-4 text-center bg-[#0d1411]">
+             <AnimatedSection className="mb-16">
+                <h2 className="text-3xl font-display font-bold text-white mb-4 italic">Captured Moments</h2>
+                <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-[#c5a059] to-transparent mx-auto" />
+             </AnimatedSection>
+             
+             <div className="columns-2 gap-2 space-y-2">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
+                     <div className="relative overflow-hidden rounded-2xl border border-white/10">
+                        <Image src={src} alt="Gallery" width={400} height={400} className="w-full h-auto object-cover" unoptimized />
+                     </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* RSVP & Wishes */}
         <section id="wishes" className="py-32 px-8">

@@ -75,9 +75,14 @@ export default function SignInPage() {
           urlError.toLowerCase().includes('oauth')
         ) {
           setError('Email Anda sudah terdaftar menggunakan Google. Silakan masuk dengan menekan tombol "Masuk dengan Google" di bawah.');
-        } else if (urlError === 'CredentialsSignin') {
-          setError('Email atau kata sandi Anda salah.');
+        } else if (urlError === 'USER_NOT_FOUND') {
+          setError('Akun dengan email ini tidak terdaftar. Silakan daftar terlebih dahulu.');
+        } else if (urlError === 'EMAIL_NOT_VERIFIED') {
+          setError('Akun Anda belum diverifikasi. Silakan periksa email Anda untuk tautan verifikasi.');
+        } else if (urlError === 'TOO_MANY_REQUESTS') {
+          setError('Terlalu banyak percobaan masuk. Silakan coba lagi dalam 1 menit.');
         } else {
+          // Hide all internal/technical errors (e.g. 'Configuration', 'AccessDenied')
           setError('Terjadi kesalahan saat masuk. Silakan coba lagi.');
         }
       }
@@ -192,9 +197,13 @@ export default function SignInPage() {
         });
 
         if (res?.error) {
-          // Map custom error codes to beautiful user-friendly Indonesian messages
-          if (res.error === 'EMAIL_NOT_VERIFIED') {
-            setError('Akun Anda belum diverifikasi. Silakan periksa email Anda.');
+          // Map custom error codes to user-friendly Indonesian messages
+          if (res.error === 'USER_NOT_FOUND') {
+            setError('Akun dengan email ini tidak terdaftar. Silakan daftar terlebih dahulu.');
+          } else if (res.error === 'INVALID_EMAIL_OR_PASSWORD') {
+            setError('Kata sandi yang Anda masukkan salah. Silakan periksa kembali.');
+          } else if (res.error === 'EMAIL_NOT_VERIFIED') {
+            setError('Akun Anda belum diverifikasi. Silakan periksa email Anda untuk tautan verifikasi.');
           } else if (res.error === 'EMAIL_PASSWORD_REQUIRED') {
             setError('Email dan kata sandi wajib diisi.');
           } else if (res.error === 'TOO_MANY_REQUESTS') {
@@ -205,15 +214,9 @@ export default function SignInPage() {
             res.error.toLowerCase().includes('oauth')
           ) {
             setError('Email ini sudah terdaftar menggunakan Google. Silakan masuk menggunakan tombol "Masuk dengan Google" di bawah.');
-          } else if (
-            res.error === 'INVALID_EMAIL_OR_PASSWORD' || 
-            res.error === 'CredentialsSignin' || 
-            res.error.toLowerCase().includes('configure') || 
-            res.error.toLowerCase().includes('callback')
-          ) {
-            setError('Email atau kata sandi Anda salah.');
           } else {
-            setError(res.error);
+            // Catch-all: never expose raw NextAuth internal codes (e.g. 'Configuration', 'AccessDenied')
+            setError('Terjadi kesalahan saat masuk. Silakan coba lagi atau hubungi dukungan.');
           }
           setIsLoading(false);
         } else {

@@ -25,6 +25,7 @@ export interface InvitationResponseDto {
   tone: string;
   language: string;
   musicUrl: string | null;
+  videoUrl: string | null;
   layout: string;
   schedule: unknown[];
   loveStory: unknown[];
@@ -32,6 +33,8 @@ export interface InvitationResponseDto {
   quotes: string | null;
   viewCount: number;
   tier: string;
+  isPaid: boolean;
+  aiRegenCount: number;
   guestCount: number;
   createdAt: string;
   transactions?: any[];
@@ -58,6 +61,7 @@ export interface InvitationListItemDto {
   tone: string;
   language: string;
   musicUrl: string | null;
+  videoUrl: string | null;
   layout: string;
   schedule: unknown[];
   loveStory: unknown[];
@@ -65,6 +69,8 @@ export interface InvitationListItemDto {
   quotes: string | null;
   viewCount: number;
   tier: string;
+  isPaid: boolean;
+  aiRegenCount: number;
   guestCount: number;
   createdAt: string;
   transactions?: any[];

@@ -116,13 +116,13 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible }: { visible: boolean }) {
+function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'couple', icon: Users, label: 'Mempelai' },
     { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    { id: 'gallery', icon: Camera, label: 'Galeri' },
+    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
     { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
   ];
 
@@ -376,21 +376,23 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-32 px-4 bg-[#fdfbf7]">
-           <AnimatedSection className="text-center mb-12">
-             <Camera className="mx-auto text-[#a3b18a] mb-4 opacity-40" size={32} />
-             <p className="text-[10px] uppercase tracking-[0.3em] text-[#a3b18a] font-bold">Zen Gallery</p>
-           </AnimatedSection>
-           <div className="columns-2 gap-3 space-y-3">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
-                  <div className="relative overflow-hidden rounded-[2rem] shadow-sm grayscale-[0.2] hover:grayscale-0 transition-all duration-700">
-                     <img src={src} alt="Gallery" className="w-full" />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-32 px-4 bg-[#fdfbf7]">
+             <AnimatedSection className="text-center mb-12">
+               <Camera className="mx-auto text-[#a3b18a] mb-4 opacity-40" size={32} />
+               <p className="text-[10px] uppercase tracking-[0.3em] text-[#a3b18a] font-bold">Zen Gallery</p>
+             </AnimatedSection>
+             <div className="columns-2 gap-3 space-y-3">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
+                    <div className="relative overflow-hidden rounded-[2rem] shadow-sm grayscale-[0.2] hover:grayscale-0 transition-all duration-700">
+                       <img src={src} alt="Gallery" className="w-full" />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* Ultimate: VIP Zen Management */}
         <TierGate 
@@ -473,7 +475,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
 
         <div className="h-24 bg-white" />
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
-        <BottomNav visible={isOpened} />
+        <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
       </div>
     </div>
   );

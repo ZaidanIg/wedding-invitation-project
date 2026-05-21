@@ -16,11 +16,11 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<{
-    code: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'DRAFT' | 'PRO_PLAN' | 'ENTERPRISE';
+    code: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'PRO_PLAN' | 'ENTERPRISE';
     label: string;
   } | null>(null);
 
-  const handlePlanSelect = (plan: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'DRAFT' | 'PRO_PLAN' | 'ENTERPRISE', planLabel: string) => {
+  const handlePlanSelect = (plan: 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'PRO_PLAN' | 'ENTERPRISE', planLabel: string) => {
     setSelectedPlan({ code: plan, label: planLabel });
     setModalOpen(true);
   };
@@ -29,11 +29,6 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
     if (!selectedPlan) return;
     const { code: plan } = selectedPlan;
     setModalOpen(false);
-
-    if (plan === 'DRAFT') {
-      router.push(`/create?plan=${plan}`);
-      return;
-    }
 
     if (plan === 'PRO_PLAN' || plan === 'ENTERPRISE') {
       router.push(`/checkout?plan=${plan}`);
@@ -71,15 +66,15 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-24"
         >
-          <h1 className="text-[42px] md:text-[72px] font-display font-bold text-[#1c1c1c] tracking-[-0.03em] leading-[1.1] mb-8 text-balance">
+          {/* <h1 className="text-[42px] md:text-[72px] font-display font-bold text-[#1c1c1c] tracking-[-0.03em] leading-[1.1] mb-8 text-balance">
             Satu Sentuhan Indah <br /> Untuk Mengabarkan <span className="text-rose-500 italic font-normal">Hari Istimewa Anda</span>
-          </h1>
+          </h1> */}
           <p className="text-lg md:text-xl text-[#6b6b6b] max-w-2xl mx-auto leading-relaxed text-balance">
             Temukan paket terbaik untuk mengabadikan momen terindah Anda. <br className="hidden md:block" />
             Tanpa biaya tersembunyi, tanpa langganan—cukup sekali bayar untuk selamanya.
@@ -88,86 +83,56 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
 
         {/* B2C Plans */}
         <div className="mb-32 ">
-          <motion.div 
+          <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
 
-            {/* Free Draft */}
-            <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40 shadow-sm shadow-[#1c1c1c]/5">
-              <div className="mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Zap className="h-6 w-6 text-stone-400" />
-                </div>
-                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Draf Percobaan</h3>
-                <p className="text-[#6b6b6b] text-xs leading-relaxed">Eksplorasi ribuan kemungkinan desain sesuka hati, tanpa batas waktu.</p>
-              </div>
-              
-              <div className="flex items-baseline gap-1 mb-10">
-                <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 0</span>
-                <span className="text-xs text-[#6b6b6b]">/undangan</span>
-              </div>
-
-              <div className="space-y-4 mb-10 flex-1">
-                {[
-                  'Buat Desain dalam 5 Menit',
-                  'Preview Tema Klasik',
-                  'Ganti Tema Sepuasnya',
-                  'Tanpa Kartu Kredit'
-                ].map((feature) => (
-                  <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
-                    <Check className="h-4.5 w-4.5 text-emerald-500 shrink-0" />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <Link href="/create?plan=DRAFT" className="w-full py-3.5 px-6 rounded-2xl bg-stone-100 text-[#1c1c1c] text-sm font-bold text-center hover:bg-stone-200 transition-all duration-300">
-                Mulai Sekarang
-              </Link>
-            </motion.div>
-
-            {/* Minimalist */}
+            {/* BASIC */}
             <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40 shadow-sm shadow-[#1c1c1c]/5">
               <div className="mb-8">
                 <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   <Sparkles className="h-6 w-6 text-blue-500" />
                 </div>
-                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Minimalist</h3>
-                <p className="text-[#6b6b6b] text-xs leading-relaxed">Desain esensial yang bersih, bersahaja, namun tetap memikat pandangan.</p>
+                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2">Paket Basic</h3>
               </div>
-              
-              <div className="flex items-baseline gap-1 mb-10">
+
+              <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 75rb</span>
                 <span className="text-xs text-[#6b6b6b]">/undangan</span>
               </div>
 
-              <div className="space-y-4 mb-10 flex-1">
+              <div className="w-full h-px bg-stone-200/60 mb-6" />
+
+              <div className="space-y-3 mb-10 flex-1">
                 {[
-                  'Hapus Semua Watermark',
-                  '2 Foto Mempelai Utama',
-                  'Galeri 2 Foto Tambahan',
-                  'Navigasi Peta Google Maps',
-                  'Semua Pilihan Tema Klasik'
-                ].map((feature) => (
-                  <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
-                    <Check className="h-4.5 w-4.5 text-blue-500 shrink-0" />
-                    <span>{feature}</span>
+                  { text: 'Tema Minimalist', ok: true },
+                  { text: '3 Foto', ok: true },
+                  { text: 'Maks 150 Tamu', ok: true },
+                  { text: 'AI Teks Undangan (dengan batasan 3 kali generated', ok: true },
+                  { text: 'Digital Gift', ok: true },
+                  { text: 'Aktif 7 Hari Setelah Acara', ok: true },
+                  { text: 'Musik Latar Belakang', ok: false },
+                  { text: 'RSVP', ok: false },
+                ].map(({ text, ok }) => (
+                  <div key={text} className={`flex gap-2.5 text-xs ${ok ? 'text-[#1c1c1c]/70' : 'text-[#1c1c1c]/30'}`}>
+                    <Check className={`h-4 w-4 shrink-0 ${ok ? 'text-blue-500' : 'text-[#1c1c1c]/20'}`} />
+                    <span>{text}</span>
                   </div>
                 ))}
               </div>
 
-              <button 
-                onClick={() => handlePlanSelect('BASIC', 'Minimalist Plan')} 
+              <button
+                onClick={() => handlePlanSelect('BASIC', 'Paket Basic')}
                 className="w-full py-3.5 px-6 rounded-2xl bg-stone-900 text-white text-sm font-bold text-center hover:bg-stone-800 transition-all duration-300 cursor-pointer"
               >
-                {invitationId ? 'Aktifkan Minimalist' : 'Pilih Minimalist'}
+                {invitationId ? 'Aktifkan Basic' : 'Pilih Basic'}
               </button>
             </motion.div>
 
-            {/* Premium */}
+            {/* PREMIUM */}
             <motion.div variants={itemVariants} className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-rose-500 to-pink-600 rounded-[2.6rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
               <div className="relative glass rounded-[2.5rem] p-8 flex flex-col h-full border-rose-500/20 shadow-xl shadow-rose-500/10 animate-card-glow">
@@ -179,32 +144,40 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
                   <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <Heart className="h-6 w-6 text-rose-500" fill="currentColor" />
                   </div>
-                  <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Premium</h3>
-                  <p className="text-[#6b6b6b] text-xs leading-relaxed">Penyampaian kisah cinta yang utuh dengan balutan musik syahdu dan galeri elok.</p>
+                  <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2">Paket Premium</h3>
                 </div>
 
-                <div className="flex items-baseline gap-1 mb-10">
-                  <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 150rb</span>
+                <div className="flex items-baseline gap-1 mb-6">
+                  <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 149rb</span>
                   <span className="text-xs text-[#6b6b6b]">/undangan</span>
                 </div>
 
-                <div className="space-y-4 mb-10 flex-1">
+                <div className="w-full h-px bg-rose-500/10 mb-6" />
+
+                <div className="space-y-3 mb-10 flex-1">
                   {[
-                    'Semua Fitur Minimalist',
-                    'Galeri 10 Foto Premium',
-                    'Kisah Cinta (Love Story)',
-                    'Countdown Timer Eksklusif',
-                    'Musik Latar Belakang Kustom'
-                  ].map((feature) => (
-                    <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]">
-                      <Check className="h-4.5 w-4.5 text-rose-500 shrink-0" />
-                      <span className="font-medium">{feature}</span>
+                    { text: 'Semua Tema Minimalist & Premium', ok: true },
+                    { text: '6 Foto', ok: true },
+                    { text: 'Maks 300 Tamu', ok: true },
+                    { text: 'AI Teks Undangan (Regenerasi Bebas)', ok: true },
+                    { text: 'Musik Latar Belakang Kustom', ok: true },
+                    { text: 'RSVP', ok: true },
+                    { text: 'Digital Gift', ok: true },
+                    { text: 'Countdown Hari Pernikahan', ok: true },
+                    { text: 'Carousel Foto', ok: true },
+                    { text: 'Kirim Undangan via WhatsApp', ok: true },
+                    { text: 'Customer Support', ok: true },
+                    { text: 'Aktif 2 Minggu Setelah Acara', ok: true },
+                  ].map(({ text, ok }) => (
+                    <div key={text} className="flex gap-2.5 text-xs text-[#1c1c1c]">
+                      <Check className={`h-4 w-4 shrink-0 ${ok ? 'text-rose-500' : 'text-[#1c1c1c]/20'}`} />
+                      <span className="font-medium">{text}</span>
                     </div>
                   ))}
                 </div>
 
-                <button 
-                  onClick={() => handlePlanSelect('PREMIUM', 'Premium Plan')} 
+                <button
+                  onClick={() => handlePlanSelect('PREMIUM', 'Paket Premium')}
                   className="w-full py-3.5 px-6 rounded-2xl bg-rose-gradient text-white text-sm font-bold text-center hover:shadow-lg hover:shadow-rose-500/30 transition-all duration-300 scale-105 cursor-pointer"
                 >
                   {invitationId ? 'Aktifkan Premium' : 'Pilih Premium'}
@@ -212,39 +185,48 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
               </div>
             </motion.div>
 
-            {/* Ultimate */}
+            {/* ULTIMATE */}
             <motion.div variants={itemVariants} className="glass rounded-[2.5rem] p-8 flex flex-col hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-500 group border-white/40 shadow-sm shadow-[#1c1c1c]/5">
               <div className="mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <ShieldCheck className="h-6 w-6 text-rose-400" />
+                <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Crown className="h-6 w-6 text-amber-500" />
                 </div>
-                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2 text-balance">Ultimate</h3>
-                <p className="text-[#6b6b6b] text-xs leading-relaxed">Kemewahan tanpa kompromi, dilengkapi RSVP pintar dan interaksi tamu eksklusif.</p>
+                <h3 className="text-xl font-display font-bold text-[#1c1c1c] mb-2">Paket Ultimate</h3>
               </div>
 
-              <div className="flex items-baseline gap-1 mb-10">
-                <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 250rb</span>
+              <div className="flex items-baseline gap-1 mb-6">
+                <span className="text-3xl font-display font-bold text-[#1c1c1c]">Rp 185rb</span>
                 <span className="text-xs text-[#6b6b6b]">/undangan</span>
               </div>
 
-              <div className="space-y-4 mb-10 flex-1">
+              <div className="w-full h-px bg-amber-500/10 mb-6" />
+
+              <div className="space-y-3 mb-10 flex-1">
                 {[
-                  'Semua Fitur Premium',
-                  'Galeri Foto Tanpa Batas',
-                  'Sistem QR Check-in Tamu',
-                  'Link Personalisasi Tamu',
-                  'Integrasi WA Blast',
-                  'Akses Semua Tema Premium'
-                ].map((feature) => (
-                  <div key={feature} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
-                    <Check className="h-4.5 w-4.5 text-rose-500 shrink-0" />
-                    <span>{feature}</span>
+                  { text: 'Semua Tema Minimalist & Premium', ok: true },
+                  { text: '10 Foto', ok: true },
+                  { text: 'Tamu Tak Terbatas', ok: true },
+                  { text: 'WA Blast Otomatis', ok: true },
+                  { text: 'Musik Latar Belakang Kustom', ok: true },
+                  { text: 'AI Teks Undangan', ok: true },
+                  { text: 'RSVP', ok: true },
+                  { text: 'Digital Gift', ok: true },
+                  { text: 'Video Embed', ok: true },
+                  { text: 'Buku Tamu Digital Tamu', ok: true },
+                  { text: 'Carousel Foto', ok: true },
+                  { text: 'Countdown Hari Pernikahan', ok: true },
+                  { text: 'Aktif 1 Bulan Setelah Acara', ok: true },
+                  { text: 'Priority Customer Support', ok: true },
+                ].map(({ text, ok }) => (
+                  <div key={text} className="flex gap-2.5 text-xs text-[#1c1c1c]/70">
+                    <Check className={`h-4 w-4 shrink-0 ${ok ? 'text-amber-500' : 'text-[#1c1c1c]/20'}`} />
+                    <span>{text}</span>
                   </div>
                 ))}
               </div>
 
-              <button 
-                onClick={() => handlePlanSelect('ULTIMATE', 'Ultimate Plan')} 
+              <button
+                onClick={() => handlePlanSelect('ULTIMATE', 'Paket Ultimate')}
                 className="w-full py-3.5 px-6 rounded-2xl bg-stone-900 text-white text-sm font-bold text-center hover:bg-stone-800 transition-all duration-300 cursor-pointer"
               >
                 {invitationId ? 'Aktifkan Ultimate' : 'Pilih Ultimate'}
@@ -263,7 +245,7 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* Pro Plan */}
-              <motion.div 
+              <motion.div
                 whileHover={{ y: -5 }}
                 className="glass rounded-[2rem] p-10 border-white/40 shadow-xl"
               >
@@ -276,7 +258,7 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
                     <p className="text-xs text-[#6b6b6b]">Berlangganan Bulanan</p>
                   </div>
                 </div>
-                
+
                 <div className="text-3xl font-display font-bold text-[#1c1c1c] mb-8">
                   Rp 500rb<span className="text-sm text-[#6b6b6b] font-normal"> /bulan</span>
                 </div>
@@ -289,7 +271,7 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
                   ))}
                 </ul>
 
-                <button 
+                <button
                   onClick={() => handlePlanSelect('PRO_PLAN', 'Paket Pro')}
                   className="w-full py-3.5 px-6 rounded-xl border-2 border-rose-500 text-rose-500 font-bold hover:bg-rose-500 hover:text-white transition-all duration-300 cursor-pointer"
                 >
@@ -298,14 +280,14 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
               </motion.div>
 
               {/* Enterprise */}
-              <motion.div 
+              <motion.div
                 whileHover={{ y: -5 }}
                 className="glass-dark rounded-[2rem] p-10 shadow-2xl relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 p-4 opacity-10 rotate-12">
                   <Crown className="h-32 w-32 text-amber-400" />
                 </div>
-                
+
                 <div className="flex items-center gap-4 mb-8 relative z-10">
                   <div className="w-12 h-12 rounded-xl bg-amber-400/10 flex items-center justify-center">
                     <Crown className="h-6 w-6 text-amber-400" />
@@ -328,7 +310,7 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
                   ))}
                 </ul>
 
-                <button 
+                <button
                   onClick={() => handlePlanSelect('ENTERPRISE', 'Enterprise')}
                   className="w-full py-3.5 px-6 rounded-xl bg-amber-400 text-[#1c1c1c] font-bold hover:bg-amber-300 transition-all duration-300 relative z-10 shadow-lg shadow-amber-400/20 cursor-pointer"
                 >

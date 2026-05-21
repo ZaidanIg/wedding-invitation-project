@@ -114,13 +114,13 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible }: { visible: boolean }) {
+function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'couple', icon: Users, label: 'Mempelai' },
     { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    { id: 'gallery', icon: Camera, label: 'Galeri' },
+    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
     { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
   ];
 
@@ -434,22 +434,24 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-40 px-4 bg-[#fffcf5] relative">
-           <AnimatedSection className="text-center mb-24">
-             <Camera className="mx-auto text-[#FFD700] mb-6 opacity-60 animate-pulse" size={48} />
-             <p className="text-[10px] uppercase tracking-[0.5em] text-[#8B0000] font-black italic">Oriental Memories</p>
-           </AnimatedSection>
-           <div className="grid grid-cols-2 gap-4">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                  <div className={`relative overflow-hidden rounded-[3.5rem] shadow-3xl border-4 border-white group ${idx === 0 ? 'h-80' : 'h-64'}`}>
-                     <Image src={src} alt="Gallery" fill className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" unoptimized />
-                     <div className="absolute inset-0 bg-[#8B0000]/10 group-hover:opacity-0 transition-opacity" />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-40 px-4 bg-[#fffcf5] relative">
+             <AnimatedSection className="text-center mb-24">
+               <Camera className="mx-auto text-[#FFD700] mb-6 opacity-60 animate-pulse" size={48} />
+               <p className="text-[10px] uppercase tracking-[0.5em] text-[#8B0000] font-black italic">Oriental Memories</p>
+             </AnimatedSection>
+             <div className="grid grid-cols-2 gap-4">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
+                    <div className={`relative overflow-hidden rounded-[3.5rem] shadow-3xl border-4 border-white group ${idx === 0 ? 'h-80' : 'h-64'}`}>
+                       <Image src={src} alt="Gallery" fill className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" unoptimized />
+                       <div className="absolute inset-0 bg-[#8B0000]/10 group-hover:opacity-0 transition-opacity" />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* Ultimate: VIP Oriental Management */}
         <TierGate 
@@ -535,7 +537,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
 
         <div className="relative h-24 bg-[#8B0000]" />
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
-        <BottomNav visible={isOpened} />
+        <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
       </div>
     </div>
   );

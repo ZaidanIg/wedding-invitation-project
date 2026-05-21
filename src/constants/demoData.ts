@@ -47,6 +47,8 @@ export const MOCK_INVITATION: Invitation = {
     musicUrl: '/music/Epic Spectrum - Sky Clearing (freetouse.com).mp3'
   },
   tier: 'ULTIMATE',
+  isPaid: true,
+  aiRegenCount: 0,
   viewCount: 0,
   createdAt: '2024-01-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',

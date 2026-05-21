@@ -7,8 +7,8 @@ export type Tone = 'formal' | 'romantic' | 'modern' | 'playful';
 export type Language = 'id' | 'en';
 export type Layout = 'elegant-cream' | 'royal-blue' | 'rose-garden' | 'golden-classic' | 'luxury-emerald' | 'islamic-grace' | 'islamic-minimalist' | 'islamic-midnight' | 'islamic-arabesque' | 'christian-elegant' | 'hindu-mandala' | 'buddhist-zen' | 'confucian-oriental';
 export type RsvpStatus = 'PENDING' | 'ATTENDING' | 'NOT_ATTENDING';
-export type AccountType = 'B2C_FREE' | 'B2B_PRO' | 'B2B_ALL_TIME';
-export type InvitationTier = 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE' | 'B2B_GENERATED';
+export type Role = 'USER' | 'ADMIN';
+export type Tier = 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE';
 export type TransactionStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
 export type TransactionType = 'INVITATION_UPGRADE' | 'ACCOUNT_UPGRADE';
 
@@ -80,7 +80,10 @@ export interface Invitation {
   quotes?: string | null;
   slug: string;
   viewCount: number;
-  tier: InvitationTier;
+  tier: Tier;
+  isPaid: boolean;
+  aiRegenCount: number;
+  videoUrl?: string | null;
   qrEnabled?: boolean;
   createdAt: string;
   updatedAt: string;
@@ -211,3 +214,29 @@ export interface FormWizardState {
   isSaving: boolean;
   qrEnabled: boolean;
 }
+
+// ---- NextAuth Module Augmentation ----
+import { DefaultSession } from 'next-auth';
+import 'next-auth/jwt';
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+      role: Role;
+    } & DefaultSession['user'];
+  }
+
+  interface User {
+    id: string;
+    role: Role;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id: string;
+    role: Role;
+  }
+}
+

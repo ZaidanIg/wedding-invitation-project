@@ -167,13 +167,13 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible }: { visible: boolean }) {
+function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', icon: 'Home', label: 'Home' },
     { id: 'couple', icon: 'Users', label: 'Mempelai' },
     { id: 'date', icon: 'Calendar', label: 'Tanggal' },
-    { id: 'gallery', icon: 'Camera', label: 'Galeri' },
+    ...(hasGallery ? [{ id: 'gallery', icon: 'Camera', label: 'Galeri' }] : []),
     { id: 'wishes', icon: 'MessageCircle', label: 'Ucapan' },
   ];
 
@@ -417,22 +417,24 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
         </section>
 
         {/* Gallery */}
-        <section id="gallery" className="py-24 px-4 bg-[#fdfcf9]">
-           <AnimatedSection className="text-center mb-16">
-              <h2 className="text-3xl font-display font-bold text-[#1a2b23] mb-4">Galeri Momen</h2>
-              <div className="h-px w-16 bg-[#c5a059] mx-auto" />
-           </AnimatedSection>
-           
-           <div className="grid grid-cols-2 gap-2">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                  <div className={`relative overflow-hidden rounded-3xl ${idx === 0 ? 'h-72' : 'h-48'} border-4 border-white shadow-xl`}>
-                     <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-24 px-4 bg-[#fdfcf9]">
+             <AnimatedSection className="text-center mb-16">
+                <h2 className="text-3xl font-display font-bold text-[#1a2b23] mb-4">Galeri Momen</h2>
+                <div className="h-px w-16 bg-[#c5a059] mx-auto" />
+             </AnimatedSection>
+             
+             <div className="grid grid-cols-2 gap-2">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
+                    <div className={`relative overflow-hidden rounded-3xl ${idx === 0 ? 'h-72' : 'h-48'} border-4 border-white shadow-xl`}>
+                       <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* VIP Section */}
         <TierGate 
@@ -498,7 +500,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
           </AnimatedSection>
         </section>
 
-        <BottomNav visible={isOpened} />
+        <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} activeColor="bg-[#c5a059] text-[#1a2b23]" inactiveColor="bg-white/10 text-white backdrop-blur-sm" />}
       </div>
     </div>

@@ -5,7 +5,7 @@
 import { ValidationError, NotFoundError, ConflictError } from '@/lib/errors';
 import { billingRepository } from './repository';
 import { PRICING, type PlanKey } from './constants';
-import type { InvitationTier, AccountType, TransactionType } from '@prisma/client';
+import type { Tier, TransactionType } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -35,21 +35,16 @@ export const billingService = {
     const amount = subtotal + ppn + adminFee;
 
     let type: TransactionType;
-    let targetTier: InvitationTier | null = null;
-    let targetAccountType: AccountType | null = null;
+    let targetTier: Tier | null = null;
 
-    if (plan === 'PRO_PLAN') {
+    if (plan === 'PRO_PLAN' || plan === 'ENTERPRISE') {
       type = 'ACCOUNT_UPGRADE';
-      targetAccountType = 'B2B_PRO';
-    } else if (plan === 'ENTERPRISE') {
-      type = 'ACCOUNT_UPGRADE';
-      targetAccountType = 'B2B_ALL_TIME';
     } else {
       if (!invitationId) {
         throw new ValidationError('Invitation ID is required for this plan');
       }
       type = 'INVITATION_UPGRADE';
-      targetTier = plan as InvitationTier;
+      targetTier = plan as Tier;
 
       // Verify ownership
       const invitation = await billingRepository.findInvitationForCheckout(invitationId);
@@ -57,8 +52,8 @@ export const billingService = {
         throw new NotFoundError('Invitation not found');
       }
 
-      if (invitation.tier === targetTier) {
-        throw new ConflictError('Invitation is already on this tier');
+      if (invitation.tier === targetTier && (invitation as any).isPaid) {
+        throw new ConflictError('Invitation is already on this tier and activated');
       }
     }
 
@@ -69,7 +64,6 @@ export const billingService = {
       amount,
       type,
       tier: targetTier,
-      accountType: targetAccountType,
       status: 'PENDING',
     });
 
@@ -177,12 +171,10 @@ export const billingService = {
               if (tx.type === 'INVITATION_UPGRADE' && tx.invitationId && tx.tier) {
                 await dbTx.invitation.update({
                   where: { id: tx.invitationId },
-                  data: { tier: tx.tier },
-                });
-              } else if (tx.type === 'ACCOUNT_UPGRADE' && tx.accountType) {
-                await dbTx.user.update({
-                  where: { id: tx.userId },
-                  data: { accountType: tx.accountType },
+                  data: { 
+                    tier: tx.tier,
+                    isPaid: true
+                  },
                 });
               }
             });

@@ -18,7 +18,10 @@ import {
   PhotoCarousel, 
   LoveStorySection, 
   DigitalGiftSection, 
-  QuotesSection 
+  QuotesSection,
+  useTier,
+  TIER_RANK,
+  LockedSection
 } from './shared';
 
 /* ── Specific Parts for LuxuryEmerald ── */
@@ -202,13 +205,13 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible }: { visible: boolean }) {
+function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'couple', icon: Users, label: 'Mempelai' },
     { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    { id: 'gallery', icon: Camera, label: 'Galeri' },
+    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
     { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
   ];
 
@@ -237,8 +240,16 @@ function BottomNav({ visible }: { visible: boolean }) {
 }
 
 function EmeraldAudio({ src, isPreview }: { src: string; isPreview?: boolean }) {
+  const { tier } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
   const [playing, setPlaying] = useState(false);
   const ref = useRef<HTMLAudioElement | null>(null);
+
+  if (currentRank < requiredRank) {
+    return null;
+  }
 
   const toggle = () => {
     if (!ref.current) return;
@@ -302,10 +313,25 @@ function IslamicDivider() {
 }
 
 function WishesSection({ slug, guests: initialGuests }: { slug: string; guests: Guest[] }) {
+  const { tier, isPreview } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [wishes, setWishes] = useState(initialGuests.filter(g => g.message));
+
+  if (currentRank < requiredRank) {
+    if (isPreview) {
+      return (
+        <div className="max-w-md mx-auto my-6 px-4">
+          <LockedSection title="RSVP & Wishes" requiredTier="Premium" className="bg-[#042f2e]/10 border border-[#d4af37]/20 rounded-3xl p-6 text-center text-stone-300" />
+        </div>
+      );
+    }
+    return null;
+  }
 
   const submit = async () => {
     if (!name.trim() || !message.trim()) return;
@@ -593,7 +619,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
 
       <div className="h-20 bg-[#042f2e]" />
       {isOpened && invitation.musicUrl && <EmeraldAudio src={invitation.musicUrl} isPreview={isPreview} />}
-      <BottomNav visible={isOpened} />
+      <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
     </div>
   );
 }

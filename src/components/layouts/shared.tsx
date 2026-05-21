@@ -7,15 +7,46 @@ import Image from 'next/image';
 import { Lock, Sparkles, MessageCircle, Check } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
-import type { InvitationTier, Invitation, Guest } from '@/types';
+import type { Tier, Invitation, Guest } from '@/types';
+import { createContext, useContext } from 'react';
+
+/* ── Tier Context & Hooks ── */
+export interface TierContextType {
+  tier: Tier;
+  isPreview: boolean;
+}
+
+export const TierContext = createContext<TierContextType>({
+  tier: 'BASIC',
+  isPreview: false,
+});
+
+export function TierProvider({
+  tier,
+  isPreview,
+  children,
+}: {
+  tier: Tier;
+  isPreview: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <TierContext.Provider value={{ tier, isPreview }}>
+      {children}
+    </TierContext.Provider>
+  );
+}
+
+export function useTier() {
+  return useContext(TierContext);
+}
 
 /* ── Tier Ranking ── */
-export const TIER_RANK: Record<InvitationTier, number> = {
+export const TIER_RANK: Record<Tier, number> = {
   'DRAFT': 0,
   'BASIC': 1,
   'PREMIUM': 2,
-  'ULTIMATE': 3,
-  'B2B_GENERATED': 3
+  'ULTIMATE': 3
 };
 
 export function TierGate({ 
@@ -24,18 +55,19 @@ export function TierGate({
   children,
   fallback = null 
 }: { 
-  tier: InvitationTier; 
-  minTier: InvitationTier; 
+  tier: Tier; 
+  minTier: Tier; 
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }) {
-  const isAllowed = TIER_RANK[tier] >= TIER_RANK[minTier];
-  
-  if (!isAllowed) {
-    return fallback as any;
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK[minTier] || 0;
+
+  if (currentRank >= requiredRank) {
+    return <>{children}</>;
   }
-  
-  return children;
+
+  return <>{fallback}</>;
 }
 
 export function LockedSection({ 
@@ -150,6 +182,21 @@ export function LoveStorySection({
   textColor?: string;
   floralImage?: string;
 }) {
+  const { tier, isPreview } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
+  if (currentRank < requiredRank) {
+    if (isPreview) {
+      return (
+        <div className="py-12 px-6 max-w-lg mx-auto">
+          <LockedSection title="Love Story Timeline" requiredTier="Premium" className={`p-8 rounded-3xl ${bgColor} border border-white/10`} />
+        </div>
+      );
+    }
+    return null;
+  }
+
   if (!story || story.length === 0) return null;
 
   return (
@@ -417,6 +464,10 @@ export function CountdownTimer({
   labelColor?: string;
   separatorColor?: string;
 }) {
+  const { tier, isPreview } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [mounted, setMounted] = useState(false);
 
@@ -441,6 +492,13 @@ export function CountdownTimer({
   }, [targetDate]);
 
   if (!mounted) return null;
+
+  if (currentRank < requiredRank) {
+    if (isPreview) {
+      return <LockedSection title="Countdown Timer" requiredTier="Premium" className="my-6 mx-auto max-w-xs bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-4 text-center text-stone-800" />;
+    }
+    return null;
+  }
 
   const blocks = [
     { value: timeLeft.days, label: 'Days' },
@@ -486,8 +544,16 @@ export function AudioPlayer({
   isPlayingProp?: boolean;
   onPlayChange?: (isPlaying: boolean) => void;
 }) {
+  const { tier } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  if (currentRank < requiredRank) {
+    return null;
+  }
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -617,12 +683,20 @@ export function resolvePhotos(invitation: any) {
   const groomPhoto = invitation.groomPhotoUrl || photos[0];
   const bridePhoto = invitation.bridePhotoUrl || photos[0];
   
+  // Enforce tier-based gallery photos limit
+  const tier = invitation.tier || 'BASIC';
+  let limit = 0;
+  if (tier === 'PREMIUM') limit = 3;
+  else if (tier === 'ULTIMATE') limit = 7;
+  
+  const galleryPhotos = photos.slice(0, limit);
+  
   return {
     photos,
     heroPhoto: headerPhoto,
     photo2: photos[1] || photos[0],
     photo3: photos[2] || photos[0],
-    galleryPhotos: photos,
+    galleryPhotos,
     groomPhoto,
     bridePhoto,
   };
@@ -808,6 +882,10 @@ export function DetailItem({ icon: Icon, label, value, className = "" }: { icon:
   );
 }
 export function WishesSection({ invitation }: { invitation: Invitation }) {
+  const { tier, isPreview } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['PREMIUM'];
+
   const [wishes, setWishes] = useState<Guest[]>(invitation.guests || []);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -816,6 +894,17 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
   const [sending, setSending] = useState(false);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  if (currentRank < requiredRank) {
+    if (isPreview) {
+      return (
+        <div className="max-w-md mx-auto my-6">
+          <LockedSection title="RSVP & Wishes" requiredTier="Premium" className="bg-white border border-stone-100 rounded-3xl p-6 text-center" />
+        </div>
+      );
+    }
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -842,7 +931,7 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
     }
   };
 
-  const isQrAvailable = (invitation.tier === 'PREMIUM' || invitation.tier === 'ULTIMATE' || invitation.tier === 'B2B_GENERATED') && invitation.qrEnabled !== false;
+  const isQrAvailable = (invitation.tier === 'PREMIUM' || invitation.tier === 'ULTIMATE') && invitation.qrEnabled !== false;
 
   if (isSubmitted && isQrAvailable && status === 'ATTENDING' && guestId) {
     return (

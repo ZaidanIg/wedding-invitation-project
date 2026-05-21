@@ -108,11 +108,23 @@ export const aiService = {
     // Check user limits
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { accountType: true },
+      select: { role: true },
     });
 
     if (!user) {
       throw new NotFoundError('User not found');
+    }
+
+    // Check invitation AI regen count if invitationId is provided
+    if (input.invitationId) {
+      const invitation = await prisma.invitation.findUnique({
+        where: { id: input.invitationId },
+        select: { tier: true, aiRegenCount: true },
+      });
+
+      if (invitation && invitation.tier === 'BASIC' && invitation.aiRegenCount >= 3) {
+        throw new ValidationError("Batas regenerasi teks AI untuk Paket Basic telah habis. Silakan upgrade.");
+      }
     }
 
     // Call AI
@@ -136,6 +148,14 @@ export const aiService = {
     }
 
     const generated = parseAiResponse(content);
+
+    // On successful generation, increment AI count
+    if (input.invitationId) {
+      await prisma.invitation.update({
+        where: { id: input.invitationId },
+        data: { aiRegenCount: { increment: 1 } },
+      });
+    }
 
     return generated;
   },

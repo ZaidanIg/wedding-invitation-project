@@ -93,7 +93,6 @@ const steps = [
 ];
 
 const tiers = [
-  { id: 'DRAFT', name: 'Free Demo', price: 'Gratis', description: 'Coba fitur dasar dan lihat pratinjau desain Anda.', features: ['1 Foto Header', 'Ganti Tema Klasik', 'Preview RSVP', 'Tidak Bisa Disimpan'], color: 'text-stone-500', bg: 'bg-stone-50' },
   { id: 'BASIC', name: 'Minimalist Plan', price: 'Rp 75.000', description: 'Sangat cocok untuk undangan minimalis yang elegan.', features: ['Hapus Watermark', '2 Foto Mempelai', '2 Foto Galeri', 'Aktif Selamanya', 'Semua Tema Klasik'], color: 'text-blue-500', bg: 'bg-blue-50' },
   { id: 'PREMIUM', name: 'Premium Plan', price: 'Rp 150.000', description: 'Fitur lengkap untuk momen pernikahan yang tak terlupakan.', features: ['10 Foto Galeri', 'Love Story Section', 'Countdown Timer', 'Musik Latar Kustom', 'Akses Tema Klasik'], color: 'text-rose-500', bg: 'bg-rose-50' },
   { id: 'ULTIMATE', name: 'Ultimate Plan', price: 'Rp 250.000', description: 'Justifikasi termewah dengan fitur manajemen tamu modern.', features: ['Akses Tema Premium', 'Sistem QR Check-in', 'Link Per Tamu', 'WA Blast Integration', 'Unlimited Galeri Foto'], color: 'text-amber-500', bg: 'bg-amber-50/50' },
@@ -104,7 +103,6 @@ export default function InvitationForm() {
   const { data: session } = useSession();
   const router = useRouter();
   const [subStep, setSubStep] = useState(1);
-  const [userAccountType, setUserAccountType] = useState<string>('B2C_FREE');
   const [showPlanSelection, setShowPlanSelection] = useState(false);
   const [aiMode, setAiMode] = useState<'auto' | 'custom'>(
     store.stylePreferences.additionalNotes ? 'custom' : 'auto'
@@ -131,21 +129,9 @@ export default function InvitationForm() {
 
   const fetchUserStats = async () => {
     try {
-      const res = await fetch('/api/invitations');
-      const data = await res.json();
-      if (data.success && data.data?.user) {
-        setUserAccountType(data.data.user.accountType);
-        // If B2B, automatically set to PREMIUM features and skip plan selection
-        if (data.data.user.accountType === 'B2B_PRO' || data.data.user.accountType === 'B2B_ALL_TIME') {
-          store.setTargetTier('PREMIUM');
-          setShowPlanSelection(false);
-        } else {
-          // If B2C and no plan parameter in URL, redirect to pricing to choose a plan
-          const params = new URLSearchParams(window.location.search);
-          if (!params.get('plan')) {
-            router.push('/pricing');
-          }
-        }
+      const params = new URLSearchParams(window.location.search);
+      if (!params.get('plan')) {
+        router.push('/pricing');
       }
     } catch (e) { console.error(e); }
   };
@@ -174,11 +160,6 @@ export default function InvitationForm() {
   };
 
   const handleSave = async () => {
-    if (store.targetTier === 'DRAFT') {
-       showToast('info', 'Silakan pilih paket berbayar untuk menyimpan dan mempublikasikan undangan Anda.');
-       router.push('/pricing');
-       return;
-    }
     if (!store.generatedInvitation) {
        showToast('error', 'Silakan generate teks undangan terlebih dahulu');
        return;
@@ -205,15 +186,16 @@ export default function InvitationForm() {
           digitalGifts: store.eventDetails.digitalGifts,
           quotes: store.eventDetails.quotes,
           qrEnabled: store.qrEnabled,
+          tier: store.targetTier,
         }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Gagal menyimpan');
 
-      // If B2C paid plan (BASIC, PREMIUM, ULTIMATE), redirect to custom checkout page
-      const isPaidB2C = userAccountType === 'B2C_FREE' && (store.targetTier === 'BASIC' || store.targetTier === 'PREMIUM' || store.targetTier === 'ULTIMATE');
+      // If normal USER, redirect to custom checkout page
+      const isOwner = session?.user?.role !== 'ADMIN';
       
-      if (isPaidB2C) {
+      if (isOwner) {
         showToast('success', 'Undangan disimpan! Mengalihkan ke pembayaran...');
         setTimeout(() => {
           window.location.href = `/checkout?plan=${store.targetTier}&invitationId=${data.data.id}`;
@@ -257,7 +239,7 @@ export default function InvitationForm() {
 
   // Dynamic constraints based on tier (inclusive hierarchy)
   const activeTier = store.targetTier;
-  const isFree = activeTier === 'DRAFT';
+  const isFree = false;
   const isBasic = activeTier === 'BASIC';
   const isPremium = activeTier === 'PREMIUM';
   const isUltimate = activeTier === 'ULTIMATE';
@@ -453,21 +435,21 @@ export default function InvitationForm() {
 
                   {/* Gallery: Restricted */}
                   <div className="space-y-4">
-                    <h3 className="font-bold text-sm flex items-center gap-2">Galeri Foto {isFree && <Lock className="h-3 w-3 text-stone-300" />} {isBasic && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 2)</span>}</h3>
-                    {isFree ? (
+                    <h3 className="font-bold text-sm flex items-center gap-2">Galeri Foto {isBasic && <Lock className="h-3 w-3 text-stone-300" />} {isPremium && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 3)</span>} {isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 7)</span>}</h3>
+                    {isBasic ? (
                       <div className="bg-stone-50 border border-stone-200 p-8 rounded-3xl text-center">
                          <Camera className="h-8 w-8 mx-auto mb-2 text-stone-300" />
-                         <p className="text-[10px] uppercase font-bold tracking-widest text-stone-400">Galeri Hanya Untuk Paket Premium</p>
+                         <p className="text-[10px] uppercase font-bold tracking-widest text-stone-400">Galeri Hanya Untuk Paket Premium & Ultimate</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {(isBasic && store.photoUrls.length >= 2) ? (
+                        {(isPremium && store.photoUrls.length >= 3) ? (
                           <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
-                             <AlertCircle className="h-4 w-4" /> Batas galeri Paket Minimalist tercapai (2 foto).
+                             <AlertCircle className="h-4 w-4" /> Batas galeri Paket Premium tercapai (3 foto).
                           </div>
-                        ) : (isPremium && store.photoUrls.length >= 10) ? (
+                        ) : (isUltimate && store.photoUrls.length >= 7) ? (
                           <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
-                             <AlertCircle className="h-4 w-4" /> Batas galeri Paket Premium tercapai (10 foto).
+                             <AlertCircle className="h-4 w-4" /> Batas galeri Paket Ultimate tercapai (7 foto).
                           </div>
                         ) : (
                           <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-8 rounded-3xl">
@@ -657,18 +639,16 @@ export default function InvitationForm() {
                   <div className="w-12 h-1 bg-white/10 rounded-full" />
                 </div>
                 <div className="absolute inset-0 bg-white overflow-y-auto no-scrollbar scroll-smooth">
-                  <InvitationPreview invitation={mockInvitation} />
+                  <InvitationPreview invitation={mockInvitation} isPreview={true} />
                 </div>
                 <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full z-50" />
               </div>
             </div>
             <div className="max-w-md w-full space-y-4">
-              <Button onClick={handleSave} isLoading={store.isSaving} size="lg" className={`w-full ${userAccountType === 'B2C_FREE' ? 'bg-rose-500 hover:bg-rose-600' : 'bg-[#1c1c1c] hover:bg-stone-850'} text-white py-8 text-xl font-display tracking-widest shadow-2xl transition-all`}>
+              <Button onClick={handleSave} isLoading={store.isSaving} size="lg" className={`w-full bg-rose-500 hover:bg-rose-600 text-white py-8 text-xl font-display tracking-widest shadow-2xl transition-all`}>
                 {store.isSaving 
                   ? 'MENYIMPAN...' 
-                  : userAccountType === 'B2C_FREE' 
-                    ? 'LANJUTKAN KE PEMBAYARAN' 
-                    : 'SIMPAN & PUBLIKASIKAN'
+                  : 'LANJUTKAN KE PEMBAYARAN'
                 }
               </Button>
               <div className="flex gap-4">

@@ -100,13 +100,13 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible }: { visible: boolean }) {
+function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'couple', icon: Users, label: 'Mempelai' },
     { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    { id: 'gallery', icon: Camera, label: 'Galeri' },
+    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
     { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
   ];
 
@@ -376,23 +376,25 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-40 px-4 bg-[#fffcf5] relative">
-           <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/handmade-paper.png')]" />
-           <AnimatedSection className="text-center mb-24 relative z-10">
-             <Camera className="mx-auto text-amber-600 mb-6 opacity-40 animate-pulse" size={48} />
-             <p className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-black italic">Sacred Moments</p>
-           </AnimatedSection>
-           <div className="grid grid-cols-2 gap-4 relative z-10">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                  <div className={`relative overflow-hidden rounded-[3rem] shadow-3xl border-4 border-white group ${idx === 0 ? 'h-80' : 'h-56'}`}>
-                     <Image src={src} alt="Gallery" fill className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" unoptimized />
-                     <div className="absolute inset-0 bg-amber-900/10 group-hover:opacity-0 transition-opacity" />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-40 px-4 bg-[#fffcf5] relative">
+             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/handmade-paper.png')]" />
+             <AnimatedSection className="text-center mb-24 relative z-10">
+               <Camera className="mx-auto text-amber-600 mb-6 opacity-40 animate-pulse" size={48} />
+               <p className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-black italic">Sacred Moments</p>
+             </AnimatedSection>
+             <div className="grid grid-cols-2 gap-4 relative z-10">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
+                    <div className={`relative overflow-hidden rounded-[3rem] shadow-3xl border-4 border-white group ${idx === 0 ? 'h-80' : 'h-56'}`}>
+                       <Image src={src} alt="Gallery" fill className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" unoptimized />
+                       <div className="absolute inset-0 bg-amber-900/10 group-hover:opacity-0 transition-opacity" />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* Ultimate: VIP Mandala Experience */}
         <TierGate 
@@ -478,7 +480,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
         </section>
 
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
-        <BottomNav visible={isOpened} />
+        <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
       </div>
     </div>
   );

@@ -200,22 +200,24 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-24 px-4 text-center">
-           <AnimatedSection className="mb-12">
-              <h2 className="text-2xl font-display font-bold text-stone-800 mb-2">Our Moments</h2>
-              <div className="w-12 h-[1px] bg-[#d4af37] mx-auto" />
-           </AnimatedSection>
-           
-           <div className="grid grid-cols-2 gap-2">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                  <div className={`relative overflow-hidden rounded-lg ${idx === 0 ? 'h-[300px]' : 'h-[180px]'}`}>
-                     <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-24 px-4 text-center">
+             <AnimatedSection className="mb-12">
+                <h2 className="text-2xl font-display font-bold text-stone-800 mb-2">Our Moments</h2>
+                <div className="w-12 h-[1px] bg-[#d4af37] mx-auto" />
+             </AnimatedSection>
+             
+             <div className="grid grid-cols-2 gap-2">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
+                    <div className={`relative overflow-hidden rounded-lg ${idx === 0 ? 'h-[300px]' : 'h-[180px]'}`}>
+                       <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
+                    </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* RSVP Section */}
         <section id="wishes" className="py-24 px-8 bg-stone-50">

@@ -56,9 +56,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { email },
         });
 
-        // Prevention of User Enumeration: return same error for user-not-found vs wrong-password
+        // Prevention of User Enumeration disabled per product requirement:
+        // show distinct messages for user-not-found vs wrong-password
         if (!user || !user.password) {
-          throw new CustomAuthError('INVALID_EMAIL_OR_PASSWORD');
+          throw new CustomAuthError('USER_NOT_FOUND');
         }
 
         if (!user.emailVerified) {
@@ -75,6 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: user.id,
           name: user.name,
           email: user.email,
+          role: user.role,
         };
       },
     }),
@@ -90,12 +92,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = (user as any).role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.id) {
         session.user.id = token.id as string;
+        session.user.role = token.role as any;
       }
       return session;
     },

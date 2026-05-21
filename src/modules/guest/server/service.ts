@@ -29,6 +29,31 @@ export const guestService = {
       throw new NotFoundError('Invitation not found');
     }
 
+    // Enforce tier-based guest count limits
+    const GUEST_LIMITS: Record<string, number> = {
+      DRAFT:    0,   // draft can't accept RSVPs
+      BASIC:    150,
+      PREMIUM:  300,
+      ULTIMATE: Infinity,
+    };
+
+    const tierLimit = GUEST_LIMITS[invitation.tier as string] ?? 0;
+
+    if (tierLimit === 0) {
+      throw new ValidationError('Undangan ini belum aktif dan tidak dapat menerima RSVP.');
+    }
+
+    if (tierLimit !== Infinity) {
+      const currentCount = await prisma.guest.count({
+        where: { invitationId: invitation.id },
+      });
+      if (currentCount >= tierLimit) {
+        throw new ValidationError(
+          `Batas maksimal tamu (${tierLimit} orang) untuk paket ini telah tercapai.`
+        );
+      }
+    }
+
     const guest = await guestRepository.create({
       invitationId: invitation.id,
       name: parsed.data.name,
@@ -42,6 +67,7 @@ export const guestService = {
     return guestMapper.toResponse(guest);
   },
 
+
   /**
    * List all guests and stats for an invitation (by slug).
    */
@@ -54,9 +80,7 @@ export const guestService = {
     const [guests, stats, owner] = await Promise.all([
       guestRepository.findManyByInvitation(invitation.id),
       guestRepository.getStats(invitation.id),
-      invitation.userId
-        ? prisma.user.findUnique({ where: { id: invitation.userId } })
-        : null,
+      prisma.user.findUnique({ where: { id: invitation.userId } }),
     ]);
 
     return {
@@ -64,7 +88,7 @@ export const guestService = {
       stats,
       tier: invitation.tier,
       qrEnabled: invitation.qrEnabled,
-      accountType: owner?.accountType || 'B2C_FREE',
+      role: owner?.role || 'USER',
     };
   },
 

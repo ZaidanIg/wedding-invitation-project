@@ -102,13 +102,13 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible }: { visible: boolean }) {
+function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
   const [active, setActive] = useState('home');
   const items = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'couple', icon: Users, label: 'Mempelai' },
     { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    { id: 'gallery', icon: Camera, label: 'Galeri' },
+    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
     { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
   ];
 
@@ -366,21 +366,23 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
         </section>
 
         {/* Gallery Section */}
-        <section id="gallery" className="py-32 px-4 bg-[#faf9f6]">
-           <AnimatedSection className="text-center mb-16">
-             <Camera className="mx-auto text-rose-300 mb-6 opacity-40 animate-pulse" size={40} />
-             <p className="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold">Cherished Moments</p>
-           </AnimatedSection>
-           <div className="columns-2 gap-3 space-y-3">
-              {galleryPhotos.map((src: string, idx: number) => (
-                <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
-                  <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-white grayscale-[0.2] hover:grayscale-0 transition-all duration-700">
-                     <img src={src} alt="Gallery" className="w-full" />
-                  </div>
-                </AnimatedSection>
-              ))}
-           </div>
-        </section>
+        {galleryPhotos.length > 0 && (
+          <section id="gallery" className="py-32 px-4 bg-[#faf9f6]">
+             <AnimatedSection className="text-center mb-16">
+               <Camera className="mx-auto text-rose-300 mb-6 opacity-40 animate-pulse" size={40} />
+               <p className="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold">Cherished Moments</p>
+             </AnimatedSection>
+             <div className="columns-2 gap-3 space-y-3">
+                {galleryPhotos.map((src: string, idx: number) => (
+                  <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
+                     <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-white grayscale-[0.2] hover:grayscale-0 transition-all duration-700">
+                        <img src={src} alt="Gallery" className="w-full" />
+                     </div>
+                  </AnimatedSection>
+                ))}
+             </div>
+          </section>
+        )}
 
         {/* Ultimate: VIP Guest Management */}
         <TierGate 
@@ -466,7 +468,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
         </section>
 
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
-        <BottomNav visible={isOpened} />
+        <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
       </div>
     </div>
   );

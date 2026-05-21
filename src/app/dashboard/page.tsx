@@ -1,13 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import InvitationCard from '@/components/InvitationCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { Heart, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Invitation } from '@/types';
 
@@ -15,7 +14,6 @@ type InvitationWithCount = Invitation & { _count?: { guests: number } };
 
 export default function DashboardPage() {
   const [invitations, setInvitations] = useState<InvitationWithCount[]>([]);
-  const [userStats, setUserStats] = useState<{ accountType: string, freeGeneratesUsed: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +26,6 @@ export default function DashboardPage() {
       const data = await res.json();
       if (data.success) {
         setInvitations(data.data?.data || []);
-        setUserStats(data.data?.user || null);
       }
     } catch (error) {
       console.error('Failed to fetch invitations:', error);
@@ -54,12 +51,10 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-12 mb-20 text-center sm:text-left">
           <div>
             <h1 className="text-4xl sm:text-5xl font-display font-bold text-[#1c1c1c] tracking-tight leading-tight">
-              Dashboard {userStats?.accountType !== 'B2C_FREE' ? 'Pro' : 'Saya'}
+              Dashboard Saya
             </h1>
             <p className="text-lg text-[#6b6b6b] mt-4 max-w-2xl">
-              {userStats?.accountType !== 'B2C_FREE' 
-                ? 'Kelola bisnis dan undangan premium Anda dengan fitur eksklusif.'
-                : 'Kelola semua momen berharga Anda di satu tempat'}
+              Kelola momen berharga Anda di satu tempat, dengan undangan premium yang mewah.
             </p>
           </div>
           <Link href="/create" className="w-full sm:w-auto">
@@ -70,40 +65,40 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* Pro Banner / Stats for Subscribers */}
-        {userStats && userStats.accountType !== 'B2C_FREE' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-            <Card className="p-10 bg-white border-[#eceae4] text-[#1c1c1c] rounded-[3rem] shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
-               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
-                  <Heart className="h-32 w-32 fill-rose-500 text-rose-500" />
-               </div>
-               <div className="relative z-10">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-black mb-6">Account Tier</div>
-                  <div className="text-4xl font-display font-bold mb-3 text-black">
-                    {userStats.accountType === 'B2B_ALL_TIME' ? 'Enterprise' : 'B2B Pro'}
-                  </div>
-                  <p className="text-black text-xs font-medium">Aktif Selamanya • Akses Penuh Fitur</p>
-               </div>
+        {/* Stats for B2C Users */}
+        {invitations.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+            <Card className="p-8 bg-white border-[#eceae4] rounded-[2.5rem] shadow-sm hover:shadow-md transition-all">
+              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-5">Total Undangan</div>
+              <div className="text-4xl font-display font-bold text-[#1c1c1c] mb-2">{invitations.length}</div>
+              <p className="text-[#6b6b6b] text-xs font-medium">Dibuat</p>
             </Card>
-            
-            <Card className="p-10 bg-white border-[#eceae4] rounded-[3rem] shadow-sm hover:shadow-md transition-all">
-               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-6">Total Engagement</div>
-               <div className="text-4xl font-display font-bold text-[#1c1c1c] mb-3">
-                  {invitations.reduce((acc, inv) => acc + inv.viewCount, 0).toLocaleString()}
-               </div>
-               <p className="text-[#6b6b6b] text-xs font-medium">Klik Undangan (Kumulatif)</p>
+
+            <Card className="p-8 bg-white border-[#eceae4] rounded-[2.5rem] shadow-sm hover:shadow-md transition-all">
+              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-5">Total Klik</div>
+              <div className="text-4xl font-display font-bold text-[#1c1c1c] mb-2">
+                {invitations.reduce((acc, inv) => acc + inv.viewCount, 0).toLocaleString()}
+              </div>
+              <p className="text-[#6b6b6b] text-xs font-medium">Kumulatif dibuka</p>
             </Card>
- 
-            <Card className="p-10 bg-white border-[#eceae4] rounded-[3rem] shadow-sm hover:shadow-md transition-all">
-               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-6">Manajemen Tamu</div>
-               <div className="text-4xl font-display font-bold text-[#1c1c1c] mb-3">
-                  {invitations.reduce((acc, inv) => acc + (inv._count?.guests || 0), 0).toLocaleString()}
-               </div>
-               <p className="text-[#6b6b6b] text-xs font-medium">Total RSVP Masuk</p>
+
+            <Card className="p-8 bg-white border-[#eceae4] rounded-[2.5rem] shadow-sm hover:shadow-md transition-all">
+              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-5">Total RSVP</div>
+              <div className="text-4xl font-display font-bold text-[#1c1c1c] mb-2">
+                {invitations.reduce((acc, inv) => acc + (inv._count?.guests || 0), 0).toLocaleString()}
+              </div>
+              <p className="text-[#6b6b6b] text-xs font-medium">Tamu konfirmasi</p>
+            </Card>
+
+            <Card className="p-8 bg-white border-[#eceae4] rounded-[2.5rem] shadow-sm hover:shadow-md transition-all">
+              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-5">Status Aktif</div>
+              <div className="text-4xl font-display font-bold text-[#1c1c1c] mb-2">
+                {invitations.filter(inv => inv.tier !== 'DRAFT').length}
+              </div>
+              <p className="text-[#6b6b6b] text-xs font-medium">Sudah diaktifkan</p>
             </Card>
           </div>
         )}
-
 
 
         {/* Content */}
@@ -139,7 +134,6 @@ export default function DashboardPage() {
               <InvitationCard 
                 key={inv.id} 
                 invitation={inv} 
-                accountType={userStats?.accountType as any}
                 onDelete={handleDelete} 
               />
             ))}

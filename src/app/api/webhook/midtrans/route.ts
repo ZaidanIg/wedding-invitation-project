@@ -84,18 +84,15 @@ export async function POST(request: Request) {
         if (transaction.type === 'INVITATION_UPGRADE' && transaction.invitationId && transaction.tier) {
           const inv = await tx.invitation.update({
             where: { id: transaction.invitationId },
-            data: { tier: transaction.tier },
+            data: { 
+              tier: transaction.tier,
+              isPaid: true
+            },
             select: { groomName: true, brideName: true }
           });
           if (inv) {
             names = `${inv.groomName} & ${inv.brideName}`;
           }
-        } else if (transaction.type === 'ACCOUNT_UPGRADE' && transaction.accountType) {
-          await tx.user.update({
-            where: { id: transaction.userId },
-            data: { accountType: transaction.accountType },
-          });
-          names = `Akun WO (${transaction.accountType})`;
         }
 
         return { userEmail: email, coupleNames: names };
@@ -115,12 +112,6 @@ export async function POST(request: Request) {
         } else if (transaction.tier === 'ULTIMATE') {
           planName = 'Ultimate Plan';
           subtotal = PRICING.ULTIMATE;
-        } else if (transaction.accountType === 'B2B_PRO') {
-          planName = 'Paket Pro (Bulanan)';
-          subtotal = PRICING.PRO_PLAN;
-        } else if (transaction.accountType === 'B2B_ALL_TIME') {
-          planName = 'Enterprise (Seumur Hidup)';
-          subtotal = PRICING.ENTERPRISE;
         }
 
         const ppn = Math.round(subtotal * 0.11);
