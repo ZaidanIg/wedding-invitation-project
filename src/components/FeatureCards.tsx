@@ -1,28 +1,48 @@
 'use client';
 
-import { Zap, Shield, Gift, Heart, MessageSquare } from 'lucide-react';
+import { CheckSquare, Gift, MapPin, Music, Globe, Wand2, Send, BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const features = [
   {
-    icon: Zap,
-    title: 'Selesai 5 Menit',
-    description: 'Proses pembuatan yang sangat cepat dan mudah, undangan Anda siap dibagikan dalam sekejap.',
-  },
-  {
-    icon: Shield,
-    title: 'Tema Eksklusif',
-    description: 'Pilihan desain premium dan elegan yang dirancang khusus untuk momen istimewa Anda.',
+    icon: CheckSquare,
+    title: 'RSVP & QR Check-in',
+    description: 'Pantau kehadiran tamu dengan sistem RSVP online dan fitur check-in menggunakan QR code di lokasi acara.',
   },
   {
     icon: Gift,
-    title: 'Kado Digital',
-    description: 'Terima ucapan dan kado pernikahan secara langsung melalui rekening atau e-wallet dengan aman.',
+    title: 'Digital Gift',
+    description: 'Terima amplop atau kado pernikahan secara langsung melalui multi-rekening atau e-wallet dengan aman.',
   },
   {
-    icon: Heart,
-    title: 'Harga Terjangkau',
-    description: 'Kualitas desain premium dengan harga yang sangat bersahabat bagi calon pengantin.',
+    icon: MapPin,
+    title: 'Integrasi Google Maps',
+    description: 'Bantu tamu menemukan lokasi acara pernikahan Anda dengan akurasi tinggi melalui integrasi peta interaktif.',
+  },
+  {
+    icon: Music,
+    title: 'Galeri, Video & Musik',
+    description: 'Buat undangan lebih hidup dengan galeri foto, tautan video, dan musik latar belakang khusus pilihan Anda.',
+  },
+  {
+    icon: Globe,
+    title: 'Link Eksklusif',
+    description: 'Dapatkan tautan undangan eksklusif dengan nama pasangan yang mudah dibagikan ke semua kerabat.',
+  },
+  {
+    icon: Wand2,
+    title: 'AI Text Generation',
+    description: 'Kesulitan merangkai kata? Gunakan teknologi AI kami untuk membuat teks undangan dengan berbagai gaya bahasa.',
+  },
+  {
+    icon: Send,
+    title: 'WhatsApp Broadcast',
+    description: 'Kirim undangan secara otomatis ke banyak tamu sekaligus melalui fitur WhatsApp Broadcast yang terintegrasi.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Dashboard Analytics',
+    description: 'Analisis lengkap statistik pengunjung dan tamu yang mengonfirmasi kehadiran langsung dari dashboard interaktif.',
   },
 ];
 

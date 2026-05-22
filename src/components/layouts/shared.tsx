@@ -70,26 +70,7 @@ export function TierGate({
   return <>{fallback}</>;
 }
 
-export function LockedSection({ 
-  title, 
-  requiredTier,
-  className = "" 
-}: { 
-  title: string; 
-  requiredTier: string;
-  className?: string;
-}) {
-  return (
-    <div className={`relative py-20 px-8 border-2 border-dashed border-stone-200 rounded-[2.5rem] bg-stone-50/50 flex flex-col items-center justify-center text-center group ${className}`}>
-      <div className="w-16 h-16 rounded-2xl bg-white shadow-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-        <Lock className="h-7 w-7 text-stone-300" />
-      </div>
-      <h3 className="text-lg font-bold text-stone-400 mb-2">{title}</h3>
-      <p className="text-xs text-stone-400/60 mb-6">Tersedia di Paket <span className="text-rose-500 font-bold uppercase">{requiredTier}</span></p>
-      <div className="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent pointer-events-none" />
-    </div>
-  );
-}
+
 
 /* ── Photo Carousel (Fade Animation) ── */
 export function PhotoCarousel({ photos, className = "" }: { photos: string[]; className?: string }) {
@@ -186,16 +167,7 @@ export function LoveStorySection({
   const currentRank = TIER_RANK[tier] || 0;
   const requiredRank = TIER_RANK['PREMIUM'];
 
-  if (currentRank < requiredRank) {
-    if (isPreview) {
-      return (
-        <div className="py-12 px-6 max-w-lg mx-auto">
-          <LockedSection title="Love Story Timeline" requiredTier="Premium" className={`p-8 rounded-3xl ${bgColor} border border-white/10`} />
-        </div>
-      );
-    }
-    return null;
-  }
+  if (currentRank < requiredRank) return null;
 
   if (!story || story.length === 0) return null;
 
@@ -493,12 +465,7 @@ export function CountdownTimer({
 
   if (!mounted) return null;
 
-  if (currentRank < requiredRank) {
-    if (isPreview) {
-      return <LockedSection title="Countdown Timer" requiredTier="Premium" className="my-6 mx-auto max-w-xs bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-4 text-center text-stone-800" />;
-    }
-    return null;
-  }
+  if (currentRank < requiredRank) return null;
 
   const blocks = [
     { value: timeLeft.days, label: 'Days' },
@@ -895,16 +862,7 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
   const [guestId, setGuestId] = useState<string | null>(invitation.rsvpGuestId || null);
   const [isSubmitted, setIsSubmitted] = useState(invitation.rsvpSubmitted || false);
 
-  if (currentRank < requiredRank) {
-    if (isPreview) {
-      return (
-        <div className="max-w-md mx-auto my-6">
-          <LockedSection title="RSVP & Wishes" requiredTier="Premium" className="bg-white border border-stone-100 rounded-3xl p-6 text-center" />
-        </div>
-      );
-    }
-    return null;
-  }
+  if (currentRank < requiredRank) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

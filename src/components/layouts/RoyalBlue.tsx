@@ -18,6 +18,8 @@ import {
   LoveStorySection,
   GuestWelcome,
   QuotesSection,
+  TierGate,
+  useTier,
 } from './shared';
 
 interface LayoutProps {
@@ -44,6 +46,7 @@ function FloralAccent({ className = '' }: { className?: string }) {
 }
 
 export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps) {
+  const { tier } = useTier();
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);

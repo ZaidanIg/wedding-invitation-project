@@ -22,7 +22,7 @@ import {
   WishesSection, 
   AudioPlayer,
   TierGate,
-  LockedSection
+  useTier,
 } from './shared';
 const LotusIcon = ({ className, size = 24 }: { className?: string; size?: number }) => (
   <svg
@@ -153,6 +153,7 @@ function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: bool
 }
 
 export default function BuddhistZen({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
+  const { tier } = useTier();
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
@@ -269,9 +270,11 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
                 <p className="text-[#a3b18a] font-bold tracking-[0.4em] text-[10px] uppercase">{formattedDate}</p>
               </AnimatedSection>
               
+              <TierGate tier={tier} minTier="PREMIUM">
               <div className="mt-16 bg-white/40 backdrop-blur-sm p-8 rounded-[3rem] border border-white/60 shadow-sm max-w-sm mx-auto">
-                 <CountdownTimer targetDate={invitation.eventDate} textColor="text-[#3d4432]" labelColor="text-[#a3b18a]" separatorColor="text-[#a3b18a]/30" />
+                <CountdownTimer targetDate={invitation.eventDate} textColor="text-[#3d4432]" labelColor="text-[#a3b18a]" separatorColor="text-[#a3b18a]/30" />
               </div>
+            </TierGate>
               <div className="mt-16 animate-bounce"><ChevronDown className="h-6 w-6 text-[#a3b18a]/50 mx-auto" /></div>
            </div>
         </section>
@@ -390,6 +393,30 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
         </section>
 
         {/* Gallery Section */}
+      {/* Video Embed */}
+      {(invitation as any).videoUrl && (
+        <section className="py-12 px-6 bg-[#fdfbf7] relative z-10">
+          <AnimatedSection>
+            <div className="rounded-3xl overflow-hidden border border-[#a3b18a]/30 shadow-xl h-[280px]">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameBorder="0" 
+                style={{ border: 0 }} 
+                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
+                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
+                  : (invitation as any).videoUrl.includes('youtu.be/')
+                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
+                    : (invitation as any).videoUrl} 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Wedding Video" 
+              />
+            </div>
+          </AnimatedSection>
+        </section>
+      )}
+
         {galleryPhotos.length > 0 && (
           <section id="gallery" className="py-32 px-4 bg-[#fdfbf7]">
              <AnimatedSection className="text-center mb-12">
@@ -412,15 +439,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
         <TierGate 
           tier={invitation.tier} 
           minTier="ULTIMATE"
-          fallback={isPreview ? (
-            <section className="py-24 px-6 bg-white text-center">
-              <LockedSection 
-                title="VIP Zen Management" 
-                requiredTier="Ultimate" 
-                className="max-w-xl mx-auto border-[#a3b18a]/10 bg-[#fdfbf7]/50"
-              />
-            </section>
-          ) : null}
+          
         >
           <section className="py-32 px-8 bg-white relative">
              <div className="max-w-xl mx-auto">

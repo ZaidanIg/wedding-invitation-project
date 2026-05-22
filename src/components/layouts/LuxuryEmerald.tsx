@@ -21,9 +21,9 @@ import {
   LoveStorySection, 
   DigitalGiftSection, 
   QuotesSection,
-  useTier,
   TIER_RANK,
-  LockedSection
+  TierGate,
+  useTier,
 } from './shared';
 
 /* ── Specific Parts for LuxuryEmerald ── */
@@ -242,8 +242,8 @@ function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: bool
 }
 
 function EmeraldAudio({ src, isPreview }: { src: string; isPreview?: boolean }) {
-  const { tier } = useTier();
-  const currentRank = TIER_RANK[tier] || 0;
+    const { tier } = useTier();
+    const currentRank = TIER_RANK[tier] || 0;
   const requiredRank = TIER_RANK['PREMIUM'];
 
   const [playing, setPlaying] = useState(false);
@@ -328,16 +328,7 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
   const [guestId, setGuestId] = useState<string | null>(invitation.rsvpGuestId || null);
   const [isSubmitted, setIsSubmitted] = useState(invitation.rsvpSubmitted || false);
 
-  if (currentRank < requiredRank) {
-    if (isPreview) {
-      return (
-        <div className="max-w-md mx-auto my-6 px-4">
-          <LockedSection title="RSVP & Wishes" requiredTier="Premium" className="bg-[#042f2e]/10 border border-[#d4af37]/20 rounded-3xl p-6 text-center text-stone-300" />
-        </div>
-      );
-    }
-    return null;
-  }
+  if (currentRank < requiredRank) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -516,6 +507,7 @@ interface LayoutProps {
 }
 
 export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutProps) {
+  const { tier } = useTier();
   const [isOpened, setIsOpened] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
@@ -628,10 +620,12 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
       <section id="date" className="py-20 px-6 text-center bg-[#faf7f0] relative">
         <WaveDivider fill="#042f2e" position="top" />
         <div className="mt-12">
+          <TierGate tier={tier} minTier="PREMIUM">
           <AnimatedSection><p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-8">Counting Down</p></AnimatedSection>
           <AnimatedSection delay="delay-200">
             <CountdownTimer targetDate={invitation.eventDate} textColor="text-[#042f2e]" labelColor="text-[#042f2e]/40" separatorColor="text-[#d4af37]" />
           </AnimatedSection>
+        </TierGate>
           <AnimatedSection animation="scale" delay="delay-300">
             <div className="mt-8 inline-flex items-center gap-6 border border-[#042f2e]/30 rounded-[0.5rem] px-8 py-4 shadow-sm bg-white/40 backdrop-blur-sm">
               <span className="text-[10px] uppercase tracking-[0.2em] text-[#042f2e]/60 font-semibold">{dayName}</span>
@@ -711,6 +705,29 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
 
       <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-[#faf7f0]" textColor="text-[#042f2e]" />
       <LoveStorySection story={invitation.loveStory || []} />
+
+      {(invitation as any).videoUrl && (
+        <section className="py-12 px-6 bg-[#042f2e]">
+          <AnimatedSection>
+            <div className="rounded-3xl overflow-hidden border border-[#d4af37]/30 shadow-2xl h-[280px]">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameBorder="0" 
+                style={{ border: 0 }} 
+                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
+                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
+                  : (invitation as any).videoUrl.includes('youtu.be/')
+                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
+                    : (invitation as any).videoUrl} 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Wedding Video" 
+              />
+            </div>
+          </AnimatedSection>
+        </section>
+      )}
 
       {galleryPhotos.length > 0 && (
         <section id="gallery" className="pb-24 pt-12 px-8 bg-[#042f2e] text-center relative">

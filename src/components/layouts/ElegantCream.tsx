@@ -22,6 +22,8 @@ import {
   GuestWelcome,
   TornEdgeTop,
   TornEdgeBottom,
+  TierGate,
+  useTier,
 } from './shared';
 
 interface LayoutProps {
@@ -30,6 +32,7 @@ interface LayoutProps {
 }
 
 export default function ElegantCream({ invitation, isPreview = false }: LayoutProps) {
+  const { tier } = useTier();
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
@@ -83,8 +86,10 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
 
       {/* Countdown */}
       <section className="py-14 px-4 sm:px-6 text-center bg-[#f5f0eb]">
+        <TierGate tier={tier} minTier="PREMIUM">
         <AnimatedSection><p className="text-xs uppercase tracking-[0.25em] text-stone-400 mb-8">Counting down to</p></AnimatedSection>
         <AnimatedSection delay="delay-200"><CountdownTimer targetDate={invitation.eventDate} /></AnimatedSection>
+      </TierGate>
         <AnimatedSection delay="delay-300">
           <div className="mt-10 flex items-center justify-center gap-3">
             <div className="h-px w-12 bg-stone-300 animate-shimmer" />

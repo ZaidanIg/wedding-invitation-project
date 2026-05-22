@@ -28,6 +28,7 @@ import {
   RotateCcw,
   Lock,
   Music,
+  Video,
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
@@ -185,6 +186,7 @@ export default function InvitationForm() {
           language: store.stylePreferences.language,
           layout: store.stylePreferences.layout,
           musicUrl: store.stylePreferences.musicUrl === 'custom' ? customMusicUrl.trim() : store.stylePreferences.musicUrl,
+          videoUrl: store.stylePreferences.videoUrl,
           schedule: store.eventDetails.schedule,
           loveStory: store.eventDetails.loveStory,
           digitalGifts: store.eventDetails.digitalGifts,
@@ -233,6 +235,7 @@ export default function InvitationForm() {
     language: store.stylePreferences.language,
     layout: store.stylePreferences.layout,
     musicUrl: store.stylePreferences.musicUrl === 'custom' ? customMusicUrl.trim() : store.stylePreferences.musicUrl,
+    videoUrl: store.stylePreferences.videoUrl,
     qrEnabled: store.qrEnabled,
     id: 'preview',
     slug: 'preview',
@@ -309,7 +312,12 @@ export default function InvitationForm() {
             <Card className="bg-white border-[#eceae4] shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-rose-500" />
               <div className="flex border-b border-[#eceae4] bg-[#fcfbf8]/50">
-                {[{ id: 1, label: 'LOKASI', icon: MapPin }, { id: 2, label: 'AGENDA', icon: ListChecks }, { id: 3, label: `CERITA ${!hasPremium ? '🔒' : ''}`, icon: Sparkles }, { id: 4, label: `KADO ${!hasBasic ? '🔒' : ''}`, icon: Heart }].map((s) => (
+                {[
+                  { id: 1, label: 'LOKASI', icon: MapPin }, 
+                  { id: 2, label: 'AGENDA', icon: ListChecks }, 
+                  ...(hasPremium ? [{ id: 3, label: 'CERITA', icon: Sparkles }] : []), 
+                  { id: 4, label: 'KADO', icon: Heart }
+                ].map((s) => (
                   <button key={s.id} onClick={() => setSubStep(s.id)} className={`flex-1 py-4 flex flex-col items-center gap-1 transition-all relative ${subStep === s.id ? 'text-rose-500' : 'text-[#1c1c1c]/40 hover:text-[#1c1c1c]/60'}`}>
                     <s.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${subStep === s.id ? 'animate-pulse' : ''}`} /><span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider">{s.label}</span>
                     {subStep === s.id && <motion.div layoutId="subIndicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-500" />}
@@ -320,20 +328,8 @@ export default function InvitationForm() {
                 <AnimatePresence mode="wait">
                   {subStep === 1 && (<motion.div key="sub1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Input label="Tanggal Acara" type="date" value={store.eventDetails.eventDate} onChange={(e) => store.setEventDetails({ ...store.eventDetails, eventDate: e.target.value })} /><Input label="Waktu Mulai" type="time" value={store.eventDetails.eventTime ? store.eventDetails.eventTime.replace('.', ':') : ''} onChange={(e) => store.setEventDetails({ ...store.eventDetails, eventTime: e.target.value })} /></div><Input label="Nama Lokasi" placeholder="The Grand Ballroom Sumedang" value={store.eventDetails.venueName} onChange={(e) => store.setEventDetails({ ...store.eventDetails, venueName: e.target.value })} /><Textarea label="Alamat Lengkap" placeholder="Jl. Pangeran Kornel No. 123, Sumedang Selatan" rows={3} value={store.eventDetails.venueAddress} onChange={(e) => store.setEventDetails({ ...store.eventDetails, venueAddress: e.target.value })} /></motion.div>)}
                   {subStep === 2 && (<motion.div key="sub2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6"><div className="flex items-center justify-between"><h3 className="font-bold text-sm">Rangkaian Acara</h3><Button variant="ghost" size="sm" onClick={() => store.setEventDetails({ ...store.eventDetails, schedule: [...store.eventDetails.schedule, { id: Date.now().toString(), time: '', label: '', icon: 'heart' }] })} className="text-rose-500"><Plus className="h-4 w-4 mr-1" /> Tambah</Button></div><div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 no-scrollbar">{store.eventDetails.schedule.map((item, index) => (<div key={item.id} className="bg-[#fcfbf8] p-4 border border-[#eceae4] rounded-2xl space-y-3"><div className="grid grid-cols-1 sm:grid-cols-2 gap-3"><Input label="Jam" type="time" value={item.time ? item.time.replace('.', ':') : ''} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].time = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /><Select label="Ikon" options={iconOptions} value={item.icon} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].icon = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /></div><div className="flex items-end gap-2"><div className="flex-1"><Input label="Kegiatan" placeholder="Contoh: Akad Nikah" value={item.label} onChange={(e) => { const n = [...store.eventDetails.schedule]; n[index].label = e.target.value; store.setEventDetails({ ...store.eventDetails, schedule: n }); }} /></div><button className="h-[46px] w-[46px] flex items-center justify-center text-red-400 hover:bg-red-50 rounded-xl transition-colors border border-[#eceae4] bg-white flex-shrink-0" onClick={() => { const n = store.eventDetails.schedule.filter((_, i) => i !== index); store.setEventDetails({ ...store.eventDetails, schedule: n }); }}><Trash2 className="h-4 w-4" /></button></div></div>))}</div></motion.div>)}
-                  {subStep === 3 && (
+                  {subStep === 3 && hasPremium && (
                     <motion.div key="sub3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                      {!hasPremium ? (
-                        <div className="bg-stone-50 border border-stone-200 p-8 rounded-3xl text-center space-y-4">
-                          <Sparkles className="h-8 w-8 mx-auto text-amber-500 animate-pulse" />
-                          <h4 className="font-bold text-base text-[#1c1c1c]">Fitur Kisah Cinta Terkunci 🔒</h4>
-                          <p className="text-xs text-stone-500 max-w-sm mx-auto">
-                            Kisah Cinta (Love Story) hanya tersedia untuk Paket Premium & Ultimate. Upgrade sekarang untuk mengabadikan perjalanan cinta Anda dengan indah.
-                          </p>
-                          <Button size="sm" onClick={() => router.push('/pricing')} className="bg-rose-500 text-white rounded-xl">
-                            Upgrade Paket
-                          </Button>
-                        </div>
-                      ) : (
                         <>
                           <div className="flex items-center justify-between">
                             <h3 className="font-bold text-sm">Kisah Cinta</h3>
@@ -360,23 +356,10 @@ export default function InvitationForm() {
                             ))}
                           </div>
                         </>
-                      )}
                     </motion.div>
                   )}
                   {subStep === 4 && (
                     <motion.div key="sub4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                      {!hasBasic ? (
-                        <div className="bg-stone-50 border border-stone-200 p-8 rounded-3xl text-center space-y-4">
-                          <Heart className="h-8 w-8 mx-auto text-rose-500 animate-pulse" />
-                          <h4 className="font-bold text-base text-[#1c1c1c]">Fitur Kado Digital Terkunci 🔒</h4>
-                          <p className="text-xs text-stone-500 max-w-sm mx-auto">
-                            Hubungkan rekening bank atau e-wallet Anda agar tamu dapat mengirimkan kado secara instan. Fitur ini hanya tersedia untuk Paket Basic ke atas.
-                          </p>
-                          <Button size="sm" onClick={() => router.push('/pricing')} className="bg-[#1c1c1c] text-white rounded-xl">
-                            Upgrade Paket
-                          </Button>
-                        </div>
-                      ) : (
                         <>
                           <div className="flex items-center justify-between">
                             <h3 className="font-bold text-sm">Kado Digital</h3>
@@ -403,7 +386,6 @@ export default function InvitationForm() {
                             ))}
                           </div>
                         </>
-                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -422,7 +404,7 @@ export default function InvitationForm() {
                 <div className="space-y-12">
                   {/* Header Photo: Only for BASIC & PREMIUM */}
                   <div className="space-y-4">
-                    <h3 className="font-bold text-sm flex items-center gap-2">Foto Header / Sampul {!hasBasic && <Lock className="h-3 w-3 text-stone-300" />}</h3>
+                    <h3 className="font-bold text-sm flex items-center gap-2">Foto Header / Sampul</h3>
                     {isFree ? (
                       <div className="bg-stone-50 border border-stone-200 p-6 rounded-3xl text-center">
                         <Lock className="h-6 w-6 mx-auto mb-2 text-stone-300" />
@@ -438,16 +420,11 @@ export default function InvitationForm() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8"><div className="space-y-4"><h3 className="font-bold text-xs uppercase tracking-widest flex items-center gap-2"><User className="h-3 w-3 text-blue-400" /> Mempelai Pria</h3><div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-4 rounded-3xl min-h-[180px] flex items-center justify-center">{store.groomPhotoUrl ? (<div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-md"><Image src={store.groomPhotoUrl} alt="G" fill className="object-cover" unoptimized /><button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setGroomPhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button></div>) : (<UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-4 py-2 rounded-lg', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setGroomPhotoUrl(res[0].ufsUrl); }} />)}</div></div><div className="space-y-4"><h3 className="font-bold text-xs uppercase tracking-widest flex items-center gap-2"><User className="h-3 w-3 text-pink-400" /> Mempelai Wanita</h3><div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-4 rounded-3xl min-h-[180px] flex items-center justify-center">{store.bridePhotoUrl ? (<div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-md"><Image src={store.bridePhotoUrl} alt="B" fill className="object-cover" unoptimized /><button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setBridePhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button></div>) : (<UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-4 py-2 rounded-lg', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setBridePhotoUrl(res[0].ufsUrl); }} />)}</div></div></div>
 
                   {/* Gallery: Restricted */}
-                  <div className="space-y-4">
-                    <h3 className="font-bold text-sm flex items-center gap-2">Galeri Foto {isBasic && <Lock className="h-3 w-3 text-stone-300" />} {isPremium && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 3)</span>} {isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 7)</span>}</h3>
-                    {isBasic ? (
-                      <div className="bg-stone-50 border border-stone-200 p-8 rounded-3xl text-center">
-                         <Camera className="h-8 w-8 mx-auto mb-2 text-stone-300" />
-                         <p className="text-[10px] uppercase font-bold tracking-widest text-stone-400">Galeri Hanya Untuk Paket Premium & Ultimate</p>
-                      </div>
-                    ) : (
+                  {hasPremium && (
+                    <div className="space-y-4">
+                      <h3 className="font-bold text-sm flex items-center gap-2">Galeri Foto {isPremium && !isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 3)</span>} {isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Unlimited)</span>}</h3>
                       <div className="space-y-4">
-                        {(isPremium && store.photoUrls.length >= 3) ? (
+                        {(isPremium && !isUltimate && store.photoUrls.length >= 3) ? (
                           <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
                              <AlertCircle className="h-4 w-4" /> Batas galeri Paket Premium tercapai (3 foto).
                           </div>
@@ -462,8 +439,8 @@ export default function InvitationForm() {
                         )}
                         <div className="grid grid-cols-4 gap-2 mt-4">{store.photoUrls.map((u, i) => (<div key={i} className="relative aspect-square rounded-xl overflow-hidden border shadow-sm group"><Image src={u} alt="G" fill className="object-cover group-hover:scale-110 transition-transform" unoptimized /><button className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" onClick={() => store.removePhotoUrl(u)}><Trash2 className="h-3.5 w-3.5 text-white" /></button></div>))}</div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col-reverse sm:flex-row justify-between mt-12 gap-3"><Button variant="secondary" className="h-12 sm:h-auto" onClick={() => store.prevStep()}><ChevronLeft className="h-4 w-4 mr-1" /> Kembali</Button><Button size="lg" className="h-14 sm:h-auto bg-[#1c1c1c] text-white" onClick={() => store.nextStep()}>Selanjutnya <ChevronRight className="h-4 w-4 ml-1" /></Button></div>
               </div>
@@ -481,112 +458,120 @@ export default function InvitationForm() {
                   <div className="space-y-4">
                     <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#1c1c1c]/50">Pilih Tema</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                      {layoutOptions.map((opt) => {
-                        const isLocked = opt.category === 'premium' && !hasPremium;
-                        return (
+                      {layoutOptions
+                        .filter(opt => hasPremium || opt.category === 'klasik')
+                        .map((opt) => (
                           <button 
                             key={opt.value} 
-                            onClick={() => !isLocked && store.setStylePreferences({ ...store.stylePreferences, layout: opt.value })} 
-                            className={`p-2.5 sm:p-4 border rounded-2xl flex flex-col items-center gap-2.5 transition-all relative ${isLocked ? 'opacity-60 cursor-not-allowed bg-stone-50' : store.stylePreferences.layout === opt.value ? 'ring-2 ring-rose-500 bg-rose-50/20 border-rose-200' : 'hover:bg-[#fcfbf8] border-[#eceae4]'}`}
+                            onClick={() => store.setStylePreferences({ ...store.stylePreferences, layout: opt.value })} 
+                            className={`p-2.5 sm:p-4 border rounded-2xl flex flex-col items-center gap-2.5 transition-all relative ${store.stylePreferences.layout === opt.value ? 'ring-2 ring-rose-500 bg-rose-50/20 border-rose-200' : 'hover:bg-[#fcfbf8] border-[#eceae4]'}`}
                           >
                             <div className={`w-10 h-14 rounded-lg border-2 ${opt.bg} ${opt.border} shadow-sm`} />
                             <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-center break-words w-full px-0.5">{opt.label}</span>
-                            {isLocked && (
-                              <div className="absolute top-2 right-2">
-                                <Lock className="h-3 w-3 text-stone-400" />
-                              </div>
-                            )}
                             {opt.category === 'premium' && (
                               <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">PREMIUM</span>
                             )}
                           </button>
-                        );
-                      })}
+                      ))}
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Select label="Nuansa" options={toneOptions} value={store.stylePreferences.tone} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, tone: e.target.value as any })} /><Select label="Bahasa" options={languageOptions} value={store.stylePreferences.language} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, language: e.target.value as any })} /></div>
                   
                   {/* Music: Restricted */}
-                  <div className="space-y-3">
-                    <div className="relative">
-                      <Select
-                        label="Musik Latar"
-                        options={hasPremium ? musicOptions : [{ value: '', label: '🔇 Tanpa Musik (Upgrade ke Premium)' }]}
-                        value={hasPremium ? store.stylePreferences.musicUrl : ''}
-                        onChange={(e) => {
-                          store.setStylePreferences({ ...store.stylePreferences, musicUrl: e.target.value });
-                          // Reset custom URL when switching away from custom
-                          if (e.target.value !== 'custom') setCustomMusicUrl('');
-                        }}
-                        disabled={!hasPremium}
-                      />
-                      {!hasPremium && <Lock className="absolute top-10 right-10 h-4 w-4 text-stone-300" />}
-                      {!hasPremium && <p className="text-[9px] text-stone-400 mt-1">* Musik hanya tersedia pada Paket Premium</p>}
-                    </div>
-
-                    {/* Upload audio via UploadThing — shown when 'custom' is selected */}
-                    {hasPremium && store.stylePreferences.musicUrl === 'custom' && (
-                      <div className="space-y-3">
-                        {customMusicUrl ? (
-                          /* Uploaded — show player + change button */
-                          <div className="bg-[#fcfbf8] border border-[#eceae4] rounded-2xl p-4 space-y-3">
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
-                                <Music className="h-4 w-4 text-rose-500" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-xs font-semibold text-[#1c1c1c] truncate">
-                                  {customMusicUrl.split('/').pop()?.split('?')[0] || 'Musik Kustom'}
-                                </p>
-                                <p className="text-[10px] text-stone-400">Berhasil diunggah</p>
-                              </div>
-                              <button
-                                onClick={() => setCustomMusicUrl('')}
-                                className="text-[10px] text-red-400 hover:text-red-500 font-medium shrink-0"
-                              >
-                                Ganti
-                              </button>
-                            </div>
-                            <audio
-                              key={customMusicUrl}
-                              controls
-                              className="w-full h-10"
-                              preload="metadata"
-                            >
-                              <source src={customMusicUrl} type="audio/mpeg" />
-                              Browser Anda tidak mendukung audio.
-                            </audio>
-                          </div>
-                        ) : (
-                          /* Not uploaded yet — show dropzone */
-                          <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] rounded-2xl overflow-hidden">
-                            <UploadDropzone
-                              endpoint="weddingMusic"
-                              appearance={{
-                                button: 'bg-rose-500 text-[10px] uppercase font-bold tracking-widest px-6 py-2.5 rounded-xl',
-                                container: 'p-6 border-none bg-transparent',
-                                label: 'text-stone-500 text-xs',
-                                allowedContent: 'text-stone-400 text-[10px]',
-                              }}
-                              content={{
-                                label: 'Seret file audio ke sini, atau klik untuk memilih',
-                                allowedContent: 'MP3, WAV, AAC — Maks 16 MB',
-                              }}
-                              onClientUploadComplete={(res) => {
-                                if (res?.[0]?.ufsUrl) {
-                                  setCustomMusicUrl(res[0].ufsUrl);
-                                  showToast('success', 'Musik berhasil diunggah!');
-                                }
-                              }}
-                              onUploadError={(err) => {
-                                showToast('error', `Gagal mengunggah musik: ${err.message}`);
-                              }}
-                            />
-                          </div>
-                        )}
+                  {/* Music: Restricted */}
+                  {hasPremium && (
+                    <div className="space-y-3">
+                      <div className="relative">
+                        <Select
+                          label="Musik Latar"
+                          options={musicOptions}
+                          value={store.stylePreferences.musicUrl}
+                          onChange={(e) => {
+                            store.setStylePreferences({ ...store.stylePreferences, musicUrl: e.target.value });
+                            // Reset custom URL when switching away from custom
+                            if (e.target.value !== 'custom') setCustomMusicUrl('');
+                          }}
+                        />
                       </div>
-                    )}
-                  </div>
+
+                      {/* Upload audio via UploadThing — shown when 'custom' is selected */}
+                      {store.stylePreferences.musicUrl === 'custom' && (
+                        <div className="space-y-3">
+                          {customMusicUrl ? (
+                            /* Uploaded — show player + change button */
+                            <div className="bg-[#fcfbf8] border border-[#eceae4] rounded-2xl p-4 space-y-3">
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
+                                  <Music className="h-4 w-4 text-rose-500" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-semibold text-[#1c1c1c] truncate">
+                                    {customMusicUrl.split('/').pop()?.split('?')[0] || 'Musik Kustom'}
+                                  </p>
+                                  <p className="text-[10px] text-stone-400">Berhasil diunggah</p>
+                                </div>
+                                <button
+                                  onClick={() => setCustomMusicUrl('')}
+                                  className="text-[10px] text-red-400 hover:text-red-500 font-medium shrink-0"
+                                >
+                                  Ganti
+                                </button>
+                              </div>
+                              <audio
+                                key={customMusicUrl}
+                                controls
+                                className="w-full h-10"
+                                preload="metadata"
+                              >
+                                <source src={customMusicUrl} type="audio/mpeg" />
+                                Browser Anda tidak mendukung audio.
+                              </audio>
+                            </div>
+                          ) : (
+                            /* Not uploaded yet — show dropzone */
+                            <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] rounded-2xl overflow-hidden">
+                              <UploadDropzone
+                                endpoint="weddingMusic"
+                                appearance={{
+                                  button: 'bg-rose-500 text-[10px] uppercase font-bold tracking-widest px-6 py-2.5 rounded-xl',
+                                  container: 'p-6 border-none bg-transparent',
+                                  label: 'text-stone-500 text-xs',
+                                  allowedContent: 'text-stone-400 text-[10px]',
+                                }}
+                                content={{
+                                  label: 'Seret file audio ke sini, atau klik untuk memilih',
+                                  allowedContent: 'MP3, WAV, AAC — Maks 16 MB',
+                                }}
+                                onClientUploadComplete={(res) => {
+                                  if (res?.[0]?.ufsUrl) {
+                                    setCustomMusicUrl(res[0].ufsUrl);
+                                    showToast('success', 'Musik berhasil diunggah!');
+                                  }
+                                }}
+                                onUploadError={(err) => {
+                                  showToast('error', `Gagal mengunggah musik: ${err.message}`);
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Video Embed: Ultimate Only */}
+                  {isUltimate && (
+                    <div className="space-y-3 pt-4 border-t border-[#eceae4]">
+                      <div className="relative">
+                        <Input
+                          label="Video Embed (YouTube URL)"
+                          placeholder="https://www.youtube.com/watch?v=..."
+                          value={store.stylePreferences.videoUrl || ''}
+                          onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, videoUrl: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   <div className="pt-6 border-t border-[#eceae4] space-y-6">
                     <div className="flex items-center justify-between">

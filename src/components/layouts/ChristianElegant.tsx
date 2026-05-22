@@ -23,7 +23,7 @@ import {
   WishesSection, 
   AudioPlayer,
   TierGate,
-  LockedSection,
+  useTier,
   ParallaxSection,
   ParallaxImage,
   WaveDivider,
@@ -139,6 +139,7 @@ function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: bool
 }
 
 export default function ChristianElegant({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
+  const { tier } = useTier();
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
@@ -255,9 +256,11 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
                 <p className="font-bold tracking-[0.4em] text-[10px] uppercase opacity-90">{formattedDate}</p>
               </AnimatedSection>
               
+              <TierGate tier={tier} minTier="PREMIUM">
               <div className="mt-16 bg-white/10 backdrop-blur-md p-8 rounded-[3rem] border border-white/20 shadow-2xl">
-                 <CountdownTimer targetDate={invitation.eventDate} textColor="text-white" labelColor="text-white/60" separatorColor="text-rose-300/30" />
+                <CountdownTimer targetDate={invitation.eventDate} textColor="text-white" labelColor="text-white/60" separatorColor="text-rose-300/30" />
               </div>
+            </TierGate>
            </div>
         </section>
 
@@ -319,7 +322,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
         <TierGate 
           tier={invitation.tier} 
           minTier="BASIC"
-          fallback={isPreview ? <LockedSection title="Love Story Section" requiredTier="Basic" className="my-12 mx-6" /> : null}
+          
         >
           <LoveStorySection 
             story={invitation.loveStory || []} 
@@ -380,6 +383,30 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
         </section>
 
         {/* Gallery Section */}
+      {/* Video Embed */}
+      {(invitation as any).videoUrl && (
+        <section className="py-12 px-6 bg-[#f8f7f4] relative z-10">
+          <AnimatedSection>
+            <div className="rounded-3xl overflow-hidden border border-rose-200 shadow-xl h-[280px]">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameBorder="0" 
+                style={{ border: 0 }} 
+                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
+                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
+                  : (invitation as any).videoUrl.includes('youtu.be/')
+                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
+                    : (invitation as any).videoUrl} 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Wedding Video" 
+              />
+            </div>
+          </AnimatedSection>
+        </section>
+      )}
+
         {galleryPhotos.length > 0 && (
           <section id="gallery" className="py-32 px-4 bg-[#faf9f6]">
              <AnimatedSection className="text-center mb-16">
@@ -402,15 +429,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
         <TierGate 
           tier={invitation.tier} 
           minTier="ULTIMATE"
-          fallback={isPreview ? (
-            <section className="py-32 px-6 bg-white text-center">
-              <LockedSection 
-                title="VIP Holy Union Experience" 
-                requiredTier="Ultimate" 
-                className="max-w-xl mx-auto rounded-[3rem] border-rose-100/50"
-              />
-            </section>
-          ) : null}
+          
         >
           <section className="py-32 px-8 bg-white relative overflow-hidden">
              <div className="absolute top-0 right-0 w-96 h-96 bg-rose-50 rounded-full blur-[100px] opacity-50 -mr-48 -mt-48" />

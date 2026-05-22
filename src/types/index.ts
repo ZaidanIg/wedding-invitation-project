@@ -209,6 +209,7 @@ export interface FormWizardState {
     language: Language;
     additionalNotes: string;
     musicUrl?: string;
+    videoUrl?: string;
     layout: Layout;
   };
   photoUrls: string[];

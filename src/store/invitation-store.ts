@@ -60,6 +60,7 @@ const initialState: FormWizardState = {
     language: 'id' as Language,
     additionalNotes: '',
     musicUrl: '/music/Epic Spectrum - Sky Clearing (freetouse.com).mp3',
+    videoUrl: '',
     layout: 'elegant-cream' as Layout,
   },
   photoUrls: [],

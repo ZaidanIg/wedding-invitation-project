@@ -20,9 +20,9 @@ import {
   PhotoCarousel, 
   DigitalGiftSection, 
   QuotesSection,
-  useTier,
   TIER_RANK,
-  LockedSection
+  TierGate,
+  useTier,
 } from './shared';
 
 /* ── Falling Gold Dust Particles ── */
@@ -164,8 +164,8 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 
 /* ── Interactive Spinning Gold Vinyl Player ── */
 function SpinningGoldVinyl({ src, isPreview }: { src: string; isPreview?: boolean }) {
-  const { tier } = useTier();
-  const currentRank = TIER_RANK[tier] || 0;
+    const { tier } = useTier();
+    const currentRank = TIER_RANK[tier] || 0;
   const requiredRank = TIER_RANK['PREMIUM'];
 
   const [playing, setPlaying] = useState(false);
@@ -250,16 +250,7 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
   const [guestId, setGuestId] = useState<string | null>(invitation.rsvpGuestId || null);
   const [isSubmitted, setIsSubmitted] = useState(invitation.rsvpSubmitted || false);
 
-  if (currentRank < requiredRank) {
-    if (isPreview) {
-      return (
-        <div className="max-w-md mx-auto my-6 px-4">
-          <LockedSection title="RSVP & Wishes" requiredTier="Premium" className="bg-[#1a1a1a] border border-[#d4af37]/20 rounded-3xl p-6 text-center text-stone-400" />
-        </div>
-      );
-    }
-    return null;
-  }
+  if (currentRank < requiredRank) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -486,6 +477,7 @@ interface LayoutProps {
 }
 
 export default function PremiumCharcoal({ invitation, isPreview = false }: LayoutProps) {
+  const { tier } = useTier();
   const [isOpened, setIsOpened] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
@@ -767,6 +759,30 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
           className="h-[380px] sm:h-[480px]" 
         />
       </section>
+
+      {/* Section 6.5: Video Embed */}
+      {(invitation as any).videoUrl && (
+        <section className="py-12 px-6 bg-[#161616]">
+          <AnimatedSection>
+            <div className="rounded-3xl overflow-hidden border border-[#d4af37]/30 shadow-2xl h-[280px]">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameBorder="0" 
+                style={{ border: 0 }} 
+                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
+                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
+                  : (invitation as any).videoUrl.includes('youtu.be/')
+                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
+                    : (invitation as any).videoUrl} 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Wedding Video" 
+              />
+            </div>
+          </AnimatedSection>
+        </section>
+      )}
 
       {/* Section 7: Ceremony & Reception Details */}
       <section className="py-24 px-8 bg-[#161616] text-center relative overflow-hidden">
