@@ -49,18 +49,18 @@ export async function PATCH(
   const { id } = await params;
 
   try {
-    const { tier, isPaid, resetAiCount } = await req.json();
+    // v1.2: isPaid removed — tier is the single source of truth.
+    // Admin can manually set tier to BASIC/PREMIUM/ULTIMATE to activate an invitation,
+    // or set back to DRAFT to deactivate.
+    const { tier, resetAiCount } = await req.json();
 
-    const data: any = {};
+    const data: Record<string, unknown> = {};
     if (tier !== undefined) {
-      if (tier !== 'BASIC' && tier !== 'PREMIUM' && tier !== 'ULTIMATE') {
+      const validTiers = ['DRAFT', 'BASIC', 'PREMIUM', 'ULTIMATE'];
+      if (!validTiers.includes(tier)) {
         return NextResponse.json({ success: false, error: 'Invalid tier specified' }, { status: 400 });
       }
       data.tier = tier as Tier;
-    }
-
-    if (isPaid !== undefined) {
-      data.isPaid = Boolean(isPaid);
     }
 
     if (resetAiCount) {

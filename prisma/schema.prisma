@@ -70,6 +70,12 @@ model PasswordResetToken {
   @@unique([email, token])
 }
 
+// ── Invitation ────────────────────────────────────────────────
+// NOTE: schedule, loveStory, digitalGifts, photoUrls are now
+// normalized into separate relational tables (v1.2).
+// headerPhotoUrl, groomPhotoUrl, bridePhotoUrl remain as direct
+// fields because they serve a distinct role-based purpose.
+
 model Invitation {
   id             String        @id @default(cuid())
   groomName      String
@@ -91,7 +97,6 @@ model Invitation {
   viewCount      Int           @default(0)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  photoUrls      String[]      @default([])
   headerPhotoUrl String?
   groomPhotoUrl  String?
   bridePhotoUrl  String?
@@ -99,25 +104,93 @@ model Invitation {
   musicUrl       String?
   videoUrl       String?
   layout         String        @default("elegant-cream")
-  schedule       Json          @default("[]")
-  loveStory      Json          @default("[]")
-  digitalGifts   Json          @default("[]")
   quotes         String?
+  /// Tier reflects the current ACTIVE plan of this invitation.
+  /// Source of truth: Transaction.status === SUCCESS && Transaction.tier
+  /// isPaid is REMOVED — derive payment status from transactions relation.
   tier           Tier          @default(DRAFT)
-  isPaid         Boolean       @default(false)
   aiRegenCount   Int           @default(0)
   qrEnabled      Boolean       @default(true)
   expiresAt      DateTime?
+
+  // Relations
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   guests         Guest[]
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions   Transaction[]
+  events         InvitationEvent[]
+  stories        InvitationStory[]
+  gifts          InvitationGift[]
+  photos         InvitationPhoto[]
 
   @@index([slug])
   @@index([userId])
   @@index([createdAt])
   @@index([expiresAt])
+  @@index([tier])
 }
 
+// ── Normalized: Schedule Events ──────────────────────────────
+model InvitationEvent {
+  id           String     @id @default(cuid())
+  invitationId String
+  label        String
+  time         String
+  icon         String     @default("heart")
+  sortOrder    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+}
+
+// ── Normalized: Love Story ────────────────────────────────────
+model InvitationStory {
+  id           String     @id @default(cuid())
+  invitationId String
+  year         String
+  title        String
+  description  String
+  photoUrl     String?
+  sortOrder    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+}
+
+// ── Normalized: Digital Gifts ─────────────────────────────────
+model InvitationGift {
+  id            String     @id @default(cuid())
+  invitationId  String
+  bankName      String
+  accountNumber String
+  accountHolder String
+  sortOrder     Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  invitation    Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+}
+
+// ── Normalized: Photos ────────────────────────────────────────
+model InvitationPhoto {
+  id           String     @id @default(cuid())
+  invitationId String
+  url          String
+  type         PhotoType  @default(GALLERY)
+  altText      String?
+  sortOrder    Int        @default(0)
+  createdAt    DateTime   @default(now())
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+  @@index([type])
+}
+
+// ── Guest ─────────────────────────────────────────────────────
 model Guest {
   id           String     @id @default(cuid())
   invitationId String
@@ -125,39 +198,83 @@ model Guest {
   email        String?
   phone        String?
   rsvpStatus   RsvpStatus @default(PENDING)
-
-  message   String?
-  attendees Int      @default(1)
-  checkedIn Boolean  @default(false)
-  isVip     Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  updatedAt  DateTime   @updatedAt
-  invitation Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  message      String?
+  attendees    Int        @default(1)
+  checkedIn    Boolean    @default(false)
+  isVip        Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
 
   @@index([invitationId])
   @@index([rsvpStatus])
 }
 
+// ── Transaction ───────────────────────────────────────────────
+// id = orderId (format: ORD-YYYYMMDD-XXXX) — serves as the human-readable order number.
+// idempotencyKey ensures no duplicate checkout sessions are created for the same intent.
+
 model Transaction {
-  id           String            @id @default(cuid())
-  userId       String
-  invitationId String?
-  amount       Int
-  type         TransactionType
-  status       TransactionStatus @default(PENDING)
-  tier         Tier?
-  paymentUrl   String?
-  midtransId   String?           @unique
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  invitation   Invitation?       @relation(fields: [invitationId], references: [id])
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              String            @id  // ORD-YYYYMMDD-XXXX (human-readable order number)
+  idempotencyKey  String            @unique
+  userId          String
+  invitationId    String?
+  amount          Int
+  type            TransactionType
+  status          TransactionStatus @default(PENDING)
+  tier            Tier?
+  paymentUrl      String?
+  midtransId      String?           @unique
+  paymentMethod   String?           // gopay, bank_transfer, credit_card, etc.
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  invitation      Invitation?        @relation(fields: [invitationId], references: [id])
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  webhooks        PaymentWebhook[]
+  history         TransactionHistory[]
 
   @@index([userId])
   @@index([invitationId])
   @@index([status])
+  @@index([idempotencyKey])
 }
+
+// ── Payment Webhook Log (Idempotency) ─────────────────────────
+// Every raw Midtrans notification is stored here.
+// midtransNotifId is the unique notification identifier used to prevent double-processing.
+
+model PaymentWebhook {
+  id              String      @id @default(cuid())
+  transactionId   String
+  rawPayload      Json
+  midtransNotifId String      @unique  // Idempotency: <order_id>:<transaction_status>
+  processedAt     DateTime    @default(now())
+  transaction     Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([transactionId])
+}
+
+// ── Transaction Status History (Audit Trail) ──────────────────
+// Every status change is recorded here for debugging and accountants.
+
+model TransactionHistory {
+  id            String      @id @default(cuid())
+  transactionId String
+  oldStatus     String
+  newStatus     String
+  /// Who triggered the change: WEBHOOK | RECONCILER | ADMIN | SYSTEM
+  changedBy     String
+  metadata      Json?       // Optional: raw midtrans data, IP address, etc.
+  createdAt     DateTime    @default(now())
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([transactionId])
+  @@index([createdAt])
+}
+
+// ── Enums ─────────────────────────────────────────────────────
 
 enum Role {
   USER
@@ -173,8 +290,11 @@ enum Tier {
 
 enum TransactionStatus {
   PENDING
-  SUCCESS
-  FAILED
+  SETTLEMENT  // Final success for bank transfer / virtual account
+  SUCCESS     // Final success for credit card (capture + accept)
+  FAILED      // Payment failed / denied
+  EXPIRED     // Order expired (24h timeout or Midtrans expire)
+  CANCELLED   // Manually cancelled
 }
 
 enum TransactionType {
@@ -186,4 +306,9 @@ enum RsvpStatus {
   PENDING
   ATTENDING
   NOT_ATTENDING
+}
+
+enum PhotoType {
+  GALLERY      // General gallery photos
+  PREWEDDING   // Prewedding specific photos
 }

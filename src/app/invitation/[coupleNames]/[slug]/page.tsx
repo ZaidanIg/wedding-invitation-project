@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { invitationService } from '@/modules/invitation/server/service';
+import { invitationMapper } from '@/modules/invitation/server/mapper';
 import { auth } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import InvitationPreview from '@/components/InvitationPreview';
@@ -17,11 +18,14 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { coupleNames, slug } = await params;
+  void coupleNames;
   try {
-    const invitation = await invitationService.getBySlug(slug);
+    const entity = await invitationService.getBySlug(slug);
+    // v1.2: use mapper to reconstruct flat shape from relational entity
+    const invitation = invitationMapper.toResponse(entity as Record<string, unknown>);
     const title = `The Wedding of ${invitation.groomName} & ${invitation.brideName}`;
     const description = invitation.greeting || `Undangan pernikahan digital ${invitation.groomName} & ${invitation.brideName}. Mohon doa restu dan kehadirannya.`;
-    const ogImage = invitation.headerPhotoUrl || (invitation.photoUrls && (invitation.photoUrls as string[]).length > 0 ? (invitation.photoUrls as string[])[0] : '/images/hero-bg.png');
+    const ogImage = invitation.headerPhotoUrl || (invitation.photoUrls && invitation.photoUrls.length > 0 ? invitation.photoUrls[0] : '/images/hero-bg.png');
 
     const correctCoupleSlug = getCoupleSlug(invitation.groomName, invitation.brideName);
 
@@ -49,7 +53,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         images: [ogImage],
       },
     };
-  } catch (error) {
+  } catch {
     return { title: 'Undangan Tidak Ditemukan — Sahinaja' };
   }
 }
@@ -115,7 +119,10 @@ export default async function InvitationPage({ params, searchParams }: PageProps
   let rsvpName = '';
   let rsvpPhone = '';
 
-  // Serialize for client components
+  // Serialize for client components using the mapper
+  // v1.2: mapper reconstructs photoUrls/schedule/loveStory/digitalGifts from relations
+  const mapped = invitationMapper.toResponse(invitation as Record<string, unknown>);
+
   const guests = (invitation.guests || []).map((g: any) => ({
     ...g,
     createdAt: g.createdAt.toISOString(),
@@ -132,15 +139,9 @@ export default async function InvitationPage({ params, searchParams }: PageProps
     }
   }
 
-  // Serialize for client components
   const serialized: Invitation = {
-    ...invitation,
-    schedule: (invitation.schedule as any) || [],
-    loveStory: (invitation.loveStory as any) || [],
-    digitalGifts: (invitation.digitalGifts as any) || [],
-    eventDate: invitation.eventDate.toISOString(),
-    createdAt: invitation.createdAt.toISOString(),
-    updatedAt: invitation.updatedAt.toISOString(),
+    ...mapped,
+    tier: mapped.tier as import('@/types').Tier,
     guests,
     rsvpSubmitted,
     rsvpGuestId,

@@ -1,5 +1,6 @@
 // ============================================================
 // Billing Service — Checkout business logic
+// API Version: 1.2
 // ============================================================
 
 import { ValidationError, NotFoundError, ConflictError } from '@/lib/errors';
@@ -7,8 +8,9 @@ import { billingRepository } from './repository';
 import { PRICING, type PlanKey } from './constants';
 import type { Tier, TransactionType } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import crypto from 'crypto';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const midtransClient = require('midtrans-client');
 
 const snap = new midtransClient.Snap({
@@ -17,11 +19,24 @@ const snap = new midtransClient.Snap({
   clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,
 });
 
+/**
+ * Generate a stable idempotency key for a checkout session.
+ * Ensures the same user+invitation+plan combo doesn't create duplicate transactions.
+ */
+function generateIdempotencyKey(userId: string, invitationId: string | null, plan: string): string {
+  const raw = `${userId}:${invitationId ?? 'account'}:${plan}`;
+  return crypto.createHash('sha256').update(raw).digest('hex');
+}
+
 export const billingService = {
   /**
    * Create a checkout session with Midtrans.
+   * Idempotent: returns existing PENDING transaction if the same intent already exists.
    */
-  async createCheckout(payload: { plan: string; invitationId?: string }, user: { id: string; name?: string | null; email?: string | null }) {
+  async createCheckout(
+    payload: { plan: string; invitationId?: string },
+    user: { id: string; name?: string | null; email?: string | null }
+  ) {
     const { plan, invitationId } = payload;
 
     // Validate plan
@@ -52,43 +67,37 @@ export const billingService = {
         throw new NotFoundError('Invitation not found');
       }
 
-      if (invitation.tier === targetTier && (invitation as any).isPaid) {
+      // v1.2: isPaid removed — tier is the single source of truth
+      if (invitation.tier === targetTier && invitation.tier !== 'DRAFT') {
         throw new ConflictError('Invitation is already on this tier and activated');
       }
+    }
 
-      // Check for existing pending transaction for this invitation and plan
-      const existingTx = await prisma.transaction.findFirst({
-        where: {
-          invitationId,
-          userId: user.id,
-          status: 'PENDING',
-          tier: targetTier,
-        }
-      });
+    // --- Idempotency Check ---
+    const idempotencyKey = generateIdempotencyKey(user.id, invitationId ?? null, plan);
+    const existingTx = await billingRepository.findTransactionByIdempotencyKey(idempotencyKey);
 
-      if (existingTx && existingTx.paymentUrl) {
-        const token = existingTx.paymentUrl.split('/').pop();
-        if (token) {
-          return {
-            token,
-            redirect_url: existingTx.paymentUrl,
-          };
-        }
+    if (existingTx && existingTx.status === 'PENDING' && existingTx.paymentUrl) {
+      const token = existingTx.paymentUrl.split('/').pop();
+      if (token) {
+        return {
+          token,
+          redirect_url: existingTx.paymentUrl,
+          orderId: existingTx.id,
+        };
       }
     }
 
     // Generate custom Order ID format: ORD-YYYYMMDD-XXXX
     const now = new Date();
-    const jakartaTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+    const jakartaTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
     const yyyy = jakartaTime.getFullYear().toString();
     const mm = String(jakartaTime.getMonth() + 1).padStart(2, '0');
     const dd = String(jakartaTime.getDate()).padStart(2, '0');
     const datePrefix = `${yyyy}${mm}${dd}`;
 
     const todayTxCount = await prisma.transaction.count({
-      where: {
-        id: { startsWith: `ORD-${datePrefix}` }
-      }
+      where: { id: { startsWith: `ORD-${datePrefix}` } },
     });
 
     const orderId = `ORD-${datePrefix}-${String(todayTxCount + 1).padStart(4, '0')}`;
@@ -96,6 +105,7 @@ export const billingService = {
     // Create pending transaction
     const transaction = await billingRepository.createTransaction({
       id: orderId,
+      idempotencyKey,
       userId: user.id,
       invitationId: invitationId || null,
       amount,
@@ -141,10 +151,11 @@ export const billingService = {
         error: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/checkout`,
       },
       custom_expiry: {
-        order_time: new Date().toISOString().replace('T', ' ').substring(0, 19) + ' +0700',
+        order_time:
+          new Date().toISOString().replace('T', ' ').substring(0, 19) + ' +0700',
         expiry_duration: 24,
-        unit: 'hour'
-      }
+        unit: 'hour',
+      },
     };
 
     const snapTransaction = await snap.createTransaction(parameter);
@@ -157,31 +168,48 @@ export const billingService = {
     return {
       token: snapTransaction.token,
       redirect_url: snapTransaction.redirect_url,
+      orderId: transaction.id,
     };
   },
 
   /**
    * Reconcile any pending transactions for the user by checking status directly with Midtrans.
+   * Writes to TransactionHistory for full audit trail.
    */
   async reconcilePendingTransactions(userId: string) {
     try {
-      // First, automatically expire any PENDING transactions older than 24 hours
+      // Auto-expire PENDING transactions older than 24 hours
       const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      await prisma.transaction.updateMany({
+      const expiredTxs = await prisma.transaction.findMany({
         where: {
           userId,
           status: 'PENDING',
           createdAt: { lt: twentyFourHoursAgo },
         },
-        data: { status: 'FAILED' },
+        select: { id: true, status: true },
       });
 
-      // Find remaining PENDING transactions for the user
+      if (expiredTxs.length > 0) {
+        await prisma.$transaction(async (dbTx) => {
+          await dbTx.transaction.updateMany({
+            where: { id: { in: expiredTxs.map((t) => t.id) } },
+            data: { status: 'EXPIRED' },
+          });
+          await dbTx.transactionHistory.createMany({
+            data: expiredTxs.map((t) => ({
+              transactionId: t.id,
+              oldStatus: t.status,
+              newStatus: 'EXPIRED',
+              changedBy: 'SYSTEM',
+              metadata: { reason: 'Auto-expired after 24h' },
+            })),
+          });
+        });
+      }
+
+      // Find remaining PENDING transactions
       const pendingTransactions = await prisma.transaction.findMany({
-        where: {
-          userId,
-          status: 'PENDING',
-        },
+        where: { userId, status: 'PENDING' },
       });
 
       if (pendingTransactions.length === 0) return;
@@ -192,60 +220,77 @@ export const billingService = {
           const transactionStatus = midtransStatus.transaction_status;
           const fraudStatus = midtransStatus.fraud_status;
 
-          let newStatus: 'PENDING' | 'SUCCESS' | 'FAILED' = 'PENDING';
+          let newStatus: 'PENDING' | 'SETTLEMENT' | 'SUCCESS' | 'FAILED' | 'EXPIRED' | 'CANCELLED' = 'PENDING';
 
           if (transactionStatus === 'capture') {
-            if (fraudStatus === 'challenge') {
-              newStatus = 'PENDING';
-            } else if (fraudStatus === 'accept') {
-              newStatus = 'SUCCESS';
-            }
+            newStatus = fraudStatus === 'accept' ? 'SUCCESS' : 'PENDING';
           } else if (transactionStatus === 'settlement') {
-            newStatus = 'SUCCESS';
-          } else if (
-            transactionStatus === 'cancel' ||
-            transactionStatus === 'deny' ||
-            transactionStatus === 'expire'
-          ) {
-            newStatus = 'FAILED';
+            newStatus = 'SETTLEMENT';
+          } else if (['cancel', 'deny'].includes(transactionStatus)) {
+            newStatus = 'CANCELLED';
+          } else if (transactionStatus === 'expire') {
+            newStatus = 'EXPIRED';
           }
 
-          if (newStatus === 'SUCCESS') {
-            // Apply upgrades
+          const isPaidStatus = newStatus === 'SUCCESS' || newStatus === 'SETTLEMENT';
+
+          if (isPaidStatus) {
             await prisma.$transaction(async (dbTx) => {
               await dbTx.transaction.update({
                 where: { id: tx.id },
-                data: { 
-                  status: 'SUCCESS',
-                  midtransId: midtransStatus.transaction_id
+                data: {
+                  status: newStatus,
+                  midtransId: midtransStatus.transaction_id,
+                  paymentMethod: midtransStatus.payment_type,
+                },
+              });
+
+              await dbTx.transactionHistory.create({
+                data: {
+                  transactionId: tx.id,
+                  oldStatus: tx.status,
+                  newStatus,
+                  changedBy: 'RECONCILER',
+                  metadata: {
+                    midtransId: midtransStatus.transaction_id,
+                    paymentType: midtransStatus.payment_type,
+                  },
                 },
               });
 
               if (tx.type === 'INVITATION_UPGRADE' && tx.invitationId && tx.tier) {
                 await dbTx.invitation.update({
                   where: { id: tx.invitationId },
-                  data: { 
-                    tier: tx.tier,
-                    isPaid: true
-                  },
+                  data: { tier: tx.tier },
+                  // v1.2: isPaid removed — tier update IS the single source of truth
                 });
               }
             });
-            console.log(`[Reconciler Success]: Transaction ${tx.id} upgraded successfully!`);
-          } else if (newStatus === 'FAILED') {
-            await prisma.transaction.update({
-              where: { id: tx.id },
-              data: { status: 'FAILED' },
+            console.log(`[Reconciler Success]: Transaction ${tx.id} → ${newStatus}`);
+          } else if (newStatus !== 'PENDING') {
+            await prisma.$transaction(async (dbTx) => {
+              await dbTx.transaction.update({
+                where: { id: tx.id },
+                data: { status: newStatus },
+              });
+              await dbTx.transactionHistory.create({
+                data: {
+                  transactionId: tx.id,
+                  oldStatus: tx.status,
+                  newStatus,
+                  changedBy: 'RECONCILER',
+                },
+              });
             });
-            console.log(`[Reconciler Failed]: Transaction ${tx.id} set to FAILED.`);
+            console.log(`[Reconciler]: Transaction ${tx.id} → ${newStatus}`);
           }
-        } catch (err: any) {
-          // If transaction is not found on Midtrans yet, it throws an error (e.g. 404), which is normal for created but unpaid/unattempted tokens
-          console.warn(`[Reconciler Warning] Failed checking status for tx ${tx.id}:`, err.message || err);
+        } catch (err: unknown) {
+          const errMsg = err instanceof Error ? err.message : String(err);
+          console.warn(`[Reconciler Warning] Failed checking tx ${tx.id}:`, errMsg);
         }
       }
     } catch (error) {
-      console.error('[Reconciler Error] Error running reconciler:', error);
+      console.error('[Reconciler Error]:', error);
     }
   },
 };

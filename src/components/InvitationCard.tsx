@@ -42,8 +42,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
   const [isDeleting, setIsDeleting] = useState(false);
 
   const tier = (invitation.tier as Tier) || 'DRAFT';
-  const isPaid = invitation.isPaid;
-  const isDraft = tier === 'DRAFT' || !isPaid;
+  // v1.2: isPaid removed — tier is the single source of truth
+  const isDraft = tier === 'DRAFT';
   const displayTier = isDraft ? 'DRAFT' : tier;
 
   const isBasic    = displayTier === 'BASIC';
@@ -70,7 +70,6 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
   const pendingTx = invitation.transactions?.find((tx: any) => tx.status === 'PENDING');
   const paymentLink = pendingTx?.paymentUrl
     || `/pricing?invitationId=${invitation.id}`;
-
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.origin + invitationUrl);
@@ -224,10 +223,10 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
                     Edit Undangan
                   </Button>
                 </Link>
-                <Link href={`/checkout?plan=${pendingTx?.tier || invitation.tier || 'ULTIMATE'}&invitationId=${invitation.id}`} className="flex-1 w-full">
+                <Link href={pendingTx ? `/checkout?plan=${pendingTx.tier}&invitationId=${invitation.id}` : `/pricing?invitationId=${invitation.id}`} className="flex-1 w-full">
                   <Button className="w-full h-12 rounded-2xl bg-rose-gradient text-white font-bold text-sm shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
                     <Sparkles className="h-4 w-4 text-white fill-white animate-pulse" />
-                    Selesaikan Pembayaran
+                    {pendingTx ? 'Selesaikan Pembayaran' : 'Pilih Paket'}
                   </Button>
                 </Link>
                 <Button variant="ghost" onClick={handleDelete} className="w-full sm:w-auto h-12 px-6 rounded-2xl text-red-500 hover:bg-red-50 font-bold text-sm flex items-center justify-center">

@@ -1,14 +1,41 @@
+// ============================================================
+// Midtrans Webhook Handler
+// API Version: 1.2
+//
+// Idempotency: Every notification is stored in PaymentWebhook
+// using midtransNotifId as a unique key. Duplicate notifications
+// are silently acknowledged without reprocessing.
+//
+// Atomicity: Transaction status update + Invitation tier upgrade
+// happen in a single PostgreSQL transaction ($transaction).
+// TransactionHistory is also written atomically for full audit trail.
+// ============================================================
+
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import { sendInvoiceEmail } from '@/lib/email';
 import { PRICING } from '@/modules/billing/server/constants';
 
+// Helper: map Midtrans transaction_status + fraud_status to internal TransactionStatus
+function resolveStatus(
+  transactionStatus: string,
+  fraudStatus: string | undefined
+): 'PENDING' | 'SETTLEMENT' | 'SUCCESS' | 'FAILED' | 'EXPIRED' | 'CANCELLED' {
+  if (transactionStatus === 'capture') {
+    return fraudStatus === 'accept' ? 'SUCCESS' : 'PENDING';
+  }
+  if (transactionStatus === 'settlement') return 'SETTLEMENT';
+  if (transactionStatus === 'cancel' || transactionStatus === 'deny') return 'CANCELLED';
+  if (transactionStatus === 'expire') return 'EXPIRED';
+  if (transactionStatus === 'failure' || transactionStatus === 'reject') return 'FAILED';
+  return 'PENDING';
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
-    // Midtrans notification fields
+
     const {
       order_id,
       status_code,
@@ -16,156 +43,222 @@ export async function POST(request: Request) {
       signature_key,
       transaction_status,
       fraud_status,
-      transaction_id
+      transaction_id,
+      payment_type,
     } = body;
 
-    // Verify signature
+    // ── 1. Verify Midtrans Signature ────────────────────────
     const serverKey = process.env.MIDTRANS_SERVER_KEY || '';
-    const hash = crypto.createHash('sha512');
-    hash.update(`${order_id}${status_code}${gross_amount}${serverKey}`);
-    const calculatedSignature = hash.digest('hex');
+    const calculatedSignature = crypto
+      .createHash('sha512')
+      .update(`${order_id}${status_code}${gross_amount}${serverKey}`)
+      .digest('hex');
 
     if (calculatedSignature !== signature_key) {
-      return NextResponse.json({ success: false, error: 'Invalid signature' }, { status: 403 });
+      return NextResponse.json(
+        { success: false, error: 'Invalid signature' },
+        { status: 403, headers: { 'X-API-Version': '1.2' } }
+      );
     }
 
-    // Determine new status
-    let newStatus: 'PENDING' | 'SUCCESS' | 'FAILED' = 'PENDING';
+    // ── 2. Idempotency Check ────────────────────────────────
+    // Build a unique notification ID from order_id + transaction_status
+    // so the same notification can be retried safely.
+    const midtransNotifId = `${order_id}:${transaction_status}:${transaction_id ?? 'unknown'}`;
+    const existingWebhook = await prisma.paymentWebhook.findUnique({
+      where: { midtransNotifId },
+    });
 
-    if (transaction_status === 'capture') {
-      if (fraud_status === 'challenge') {
-        newStatus = 'PENDING'; // Still needs manual verification on Midtrans dashboard
-      } else if (fraud_status === 'accept') {
-        newStatus = 'SUCCESS';
-      }
-    } else if (transaction_status === 'settlement') {
-      newStatus = 'SUCCESS';
-    } else if (
-      transaction_status === 'cancel' ||
-      transaction_status === 'deny' ||
-      transaction_status === 'expire'
-    ) {
-      newStatus = 'FAILED';
-    } else if (transaction_status === 'pending') {
-      newStatus = 'PENDING';
+    if (existingWebhook) {
+      // Already processed — return 200 OK without reprocessing
+      console.log(`[Webhook] Duplicate notification ignored: ${midtransNotifId}`);
+      return NextResponse.json(
+        { success: true, duplicate: true },
+        { headers: { 'X-API-Version': '1.2' } }
+      );
     }
 
-    // Fetch transaction from DB
+    // ── 3. Fetch Transaction ────────────────────────────────
     const transaction = await prisma.transaction.findUnique({
       where: { id: order_id },
     });
 
     if (!transaction) {
-      return NextResponse.json({ success: false, error: 'Transaction not found' }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: 'Transaction not found' },
+        { status: 404, headers: { 'X-API-Version': '1.2' } }
+      );
     }
 
-    // If status changed to SUCCESS, apply the upgrades
-    if (newStatus === 'SUCCESS' && transaction.status !== 'SUCCESS') {
-      // Execute within a database transaction to ensure atomicity
-      const { userEmail, coupleNames } = await prisma.$transaction(async (tx) => {
-        // 1. Update Transaction
-        await tx.transaction.update({
-          where: { id: transaction.id },
-          data: { 
-            status: 'SUCCESS',
-            midtransId: transaction_id
+    const newStatus = resolveStatus(transaction_status, fraud_status);
+    const isPaidStatus = newStatus === 'SUCCESS' || newStatus === 'SETTLEMENT';
+
+    // ── 4. Process in Atomic PostgreSQL Transaction ─────────
+    let userEmail = '';
+    let coupleNames = 'Upgrade Paket Layanan';
+
+    if (isPaidStatus && transaction.status !== 'SUCCESS' && transaction.status !== 'SETTLEMENT') {
+      const result = await prisma.$transaction(async (tx) => {
+        // a. Log raw webhook payload (idempotency record)
+        await tx.paymentWebhook.create({
+          data: {
+            transactionId: transaction.id,
+            rawPayload: body,
+            midtransNotifId,
           },
         });
 
-        // 2. Fetch User Email
-        const user = await tx.user.findUnique({
-          where: { id: transaction.userId },
-          select: { email: true }
+        // b. Update transaction status
+        await tx.transaction.update({
+          where: { id: transaction.id },
+          data: {
+            status: newStatus,
+            midtransId: transaction_id,
+            paymentMethod: payment_type ?? null,
+          },
         });
-        const email = user?.email || '';
 
-        // 3. Apply Upgrades
+        // c. Write audit history
+        await tx.transactionHistory.create({
+          data: {
+            transactionId: transaction.id,
+            oldStatus: transaction.status,
+            newStatus,
+            changedBy: 'WEBHOOK',
+            metadata: {
+              midtransId: transaction_id,
+              paymentType: payment_type,
+              fraudStatus: fraud_status,
+              transactionStatus: transaction_status,
+            },
+          },
+        });
+
+        // d. Upgrade invitation tier (atomic with above)
         let names = 'Upgrade Paket Layanan';
         if (transaction.type === 'INVITATION_UPGRADE' && transaction.invitationId && transaction.tier) {
-          // Calculate expiresAt
           const invData = await tx.invitation.findUnique({
             where: { id: transaction.invitationId },
-            select: { eventDate: true }
+            select: { eventDate: true, groomName: true, brideName: true },
           });
-          
+
           let expiresAt: Date | null = null;
           if (invData?.eventDate) {
             const eventDate = new Date(invData.eventDate);
-            let addedDays = 0;
-            if (transaction.tier === 'BASIC') addedDays = 7;
-            else if (transaction.tier === 'PREMIUM') addedDays = 14;
-            else if (transaction.tier === 'ULTIMATE') addedDays = 30;
-            
+            const addedDays =
+              transaction.tier === 'BASIC' ? 7
+              : transaction.tier === 'PREMIUM' ? 14
+              : transaction.tier === 'ULTIMATE' ? 30
+              : 0;
             if (addedDays > 0) {
               expiresAt = new Date(eventDate.getTime() + addedDays * 24 * 60 * 60 * 1000);
             }
           }
 
-          const inv = await tx.invitation.update({
+          await tx.invitation.update({
             where: { id: transaction.invitationId },
-            data: { 
+            data: {
               tier: transaction.tier,
-              isPaid: true,
-              ...(expiresAt ? { expiresAt } : {})
+              // v1.2: isPaid REMOVED — tier update IS the single source of truth
+              ...(expiresAt ? { expiresAt } : {}),
             },
-            select: { groomName: true, brideName: true }
           });
-          if (inv) {
-            names = `${inv.groomName} & ${inv.brideName}`;
+
+          if (invData) {
+            names = `${invData.groomName} & ${invData.brideName}`;
           }
         }
 
-        return { userEmail: email, coupleNames: names };
+        // e. Fetch user email (within transaction for consistency)
+        const user = await tx.user.findUnique({
+          where: { id: transaction.userId },
+          select: { email: true },
+        });
+
+        return { email: user?.email ?? '', coupleNames: names };
       });
 
-      // Send Invoice/Receipt Email outside of transaction block to avoid SMTP latency holding database locks
-      if (userEmail) {
-        let planName = 'Premium Plan';
-        let subtotal: number = PRICING.PREMIUM;
+      userEmail = result.email;
+      coupleNames = result.coupleNames;
 
-        if (transaction.tier === 'BASIC') {
-          planName = 'Minimalist Plan';
-          subtotal = PRICING.BASIC;
-        } else if (transaction.tier === 'PREMIUM') {
-          planName = 'Premium Plan';
-          subtotal = PRICING.PREMIUM;
-        } else if (transaction.tier === 'ULTIMATE') {
-          planName = 'Ultimate Plan';
-          subtotal = PRICING.ULTIMATE;
-        }
-
-        const ppn = Math.round(subtotal * 0.11);
-        const adminFee = 2500;
-        const total = transaction.amount; // Use actual amount saved in DB as total for perfect consistency
-
-        try {
-          await sendInvoiceEmail(userEmail, {
-            orderId: transaction.id,
-            planName: planName,
-            subtotal,
-            ppn,
-            adminFee,
-            total,
-            coupleNames
-          });
-        } catch (mailError) {
-          console.error('[Mail Webhook Error]:', mailError);
-        }
-      }
     } else if (newStatus !== transaction.status) {
-      // Just update status (e.g., FAILED)
-      await prisma.transaction.update({
-        where: { id: transaction.id },
-        data: { 
-          status: newStatus,
-          midtransId: transaction_id 
+      // Non-success status change (CANCELLED, EXPIRED, FAILED, PENDING)
+      await prisma.$transaction(async (tx) => {
+        await tx.paymentWebhook.create({
+          data: {
+            transactionId: transaction.id,
+            rawPayload: body,
+            midtransNotifId,
+          },
+        });
+
+        await tx.transaction.update({
+          where: { id: transaction.id },
+          data: {
+            status: newStatus,
+            ...(transaction_id ? { midtransId: transaction_id } : {}),
+          },
+        });
+
+        await tx.transactionHistory.create({
+          data: {
+            transactionId: transaction.id,
+            oldStatus: transaction.status,
+            newStatus,
+            changedBy: 'WEBHOOK',
+            metadata: { transactionStatus: transaction_status, fraudStatus: fraud_status },
+          },
+        });
+      });
+    } else {
+      // Status unchanged — still log the webhook for traceability
+      await prisma.paymentWebhook.create({
+        data: {
+          transactionId: transaction.id,
+          rawPayload: body,
+          midtransNotifId,
         },
+      }).catch(() => {
+        // Silently ignore if somehow unique constraint fires
       });
     }
 
-    return NextResponse.json({ success: true });
+    // ── 5. Send Invoice Email (outside DB transaction to avoid SMTP latency holding locks) ─
+    if (userEmail && isPaidStatus) {
+      const tierKey = transaction.tier ?? 'PREMIUM';
+      let planName = 'Premium Plan';
+      let subtotal: number = PRICING.PREMIUM;
+
+      if (tierKey === 'BASIC') { planName = 'Minimalist Plan'; subtotal = PRICING.BASIC; }
+      else if (tierKey === 'ULTIMATE') { planName = 'Ultimate Plan'; subtotal = PRICING.ULTIMATE; }
+
+      const ppn = Math.round(subtotal * 0.11);
+      const adminFee = 2500;
+
+      try {
+        await sendInvoiceEmail(userEmail, {
+          orderId: transaction.id,
+          planName,
+          subtotal,
+          ppn,
+          adminFee,
+          total: transaction.amount,
+          coupleNames,
+        });
+      } catch (mailError) {
+        console.error('[Webhook Mail Error]:', mailError);
+      }
+    }
+
+    return NextResponse.json(
+      { success: true },
+      { headers: { 'X-API-Version': '1.2' } }
+    );
   } catch (error) {
     console.error('[Midtrans Webhook Error]:', error);
-    return NextResponse.json({ success: false, error: 'Webhook processing failed' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: 'Webhook processing failed' },
+      { status: 500, headers: { 'X-API-Version': '1.2' } }
+    );
   }
 }

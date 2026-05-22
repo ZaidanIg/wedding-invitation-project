@@ -93,7 +93,7 @@ export default function DashboardPage() {
             <Card className="p-8 bg-white border-[#eceae4] rounded-[2.5rem] shadow-sm hover:shadow-md transition-all">
               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-5">Status Aktif</div>
               <div className="text-4xl font-display font-bold text-[#1c1c1c] mb-2">
-                {invitations.filter(inv => inv.tier !== 'DRAFT' && inv.isPaid).length}
+                {invitations.filter(inv => inv.tier !== 'DRAFT').length}
               </div>
               <p className="text-[#6b6b6b] text-xs font-medium">Sudah diaktifkan</p>
             </Card>

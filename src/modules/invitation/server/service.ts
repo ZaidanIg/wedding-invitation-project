@@ -21,26 +21,27 @@ const validateTierConstraints = (tier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE
   if (tier === 'BASIC') {
     const classicLayouts = ['elegant-cream', 'royal-blue', 'rose-garden', 'islamic-minimalist', 'islamic-midnight', 'islamic-arabesque'];
     if (data.layout && !classicLayouts.includes(data.layout)) {
-      throw new ForbiddenError("Paket Basic hanya mendukung tema Klasik/Minimalis.");
+      throw new ForbiddenError('Paket Basic hanya mendukung tema Klasik/Minimalis.');
     }
+    // v1.2: photoUrls now maps to InvitationPhoto (type GALLERY)
     if (data.photoUrls && data.photoUrls.length > 0) {
-      throw new ForbiddenError("Paket Basic tidak mendukung galeri foto (hanya foto utama).");
+      throw new ForbiddenError('Paket Basic tidak mendukung galeri foto (hanya foto utama).');
     }
   } else if (tier === 'PREMIUM') {
     if (data.photoUrls && data.photoUrls.length > 3) {
-      throw new ForbiddenError("Paket Premium hanya mendukung maksimal 3 foto di galeri.");
+      throw new ForbiddenError('Paket Premium hanya mendukung maksimal 3 foto di galeri.');
     }
     if (data.videoUrl) {
-      throw new ForbiddenError("Paket Premium tidak mendukung fitur video. Silakan upgrade ke Paket Ultimate.");
+      throw new ForbiddenError('Paket Premium tidak mendukung fitur video. Silakan upgrade ke Paket Ultimate.');
     }
   } else if (tier === 'ULTIMATE') {
     if (data.photoUrls && data.photoUrls.length > 7) {
-      throw new ForbiddenError("Paket Ultimate hanya mendukung maksimal 7 foto di galeri.");
+      throw new ForbiddenError('Paket Ultimate hanya mendukung maksimal 7 foto di galeri.');
     }
     if (data.videoUrl) {
       const isEmbed = /youtube\.com|youtu\.be|tiktok\.com|instagram\.com/.test(data.videoUrl);
       if (!isEmbed) {
-        throw new ValidationError("Link video harus berupa embed URL text dari YouTube, TikTok, atau Instagram Reels.");
+        throw new ValidationError('Link video harus berupa embed URL text dari YouTube, TikTok, atau Instagram Reels.');
       }
     }
   }
@@ -80,7 +81,8 @@ export const invitationService = {
       throw new NotFoundError('User not found');
     }
 
-    const tier = data.tier || 'DRAFT';
+    // v1.2 FIX: Force tier to DRAFT on creation. Tier will be upgraded by Midtrans Webhook upon successful payment.
+    const tier = 'DRAFT';
     
     // Validate limits
     validateTierConstraints(tier, data);
@@ -91,7 +93,7 @@ export const invitationService = {
     const entity = await invitationRepository.create({
       ...data,
       eventDate: new Date(data.eventDate),
-      photoUrls: data.photoUrls ?? [],
+      photoUrls: data.photoUrls ?? [],       // → InvitationPhoto (GALLERY)
       headerPhotoUrl: data.headerPhotoUrl ?? null,
       groomPhotoUrl: data.groomPhotoUrl ?? null,
       bridePhotoUrl: data.bridePhotoUrl ?? null,
@@ -100,14 +102,14 @@ export const invitationService = {
       musicUrl: data.musicUrl ?? null,
       videoUrl: data.videoUrl ?? null,
       quotes: data.quotes ?? null,
-      schedule: data.schedule ?? [],
-      loveStory: data.loveStory ?? [],
-      digitalGifts: data.digitalGifts ?? [],
+      schedule: data.schedule ?? [],         // → InvitationEvent
+      loveStory: data.loveStory ?? [],       // → InvitationStory
+      digitalGifts: data.digitalGifts ?? [], // → InvitationGift
       userId,
       tier,
     });
 
-    return invitationMapper.toResponse(entity);
+    return invitationMapper.toResponse(entity as Record<string, unknown>);
   },
 
   /**
@@ -210,10 +212,11 @@ export const invitationService = {
     const tier = existing.tier as 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE';
 
     // Strip sensitive fields that should not be updated via user API
-    const { tier: _, isPaid, aiRegenCount, userId: __, slug, viewCount, ...safeData } = parsed.data as Record<string, any>;
+    // v1.2: isPaid removed from schema
+    const { tier: _, aiRegenCount, userId: __, slug, viewCount, schedule, loveStory, digitalGifts, photoUrls, ...safeData } = parsed.data as Record<string, any>;
     
     // Enforce constraints
-    validateTierConstraints(tier, safeData);
+    validateTierConstraints(tier, { ...safeData, photoUrls });
     sanitizeTierFeatures(tier, safeData);
 
     if (safeData.eventDate && typeof safeData.eventDate === 'string') {
@@ -233,8 +236,22 @@ export const invitationService = {
       }
     }
 
-    const updated = await invitationRepository.update(id, safeData);
-    return invitationMapper.toResponse(updated);
+    // Update scalar fields
+    await invitationRepository.update(id, safeData);
+
+    // Update normalized relations if provided in the payload
+    const hasRelationalUpdates = schedule !== undefined || loveStory !== undefined || digitalGifts !== undefined || photoUrls !== undefined;
+    if (hasRelationalUpdates) {
+      await invitationRepository.updateRelations(id, {
+        ...(schedule !== undefined && { events: schedule }),
+        ...(loveStory !== undefined && { stories: loveStory }),
+        ...(digitalGifts !== undefined && { gifts: digitalGifts }),
+        ...(photoUrls !== undefined && { photoUrls }),
+      });
+    }
+
+    const updated = await invitationRepository.findById(id);
+    return invitationMapper.toResponse(updated as Record<string, unknown>);
   },
 
   /**

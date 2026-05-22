@@ -6,8 +6,26 @@ import Groq from 'groq-sdk';
 import { prisma } from '@/lib/prisma';
 import { ValidationError, ForbiddenError, NotFoundError } from '@/lib/errors';
 import { generateInputSchema } from './validators';
+import { checkUserDailyAiLimit } from '@/lib/rate-limiter';
 import type { GeneratedInvitation } from '@/types';
 import type { ZodError } from 'zod';
+
+const AI_LIMITS = {
+  DRAFT: 2,
+  BASIC: 3,
+  PREMIUM: 10,
+  ULTIMATE: 30,
+};
+
+function getFallbackTemplate(groom: string, bride: string): GeneratedInvitation {
+  return {
+    greeting: "Dengan memohon rahmat dan ridho Tuhan Yang Maha Esa,",
+    mainBody: `Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir untuk memberikan doa restu pada pernikahan ${groom} & ${bride}.`,
+    eventInfo: "Detail waktu dan lokasi tercantum pada bagian informasi acara.",
+    closing: "Atas kehadiran dan doa restunya, kami ucapkan terima kasih.",
+    fullText: `Dengan memohon rahmat dan ridho Tuhan Yang Maha Esa,\nMerupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir untuk memberikan doa restu pada pernikahan ${groom} & ${bride}.\nDetail waktu dan lokasi tercantum pada bagian informasi acara.\nAtas kehadiran dan doa restunya, kami ucapkan terima kasih.`
+  };
+}
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -122,34 +140,53 @@ export const aiService = {
         select: { tier: true, aiRegenCount: true },
       });
 
-      if (invitation && invitation.tier === 'BASIC' && invitation.aiRegenCount >= 3) {
-        throw new ValidationError("Batas regenerasi teks AI untuk Paket Basic telah habis. Silakan upgrade.");
+      if (invitation) {
+        const tier = invitation.tier as keyof typeof AI_LIMITS;
+        const maxLimit = AI_LIMITS[tier] || AI_LIMITS.DRAFT;
+        
+        if (invitation.aiRegenCount >= maxLimit) {
+          throw new ValidationError(`Batas regenerasi teks AI untuk paket ${tier} telah habis (Maks ${maxLimit}x). Silakan upgrade paket Anda.`);
+        }
+      }
+    } else {
+      // Unsaved invitation: limit to 2 per day globally for the user
+      if (!checkUserDailyAiLimit(userId, 2)) {
+        throw new ValidationError("Batas uji coba AI tanpa menyimpan (2x/hari) telah habis. Silakan simpan undangan ini sebagai Draf terlebih dahulu.");
       }
     }
 
-    // Call AI
+    // Call AI with Fallback
     const systemPrompt = buildSystemPrompt(input.tone, input.language);
     const userPrompt = buildUserPrompt(input);
 
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      model: MODEL,
-      temperature: 0.7,
-      max_tokens: 512,
-      response_format: { type: 'json_object' },
-    });
+    let generated: GeneratedInvitation;
 
-    const content = chatCompletion.choices[0]?.message?.content;
-    if (!content) {
-      throw new Error('AI returned an empty response');
+    try {
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        model: MODEL,
+        temperature: 0.7,
+        max_tokens: 512,
+        response_format: { type: 'json_object' },
+      });
+
+      const content = chatCompletion.choices[0]?.message?.content;
+      if (!content) {
+        throw new Error('AI returned an empty response');
+      }
+
+      generated = parseAiResponse(content);
+    } catch (error) {
+      console.error('[AI Service] Groq API failed, using fallback:', error);
+      generated = getFallbackTemplate(input.groomName, input.brideName);
+      // We also add a special flag so frontend knows it's a fallback, though optional.
+      // (generated as any)._isFallback = true;
     }
 
-    const generated = parseAiResponse(content);
-
-    // On successful generation, increment AI count
+    // On successful generation (including fallback), increment AI count
     if (input.invitationId) {
       await prisma.invitation.update({
         where: { id: input.invitationId },
