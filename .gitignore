@@ -53,5 +53,8 @@ AGENTS.md
 CLAUDE.md
 DESIGN.md
 
-rules/
+# Playwright
+playwright-report/
+test-results/
+
 midtrans-tnc-template-13-jan-2017.pdf

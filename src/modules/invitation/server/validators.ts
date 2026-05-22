@@ -7,7 +7,7 @@ import { z } from 'zod';
 const VALID_TONES = ['formal', 'romantic', 'modern', 'playful'] as const;
 const VALID_LANGUAGES = ['id', 'en'] as const;
 
-export const createInvitationSchema = z.object({
+const baseInvitationSchema = z.object({
   groomName: z.string().min(2, 'Groom name is required (min 2 characters)'),
   groomParents: z.string().optional(),
   brideName: z.string().min(2, 'Bride name is required (min 2 characters)'),
@@ -54,7 +54,24 @@ export const createInvitationSchema = z.object({
   qrEnabled: z.boolean().optional().default(true),
 });
 
-export const updateInvitationSchema = createInvitationSchema.partial();
+export const createInvitationSchema = baseInvitationSchema.superRefine((data, ctx) => {
+  // Validate photo array lengths based on Tiers (Basic > 3 photos should fail)
+  if (data.tier === 'BASIC' && data.photoUrls && data.photoUrls.length > 3) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Paket Basic Maksimal 3 foto galeri',
+      path: ['photoUrls'],
+    });
+  } else if (data.tier === 'PREMIUM' && data.photoUrls && data.photoUrls.length > 10) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Paket Premium Maksimal 10 foto galeri',
+      path: ['photoUrls'],
+    });
+  }
+});
+
+export const updateInvitationSchema = baseInvitationSchema.partial();
 
 export const recordViewSchema = z.object({
   slug: z.string().min(1, 'Slug is required'),
