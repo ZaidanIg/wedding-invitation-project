@@ -31,7 +31,6 @@ import {
   IconMapper,
   CountdownTimer,
   TierGate,
-  LockedSection,
   DigitalGiftSection,
   QuotesSection,
   WishesSection
@@ -137,7 +136,7 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
                 <TierGate 
                   tier={invitation.tier} 
                   minTier="BASIC"
-                  fallback={isPreview ? <LockedSection title="Countdown Timer" requiredTier="Basic" className="bg-white/50 backdrop-blur-sm border-white/20" /> : null}
+                  
                 >
                   <AnimatedSection delay="delay-200">
                      <CountdownTimer targetDate={invitation.eventDate} textColor="text-stone-800" labelColor="text-stone-400" separatorColor="text-[#d4af37]" />
@@ -175,7 +174,7 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
         <TierGate 
           tier={invitation.tier} 
           minTier="BASIC"
-          fallback={isPreview ? <LockedSection title="Love Story Timeline" requiredTier="Basic" className="my-12 mx-6" /> : null}
+          
         >
           <LoveStorySection 
             story={invitation.loveStory || []} 

@@ -22,7 +22,7 @@ import {
   WishesSection, 
   AudioPlayer,
   TierGate,
-  LockedSection,
+  useTier,
   ParallaxSection,
   ParallaxImage,
   DigitalGiftSection,
@@ -151,6 +151,7 @@ function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: bool
 }
 
 export default function ConfucianOriental({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
+  const { tier } = useTier();
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
@@ -267,9 +268,11 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                 <p className="font-black tracking-[0.5em] text-[10px] uppercase opacity-70">{formattedDate}</p>
               </AnimatedSection>
               
+              <TierGate tier={tier} minTier="PREMIUM">
               <div className="mt-16 bg-white/60 backdrop-blur-md p-10 rounded-[4rem] border border-[#8B0000]/10 shadow-2xl max-w-sm mx-auto ring-1 ring-[#8B0000]/5">
-                 <CountdownTimer targetDate={invitation.eventDate} textColor="text-[#8B0000]" labelColor="text-[#8B0000]/60" separatorColor="text-[#FFD700]" />
+                <CountdownTimer targetDate={invitation.eventDate} textColor="text-[#8B0000]" labelColor="text-[#8B0000]/60" separatorColor="text-[#FFD700]" />
               </div>
+            </TierGate>
            </div>
         </section>
 
@@ -384,7 +387,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
         <TierGate 
           tier={invitation.tier} 
           minTier="BASIC"
-          fallback={isPreview ? <LockedSection title="Oriental Journey" requiredTier="Basic" className="my-16 mx-6 rounded-[3rem]" /> : null}
+          
         >
           <LoveStorySection 
             story={invitation.loveStory || []} 
@@ -448,6 +451,30 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
         </section>
 
         {/* Gallery Section */}
+      {/* Video Embed */}
+      {(invitation as any).videoUrl && (
+        <section className="py-12 px-6 bg-[#fffcf9] relative z-10">
+          <AnimatedSection>
+            <div className="rounded-3xl overflow-hidden border border-[#8b0000]/30 shadow-xl h-[280px]">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameBorder="0" 
+                style={{ border: 0 }} 
+                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
+                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
+                  : (invitation as any).videoUrl.includes('youtu.be/')
+                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
+                    : (invitation as any).videoUrl} 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Wedding Video" 
+              />
+            </div>
+          </AnimatedSection>
+        </section>
+      )}
+
         {galleryPhotos.length > 0 && (
           <section id="gallery" className="py-40 px-4 bg-[#fffcf5] relative">
              <AnimatedSection className="text-center mb-24">
@@ -471,15 +498,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
         <TierGate 
           tier={invitation.tier} 
           minTier="ULTIMATE"
-          fallback={isPreview ? (
-            <section className="py-32 px-6 bg-white text-center">
-              <LockedSection 
-                title="VIP Oriental Management" 
-                requiredTier="Ultimate" 
-                className="max-w-xl mx-auto border-[#8B0000]/5 bg-[#fffcf5]/50 rounded-[3rem]"
-              />
-            </section>
-          ) : null}
+          
         >
           <section className="py-40 px-8 bg-white relative overflow-hidden">
              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#8B0000]/5 rounded-full blur-[120px] -mr-64 -mt-64 opacity-60" />

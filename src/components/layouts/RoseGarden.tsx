@@ -19,6 +19,8 @@ import {
   LoveStorySection,
   GuestWelcome,
   QuotesSection,
+  TierGate,
+  useTier,
 } from './shared';
 
 interface LayoutProps {
@@ -57,6 +59,7 @@ function FloralBorder() {
 }
 
 export default function RoseGarden({ invitation, isPreview = false }: LayoutProps) {
+  const { tier } = useTier();
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
@@ -109,6 +112,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
 
       {/* Countdown */}
       <section className="py-14 px-4 sm:px-6 text-center bg-[#fdf2f4]">
+        <TierGate tier={tier} minTier="PREMIUM">
         <AnimatedSection>
           <FloralBorder />
           <p className="text-xs uppercase tracking-[0.25em] text-pink-400 mb-8 mt-2">Counting the days</p>
@@ -116,6 +120,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
         <AnimatedSection delay="delay-200">
           <CountdownTimer targetDate={invitation.eventDate} textColor="text-rose-800" labelColor="text-pink-400" separatorColor="text-pink-300" />
         </AnimatedSection>
+      </TierGate>
         <AnimatedSection animation="scale" delay="delay-300">
           <div className="mt-8 inline-flex items-center gap-4 bg-white/60 backdrop-blur-sm border border-pink-200 rounded-2xl px-6 py-4 shadow-sm">
             <span className="text-xs uppercase tracking-widest text-pink-500">{dayName}</span>

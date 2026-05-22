@@ -52,7 +52,7 @@ import {
   GuestWelcome,
   IconMapper,
   TierGate,
-  LockedSection,
+  useTier,
   WishesSection
 } from './shared';
 import Button from '@/components/ui/Button';
@@ -204,6 +204,7 @@ function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: bool
 }
 
 export default function IslamicGrace({ invitation, isPreview = false }: LayoutProps) {
+  const { tier } = useTier();
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -388,7 +389,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
         <TierGate 
           tier={invitation.tier} 
           minTier="PREMIUM"
-          fallback={isPreview ? <LockedSection title="Love Story Timeline" requiredTier="Premium" className="my-24 mx-6" /> : null}
+          
         >
           <LoveStorySection 
             story={invitation.loveStory || []} 
@@ -403,9 +404,11 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
            <div className="max-w-md mx-auto text-center relative z-10 text-white">
               <AnimatedSection>
                 <h2 className="text-3xl font-display font-bold mb-12">Agenda Acara</h2>
-                <div className="mb-16">
-                   <CountdownTimer targetDate={invitation.eventDate} textColor="text-white" labelColor="text-white/40" separatorColor="text-[#c5a059]" />
-                </div>
+                <TierGate tier={tier} minTier="PREMIUM">
+                  <div className="mb-16">
+                     <CountdownTimer targetDate={invitation.eventDate} textColor="text-white" labelColor="text-white/40" separatorColor="text-[#c5a059]" />
+                  </div>
+                </TierGate>
               </AnimatedSection>
               
               <div className="space-y-12">
@@ -430,6 +433,30 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
         </section>
 
         {/* Gallery */}
+      {/* Video Embed */}
+      {(invitation as any).videoUrl && (
+        <section className="py-12 px-6 bg-[#1a2b23] relative z-10">
+          <AnimatedSection>
+            <div className="rounded-3xl overflow-hidden border border-[#c5a059]/30 shadow-2xl h-[280px]">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameBorder="0" 
+                style={{ border: 0 }} 
+                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
+                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
+                  : (invitation as any).videoUrl.includes('youtu.be/')
+                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
+                    : (invitation as any).videoUrl} 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+                title="Wedding Video" 
+              />
+            </div>
+          </AnimatedSection>
+        </section>
+      )}
+
         {galleryPhotos.length > 0 && (
           <section id="gallery" className="py-24 px-4 bg-[#fdfcf9]">
              <AnimatedSection className="text-center mb-16">
@@ -453,7 +480,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
         <TierGate 
           tier={invitation.tier} 
           minTier="ULTIMATE"
-          fallback={isPreview ? <LockedSection title="VIP Guest Features" requiredTier="Ultimate" className="my-24 mx-6" /> : null}
+          
         >
           <section className="py-24 px-8 bg-white text-center">
              <AnimatedSection className="mb-12">

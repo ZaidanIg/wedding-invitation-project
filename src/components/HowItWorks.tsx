@@ -62,13 +62,13 @@ export default function HowItWorks() {
         {/* Benefits List - Editorial style */}
         <div className="mt-32 grid grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10 border-t border-[#eceae4] pt-20">
           {[
-            'RSVP Tracking',
-            'Digital Gift',
-            'Google Maps Integration',
-            'Music & Gallery',
-            'Custom Domain',
-            'Unlimited Views',
-            'WhatsApp Generator',
+            'RSVP & QR Check-in',
+            'Digital Gift / Amplop',
+            'Integrasi Google Maps',
+            'Galeri, Video & Musik',
+            'Link Undangan Eksklusif',
+            'AI Text Generation',
+            'WhatsApp Broadcast',
             'Dashboard Analytics',
           ].map((benefit, i) => (
             <div key={i} className="flex items-center gap-4 group">
