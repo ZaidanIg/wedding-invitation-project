@@ -97,7 +97,7 @@ export function PhotoCarousel({ photos, className = "" }: { photos: string[]; cl
           transition={{ duration: 1.2, ease: "easeInOut" }}
           className="absolute inset-0 w-full h-full"
         >
-          <img src={photos[index]} alt="Carousel" className="w-full h-full object-cover" />
+          <Image src={photos[index]} alt="Carousel" fill className="object-cover" />
         </motion.div>
       </AnimatePresence>
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10 pointer-events-none" />
@@ -230,7 +230,7 @@ export function ParallaxImage({ src, alt, className = "", rounded = true }: { sr
   return (
     <div ref={ref} className={`relative overflow-hidden ${rounded ? 'rounded-[2rem] mx-4 sm:mx-8' : ''} ${className} shadow-xl border border-white/10`}>
       <motion.div style={{ y, height: "130%", top: "-15%" }} className="absolute inset-0 w-full">
-        <img src={src} alt={alt} className="w-full h-full object-cover" loading="lazy" />
+        <Image src={src} alt={alt} fill className="object-cover" />
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
     </div>

@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 
 export const billingRepository = {
   async createTransaction(data: {
+    id?: string;
     userId: string;
     invitationId: string | null;
     amount: number;
@@ -15,6 +16,7 @@ export const billingRepository = {
   }) {
     return prisma.transaction.create({
       data: {
+        id: data.id,
         userId: data.userId,
         invitationId: data.invitationId,
         amount: data.amount,

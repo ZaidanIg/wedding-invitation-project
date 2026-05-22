@@ -109,7 +109,7 @@ model Invitation {
   qrEnabled      Boolean       @default(true)
   expiresAt      DateTime?
   guests         Guest[]
-  user           User          @relation(fields: [userId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions   Transaction[]
 
   @@index([slug])
@@ -152,10 +152,11 @@ model Transaction {
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
   invitation   Invitation?       @relation(fields: [invitationId], references: [id])
-  user         User              @relation(fields: [userId], references: [id])
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([invitationId])
+  @@index([status])
 }
 
 enum Role {

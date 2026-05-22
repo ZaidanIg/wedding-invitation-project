@@ -55,10 +55,47 @@ export const billingService = {
       if (invitation.tier === targetTier && (invitation as any).isPaid) {
         throw new ConflictError('Invitation is already on this tier and activated');
       }
+
+      // Check for existing pending transaction for this invitation and plan
+      const existingTx = await prisma.transaction.findFirst({
+        where: {
+          invitationId,
+          userId: user.id,
+          status: 'PENDING',
+          tier: targetTier,
+        }
+      });
+
+      if (existingTx && existingTx.paymentUrl) {
+        const token = existingTx.paymentUrl.split('/').pop();
+        if (token) {
+          return {
+            token,
+            redirect_url: existingTx.paymentUrl,
+          };
+        }
+      }
     }
+
+    // Generate custom Order ID format: ORD-YYYYMMDD-XXXX
+    const now = new Date();
+    const jakartaTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+    const yyyy = jakartaTime.getFullYear().toString();
+    const mm = String(jakartaTime.getMonth() + 1).padStart(2, '0');
+    const dd = String(jakartaTime.getDate()).padStart(2, '0');
+    const datePrefix = `${yyyy}${mm}${dd}`;
+
+    const todayTxCount = await prisma.transaction.count({
+      where: {
+        id: { startsWith: `ORD-${datePrefix}` }
+      }
+    });
+
+    const orderId = `ORD-${datePrefix}-${String(todayTxCount + 1).padStart(4, '0')}`;
 
     // Create pending transaction
     const transaction = await billingRepository.createTransaction({
+      id: orderId,
       userId: user.id,
       invitationId: invitationId || null,
       amount,
@@ -102,6 +139,11 @@ export const billingService = {
         finish: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/dashboard`,
         unfinish: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/checkout`,
         error: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/checkout`,
+      },
+      custom_expiry: {
+        order_time: new Date().toISOString().replace('T', ' ').substring(0, 19) + ' +0700',
+        expiry_duration: 24,
+        unit: 'hour'
       }
     };
 
@@ -123,7 +165,18 @@ export const billingService = {
    */
   async reconcilePendingTransactions(userId: string) {
     try {
-      // Find all PENDING transactions for the user
+      // First, automatically expire any PENDING transactions older than 24 hours
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      await prisma.transaction.updateMany({
+        where: {
+          userId,
+          status: 'PENDING',
+          createdAt: { lt: twentyFourHoursAgo },
+        },
+        data: { status: 'FAILED' },
+      });
+
+      // Find remaining PENDING transactions for the user
       const pendingTransactions = await prisma.transaction.findMany({
         where: {
           userId,
