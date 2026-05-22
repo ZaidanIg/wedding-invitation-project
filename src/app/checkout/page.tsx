@@ -7,17 +7,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Check, 
-  Crown, 
-  Zap, 
-  Heart, 
-  ShieldCheck, 
-  CreditCard, 
-  ArrowLeft, 
-  AlertCircle, 
-  Calendar, 
-  MapPin, 
+import {
+  Check,
+  Crown,
+  Zap,
+  Heart,
+  ShieldCheck,
+  CreditCard,
+  ArrowLeft,
+  AlertCircle,
+  Calendar,
+  MapPin,
   FileText,
   User
 } from 'lucide-react';
@@ -53,6 +53,7 @@ const PLANS: Record<string, PlanDetails> = {
       'Informasi Acara Lengkap',
       'Integrasi Google Maps Aktif',
       'Buku Tamu Digital Standar',
+      'Asisten Teks AI (Maks 3x)',
       'Masa Aktif 1 Tahun'
     ],
     icon: <Heart className="h-6 w-6 text-blue-500" />,
@@ -69,6 +70,7 @@ const PLANS: Record<string, PlanDetails> = {
       'Kisah Cinta Romantis (Love Story)',
       'Countdown Timer Pernikahan',
       'Musik Latar Kustom (Instrumental)',
+      'Asisten Teks AI (Maks 10x)',
       'Masa Aktif Selamanya'
     ],
     icon: <Zap className="h-6 w-6 text-rose-500" />,
@@ -85,7 +87,8 @@ const PLANS: Record<string, PlanDetails> = {
       'Sistem QR Code Check-in Tamu',
       'Link Personalisasi Tamu Spesial',
       'Integrasi Layanan WA Blast',
-      'Akses Semua Tema Premium'
+      'Akses Semua Tema Premium',
+      'Asisten Teks AI (Maks 30x)'
     ],
     icon: <Crown className="h-6 w-6 text-amber-500" />,
     bgClass: 'bg-amber-500/5 border-amber-500/20',
@@ -251,7 +254,7 @@ function CheckoutContent() {
         </body>
       </html>
     `;
-    
+
     const printWindow = window.open('', '_blank');
     if (printWindow) {
       printWindow.document.write(invoiceHtml);
@@ -361,13 +364,13 @@ function CheckoutContent() {
   }
 
   const isSandbox = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY?.startsWith('SB-') ?? true;
-  const snapScriptUrl = isSandbox 
+  const snapScriptUrl = isSandbox
     ? 'https://app.sandbox.midtrans.com/snap/snap.js'
     : 'https://app.midtrans.com/snap/snap.js';
 
   return (
     <div className="min-h-screen bg-[#fdfcf9] pt-24 pb-16">
-      <Script 
+      <Script
         src={snapScriptUrl}
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
         strategy="afterInteractive"
@@ -375,7 +378,7 @@ function CheckoutContent() {
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
-        <button 
+        <button
           onClick={() => router.back()}
           className="inline-flex items-center gap-2 text-sm text-[#6b6b6b] hover:text-[#1c1c1c] mb-8 font-medium transition-colors"
         >
@@ -398,7 +401,7 @@ function CheckoutContent() {
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           {/* LEFT COLUMN: Details & Agreement */}
           <div className="lg:col-span-7 space-y-6">
-            
+
             {/* Item Details Card */}
             <div className="glass rounded-[2rem] p-8 border-white/50 shadow-xl shadow-stone-500/5 relative overflow-hidden bg-white/40">
               <div className="flex items-center justify-between gap-4 mb-6">
@@ -483,8 +486,8 @@ function CheckoutContent() {
               </div>
 
               <label className="flex items-start gap-3 p-4 bg-[#fdfcf9]/80 border border-stone-200/50 rounded-2xl cursor-pointer hover:bg-stone-50/50 transition-all shadow-sm">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   checked={agreedToTerms}
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
                   className="mt-1 h-4 w-4 rounded border-stone-300 text-rose-500 focus:ring-rose-500 cursor-pointer"
@@ -519,7 +522,7 @@ function CheckoutContent() {
 
           {/* RIGHT COLUMN: Payment Summary */}
           <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
-            
+
             {/* Payment Summary Card */}
             <div className="glass rounded-[2rem] p-8 border-white/50 shadow-xl shadow-stone-500/5 bg-white/40">
               <div className="flex items-center gap-3.5 mb-6">
@@ -577,13 +580,12 @@ function CheckoutContent() {
               <div className="mb-8">
                 <span className="text-[10px] uppercase font-bold text-[#6b6b6b] tracking-widest block mb-4">METODE PEMBAYARAN DIKIRIMKAN</span>
                 <div className="grid grid-cols-2 gap-3">
-                  <button 
+                  <button
                     onClick={() => setSelectedMethod('AUTO')}
-                    className={`flex items-center justify-between p-4 rounded-2xl border text-left transition-all ${
-                      selectedMethod === 'AUTO' 
-                        ? 'border-rose-500/80 bg-rose-500/[0.02] shadow-sm shadow-rose-500/5' 
+                    className={`flex items-center justify-between p-4 rounded-2xl border text-left transition-all ${selectedMethod === 'AUTO'
+                        ? 'border-rose-500/80 bg-rose-500/[0.02] shadow-sm shadow-rose-500/5'
                         : 'border-stone-200/60 bg-[#fdfcf9] hover:bg-stone-50'
-                    }`}
+                      }`}
                   >
                     <div>
                       <h4 className="text-xs font-bold text-[#1c1c1c]">Instant Gateway</h4>
@@ -593,7 +595,7 @@ function CheckoutContent() {
                       <div className="h-2 w-2 rounded-full bg-rose-500" />
                     </div>
                   </button>
-                  
+
                   <div className="flex items-center justify-center p-4 rounded-2xl border border-stone-200/40 bg-[#fdfcf9]/40 opacity-50 select-none cursor-not-allowed">
                     <div>
                       <h4 className="text-xs font-bold text-stone-400">Transfer Manual</h4>
@@ -617,11 +619,10 @@ function CheckoutContent() {
               <button
                 onClick={handleCheckoutTrigger}
                 disabled={isCheckoutProcessing}
-                className={`w-full py-4 rounded-2xl font-bold text-white shadow-lg transition-all text-sm flex items-center justify-center gap-2 cursor-pointer ${
-                  agreedToTerms 
-                    ? 'bg-rose-gradient shadow-rose-500/25 hover:shadow-rose-500/45 hover:scale-[1.02]' 
+                className={`w-full py-4 rounded-2xl font-bold text-white shadow-lg transition-all text-sm flex items-center justify-center gap-2 cursor-pointer ${agreedToTerms
+                    ? 'bg-rose-gradient shadow-rose-500/25 hover:shadow-rose-500/45 hover:scale-[1.02]'
                     : 'bg-stone-300 shadow-none cursor-not-allowed'
-                }`}
+                  }`}
               >
                 {isCheckoutProcessing ? (
                   <>
@@ -641,7 +642,7 @@ function CheckoutContent() {
                 Semua transaksi dienkripsi & aman.
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>
@@ -649,7 +650,7 @@ function CheckoutContent() {
       <AnimatePresence>
         {showSuccessModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-md">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -703,7 +704,7 @@ function CheckoutContent() {
 
                 {/* Buttons */}
                 <div className="space-y-3">
-                  <button 
+                  <button
                     onClick={() => router.push('/dashboard')}
                     className="w-full py-4 rounded-2xl bg-rose-gradient text-white font-bold shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 hover:scale-[1.02] transition-all text-sm cursor-pointer"
                   >

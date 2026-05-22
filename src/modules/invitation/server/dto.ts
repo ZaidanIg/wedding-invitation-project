@@ -1,6 +1,9 @@
 // ============================================================
 // Invitation DTOs — Response types exposed to clients
+// API Version: 1.2
 // ============================================================
+
+import type { ScheduleItem, LoveStoryItem, DigitalGiftItem } from '@/types';
 
 export interface InvitationResponseDto {
   id: string;
@@ -18,7 +21,12 @@ export interface InvitationResponseDto {
   eventInfo: string;
   closing: string;
   fullText: string;
+  // Reconstructed from normalized tables by the mapper
   photoUrls: string[];
+  schedule: ScheduleItem[];
+  loveStory: LoveStoryItem[];
+  digitalGifts: DigitalGiftItem[];
+  // Role-specific photos
   headerPhotoUrl: string | null;
   groomPhotoUrl: string | null;
   bridePhotoUrl: string | null;
@@ -27,17 +35,22 @@ export interface InvitationResponseDto {
   musicUrl: string | null;
   videoUrl: string | null;
   layout: string;
-  schedule: unknown[];
-  loveStory: unknown[];
-  digitalGifts: unknown[];
   quotes: string | null;
   viewCount: number;
   tier: string;
-  isPaid: boolean;
+  // v1.2: isPaid REMOVED — use tier !== 'DRAFT' for activation check
   aiRegenCount: number;
   guestCount: number;
   createdAt: string;
-  transactions?: any[];
+  updatedAt: string;
+  transactions?: Array<{
+    id: string;
+    status: string;
+    paymentUrl?: string | null;
+    tier?: string | null;
+    amount: number;
+    paymentMethod?: string | null;
+  }>;
 }
 
 export interface InvitationListItemDto {
@@ -55,6 +68,9 @@ export interface InvitationListItemDto {
   closing: string;
   fullText: string;
   photoUrls: string[];
+  schedule: ScheduleItem[];
+  loveStory: LoveStoryItem[];
+  digitalGifts: DigitalGiftItem[];
   headerPhotoUrl: string | null;
   groomPhotoUrl: string | null;
   bridePhotoUrl: string | null;
@@ -63,15 +79,20 @@ export interface InvitationListItemDto {
   musicUrl: string | null;
   videoUrl: string | null;
   layout: string;
-  schedule: unknown[];
-  loveStory: unknown[];
-  digitalGifts: unknown[];
   quotes: string | null;
   viewCount: number;
   tier: string;
-  isPaid: boolean;
+  // v1.2: isPaid REMOVED
   aiRegenCount: number;
   guestCount: number;
   createdAt: string;
-  transactions?: any[];
+  updatedAt: string;
+  transactions?: Array<{
+    id: string;
+    status: string;
+    paymentUrl?: string | null;
+    tier?: string | null;
+    amount: number;
+    paymentMethod?: string | null;
+  }>;
 }

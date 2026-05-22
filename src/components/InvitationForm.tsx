@@ -151,6 +151,7 @@ export default function InvitationForm() {
           ...store.coupleDetails,
           ...store.eventDetails,
           ...store.stylePreferences,
+          invitationId: new URLSearchParams(window.location.search).get('edit') || undefined,
         }),
       });
       const data = await response.json();

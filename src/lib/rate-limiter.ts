@@ -58,3 +58,25 @@ export function getClientIp(request: Request): string {
 
   return 'unknown';
 }
+
+const dailyAiMap = new Map<string, { count: number; date: string }>();
+
+/**
+ * Check if user exceeded daily limit for unsaved AI generation (in-memory fallback).
+ */
+export function checkUserDailyAiLimit(userId: string, limit: number): boolean {
+  const today = new Date().toISOString().split('T')[0];
+  const entry = dailyAiMap.get(userId);
+
+  if (!entry || entry.date !== today) {
+    dailyAiMap.set(userId, { count: 1, date: today });
+    return true;
+  }
+
+  if (entry.count < limit) {
+    entry.count += 1;
+    return true;
+  }
+
+  return false;
+}

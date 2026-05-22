@@ -13,7 +13,7 @@ function extractFileKey(url: string | null | undefined): string | null {
       const parts = parsed.pathname.split('/');
       return parts[parts.length - 1]; // Return the last segment (the key)
     }
-  } catch (e) {
+  } catch {
     return null; // Invalid URL
   }
   return null;
@@ -30,18 +30,17 @@ export async function POST(request: Request) {
     }
 
     // 2. Find Expired Invitations with Media
+    // v1.2: photoUrls normalized to InvitationPhoto table; query via photos relation
     const currentDate = new Date();
     const expiredInvitations = await prisma.invitation.findMany({
       where: {
-        expiresAt: {
-          lt: currentDate,
-        },
+        expiresAt: { lt: currentDate },
         OR: [
           { headerPhotoUrl: { not: null } },
           { groomPhotoUrl: { not: null } },
           { bridePhotoUrl: { not: null } },
           { musicUrl: { not: null } },
-          { photoUrls: { isEmpty: false } },
+          { photos: { some: {} } },   // v1.2: check InvitationPhoto relation
         ]
       },
       select: {
@@ -50,7 +49,7 @@ export async function POST(request: Request) {
         groomPhotoUrl: true,
         bridePhotoUrl: true,
         musicUrl: true,
-        photoUrls: true,
+        photos: { select: { id: true, url: true } },  // v1.2: normalized photos
       }
     });
 
@@ -64,13 +63,13 @@ export async function POST(request: Request) {
 
     let totalDeletedFiles = 0;
     const processPromises = expiredInvitations.map(async (invitation) => {
-      // Collect all keys
+      // Collect all keys from role-based photos + gallery photos
       const allUrls = [
         invitation.headerPhotoUrl,
         invitation.groomPhotoUrl,
         invitation.bridePhotoUrl,
         invitation.musicUrl,
-        ...invitation.photoUrls
+        ...invitation.photos.map((p) => p.url),  // v1.2: from InvitationPhoto
       ];
 
       const fileKeys = allUrls
@@ -83,17 +82,21 @@ export async function POST(request: Request) {
         totalDeletedFiles += fileKeys.length;
       }
 
-      // Update Database to clear media
-      await prisma.invitation.update({
-        where: { id: invitation.id },
-        data: {
-          headerPhotoUrl: null,
-          groomPhotoUrl: null,
-          bridePhotoUrl: null,
-          musicUrl: null,
-          photoUrls: [],
-        }
-      });
+      // v1.2: Clear media atomically (role photos + delete InvitationPhoto records)
+      await prisma.$transaction([
+        prisma.invitation.update({
+          where: { id: invitation.id },
+          data: {
+            headerPhotoUrl: null,
+            groomPhotoUrl: null,
+            bridePhotoUrl: null,
+            musicUrl: null,
+          }
+        }),
+        prisma.invitationPhoto.deleteMany({
+          where: { invitationId: invitation.id },
+        }),
+      ]);
     });
 
     // Run updates concurrently

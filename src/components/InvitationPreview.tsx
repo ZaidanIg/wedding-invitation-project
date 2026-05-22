@@ -13,7 +13,8 @@ interface InvitationPreviewProps {
 
 export default function InvitationPreview({ invitation, isPreview = false }: InvitationPreviewProps) {
   const LayoutComponent = (layouts as any)[invitation.layout] || layouts['elegant-cream'];
-  const isDraft = !invitation.isPaid;
+  // v1.2: isPaid removed — derive from tier
+  const isDraft = invitation.tier === 'DRAFT';
 
   useEffect(() => {
     if (!isPreview && invitation.slug) {

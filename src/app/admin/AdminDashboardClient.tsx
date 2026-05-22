@@ -50,7 +50,6 @@ export default function AdminDashboardClient({ initialMetrics }: AdminDashboardC
   // Selected invitation for modal override
   const [selectedInv, setSelectedInv] = useState<any | null>(null);
   const [modalTier, setModalTier] = useState<'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE'>('DRAFT');
-  const [modalIsPaid, setModalIsPaid] = useState(false);
   const [modalResetAi, setModalResetAi] = useState(false);
   const [isSavingOverride, setIsSavingOverride] = useState(false);
 
@@ -118,7 +117,6 @@ export default function AdminDashboardClient({ initialMetrics }: AdminDashboardC
   const handleOpenManageModal = (inv: any) => {
     setSelectedInv(inv);
     setModalTier(inv.tier);
-    setModalIsPaid(inv.isPaid);
     setModalResetAi(false);
   };
 
@@ -131,25 +129,22 @@ export default function AdminDashboardClient({ initialMetrics }: AdminDashboardC
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tier: modalTier,
-          isPaid: modalIsPaid,
+          // v1.2: isPaid removed — tier is the single source of truth
           resetAiCount: modalResetAi,
         }),
       });
       const data = await res.json();
       if (data.success) {
-        showToast('success', 'Parameter undangan berhasil disimpan!');
+        showToast('success', 'Tier undangan berhasil diperbarui!');
         setSelectedInv(null);
-        
-        // Refresh local data & stats
         fetchInvitations();
-        
-        // Dynamic stats sync
-        const currentPaidDiff = modalIsPaid ? 1 : 0;
-        const previousPaidDiff = selectedInv.isPaid ? 1 : 0;
+        // Refresh metrics
+        const prevActive = selectedInv.tier !== 'DRAFT' ? 1 : 0;
+        const newActive = modalTier !== 'DRAFT' ? 1 : 0;
         setMetrics(prev => ({
           ...prev,
-          paidInvitations: prev.paidInvitations + (currentPaidDiff - previousPaidDiff),
-          unpaidInvitations: prev.unpaidInvitations + (previousPaidDiff - currentPaidDiff),
+          paidInvitations: prev.paidInvitations + (newActive - prevActive),
+          unpaidInvitations: prev.unpaidInvitations + (prevActive - newActive),
         }));
       } else {
         showToast('error', data.error || 'Gagal menyimpan perubahan');
@@ -470,13 +465,14 @@ export default function AdminDashboardClient({ initialMetrics }: AdminDashboardC
                           )}
                         </td>
                         <td className="py-4 px-4">
-                          {inv.isPaid ? (
+                          {/* v1.2: isPaid removed — status derived from tier */}
+                          {inv.tier !== 'DRAFT' ? (
                             <span className="inline-flex items-center text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
-                              <CheckCircle className="h-3.5 w-3.5 mr-1" /> Paid
+                              <CheckCircle className="h-3.5 w-3.5 mr-1" /> Aktif
                             </span>
                           ) : (
                             <span className="inline-flex items-center text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-100">
-                              <XCircle className="h-3.5 w-3.5 mr-1" /> Unpaid
+                              <XCircle className="h-3.5 w-3.5 mr-1" /> Draft
                             </span>
                           )}
                         </td>
@@ -547,19 +543,9 @@ export default function AdminDashboardClient({ initialMetrics }: AdminDashboardC
                   </select>
                 </div>
 
-                {/* Checkbox Payment */}
-                <div className="flex items-center justify-between border-t border-[#eceae4] pt-4">
-                  <div>
-                    <label className="block text-sm font-bold text-[#1c1c1c]">Aktifkan Undangan (isPaid)</label>
-                    <p className="text-xs text-[#6b6b6b] font-medium mt-0.5"> bypass pembayaran Midtrans.</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    className="h-6 w-6 rounded border-stone-300 text-rose-500 focus:ring-rose-500"
-                    checked={modalIsPaid}
-                    onChange={(e) => setModalIsPaid(e.target.checked)}
-                  />
-                </div>
+                {/* v1.2: isPaid removed — tier is the single source of truth.
+                    Admin activates by setting tier to BASIC/PREMIUM/ULTIMATE.
+                    Setting tier back to DRAFT = deactivate. */}
 
                 {/* Reset AI Count Checkbox */}
                 <div className="flex items-center justify-between border-t border-b border-[#eceae4] py-4">

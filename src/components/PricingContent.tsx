@@ -52,7 +52,7 @@ const FEATURE_CATEGORIES: FeatureCategory[] = [
     rows: [
       { label: 'Countdown Pernikahan', basic: null,                      premium: true,                      ultimate: true                     },
       { label: 'Digital Gift / Amplop',basic: true,                      premium: true,                      ultimate: true                     },
-      { label: 'AI Teks Undangan',     basic: '3× generate',             premium: 'Regenerasi bebas',        ultimate: 'Regenerasi bebas'       },
+      { label: 'AI Teks Undangan',     basic: 'Maks 3× generate',        premium: 'Maks 10× generate',       ultimate: 'Maks 30× generate'      },
     ],
   },
   {

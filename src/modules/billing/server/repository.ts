@@ -1,29 +1,33 @@
 // ============================================================
 // Billing Repository — Database access only
+// API Version: 1.2
 // ============================================================
 
 import { prisma } from '@/lib/prisma';
+import type { TransactionType, Tier, TransactionStatus } from '@prisma/client';
 
 export const billingRepository = {
   async createTransaction(data: {
-    id?: string;
+    id: string;                 // ORD-YYYYMMDD-XXXX (also serves as orderNumber)
+    idempotencyKey: string;     // prevents duplicate checkout sessions
     userId: string;
     invitationId: string | null;
     amount: number;
-    type: any;
-    tier: any | null;
-    status: any;
+    type: TransactionType;
+    tier: Tier | null;
+    status: TransactionStatus;
   }) {
     return prisma.transaction.create({
       data: {
         id: data.id,
+        idempotencyKey: data.idempotencyKey,
         userId: data.userId,
         invitationId: data.invitationId,
         amount: data.amount,
         type: data.type,
         tier: data.tier,
         status: data.status,
-      }
+      },
     });
   },
 
@@ -34,7 +38,14 @@ export const billingRepository = {
   async findInvitationForCheckout(invitationId: string) {
     return prisma.invitation.findUnique({
       where: { id: invitationId },
-      select: { userId: true, tier: true, isPaid: true },
+      // v1.2: isPaid removed — tier is the single source of truth
+      select: { userId: true, tier: true },
+    });
+  },
+
+  async findTransactionByIdempotencyKey(key: string) {
+    return prisma.transaction.findUnique({
+      where: { idempotencyKey: key },
     });
   },
 };
