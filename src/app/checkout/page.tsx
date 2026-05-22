@@ -61,7 +61,7 @@ const PLANS: Record<string, PlanDetails> = {
   },
   PREMIUM: {
     name: 'Premium Plan',
-    price: 150000,
+    price: 149000,
     description: 'Rekomendasi terbaik dengan fitur interaktif romantis dan kisah cinta Anda.',
     features: [
       'Semua Fitur Minimalist',
@@ -77,7 +77,7 @@ const PLANS: Record<string, PlanDetails> = {
   },
   ULTIMATE: {
     name: 'Ultimate Plan',
-    price: 250000,
+    price: 185000,
     description: 'Kemewahan tanpa batas dengan integrasi WA Blast & QR Check-in.',
     features: [
       'Semua Fitur Premium',
@@ -194,9 +194,9 @@ function CheckoutContent() {
                         <div class="brand">Sahin<span>aja</span></div>
                       </td>
                       <td>
-                        Draft Invoice #: INV-DRF-${invitationId ? invitationId.slice(0, 8).toUpperCase() : 'NEW'}<br />
+                        Draft Invoice #: ${invitationData?.transactions?.[0]?.id ? invitationData.transactions[0].id : `INV-DRF-${invitationId ? invitationId.slice(0, 8).toUpperCase() : 'NEW'}`}<br />
                         Tanggal: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br />
-                        Status: DRAF SEBELUM CHECKOUT
+                        Status: <strong style="color: #e11d48;">DRAFT INVOICE</strong>
                       </td>
                     </tr>
                   </table>
@@ -227,7 +227,7 @@ function CheckoutContent() {
                 <td>Harga</td>
               </tr>
               <tr class="item">
-                <td>Paket Layanan Pernikahan Digital (${plan.name})</td>
+                <td>Subtotal (${plan.name})</td>
                 <td>Rp ${subtotal.toLocaleString('id-ID')}</td>
               </tr>
               <tr class="item">
@@ -235,7 +235,7 @@ function CheckoutContent() {
                 <td>Rp ${ppn.toLocaleString('id-ID')}</td>
               </tr>
               <tr class="item last">
-                <td>Biaya Admin & Layanan Instant Gateway</td>
+                <td>Biaya Admin & Layanan</td>
                 <td>Rp ${adminFee.toLocaleString('id-ID')}</td>
               </tr>
               <tr class="total">

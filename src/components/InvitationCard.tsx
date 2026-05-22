@@ -38,12 +38,17 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
   const [qrEnabled, setQrEnabled] = useState(invitation.qrEnabled);
   const [isActivating, setIsActivating] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const tier = (invitation.tier as Tier) || 'DRAFT';
-  const isDraft    = tier === 'DRAFT';
-  const isBasic    = tier === 'BASIC';
-  const isPremium  = tier === 'PREMIUM';
-  const isUltimate = tier === 'ULTIMATE';
+  const isPaid = invitation.isPaid;
+  const isDraft = tier === 'DRAFT' || !isPaid;
+  const displayTier = isDraft ? 'DRAFT' : tier;
+
+  const isBasic    = displayTier === 'BASIC';
+  const isPremium  = displayTier === 'PREMIUM';
+  const isUltimate = displayTier === 'ULTIMATE';
 
   // Feature gates per tier
   const canCopyLink    = !isDraft;
@@ -114,20 +119,27 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
     showToast('success', 'QR Code berhasil diunduh!');
   };
 
-  const handleDelete = async () => {
-    if (!confirm('Hapus undangan ini selamanya?')) return;
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsDeleting(true);
     try {
       const res = await fetch(`/api/invitations/${invitation.id}`, { method: 'DELETE' });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.message || 'Gagal menghapus undangan');
       showToast('success', 'Undangan dihapus');
+      setShowDeleteModal(false);
       onDelete?.(invitation.id);
     } catch (error: any) {
       showToast('error', error.message || 'Gagal menghapus undangan');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-  const tierConfig = TIER_CONFIG[tier];
+  const tierConfig = TIER_CONFIG[displayTier];
 
   return (
     <Card className="group bg-white border-[#eceae4] hover:border-rose-200 transition-all shadow-sm hover:shadow-lg p-8 sm:p-10 rounded-[3rem]">
@@ -212,10 +224,10 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
                     Edit Undangan
                   </Button>
                 </Link>
-                <Link href={paymentLink} className="flex-1 w-full" target={pendingTx?.paymentUrl ? '_blank' : undefined}>
+                <Link href={`/checkout?plan=${pendingTx?.tier || invitation.tier || 'ULTIMATE'}&invitationId=${invitation.id}`} className="flex-1 w-full">
                   <Button className="w-full h-12 rounded-2xl bg-rose-gradient text-white font-bold text-sm shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
                     <Sparkles className="h-4 w-4 text-white fill-white animate-pulse" />
-                    {pendingTx ? 'Lanjutkan Pembayaran' : 'Pilih Paket & Bayar'}
+                    Selesaikan Pembayaran
                   </Button>
                 </Link>
                 <Button variant="ghost" onClick={handleDelete} className="w-full sm:w-auto h-12 px-6 rounded-2xl text-red-500 hover:bg-red-50 font-bold text-sm flex items-center justify-center">
@@ -406,6 +418,46 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
                 className="w-full text-stone-500 hover:text-stone-700 font-bold text-xs cursor-pointer"
               >
                 Tutup
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white border border-red-100 p-8 rounded-[2.5rem] shadow-2xl max-w-sm w-full relative overflow-hidden text-center">
+            <button 
+              onClick={() => setShowDeleteModal(false)}
+              className="absolute top-4 right-4 text-stone-400 hover:text-stone-600 font-bold text-lg cursor-pointer"
+            >
+              ✕
+            </button>
+            
+            <div className="w-16 h-16 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-6">
+              <Trash2 className="h-8 w-8" />
+            </div>
+            
+            <h3 className="text-xl font-bold text-[#1c1c1c] mb-2 font-display">Hapus Undangan?</h3>
+            <p className="text-sm text-stone-500 mb-8">
+              Apakah Anda yakin ingin menghapus undangan <span className="font-bold text-stone-700">{invitation.groomName} & {invitation.brideName}</span> selamanya? Tindakan ini tidak dapat dibatalkan.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                variant="ghost"
+                onClick={() => setShowDeleteModal(false)}
+                className="w-full text-stone-500 hover:text-stone-700 hover:bg-stone-50 font-bold text-sm cursor-pointer py-3 rounded-xl"
+              >
+                Batal
+              </Button>
+              <Button 
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                className="w-full bg-red-500 hover:bg-red-600 text-white font-bold text-sm py-3 rounded-xl shadow-md cursor-pointer disabled:opacity-50"
+              >
+                {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
               </Button>
             </div>
           </div>

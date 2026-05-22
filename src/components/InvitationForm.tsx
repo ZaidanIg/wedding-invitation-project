@@ -202,7 +202,19 @@ export default function InvitationForm() {
       const isOwner = session?.user?.role !== 'ADMIN';
       
       if (isOwner) {
-        showToast('success', 'Undangan disimpan! Mengalihkan ke pembayaran...');
+        showToast('success', 'Undangan disimpan! Menyiapkan tagihan...');
+        
+        // Generate Order ID (Transaction) immediately
+        try {
+          await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ plan: store.targetTier, invitationId: data.data.id }),
+          });
+        } catch (err) {
+          console.error('Failed to pre-create checkout:', err);
+        }
+
         setTimeout(() => {
           window.location.href = `/checkout?plan=${store.targetTier}&invitationId=${data.data.id}`;
         }, 1500);
@@ -564,7 +576,7 @@ export default function InvitationForm() {
                     <div className="space-y-3 pt-4 border-t border-[#eceae4]">
                       <div className="relative">
                         <Input
-                          label="Video Embed (YouTube URL)"
+                          label="Video Embed (YouTube URL) - Opsional"
                           placeholder="https://www.youtube.com/watch?v=..."
                           value={store.stylePreferences.videoUrl || ''}
                           onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, videoUrl: e.target.value })}

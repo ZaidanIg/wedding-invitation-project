@@ -71,6 +71,10 @@ export const invitationRepository = {
       include: {
         guests: { orderBy: { createdAt: 'desc' } },
         _count: { select: { guests: true } },
+        transactions: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
       },
     });
   },

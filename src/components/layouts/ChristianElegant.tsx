@@ -417,7 +417,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
                 {galleryPhotos.map((src: string, idx: number) => (
                   <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
                      <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-white grayscale-[0.2] hover:grayscale-0 transition-all duration-700">
-                        <img src={src} alt="Gallery" className="w-full" />
+                        <Image src={src} alt="Gallery" width={400} height={600} className="w-full h-auto object-cover" />
                      </div>
                   </AnimatedSection>
                 ))}
