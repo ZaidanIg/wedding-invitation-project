@@ -6,10 +6,24 @@ import type { NextRequest } from 'next/server';
  * Injects X-API-Version: 1.2 header on all /api/* responses.
  */
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
+  const url = request.nextUrl;
+  const hostname = request.headers.get('host') || '';
+  const pathname = url.pathname;
 
-  // Inject API version header on all API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
+  // 1. Subdomain Routing (admin.sahinaja.com)
+  // Rewrite everything on the admin subdomain to the `/admin` folder internally.
+  if (
+    hostname === 'admin.sahinaja.com' ||
+    hostname.startsWith('admin.localhost')
+  ) {
+    if (!pathname.startsWith('/admin') && !pathname.startsWith('/api')) {
+      return NextResponse.rewrite(new URL(`/admin${pathname === '/' ? '' : pathname}`, request.url));
+    }
+  }
+
+  // 2. Global Headers
+  const response = NextResponse.next();
+  if (pathname.startsWith('/api/')) {
     response.headers.set('X-API-Version', '1.2');
   }
 
@@ -17,5 +31,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/api/:path*'],
+  matcher: [
+    // Match all paths except static assets
+    '/((?!_next/static|_next/image|images|favicon.ico|robots.txt).*)',
+  ],
 };

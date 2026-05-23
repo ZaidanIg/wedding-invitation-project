@@ -1,61 +1,43 @@
+// GET /api/admin/users  — List all users with stats
+// PATCH /api/admin/users — Update user role
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import { Role } from '@prisma/client';
+import { adminService } from '@/modules/admin/server/service';
+import { ValidationError } from '@/lib/errors';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session?.user || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ success: false, error: 'Unauthorized access' }, { status: 403 });
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        createdAt: true,
-        _count: {
-          select: {
-            invitations: true,
-          },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    return NextResponse.json({ success: true, data: users });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to fetch users' }, { status: 500 });
+    const search = new URL(req.url).searchParams.get('search') ?? undefined;
+    const data = await adminService.getUsers(search);
+    return NextResponse.json({ success: true, data });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to fetch users';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
 export async function PATCH(req: NextRequest) {
   const session = await auth();
   if (!session?.user || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ success: false, error: 'Unauthorized access' }, { status: 403 });
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
-    const { userId, role } = await req.json();
-    if (!userId || !role) {
-      return NextResponse.json({ success: false, error: 'userId and role are required' }, { status: 400 });
+    const body = await req.json();
+    const data = await adminService.updateUserRole(body, session.user.email ?? 'unknown');
+    return NextResponse.json({ success: true, data });
+  } catch (error: unknown) {
+    if (error instanceof ValidationError) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
-
-    if (role !== 'USER' && role !== 'ADMIN') {
-      return NextResponse.json({ success: false, error: 'Invalid role specified' }, { status: 400 });
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { role: role as Role },
-      select: { id: true, role: true },
-    });
-
-    return NextResponse.json({ success: true, data: updatedUser });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to update user' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Failed to update user';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

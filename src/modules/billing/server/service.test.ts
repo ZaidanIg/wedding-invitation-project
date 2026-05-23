@@ -11,7 +11,7 @@ describe('Billing Service', () => {
       const existingTransaction = {
         id: 'tx1',
         orderId: mockOrderId,
-        status: TransactionStatus.SETTLED,
+        status: TransactionStatus.SETTLEMENT,
         amount: 149000,
         invitationId: mockInvitationId,
         tier: Tier.PREMIUM,
@@ -26,7 +26,7 @@ describe('Billing Service', () => {
       let updateCalled = false;
       
       const processWebhook = () => {
-        if (existingTransaction.status === TransactionStatus.SETTLED && incomingWebhookStatus === 'settlement') {
+        if (existingTransaction.status === TransactionStatus.SETTLEMENT && incomingWebhookStatus === 'settlement') {
           // Idempotent block: do not update invitation tier again
           return { message: 'Already processed' };
         }
