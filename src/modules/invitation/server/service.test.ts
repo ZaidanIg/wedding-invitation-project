@@ -1,5 +1,4 @@
 import { prismaMock } from '../../../lib/__mocks__/prisma';
-import { InvitationService } from './service';
 import { Tier, Role } from '@prisma/client';
 
 describe('Invitation Service', () => {

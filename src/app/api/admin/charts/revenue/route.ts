@@ -1,7 +1,8 @@
-// GET /api/admin/invitations — List all invitations with RSVP stats
+// GET /api/admin/charts/revenue?days=7|30|90|365
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { adminService } from '@/modules/admin/server/service';
+import { ValidationError } from '@/lib/errors';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,12 +13,15 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const search = new URL(req.url).searchParams.get('search') ?? undefined;
-    const data = await adminService.getInvitations(search);
+    const { searchParams } = new URL(req.url);
+    const days = searchParams.get('days');
+    const data = await adminService.getRevenueChart(days);
     return NextResponse.json({ success: true, data });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Failed to fetch invitations';
+    if (error instanceof ValidationError) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
+    const message = error instanceof Error ? error.message : 'Failed to fetch chart data';
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
-

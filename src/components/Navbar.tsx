@@ -14,7 +14,9 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { data: session } = useSession();
   const pathname = usePathname();
-  const isDemoPage = pathname?.startsWith('/demo/');
+  
+  const isDemoRoute = pathname?.startsWith('/demo/');
+  const isAdminRoute = pathname?.startsWith('/admin');
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -22,7 +24,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (isDemoPage) return null;
+  if (isDemoRoute) return null;
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -43,7 +45,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between min-h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center group">
+          <Link href={isAdminRoute ? '/admin' : '/'} className="flex items-center group">
             <div className="relative overflow-hidden w-52 h-16 flex-shrink-0">
               <Image 
                 src="/images/logo.png" 
@@ -56,33 +58,35 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 relative group ${
-                  isActive(link.href) 
-                    ? 'text-rose-500' 
-                    : 'text-[#6b6b6b] hover:text-[#1c1c1c] hover:bg-rose-500/5'
-                }`}
-              >
-                {link.label}
-                {isActive(link.href) && (
-                  <motion.div 
-                    layoutId="activeNav"
-                    className="absolute -bottom-1 left-4 right-4 h-0.5 bg-rose-500"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                )}
-              </Link>
-            ))}
-          </div>
+          {/* Desktop Navigation - Hidden on Admin routes */}
+          {!isAdminRoute && (
+            <div className="hidden md:flex items-center gap-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 relative group ${
+                    isActive(link.href) 
+                      ? 'text-rose-500' 
+                      : 'text-[#6b6b6b] hover:text-[#1c1c1c] hover:bg-rose-500/5'
+                  }`}
+                >
+                  {link.label}
+                  {isActive(link.href) && (
+                    <motion.div 
+                      layoutId="activeNav"
+                      className="absolute -bottom-1 left-4 right-4 h-0.5 bg-rose-500"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  )}
+                </Link>
+              ))}
+            </div>
+          )}
 
-          {/* Desktop Auth */}
+          {/* Desktop Auth - Always visible */}
           <div className="hidden md:flex items-center gap-3">
             {session?.user ? (
               <div className="relative">
@@ -116,6 +120,16 @@ export default function Navbar() {
                       <Heart className="h-4 w-4" />
                       My Invitations
                     </Link>
+                    {session.user.role === 'ADMIN' && (
+                      <Link
+                        href="/admin"
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <User className="h-4 w-4" />
+                        Admin Dashboard
+                      </Link>
+                    )}
                     <div className="h-px bg-rose-500/5 mx-4 my-1" />
                     <button
                       onClick={() => {
@@ -152,7 +166,7 @@ export default function Navbar() {
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className="md:hidden pb-6 pt-2 border-t border-rose-500/5 space-y-1 animate-fade-in bg-[#fdfcf9]">
-            {navLinks.map((link) => (
+            {!isAdminRoute && navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -167,15 +181,26 @@ export default function Navbar() {
               </Link>
             ))}
             {session?.user ? (
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  signOut({ callbackUrl: '/' });
-                }}
-                className="block w-[calc(100%-1.5rem)] mx-3 px-5 py-3.5 rounded-2xl text-sm text-rose-500 font-bold hover:bg-rose-50 transition-all text-left"
-              >
-                Sign Out
-              </button>
+              <>
+                {session.user.role === 'ADMIN' && (
+                  <Link
+                    href="/admin"
+                    className="block mx-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Admin Dashboard
+                  </Link>
+                )}
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    signOut({ callbackUrl: '/' });
+                  }}
+                  className="block w-[calc(100%-1.5rem)] mx-3 px-5 py-3.5 rounded-2xl text-sm text-rose-500 font-bold hover:bg-rose-50 transition-all text-left"
+                >
+                  Sign Out
+                </button>
+              </>
             ) : (
               <Link
                 href="/auth/signin"

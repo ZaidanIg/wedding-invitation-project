@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
-import { invitationService } from '@/modules/invitation/server/service';
+import { invitationRepository } from '@/modules/invitation/server/repository';
 import { getCoupleSlug } from '@/lib/utils';
 
 interface PageProps {
@@ -9,17 +9,18 @@ interface PageProps {
 
 export default async function InvitationRedirectPage({ params, searchParams }: PageProps) {
   const { coupleNames } = await params;
-  try {
-    const invitation = await invitationService.getBySlug(coupleNames);
-    const coupleSlug = getCoupleSlug(invitation.groomName, invitation.brideName);
-    
-    // Build search params query string if any
-    const sParams = await searchParams;
-    const queryString = new URLSearchParams(sParams as any).toString();
-    const targetUrl = `/invitation/${coupleSlug}/${coupleNames}${queryString ? `?${queryString}` : ''}`;
-    
-    redirect(targetUrl);
-  } catch (error) {
+  
+  const invitation = await invitationRepository.findBySlug(coupleNames);
+  if (!invitation) {
     notFound();
   }
+  
+  const coupleSlug = getCoupleSlug(invitation.groomName, invitation.brideName);
+  
+  // Build search params query string if any
+  const sParams = await searchParams;
+  const queryString = new URLSearchParams(sParams as any).toString();
+  const targetUrl = `/invitation/${coupleSlug}/${coupleNames}${queryString ? `?${queryString}` : ''}`;
+  
+  redirect(targetUrl);
 }
