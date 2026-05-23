@@ -305,7 +305,7 @@ export default function AdminDashboardClient({
             <Button
               onClick={handleExport}
               disabled={isExporting}
-              variant="outline"
+              variant="secondary"
               className="h-12 px-5 rounded-2xl bg-white border-[#eceae4] text-[#1c1c1c] font-bold"
             >
               <Download className={`h-4 w-4 mr-2 ${isExporting ? 'animate-bounce' : ''}`} />
