@@ -14,7 +14,7 @@ export async function GET() {
     const timestamp = new Date().toISOString().split('T')[0];
     const filename = `Laporan_Sahinaja_${timestamp}.xlsx`;
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
