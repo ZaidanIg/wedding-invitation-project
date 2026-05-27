@@ -9,6 +9,7 @@ import ThemeMiniPreview from '@/components/ThemeMiniPreview';
 import type { Layout } from '@/types';
 
 const FEATURED_THEMES: { slug: Layout; label: string }[] = [
+  { slug: 'premium-javanese', label: 'Premium Javanese' },
   { slug: 'islamic-grace', label: 'Islamic Grace' },
   { slug: 'luxury-emerald', label: 'Luxury Emerald' },
   { slug: 'premium-charcoal', label: 'Premium Charcoal' },
@@ -19,7 +20,7 @@ const FEATURED_THEMES: { slug: Layout; label: string }[] = [
 export default function TryItWidget() {
   const [groomName, setGroomName] = useState('');
   const [brideName, setBrideName] = useState('');
-  const [selectedTheme, setSelectedTheme] = useState<Layout>('islamic-grace');
+  const [selectedTheme, setSelectedTheme] = useState<Layout>('premium-javanese');
   const [isFocused, setIsFocused] = useState(false);
 
   const displayGroomName = groomName.trim() || 'Nama Pria';

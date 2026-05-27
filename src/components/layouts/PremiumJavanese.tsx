@@ -1,0 +1,869 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { Invitation } from '@/types';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+import { resolvePhotos } from './shared';
+import { ChevronDown, MapPin, Calendar, Clock, Copy, Check, Heart, ExternalLink, Gift, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
+import RsvpForm from '../RsvpForm';
+
+// ==========================================
+// TEMPLATE SECTIONS - SILAKAN ISI MANUAL
+// ==========================================
+
+function EnvelopeSection({ data, onOpen }: { data: Invitation; onOpen: () => void }) {
+  const guestName = data.rsvpName || "Tamu Undangan";
+
+  return (
+    <motion.section
+      id="envelope-section"
+      exit={{ scale: 1.2, opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
+      className="fixed inset-0 z-[100] flex justify-center bg-black/90 sm:p-4 backdrop-blur-sm"
+    >
+      <div className="w-full h-full max-w-lg relative bg-[#F8F5F0] overflow-hidden flex flex-col items-center justify-center sm:rounded-2xl sm:shadow-2xl">
+
+
+        {/* Background Envelope Main */}
+        <motion.div
+          initial={{ scale: 1.05 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 3, ease: 'easeOut' }}
+          className="absolute bottom-0 left-0 w-full h-[50vh] opacity-40 pointer-events-none"
+        >
+          <Image src="/assets/javaneseTheme/Assets/width_150.webp" alt="Background Envelope" fill className="object-cover object-bottom" unoptimized />
+        </motion.div>
+
+        {/* Ornament 27 - Kiri (Setengah muncul) */}
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-60 w-80 h-40 opacity-40 -right-20 pointer-events-none"
+        >
+          <Image src="/assets/javaneseTheme/Assets/ornament-27.png" alt="Ornament 27" fill className="object-contain object-right" unoptimized />
+        </motion.div>
+
+        {/* Ornament 28 - Kanan (Setengah muncul) */}
+        <motion.div
+          animate={{ y: [0, -15, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute top-40 w-80 h-40 opacity-30 -left-20 pointer-events-none -scale-x-100"
+        >
+          <Image src="/assets/javaneseTheme/Assets/ornament-28.png" alt="Ornament 28" fill className="object-contain object-right" unoptimized />
+        </motion.div>
+
+        {/* Ornament 29 - Bawah Tengah (Setengah muncul) */}
+        <motion.div
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+          className="absolute top-20 w-80 h-40 opacity-40 -right-40 pointer-events-none"
+        >
+          <Image src="/assets/javaneseTheme/Assets/ornament-29.png" alt="Ornament 29" fill className="object-contain object-top" unoptimized />
+        </motion.div>
+
+        {/* Corner Ornaments */}
+        <div className="absolute top-0 left-0 w-32 h-32 md:w-40 md:h-40">
+          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament TL" fill className="object-contain object-left-top" unoptimized />
+        </div>
+        <div className="absolute top-0 right-0 w-32 h-32 md:w-40 md:h-40 -scale-x-100">
+          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament TR" fill className="object-contain object-left-top" unoptimized />
+        </div>
+        <div className="absolute bottom-0 right-0 w-32 h-32 md:w-40 md:h-40 rotate-180">
+          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament BR" fill className="object-contain object-left-top" unoptimized />
+        </div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 md:w-40 md:h-40 -scale-y-100">
+          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament BL" fill className="object-contain object-left-top" unoptimized />
+        </div>
+        {/* Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 1 }}
+          className="relative z-10 text-center flex flex-col items-center max-w-sm w-full px-6"
+        >
+          <div className="relative w-28 h-28 md:w-32 md:h-32 mb-6">
+            <Image src="/assets/javaneseTheme/Assets/ornament-30.png" alt="gunungan" fill className="object-contain" unoptimized />
+          </div>
+          <p className="text-xs uppercase tracking-[0.4em] text-[#4A3728] font-bold mb-6">Pernikahan</p>
+
+          <h1 className="font-display text-4xl sm:text-5xl text-[#4A3728] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+            {data.groomName}
+          </h1>
+          <span className="text-[#D4AF37] font-display italic text-2xl my-2">&amp;</span>
+          <h1 className="font-display text-4xl sm:text-5xl text-[#4A3728] mb-10" style={{ fontFamily: "'Playfair Display', serif" }}>
+            {data.brideName}
+          </h1>
+
+          <div className="mb-10 text-sm text-[#4A3728]/80">
+            <p className="mb-2 italic">Kepada Yth.</p>
+            <p className="font-bold text-xl text-[#4A3728] pb-1 border-b border-[#D4AF37]/50 inline-block px-4">{guestName}</p>
+          </div>
+
+          <button
+            onClick={onOpen}
+            className="group relative px-10 py-3.5 bg-[#4A3728] text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-xl hover:scale-105 transition-transform overflow-hidden border border-[#D4AF37]"
+          >
+            <span className="relative z-10 text-[#F8F5F0]">Buka Undangan</span>
+            <div className="absolute inset-0 bg-[#D4AF37] translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+          </button>
+        </motion.div>
+      </div>
+    </motion.section>
+  );
+}
+
+function FallingSparkles() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
+      {[...Array(35)].map((_, i) => {
+        const left = Math.random() * 100;
+        const delay = Math.random() * 5;
+        const duration = Math.random() * 3 + 4;
+        const size = Math.random() * 5 + 5; // 5px to 10px (tebal)
+
+        return (
+          <motion.div
+            key={i}
+            initial={{ y: -50, opacity: 0 }}
+            animate={{
+              y: ['-5vh', '105vh'],
+              x: [0, (Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80],
+              opacity: [0, 0.9, 0.9, 0],
+              rotate: [0, 180, 360],
+              scale: [0.5, 1.2, 0.8]
+            }}
+            transition={{
+              duration: duration,
+              repeat: Infinity,
+              delay: delay,
+              ease: "linear"
+            }}
+            style={{ left: `${left}%`, width: size, height: size }}
+            className="absolute top-0 bg-gradient-to-b from-[#D4AF37] via-white to-transparent rounded-full shadow-[0_0_12px_rgba(212,175,55,0.9)] blur-[0.5px]"
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function SectionBottomDivider() {
+  return (
+    <div className="absolute bottom-0 left-0 w-full pointer-events-none z-20 flex items-end">
+      <Image
+        src="/assets/javaneseTheme/Assets/width_800.webp"
+        alt="Divider Bottom"
+        width={800}
+        height={150}
+        className="w-full h-auto opacity-80"
+        unoptimized
+      />
+    </div>
+  );
+}
+
+function HeroSection({ data }: { data: Invitation }) {
+  const { heroPhoto } = resolvePhotos(data);
+
+  return (
+    <section id="hero-section" className="relative min-h-screen flex flex-col items-center justify-end bg-[#F8F5F0] overflow-hidden pb-20">
+      <div className="absolute inset-0">
+        <Image src={heroPhoto} alt="Couple" fill className="object-cover" priority unoptimized />
+        <div className="absolute inset-0 bg-black/40" />
+        {/* White Gradient at the bottom */}
+        <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-[#F8F5F0]/80 to-transparent" />
+      </div>
+
+      <FallingSparkles />
+
+      <div className="relative z-10 text-center px-6 mt-20">
+        <p className="text-xs uppercase tracking-[0.4em] text-white font-bold mb-6">The Wedding Of</p>
+        <h1 className="font-display text-5xl sm:text-6xl text-white mb-2 drop-shadow-md" style={{ fontFamily: "'Playfair Display', serif" }}>
+          {data.groomName}
+        </h1>
+        <span className="text-[#D4AF37] font-display italic text-3xl my-2 block drop-shadow-md">&amp;</span>
+        <h1 className="font-display text-5xl sm:text-6xl text-white drop-shadow-md" style={{ fontFamily: "'Playfair Display', serif" }}>
+          {data.brideName}
+        </h1>
+      </div>
+
+      <div className="relative z-10 mt-16 animate-bounce">
+        <ChevronDown className="w-8 h-8 text-white/80" />
+      </div>
+      <SectionBottomDivider />
+    </section>
+  );
+}
+
+function GroomSection({ data }: { data: Invitation }) {
+  const { groomPhoto, bridePhoto } = resolvePhotos(data);
+
+  return (
+    <section id="groom-section" className="relative py-20 px-6 flex flex-col items-center bg-[#F8F5F0] overflow-hidden">
+      {/* Pembatas Atas */}
+      <motion.div
+        initial={{ opacity: 0, scaleX: 0 }}
+        whileInView={{ opacity: 1, scaleX: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="relative w-64 h-16 sm:w-80 sm:h-20 mb-12"
+      >
+        <Image src="/assets/javaneseTheme/Assets/ornament-26.png" alt="Divider" fill className="object-contain" unoptimized />
+      </motion.div>
+
+      {/* Teks Awal */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="text-center max-w-sm w-full z-10"
+      >
+        <p className="text-sm sm:text-base font-serif italic text-[#4A3728] leading-relaxed">
+          &ldquo;{data.greeting}&rdquo;
+        </p>
+      </motion.div>
+
+      <motion.div
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-60 w-80 h-40 opacity-40 -right-20 pointer-events-none"
+      >
+        <Image src="/assets/javaneseTheme/Assets/ornament-27.png" alt="Ornament 27" fill className="object-contain object-right" unoptimized />
+      </motion.div>
+
+
+      <motion.div
+        animate={{ y: [0, -15, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute top-40 w-80 h-40 opacity-30 -left-20 pointer-events-none -scale-x-100"
+      >
+        <Image src="/assets/javaneseTheme/Assets/ornament-28.png" alt="Ornament 28" fill className="object-contain object-right" unoptimized />
+      </motion.div>
+
+      {/* Wrapper Profil & Ornamen */}
+      <div className="relative w-full max-w-md mx-auto mt-24">
+        {/* Ornamen Atas Arch (Mandala & Burung) */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-between px-0 sm:px-2 items-center z-20 pointer-events-none">
+          {/* Burung Kiri */}
+          <motion.div
+            initial={{ opacity: 0, x: -30, rotate: 0 }}
+            whileInView={{ opacity: 1, x: 0, rotate: -30 }}
+            transition={{ duration: 0.8 }}
+            className="relative w-36 h-36 sm:w-48 sm:h-48 -translate-y-6 sm:-translate-y-10 z-20"
+          >
+            <Image src="/assets/javaneseTheme/Assets/burung.png" alt="Burung Kiri" fill className="object-contain object-bottom" unoptimized />
+          </motion.div>
+
+          {/* Mandala */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-40 sm:h-40 z-10"
+          >
+            <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Mandala" fill className="object-contain" unoptimized />
+          </motion.div>
+
+          {/* Burung Kanan */}
+          <motion.div
+            initial={{ opacity: 0, x: 30, rotate: 0 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 30 }}
+            transition={{ duration: 0.8 }}
+            className="relative w-36 h-36 sm:w-48 sm:h-48 -translate-y-6 sm:-translate-y-10 z-20"
+          >
+            <Image
+              src="/assets/javaneseTheme/Assets/burung.png"
+              alt="Burung Kanan"
+              fill
+              className="object-contain object-bottom"
+              style={{ transform: 'scaleX(-1)' }}
+              unoptimized
+            />
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Profil Mempelai (Wrapped in Gold Gradient for Shiny Border) */}
+      <div className="relative w-full z-10 rounded-t-[290px] pt-[6px] px-[6px] bg-gradient-to-br from-[#F9F0C7] via-[#D4AF37] to-[#8A671F] shadow-[0_-5px_20px_rgba(212,175,55,0.4)]">
+        <div className="relative overflow-hidden pt-24 pb-12 px-6 flex flex-col items-center gap-6 w-full bg-white rounded-t-[284px]">
+
+        <motion.div
+          initial={{ scale: 1.05, opacity: 0.2 }}
+          animate={{ scale: 1, opacity: 0.2 }}
+          transition={{ duration: 3, ease: 'easeOut' }}
+          className="absolute bottom-0 left-0 w-full h-[50vh] pointer-events-none"
+        >
+          <Image src="/assets/javaneseTheme/Assets/width_150.webp" alt="Background Envelope" fill className="object-cover object-bottom" unoptimized />
+        </motion.div>
+
+        {/* Groom */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col items-center text-center"
+        >
+          <div className="relative mb-6">
+            {/* Ornament 34 - Belakang Kanan Groom */}
+            <motion.div
+              initial={{ opacity: 0, x: 20, y: "-50%" }}
+              whileInView={{ opacity: 1, x: 0, y: "-50%" }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="absolute top-1/2 -right-16 sm:-right-24 w-28 h-48 sm:w-36 sm:h-64 pointer-events-none z-0"
+            >
+              <Image src="/assets/javaneseTheme/Assets/ornament-34.png" alt="Ornament Kanan" fill className="object-contain object-left" unoptimized />
+            </motion.div>
+
+            <div className="w-44 h-44 sm:w-56 sm:h-56 rounded-full overflow-hidden border-4 border-[#D4AF37]/50 shadow-xl relative z-10">
+              <Image src={groomPhoto} alt="Groom" fill className="object-cover" unoptimized />
+            </div>
+          </div>
+          <h3 className="font-display text-4xl sm:text-5xl text-[#4A3728] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>{data.groomName}</h3>
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#4A3728]/70 mb-1">Putra Dari</p>
+          <p className="text-sm sm:text-base font-serif italic text-[#4A3728]">{data.groomParents || 'Bapak & Ibu'}</p>
+        </motion.div>
+
+        {/* Separator */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="my-4 text-5xl sm:text-6xl font-display italic text-[#D4AF37]"
+          style={{ fontFamily: "'Playfair Display', serif" }}
+        >
+          &amp;
+        </motion.div>
+
+        {/* Bride */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex flex-col items-center text-center"
+        >
+          <div className="relative mb-6">
+            {/* Ornament 35 - Belakang Kiri Bride */}
+            <motion.div
+              initial={{ opacity: 0, x: -20, y: "-50%" }}
+              whileInView={{ opacity: 1, x: 0, y: "-50%" }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="absolute top-1/2 -left-16 sm:-left-24 w-28 h-48 sm:w-36 sm:h-64 pointer-events-none z-0"
+            >
+              <Image src="/assets/javaneseTheme/Assets/ornament-35.png" alt="Ornament Kiri" fill className="object-contain object-right" unoptimized />
+            </motion.div>
+
+            <div className="w-44 h-44 sm:w-56 sm:h-56 rounded-full overflow-hidden border-4 border-[#D4AF37]/50 shadow-xl relative z-10">
+              <Image src={bridePhoto} alt="Bride" fill className="object-cover" unoptimized />
+            </div>
+          </div>
+          <h3 className="font-display text-4xl sm:text-5xl text-[#4A3728] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>{data.brideName}</h3>
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#4A3728]/70 mb-1">Putri Dari</p>
+          <p className="text-sm sm:text-base font-serif italic text-[#4A3728]">{data.brideParents || 'Bapak & Ibu'}</p>
+        </motion.div>
+
+      </div>
+      </div>
+      <SectionBottomDivider />
+    </section>
+  );
+}
+
+function DateSection({ data }: { data: Invitation }) {
+  const defaultSchedule = [
+    { id: '1', time: data.eventTime, label: 'Akad Nikah', icon: 'heart' },
+    { id: '2', time: '11:00 - Selesai', label: 'Resepsi', icon: 'glass' }
+  ];
+  const schedule = data.schedule?.length ? data.schedule : defaultSchedule;
+
+  return (
+    <section id="date-section" className="relative pt-24 pb-40 px-6 flex flex-col items-center bg-[#F8F5F0] overflow-hidden">
+      {/* Background Ornaments */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 0.15, scale: 1 }}
+        transition={{ duration: 1 }}
+        className="absolute top-10 left-0 w-64 h-64 pointer-events-none"
+      >
+        <Image src="/assets/javaneseTheme/Assets/ornament-45.png" alt="Ornament" fill className="object-contain object-left" unoptimized />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 0.15, scale: 1 }}
+        transition={{ duration: 1 }}
+        className="absolute bottom-10 right-0 w-64 h-64 pointer-events-none -scale-x-100"
+      >
+        <Image src="/assets/javaneseTheme/Assets/ornament-45.png" alt="Ornament" fill className="object-contain object-left" unoptimized />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.8 }}
+        className="text-center mb-12 relative z-10"
+      >
+        <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+          Waktu & Tempat
+        </h2>
+        <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
+        <p className="text-sm sm:text-base text-[#4A3728]/80 font-serif italic max-w-md mx-auto">
+          Dengan memohon rahmat dan ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk hadir pada acara pernikahan kami:
+        </p>
+      </motion.div>
+
+      {/* Date Highlight */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="relative bg-white w-full max-w-md rounded-t-full pt-16 pb-8 px-6 shadow-xl border-4 border-[#F8F5F0] flex flex-col items-center mb-16 z-10"
+      >
+        {/* Border Ornament Wrapper */}
+        <div className="absolute inset-[-8px] w-[calc(100%+16px)] h-[calc(100%+16px)] pointer-events-none z-10">
+          <Image src="/assets/javaneseTheme/Assets/ornament-31.png" alt="Frame" fill className="object-fill" unoptimized />
+        </div>
+
+        {/* Restored Mandala */}
+        <div className="absolute top-4 w-32 h-32 pointer-events-none opacity-80 z-20">
+          <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Mandala" fill className="object-contain" unoptimized />
+        </div>
+        <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2 mt-12">Save The Date</p>
+        <p className="font-display text-3xl text-[#4A3728] mb-8 text-center" style={{ fontFamily: "'Playfair Display', serif" }}>
+          {(() => {
+            try {
+              const d = new Date(data.eventDate);
+              if (!isNaN(d.getTime())) {
+                return d.toLocaleDateString('id-ID', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                });
+              }
+            } catch (e) { }
+            return data.eventDate;
+          })()}
+        </p>
+
+        <div className="w-full space-y-6">
+          {schedule.map((item, idx) => (
+            <div key={item.id || idx} className="flex flex-col items-center pb-6 border-b border-[#D4AF37]/30 last:border-0 last:pb-0">
+              <h4 className="text-lg font-serif italic text-[#4A3728] mb-1">{item.label}</h4>
+              <div className="flex items-center gap-2 text-sm text-[#4A3728]/80">
+                <Clock className="w-4 h-4 text-[#D4AF37]" />
+                <span>{item.time}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Ornament Below Rectangle */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="w-full max-w-sm h-12 relative mb-12 z-10"
+      >
+        <Image src="/assets/javaneseTheme/Assets/cover-1.png" alt="Ornament Bottom" fill className="object-contain" unoptimized />
+      </motion.div>
+
+      {/* Location */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="w-full max-w-md bg-white p-8 rounded-3xl shadow-lg border border-[#D4AF37]/20 flex flex-col items-center text-center relative z-10 mb-12"
+      >
+        <div className="w-12 h-12 bg-[#F8F5F0] rounded-full flex items-center justify-center mb-4">
+          <MapPin className="w-6 h-6 text-[#D4AF37]" />
+        </div>
+        <h3 className="text-xl font-display text-[#4A3728] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>{data.venueName}</h3>
+        <p className="text-sm text-[#4A3728]/70 mb-6 leading-relaxed">
+          {data.venueAddress}
+        </p>
+
+        {/* Google Maps Embed */}
+        <div className="w-full h-48 rounded-2xl overflow-hidden shadow-inner mb-6 relative bg-gray-200">
+          <iframe
+            src={`https://www.google.com/maps?q=${encodeURIComponent(data.venueName + ' ' + data.venueAddress)}&output=embed`}
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="absolute inset-0"
+          ></iframe>
+        </div>
+
+        <a
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.venueName + ' ' + data.venueAddress)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#4A3728] text-white rounded-full text-sm font-semibold hover:bg-[#3A2A1E] transition-colors shadow-md"
+        >
+          <ExternalLink className="w-4 h-4" /> Buka Google Maps
+        </a>
+      </motion.div>
+
+      <SectionBottomDivider />
+    </section>
+  );
+}
+
+function LoveStorySection({ data }: { data: Invitation }) {
+  if (!data.loveStory || data.loveStory.length === 0) return null;
+
+  return (
+    <section id="love-story-section" className="relative pt-24 pb-40 px-6 flex flex-col items-center bg-white overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="text-center mb-16 relative z-10"
+      >
+        <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2">Perjalanan Kami</p>
+        <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+          Love Story
+        </h2>
+        <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
+      </motion.div>
+
+      <div className="relative w-full max-w-lg mx-auto z-10">
+        {/* Golden Line */}
+        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#D4AF37]/10 via-[#D4AF37]/50 to-[#D4AF37]/10 -translate-x-1/2"></div>
+
+        {data.loveStory.map((story, index) => {
+          const isEven = index % 2 === 0;
+          return (
+            <motion.div
+              key={story.id || index}
+              initial={{ opacity: 0, x: isEven ? 30 : -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.8 }}
+              className="flex items-center w-full mb-12 last:mb-0"
+            >
+              {/* Left Side */}
+              <div className="w-1/2 px-4 sm:px-6 text-right">
+                {!isEven && (
+                  <div>
+                    <h4 className="text-xl font-display text-[#4A3728]" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
+                    <span className="text-xs font-bold text-[#D4AF37] tracking-wider mb-2 block">{story.year}</span>
+                    <p className="text-sm text-[#4A3728]/70 leading-relaxed">{story.description}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Center Dot */}
+              <div className="relative flex justify-center items-center w-8 shrink-0">
+                <div className="w-4 h-4 sm:w-6 sm:h-6 bg-white border-4 border-[#D4AF37] rounded-full z-10 shadow-[0_0_10px_rgba(212,175,55,0.3)]"></div>
+              </div>
+
+              {/* Right Side */}
+              <div className="w-1/2 px-4 sm:px-6 text-left">
+                {isEven && (
+                  <div>
+                    <h4 className="text-xl font-display text-[#4A3728]" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
+                    <span className="text-xs font-bold text-[#D4AF37] tracking-wider mb-2 block">{story.year}</span>
+                    <p className="text-sm text-[#4A3728]/70 leading-relaxed">{story.description}</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      <SectionBottomDivider />
+    </section>
+  );
+}
+
+function GallerySection({ data }: { data: Invitation }) {
+  // Gunakan foto bawaan jika data.photoUrls kosong (untuk keperluan preview)
+  const photos = data.photoUrls && data.photoUrls.length > 0
+    ? data.photoUrls
+    : [
+      '/assets/javaneseTheme/Assets/cover-1.png',
+      '/assets/javaneseTheme/Assets/cover-2.png',
+      '/assets/javaneseTheme/Assets/cover-1.png'
+    ];
+
+  return (
+    <section id="gallery-section" className="relative pt-24 pb-40 flex flex-col items-center bg-[#F8F5F0] overflow-hidden">
+      {/* Ornaments */}
+      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-white to-transparent pointer-events-none"></div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="text-center mb-12 relative z-10 px-6"
+      >
+        <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2">Momen Bahagia</p>
+        <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+          Galeri Foto
+        </h2>
+        <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
+      </motion.div>
+
+      {/* Pinterest-style Masonry Grid */}
+      <div className="w-full relative z-10 px-4 sm:px-6 sm:max-w-2xl mx-auto pb-8">
+        <div className="columns-2 sm:columns-3 gap-4">
+          {photos.map((photo, index) => {
+            // Create varied aspect ratios for the Pinterest masonry effect
+            let aspectClass = 'aspect-[3/4]';
+            if (index % 4 === 0) aspectClass = 'aspect-square';
+            else if (index % 3 === 0) aspectClass = 'aspect-[4/5]';
+            else if (index % 2 === 0) aspectClass = 'aspect-[2/3]';
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
+                className={`w-full overflow-hidden relative shadow-md rounded-[16px] border border-white/50 break-inside-avoid mb-4 group ${aspectClass}`}
+              >
+                <Image
+                  src={photo}
+                  alt={`Gallery ${index + 1}`}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  unoptimized
+                />
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      <SectionBottomDivider />
+    </section>
+  );
+}
+
+function MemoriesSection({ data }: { data: Invitation }) {
+  // Jika tidak ada URL video, kita bisa me-return null. 
+  // Namun untuk keperluan preview, kita tampilkan placeholder jika kosong.
+  const hasVideo = !!data.videoUrl;
+  const videoSrc = hasVideo
+    ? data.videoUrl?.replace('watch?v=', 'embed/')
+    : 'https://www.youtube.com/embed/jfKfPfyJRdk';
+
+  // Jika kita benar-benar ingin hide saat tidak ada video (production behavior):
+  // if (!hasVideo) return null;
+
+  return (
+    <section id="memories-section" className="relative pt-24 pb-40 px-6 flex flex-col items-center bg-white overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="text-center mb-12 relative z-10"
+      >
+        <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2">Kenangan Indah</p>
+        <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+          Our Memories
+        </h2>
+        <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
+        {!hasVideo && (
+          <p className="text-sm text-amber-600 bg-amber-50 p-2 rounded-lg italic max-w-sm mx-auto border border-amber-200">
+            (Preview) Video placeholder. Tambahkan URL YouTube di dashboard untuk mengganti video ini.
+          </p>
+        )}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="w-full max-w-md relative z-10 rounded-[30px] overflow-hidden shadow-2xl border-4 border-[#F8F5F0]"
+      >
+        <div className="absolute -top-4 -left-4 w-16 h-16 pointer-events-none opacity-60 z-20">
+          <Image src="/assets/javaneseTheme/Assets/ornament-37.png" alt="Ornament" fill className="object-contain" unoptimized />
+        </div>
+
+        <div className="aspect-video w-full bg-slate-100 relative">
+          <iframe
+            src={videoSrc}
+            className="absolute inset-0 w-full h-full"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
+      </motion.div>
+
+      <SectionBottomDivider />
+    </section>
+  );
+}
+
+function RsvpSection({ data }: { data: Invitation }) {
+  return (
+    <section id="rsvp-section" className="relative pt-24 pb-40 px-6 flex flex-col items-center bg-[#F8F5F0] overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="text-center mb-12 relative z-10"
+      >
+        <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+          Kehadiran & Ucapan
+        </h2>
+        <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
+        <p className="text-sm sm:text-base text-[#4A3728]/80 font-serif italic max-w-md mx-auto">
+          Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.
+        </p>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="w-full max-w-md relative z-10"
+      >
+        {/* Ornaments for RSVP Box */}
+        <div className="absolute -top-6 -left-6 w-16 h-32 pointer-events-none opacity-50 z-20">
+          <Image src="/assets/javaneseTheme/Assets/ornament-37.png" alt="Ornament" fill className="object-contain" unoptimized />
+        </div>
+        <div className="absolute -bottom-6 -right-6 w-16 h-32 pointer-events-none opacity-50 z-20 -scale-x-100 -scale-y-100">
+          <Image src="/assets/javaneseTheme/Assets/ornament-37.png" alt="Ornament" fill className="object-contain" unoptimized />
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden relative">
+          {/* Subtle floral bg inside RSVP */}
+          <div className="absolute inset-0 opacity-5 pointer-events-none">
+            <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Background Texture" fill className="object-cover" unoptimized />
+          </div>
+
+          <div className="relative z-10 p-2">
+            <RsvpForm
+              slug={data.slug}
+              tier={data.tier}
+              qrEnabled={data.qrEnabled}
+            />
+          </div>
+        </div>
+      </motion.div>
+
+      <SectionBottomDivider />
+    </section>
+  );
+}
+
+function GiftSection({ data }: { data: Invitation }) {
+  if (!data.digitalGifts || data.digitalGifts.length === 0) return null;
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    alert('Nomor rekening berhasil disalin!');
+  };
+
+  return (
+    <section id="gift-section" className="relative pt-24 pb-40 px-6 flex flex-col items-center bg-white overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="text-center mb-12 relative z-10"
+      >
+        <div className="w-16 h-16 bg-[#F8F5F0] rounded-full flex items-center justify-center mx-auto mb-6">
+          <Gift className="w-8 h-8 text-[#D4AF37]" />
+        </div>
+        <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+          Wedding Gift
+        </h2>
+        <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
+        <p className="text-sm sm:text-base text-[#4A3728]/80 font-serif italic max-w-md mx-auto">
+          Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun jika Anda ingin memberikan tanda kasih, dapat mengirimkan melalui fitur di bawah ini:
+        </p>
+      </motion.div>
+
+      <div className="w-full max-w-md flex flex-col gap-6 relative z-10">
+        {data.digitalGifts.map((gift, idx) => (
+          <motion.div
+            key={gift.id || idx}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: idx * 0.1 }}
+            className="bg-[#F8F5F0] rounded-2xl p-6 shadow-md border border-[#D4AF37]/20 flex flex-col items-center text-center relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 opacity-10 pointer-events-none translate-x-4 -translate-y-4">
+              <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Mandala" fill className="object-contain" unoptimized />
+            </div>
+
+            <h3 className="text-lg font-bold text-[#4A3728] tracking-widest uppercase mb-4">{gift.bankName}</h3>
+            <p className="text-2xl font-mono text-[#D4AF37] mb-2">{gift.accountNumber}</p>
+            <p className="text-sm text-[#4A3728]/80 font-serif italic mb-6">a.n. {gift.accountHolder}</p>
+
+            <button
+              onClick={() => handleCopy(gift.accountNumber)}
+              className="flex items-center gap-2 px-6 py-2.5 bg-white text-[#4A3728] text-sm font-bold uppercase tracking-wider rounded-full border border-[#D4AF37]/30 hover:bg-[#D4AF37] hover:text-white transition-colors shadow-sm"
+            >
+              <Copy className="w-4 h-4" />
+              Salin Rekening
+            </button>
+          </motion.div>
+        ))}
+      </div>
+
+      <SectionBottomDivider />
+    </section>
+  );
+}
+
+// ==========================================
+// MAIN COMPONENT
+// ==========================================
+
+export default function PremiumJavanese({ invitation: data }: { invitation: Invitation }) {
+  const [isOpened, setIsOpened] = useState(false);
+
+  if (!data) return null;
+
+  return (
+    <div className={`relative w-full max-w-lg mx-auto bg-[#F8F5F0] shadow-[0_0_40px_rgba(0,0,0,0.1)] font-sans text-slate-800 overflow-x-hidden ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
+      <AnimatePresence>
+        {!isOpened && <EnvelopeSection data={data} onOpen={() => setIsOpened(true)} />}
+      </AnimatePresence>
+
+      <HeroSection data={data} />
+      <GroomSection data={data} />
+      <DateSection data={data} />
+
+      {data.loveStory && data.loveStory.length > 0 && (
+        <LoveStorySection data={data} />
+      )}
+
+      <MemoriesSection data={data} />
+      <GiftSection data={data} />
+      <GallerySection data={data} />
+      <RsvpSection data={data} />
+    </div>
+  );
+}

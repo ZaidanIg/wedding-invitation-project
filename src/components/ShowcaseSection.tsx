@@ -127,6 +127,22 @@ const themes: {
     category: 'Oriental',
     palette: ['#fffcf9', '#8b0000', '#d4af37'],
   },
+  {
+    name: 'Sunda 3D',
+    slug: 'premium-sunda-3d',
+    tag: '✨ Premium',
+    isLuxury: true,
+    category: 'Oriental',
+    palette: ['#fffcf9', '#8b0000', '#d4af37'],
+  },
+  {
+    name: 'Premium Javanese',
+    slug: 'premium-javanese',
+    tag: '✨ Premium',
+    isLuxury: true,
+    category: 'Oriental',
+    palette: ['#fffcf9', '#8b0000', '#d4af37'],
+  },
 ];
 
 type PricingFilter = 'Semua' | 'Basic' | 'Premium';

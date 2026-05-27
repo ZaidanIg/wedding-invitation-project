@@ -81,6 +81,8 @@ const layoutOptions: { value: Layout; label: string; bg: string; border: string;
   { value: 'buddhist-zen', label: 'Buddhist Zen', bg: 'bg-[#fdfbf7]', border: 'border-[#a3b18a]', preview: 'bg-[#a3b18a]/20', category: 'premium' },
   { value: 'confucian-oriental', label: 'Confucian Oriental', bg: 'bg-[#fffcf9]', border: 'border-[#8b0000]', preview: 'bg-[#8b0000]/20', category: 'premium' },
   { value: 'premium-charcoal', label: 'Premium Charcoal', bg: 'bg-[#111111]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/30', category: 'premium' },
+  { value: 'premium-sunda-3d', label: 'Premium Sunda 3D', bg: 'bg-[#F8F4E6]', border: 'border-[#4A5D23]', preview: 'bg-[#D4AF37]/30', category: 'premium' },
+  { value: 'premium-javanese', label: 'Javanese Classic', bg: 'bg-[#F8F5F0]', border: 'border-[#D4AF37]', preview: 'bg-[#8B5A2B]/30', category: 'premium' },
 ];
 
 const steps = [
