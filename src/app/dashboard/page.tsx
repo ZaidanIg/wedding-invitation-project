@@ -6,9 +6,10 @@ import InvitationCard from '@/components/InvitationCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { Plus } from 'lucide-react';
+import { Plus, CheckSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Invitation } from '@/types';
+import WeddingCountdown from '@/components/WeddingCountdown';
 
 type InvitationWithCount = Invitation & { _count?: { guests: number } };
 
@@ -48,7 +49,7 @@ export default function DashboardPage() {
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-12 mb-20 text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-12 mb-12 text-center sm:text-left">
           <div>
             <h1 className="text-4xl sm:text-5xl font-display font-bold text-[#1c1c1c] tracking-tight leading-tight">
               Dashboard Saya
@@ -57,13 +58,42 @@ export default function DashboardPage() {
               Kelola momen berharga Anda di satu tempat, dengan undangan premium yang mewah.
             </p>
           </div>
-          <Link href="/create" className="w-full sm:w-auto">
-            <Button size="lg" className="w-full sm:w-auto h-16 px-10 bg-rose-gradient text-white shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 rounded-2xl font-bold">
-              <Plus className="h-5 w-5 mr-2" />
-              Buat Undangan Baru
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <Link href="/dashboard/checklist" className="w-full sm:w-auto">
+              <Button size="lg" variant="secondary" className="w-full sm:w-auto h-16 px-8 rounded-2xl font-bold border-[#eceae4] bg-white text-[#1c1c1c] hover:bg-[#1c1c1c] hover:text-white transition-all group">
+                <CheckSquare className="h-5 w-5 mr-2 text-rose-500 group-hover:text-white transition-colors" />
+                Checklist
+              </Button>
+            </Link>
+            <Link href="/create" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto h-16 px-10 bg-rose-gradient text-white shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 rounded-2xl font-bold">
+                <Plus className="h-5 w-5 mr-2" />
+                Buat Undangan Baru
+              </Button>
+            </Link>
+          </div>
         </div>
+
+        {/* Wedding Countdown — shown for the earliest upcoming paid invitation */}
+        {(() => {
+          const upcoming = invitations
+            .filter(inv => inv.tier !== 'DRAFT' && new Date(inv.eventDate) > new Date())
+            .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())[0];
+          return upcoming ? (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mb-10"
+            >
+              <WeddingCountdown
+                eventDate={upcoming.eventDate}
+                groomName={upcoming.groomName}
+                brideName={upcoming.brideName}
+              />
+            </motion.div>
+          ) : null;
+        })()}
 
         {/* Stats for B2C Users */}
         {invitations.length > 0 && (

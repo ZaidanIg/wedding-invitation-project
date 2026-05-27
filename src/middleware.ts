@@ -21,7 +21,15 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 2. Global Headers
+  // 2. Route Protection / Redirects
+  if (pathname === '/create') {
+    const plan = url.searchParams.get('plan') || request.cookies.get('selected_plan')?.value;
+    if (!plan) {
+      return NextResponse.redirect(new URL('/pricing', request.url));
+    }
+  }
+
+  // 3. Global Headers
   const response = NextResponse.next();
   if (pathname.startsWith('/api/')) {
     response.headers.set('X-API-Version', '1.2');

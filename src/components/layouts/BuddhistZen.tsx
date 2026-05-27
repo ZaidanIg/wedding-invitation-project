@@ -12,6 +12,7 @@ import {
 import { useEffect, useRef } from 'react';
 import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
+import { getEmbedUrl } from '@/lib/utils';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -23,6 +24,7 @@ import {
   AudioPlayer,
   TierGate,
   useTier,
+  EventActionButtons,
 } from './shared';
 const LotusIcon = ({ className, size = 24 }: { className?: string; size?: number }) => (
   <svg
@@ -156,7 +158,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
   const { tier } = useTier();
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [isOpened, setIsOpened] = useState(false);
+  const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const { formattedDate } = formatEventDate(invitation.eventDate);
@@ -380,12 +382,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
                         <MapPin size={16} className="shrink-0 text-[#a3b18a]" />
                         <span>{invitation.venueName}<br/>{invitation.venueAddress}</span>
                      </p>
-                     <button 
-                       onClick={() => window.open(mapsUrl)}
-                       className="w-full py-4 rounded-2xl bg-white border border-[#a3b18a]/20 text-[10px] font-bold uppercase tracking-widest text-[#3d4432] hover:bg-[#3d4432] hover:text-white transition-all shadow-sm"
-                     >
-                       View Location
-                     </button>
+                     <EventActionButtons eventName={item.label} eventDate={invitation.eventDate} eventTime={item.time} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
                   </div>
                </AnimatedSection>
              ))}
@@ -403,11 +400,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
                 height="100%" 
                 frameBorder="0" 
                 style={{ border: 0 }} 
-                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
-                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
-                  : (invitation as any).videoUrl.includes('youtu.be/')
-                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
-                    : (invitation as any).videoUrl} 
+                src={getEmbedUrl((invitation as any).videoUrl)}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen 
                 title="Wedding Video" 

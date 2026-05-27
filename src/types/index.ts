@@ -267,6 +267,8 @@ export interface FormWizardState {
   isGenerating: boolean;
   isSaving: boolean;
   qrEnabled: boolean;
+  showOnboarding: boolean;
+  activeMobileTab: 'form' | 'preview';
 }
 
 // ---- NextAuth Module Augmentation ----

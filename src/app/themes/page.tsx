@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import ShowcaseSection from '@/components/ShowcaseSection';
+import TryItWidget from '@/components/TryItWidget';
 
 export const metadata: Metadata = {
   title: 'Koleksi Tema Undangan',
@@ -16,6 +17,7 @@ export default function ThemesPage() {
     <div className="min-h-screen bg-[#fcfbf8]">
       <div className="pt-24">
         <ShowcaseSection fullGallery={true} />
+        <TryItWidget />
       </div>
     </div>
   );

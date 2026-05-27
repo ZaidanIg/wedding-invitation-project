@@ -20,6 +20,7 @@ import {
   QuotesSection,
   TierGate,
   useTier,
+  EventActionButtons,
 } from './shared';
 
 interface LayoutProps {
@@ -188,6 +189,7 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
           <p className="text-sm text-blue-700 leading-relaxed">{invitation.eventTime}</p>
           <p className="text-sm text-blue-700 mt-1 font-medium">{invitation.venueName}</p>
           <p className="text-xs text-blue-500/70 mt-1">{invitation.venueAddress}</p>
+                  <EventActionButtons eventName="Acara Pernikahan" eventDate={invitation.eventDate} eventTime={invitation.eventTime} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
         </AnimatedSection>
         <AnimatedSection delay="delay-300">
           <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-6 px-6 py-2.5 bg-blue-600 text-white text-xs font-semibold uppercase tracking-widest rounded-full hover:bg-blue-700 transition-all duration-300 shadow-md">

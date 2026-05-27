@@ -21,6 +21,7 @@ import {
   QuotesSection,
   TierGate,
   useTier,
+  EventActionButtons,
 } from './shared';
 
 interface LayoutProps {
@@ -182,6 +183,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
             <p className="text-lg font-display font-bold text-rose-800">{invitation.eventTime}</p>
             <p className="text-sm text-rose-700 mt-2 font-medium">{invitation.venueName}</p>
             <p className="text-xs text-pink-500 mt-1">{invitation.venueAddress}</p>
+                  <EventActionButtons eventName="Acara Pernikahan" eventDate={invitation.eventDate} eventTime={invitation.eventTime} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-4 px-5 py-2 bg-rose-500 text-white text-xs font-semibold uppercase tracking-widest rounded-full hover:bg-rose-600 transition-all duration-300 shadow-md">
               <MapPin className="h-3.5 w-3.5" />View on Map
             </a>

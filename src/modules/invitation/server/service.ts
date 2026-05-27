@@ -39,9 +39,9 @@ const validateTierConstraints = (tier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE
       throw new ForbiddenError('Paket Ultimate hanya mendukung maksimal 7 foto di galeri.');
     }
     if (data.videoUrl) {
-      const isEmbed = /youtube\.com|youtu\.be|tiktok\.com|instagram\.com/.test(data.videoUrl);
+      const isEmbed = /youtube\.com|youtu\.be|tiktok\.com|instagram\.com|drive\.google\.com/.test(data.videoUrl);
       if (!isEmbed) {
-        throw new ValidationError('Link video harus berupa embed URL text dari YouTube, TikTok, atau Instagram Reels.');
+        throw new ValidationError('Link video harus berupa embed URL text dari YouTube, TikTok, Instagram Reels, atau Google Drive.');
       }
     }
   }

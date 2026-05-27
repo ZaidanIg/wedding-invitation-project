@@ -3,6 +3,7 @@
 // ============================================================
 
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { FormWizardState, Tone, Language, Layout, GeneratedInvitation } from '@/types';
 
 interface FormWizardActions {
@@ -24,6 +25,9 @@ interface FormWizardActions {
   setQrEnabled: (val: boolean) => void;
   targetTier: 'BASIC' | 'PREMIUM' | 'ULTIMATE';
   setTargetTier: (tier: 'BASIC' | 'PREMIUM' | 'ULTIMATE') => void;
+  dismissOnboarding: () => void;
+  setActiveMobileTab: (tab: 'form' | 'preview') => void;
+  loadDemoData: () => void;
   reset: () => void;
 }
 
@@ -71,11 +75,14 @@ const initialState: FormWizardState = {
   isGenerating: false,
   isSaving: false,
   qrEnabled: true,
+  showOnboarding: true,
+  activeMobileTab: 'form',
 };
 
-export const useInvitationStore = create<FormWizardState & FormWizardActions>(
-  (set) => ({
-    ...initialState,
+export const useInvitationStore = create<FormWizardState & FormWizardActions>()(
+  persist(
+    (set) => ({
+      ...initialState,
 
     setStep: (step) => set({ step }),
     nextStep: () => set((state) => ({ step: Math.min(state.step + 1, 5) })),
@@ -101,6 +108,45 @@ export const useInvitationStore = create<FormWizardState & FormWizardActions>(
 
     targetTier: 'BASIC',
     setTargetTier: (targetTier) => set({ targetTier }),
+    
+    dismissOnboarding: () => set({ showOnboarding: false }),
+    setActiveMobileTab: (activeMobileTab) => set({ activeMobileTab }),
+    loadDemoData: () => set((state) => ({
+      showOnboarding: false,
+      coupleDetails: {
+        groomName: 'Nama Lengkap Mempelai Pria',
+        groomParents: 'Bapak [Nama Bapak] & Ibu [Nama Ibu]',
+        brideName: 'Nama Lengkap Mempelai Wanita',
+        brideParents: 'Bapak [Nama Bapak] & Ibu [Nama Ibu]',
+      },
+      eventDetails: {
+        ...state.eventDetails,
+        eventDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        eventTime: '09:00',
+        venueName: 'Nama Gedung / Lokasi Acara',
+        venueAddress: 'Alamat Lengkap Lokasi, Kota',
+      },
+    })),
+    
     reset: () => set(initialState),
   }),
+  {
+    name: 'sahinaja-draft',
+    storage: createJSONStorage(() => localStorage),
+    partialize: (state) => ({
+      step: state.step,
+      coupleDetails: state.coupleDetails,
+      eventDetails: state.eventDetails,
+      stylePreferences: state.stylePreferences,
+      photoUrls: state.photoUrls,
+      headerPhotoUrl: state.headerPhotoUrl,
+      groomPhotoUrl: state.groomPhotoUrl,
+      bridePhotoUrl: state.bridePhotoUrl,
+      generatedInvitation: state.generatedInvitation,
+      qrEnabled: state.qrEnabled,
+      targetTier: state.targetTier,
+      showOnboarding: state.showOnboarding,
+    }),
+  }
+)
 );

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
+import { getEmbedUrl } from '@/lib/utils';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -26,7 +27,8 @@ import {
   ParallaxSection,
   ParallaxImage,
   DigitalGiftSection,
-  IconMapper
+  IconMapper,
+  EventActionButtons,
 } from './shared';
 
 function GoldPeonyCorner({ className = "" }: { className?: string }) {
@@ -154,7 +156,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
   const { tier } = useTier();
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [isOpened, setIsOpened] = useState(false);
+  const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const { formattedDate, dayName, dayNumber, monthName } = formatEventDate(invitation.eventDate);
@@ -436,6 +438,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                      <p className="text-xs text-[#8B0000]/60 leading-relaxed flex items-start gap-4 italic font-medium">
                         <MapPin size={20} className="shrink-0 text-[#FFD700]" />
                         <span>{invitation.venueName}<br/>{invitation.venueAddress}</span>
+                  <EventActionButtons eventName="Acara Pernikahan" eventDate={invitation.eventDate} eventTime={invitation.eventTime} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
                      </p>
                      <motion.button 
                        whileHover={{ scale: 1.02 }}
@@ -461,11 +464,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                 height="100%" 
                 frameBorder="0" 
                 style={{ border: 0 }} 
-                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
-                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
-                  : (invitation as any).videoUrl.includes('youtu.be/')
-                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
-                    : (invitation as any).videoUrl} 
+                src={getEmbedUrl((invitation as any).videoUrl)}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen 
                 title="Wedding Video" 

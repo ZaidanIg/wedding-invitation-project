@@ -31,7 +31,8 @@ import {
   TierGate,
   DigitalGiftSection,
   QuotesSection,
-  WishesSection
+  WishesSection,
+  EventActionButtons,
 } from './shared';
 
 const ArabesquePattern = ({ className }: { className?: string }) => (
@@ -199,12 +200,7 @@ export default function IslamicArabesque({ invitation, isPreview = false }: { in
                   </div>
                   <h4 className="text-xl font-display font-bold text-[#0f766e] mb-2">{item.label}</h4>
                   <p className="text-xs text-stone-400 leading-relaxed mb-6">{invitation.venueName}<br/>{invitation.venueAddress}</p>
-                  <button 
-                    onClick={() => window.open(mapsUrl)}
-                    className="flex items-center gap-2 text-[10px] font-bold text-[#2dd4bf] uppercase tracking-widest"
-                  >
-                    Lihat Lokasi <ChevronDown size={14} className="-rotate-90" />
-                  </button>
+                  <EventActionButtons eventName={item.label} eventDate={invitation.eventDate} eventTime={item.time} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
                </AnimatedSection>
              ))}
           </div>
