@@ -126,7 +126,7 @@ export const billingService = {
       credit_card: { secure: true },
       customer_details: {
         first_name: user.name || 'User',
-        email: user.email || '',
+        ...(user.email ? { email: user.email } : {}),
       },
       item_details: [
         {
