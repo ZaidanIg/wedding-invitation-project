@@ -34,8 +34,6 @@ function GoldDustParticles() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
-
   const particles = useMemo(() => {
     return Array.from({ length: 30 }, (_, i) => ({
       id: i,
@@ -46,6 +44,8 @@ function GoldDustParticles() {
       drift: (Math.random() * 60) - 30, // left-right drift distance
     }));
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">

@@ -36,8 +36,6 @@ function GoldParticles() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
-
   const items = useMemo(() => {
     return Array.from({ length: 30 }, (_, i) => ({
       id: i,
@@ -47,6 +45,8 @@ function GoldParticles() {
       size: 2 + Math.random() * 4,
     }));
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -83,8 +83,6 @@ function FlyingBirds() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
-
   const birds = useMemo(() => {
     return Array.from({ length: 6 }, (_, i) => ({
       id: i,
@@ -95,6 +93,8 @@ function FlyingBirds() {
       scale: 0.4 + Math.random() * 0.4,
     }));
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
