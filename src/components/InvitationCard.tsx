@@ -59,6 +59,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
   const canQrCheckin   = isUltimate && qrEnabled !== false;
   const canDownloadQR  = isUltimate && qrEnabled !== false;
   const showUpgrade    = isBasic || isPremium;
+  const canViewAnalytics = isPremium || isUltimate;
+  const showSmartNudge = isBasic && invitation.viewCount >= 50;
 
   const formattedDate = new Date(invitation.eventDate).toLocaleDateString('id-ID', {
     day: 'numeric', month: 'long', year: 'numeric',
@@ -179,9 +181,16 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
                   <span className="font-bold">{invitation._count?.guests || 0} Tamu RSVP</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2.5 col-span-2 sm:col-span-1 opacity-40">
+                <div className="flex items-center gap-2.5 col-span-2 sm:col-span-1 relative group/rsvp">
                   <div className="p-1.5 bg-stone-100 rounded-lg text-stone-400"><Users className="h-4 w-4" /></div>
-                  <span className="font-semibold text-stone-400">RSVP di {isBasic ? 'Premium+' : 'Basic+'}</span>
+                  <span className="font-semibold text-stone-400 select-none">
+                    <span className="blur-[3px] inline-block mr-1">??</span> Tamu RSVP
+                  </span>
+                  {/* Upgrade tooltip */}
+                  <div className="absolute left-0 -top-10 hidden group-hover/rsvp:flex items-center gap-2 bg-[#1c1c1c] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl whitespace-nowrap shadow-xl z-20">
+                    <Lock className="h-3 w-3" />
+                    Upgrade ke Premium untuk lihat data tamu
+                  </div>
                 </div>
               )}
             </div>
@@ -189,6 +198,23 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
             <div className="flex items-center gap-2 text-[10px] text-[#5f5f5d]/50 mt-5 uppercase tracking-[0.2em] font-bold">
               <MapPin className="h-3.5 w-3.5" /> {invitation.venueName}
             </div>
+
+            {/* Smart upgrade nudge — shown for Basic users with 50+ views */}
+            {showSmartNudge && (
+              <div className="mt-4 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">
+                <div className="p-1.5 bg-amber-100 rounded-xl text-amber-600 shrink-0 mt-0.5">
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-amber-800">
+                    🎉 Undangan Anda sudah dilihat {invitation.viewCount}x!
+                  </p>
+                  <p className="text-[11px] text-amber-700 mt-0.5 leading-relaxed">
+                    Upgrade ke Premium untuk melihat siapa saja yang sudah membuka undangan Anda.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -296,6 +322,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
                     </Button>
                   </Link>
                 ) : null}
+
+
 
                 {/* Salin Link — all active */}
                 {canCopyLink ? (

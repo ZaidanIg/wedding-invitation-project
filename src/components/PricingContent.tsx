@@ -157,6 +157,7 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
     if (invitationId) {
       router.push(`/checkout?plan=${selectedPlan.key}&invitationId=${invitationId}`);
     } else {
+      document.cookie = `selected_plan=${selectedPlan.key}; path=/; max-age=86400`;
       router.push(`/create?plan=${selectedPlan.key}`);
     }
   };
@@ -179,10 +180,6 @@ export default function PricingContent({ invitationId }: PricingContentProps) {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 bg-rose-50 border border-rose-100 text-rose-600 text-xs font-semibold px-4 py-1.5 rounded-full mb-6">
-            <Sparkles className="w-3.5 h-3.5" />
-            Sekali bayar · Tanpa langganan
-          </div>
           <p className="text-lg md:text-xl text-[#6b6b6b] max-w-xl mx-auto leading-relaxed">
             Pilih paket yang sesuai. Semua harga sudah mencakup seluruh fitur—
             tanpa biaya tersembunyi.

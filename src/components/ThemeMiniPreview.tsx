@@ -11,19 +11,24 @@ interface ThemeMiniPreviewProps {
   isInteractable?: boolean;
   scale?: number;
   hideNotch?: boolean;
+  hideMockup?: boolean;
+  groomName?: string;
+  brideName?: string;
 }
 
-export default function ThemeMiniPreview({ layout, isInteractable = false, scale = 0.55, hideNotch = false }: ThemeMiniPreviewProps) {
+export default function ThemeMiniPreview({ layout, isInteractable = false, scale = 0.55, hideNotch = false, hideMockup = false, groomName, brideName }: ThemeMiniPreviewProps) {
   const renderLayout = () => {
     const LayoutComponent = (layouts as any)[layout] || layouts['elegant-cream'];
     const invitation = {
       ...MOCK_INVITATION,
+      groomName: groomName || MOCK_INVITATION.groomName,
+      brideName: brideName || MOCK_INVITATION.brideName,
       stylePreferences: {
         ...MOCK_INVITATION.stylePreferences,
         layout: layout
       }
     };
-    return <LayoutComponent invitation={invitation} isPreview={false} />;
+    return <LayoutComponent invitation={invitation} isPreview={true} />;
   };
 
   return (
@@ -45,7 +50,7 @@ export default function ThemeMiniPreview({ layout, isInteractable = false, scale
         </div>
         
         {/* Mockup Frame Layer (Always on Top) */}
-        {!isInteractable && (
+        {!isInteractable && !hideMockup && (
           <>
             <div className="absolute inset-0 border-[12px] border-[#1c1c1c] rounded-[3.5rem] shadow-2xl ring-1 ring-black/5 pointer-events-none z-[1000]" />
             <div className="absolute inset-1 border border-white/5 rounded-[3rem] pointer-events-none z-[1001]" />

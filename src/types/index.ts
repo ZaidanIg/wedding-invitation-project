@@ -6,7 +6,7 @@
 // ---- Enums ----
 export type Tone = 'formal' | 'romantic' | 'modern' | 'playful';
 export type Language = 'id' | 'en';
-export type Layout = 'elegant-cream' | 'royal-blue' | 'rose-garden' | 'golden-classic' | 'luxury-emerald' | 'islamic-grace' | 'islamic-minimalist' | 'islamic-midnight' | 'islamic-arabesque' | 'christian-elegant' | 'hindu-mandala' | 'buddhist-zen' | 'confucian-oriental' | 'premium-charcoal';
+export type Layout = 'elegant-cream' | 'royal-blue' | 'rose-garden' | 'golden-classic' | 'luxury-emerald' | 'islamic-grace' | 'islamic-minimalist' | 'islamic-midnight' | 'islamic-arabesque' | 'christian-elegant' | 'hindu-mandala' | 'buddhist-zen' | 'confucian-oriental' | 'premium-charcoal' | 'premium-sunda-3d' | 'premium-javanese';
 export type RsvpStatus = 'PENDING' | 'ATTENDING' | 'NOT_ATTENDING';
 export type Role = 'USER' | 'ADMIN';
 export type Tier = 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE';
@@ -267,6 +267,8 @@ export interface FormWizardState {
   isGenerating: boolean;
   isSaving: boolean;
   qrEnabled: boolean;
+  showOnboarding: boolean;
+  activeMobileTab: 'form' | 'preview';
 }
 
 // ---- NextAuth Module Augmentation ----

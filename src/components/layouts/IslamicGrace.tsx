@@ -36,6 +36,7 @@ const Lantern = ({ className, size = 24 }: { className?: string; size?: number }
 );
 import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
+import { getEmbedUrl } from '@/lib/utils';
 import {
   AnimatedSection,
   LoveStorySection,
@@ -53,7 +54,8 @@ import {
   IconMapper,
   TierGate,
   useTier,
-  WishesSection
+  WishesSection,
+  EventActionButtons,
 } from './shared';
 import Button from '@/components/ui/Button';
 
@@ -206,7 +208,7 @@ function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: bool
 export default function IslamicGrace({ invitation, isPreview = false }: LayoutProps) {
   const { tier } = useTier();
   const [mounted, setMounted] = useState(false);
-  const [isOpened, setIsOpened] = useState(false);
+  const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
@@ -423,9 +425,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
                       <h4 className="text-2xl font-display font-bold text-white mb-2">{item.label}</h4>
                       <p className="text-sm font-bold text-[#c5a059] mb-4 uppercase tracking-[0.2em]">{item.time}</p>
                       <p className="text-xs text-white/50 mb-8 italic">{invitation.venueName}<br/>{invitation.venueAddress}</p>
-                      <Button onClick={() => window.open(mapsUrl)} className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-full py-4 text-[10px] tracking-widest uppercase">
-                        Buka Google Maps
-                      </Button>
+                      <EventActionButtons eventName={item.label || "Acara Pernikahan"} eventDate={invitation.eventDate} eventTime={invitation.eventTime} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
                    </AnimatedSection>
                  ))}
               </div>
@@ -443,11 +443,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
                 height="100%" 
                 frameBorder="0" 
                 style={{ border: 0 }} 
-                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
-                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
-                  : (invitation as any).videoUrl.includes('youtu.be/')
-                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
-                    : (invitation as any).videoUrl} 
+                src={getEmbedUrl((invitation as any).videoUrl)}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen 
                 title="Wedding Video" 

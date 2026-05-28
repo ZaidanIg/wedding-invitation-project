@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
+import { getEmbedUrl } from '@/lib/utils';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { 
@@ -24,6 +25,7 @@ import {
   TIER_RANK,
   TierGate,
   useTier,
+  EventActionButtons,
 } from './shared';
 
 /* ── Specific Parts for LuxuryEmerald ── */
@@ -508,7 +510,7 @@ interface LayoutProps {
 
 export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutProps) {
   const { tier } = useTier();
-  const [isOpened, setIsOpened] = useState(false);
+  const [isOpened, setIsOpened] = useState(isPreview);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
@@ -657,6 +659,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
               <p className="text-lg text-white font-display font-bold">{invitation.eventTime}</p>
               <p className="text-sm text-white/80 mt-2 font-medium">{invitation.venueName}</p>
               <p className="text-xs text-white/50 mt-1">{invitation.venueAddress}</p>
+                  <EventActionButtons eventName="Acara Pernikahan" eventDate={invitation.eventDate} eventTime={invitation.eventTime} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
               <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-5 px-6 py-2.5 border border-[#d4af37] text-[#d4af37] text-xs font-semibold uppercase tracking-widest hover:bg-[#d4af37] hover:text-[#042f2e] transition-all duration-300">
                 <MapPin className="h-3.5 w-3.5" />Lihat Lokasi
               </a>
@@ -715,11 +718,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
                 height="100%" 
                 frameBorder="0" 
                 style={{ border: 0 }} 
-                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
-                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
-                  : (invitation as any).videoUrl.includes('youtu.be/')
-                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
-                    : (invitation as any).videoUrl} 
+                src={getEmbedUrl((invitation as any).videoUrl)}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen 
                 title="Wedding Video" 

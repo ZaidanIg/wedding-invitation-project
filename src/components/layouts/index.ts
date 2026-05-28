@@ -12,6 +12,7 @@ import HinduMandala from './HinduMandala';
 import BuddhistZen from './BuddhistZen';
 import ConfucianOriental from './ConfucianOriental';
 import PremiumCharcoal from './PremiumCharcoal';
+import PremiumJavanese from './PremiumJavanese';
 
 export const layouts = {
   'elegant-cream': ElegantCream,
@@ -28,6 +29,7 @@ export const layouts = {
   'buddhist-zen': BuddhistZen,
   'confucian-oriental': ConfucianOriental,
   'premium-charcoal': PremiumCharcoal,
+  'premium-javanese': PremiumJavanese,
 } as const;
 
 export type LayoutType = keyof typeof layouts;

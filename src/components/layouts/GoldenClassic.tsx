@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Heart, MapPin, Clock, Calendar, Music, Camera, ChevronDown, Glasses } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
+import { getEmbedUrl } from '@/lib/utils';
 import Image from 'next/image';
 import {
   AnimatedSection,
@@ -20,6 +21,7 @@ import {
   QuotesSection,
   TierGate,
   useTier,
+  EventActionButtons,
 } from './shared';
 
 interface LayoutProps {
@@ -173,6 +175,7 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
             <p className="text-xl font-light text-zinc-800 mb-2">{invitation.eventTime}</p>
             <p className="text-sm text-zinc-800 font-medium uppercase tracking-wider">{invitation.venueName}</p>
             <p className="text-xs text-zinc-500 mt-2 font-light">{invitation.venueAddress}</p>
+                  <EventActionButtons eventName="Acara Pernikahan" eventDate={invitation.eventDate} eventTime={invitation.eventTime} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-6 px-6 py-2.5 border border-[#D4AF37] text-[#D4AF37] text-xs font-medium uppercase tracking-widest hover:bg-[#D4AF37] hover:text-white transition-all duration-300">
               <MapPin className="h-3.5 w-3.5" />Location
             </a>
@@ -245,11 +248,7 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
                 height="100%" 
                 frameBorder="0" 
                 style={{ border: 0 }} 
-                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
-                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
-                  : (invitation as any).videoUrl.includes('youtu.be/')
-                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
-                    : (invitation as any).videoUrl} 
+                src={getEmbedUrl((invitation as any).videoUrl)}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen 
                 title="Wedding Video" 

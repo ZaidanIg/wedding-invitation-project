@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
+import { getEmbedUrl } from '@/lib/utils';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { 
@@ -23,6 +24,7 @@ import {
   TIER_RANK,
   TierGate,
   useTier,
+  EventActionButtons,
 } from './shared';
 
 /* ── Falling Gold Dust Particles ── */
@@ -478,7 +480,7 @@ interface LayoutProps {
 
 export default function PremiumCharcoal({ invitation, isPreview = false }: LayoutProps) {
   const { tier } = useTier();
-  const [isOpened, setIsOpened] = useState(false);
+  const [isOpened, setIsOpened] = useState(isPreview);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
@@ -770,11 +772,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
                 height="100%" 
                 frameBorder="0" 
                 style={{ border: 0 }} 
-                src={(invitation as any).videoUrl.includes('youtube.com/watch?v=') 
-                  ? (invitation as any).videoUrl.replace('watch?v=', 'embed/').split('&')[0] 
-                  : (invitation as any).videoUrl.includes('youtu.be/')
-                    ? (invitation as any).videoUrl.replace('youtu.be/', 'youtube.com/embed/').split('?')[0]
-                    : (invitation as any).videoUrl} 
+                src={getEmbedUrl((invitation as any).videoUrl)}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen 
                 title="Wedding Video" 
@@ -813,6 +811,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
               
               <p className="text-sm text-white font-semibold mb-1">{invitation.venueName}</p>
               <p className="text-xs text-white/50 mb-6">{invitation.venueAddress}</p>
+                  <EventActionButtons eventName="Acara Pernikahan" eventDate={invitation.eventDate} eventTime={invitation.eventTime} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
               
               <a 
                 href={mapsUrl} 

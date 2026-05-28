@@ -671,7 +671,10 @@ export function resolvePhotos(invitation: any) {
 
 /* ── Helper: format date ── */
 export function formatEventDate(eventDate: string) {
+  if (!eventDate) return { formattedDate: '', dayNumber: '', monthName: '', dayName: '' };
   const date = new Date(eventDate);
+  if (isNaN(date.getTime())) return { formattedDate: '', dayNumber: '', monthName: '', dayName: '' };
+  
   return {
     formattedDate: date.toLocaleDateString('en-US', {
       weekday: 'long',
@@ -688,6 +691,55 @@ export function formatEventDate(eventDate: string) {
 /* ── Helper: maps URL ── */
 export function getMapsUrl(venueName: string, venueAddress: string) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venueName + ', ' + venueAddress)}`;
+}
+
+/* ── Helper: calendar URL ── */
+export function getCalendarUrl(eventName: string, eventDate: string, eventTime: string, venueName: string, venueAddress: string) {
+  if (!eventDate || !eventTime) return '#';
+  const [year, month, day] = eventDate.split('-');
+  const [hour, min] = eventTime.split(':');
+  
+  const start = `${year}${month}${day}T${hour}${min}00`;
+  let endHour = parseInt(hour, 10) + 2;
+  const end = `${year}${month}${day}T${endHour.toString().padStart(2, '0')}${min}00`;
+  
+  const text = encodeURIComponent(`Acara: ${eventName}`);
+  const details = encodeURIComponent(`Acara kami di ${venueName}`);
+  const location = encodeURIComponent(`${venueName}, ${venueAddress}`);
+  
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${start}/${end}&details=${details}&location=${location}`;
+}
+
+export function EventActionButtons({
+  eventName,
+  eventDate,
+  eventTime,
+  venueName,
+  venueAddress,
+  containerClass = "flex flex-col sm:flex-row gap-3 mt-6",
+  buttonClass = "flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all"
+}: {
+  eventName: string;
+  eventDate: string;
+  eventTime: string;
+  venueName: string;
+  venueAddress: string;
+  containerClass?: string;
+  buttonClass?: string;
+}) {
+  const mapsUrl = getMapsUrl(venueName, venueAddress);
+  const calendarUrl = getCalendarUrl(eventName, eventDate, eventTime, venueName, venueAddress);
+
+  return (
+    <div className={containerClass}>
+      <button onClick={() => window.open(mapsUrl, '_blank')} className={`${buttonClass} bg-stone-900 text-white hover:bg-stone-800`}>
+        <MapPin size={14} /> Google Maps
+      </button>
+      <button onClick={() => window.open(calendarUrl, '_blank')} className={`${buttonClass} bg-stone-100 text-stone-900 hover:bg-stone-200`}>
+        <Calendar size={14} /> Simpan Kalender
+      </button>
+    </div>
+  );
 }
 
 /* ── Digital Gift (Angpao) ── */

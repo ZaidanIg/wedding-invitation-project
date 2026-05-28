@@ -33,7 +33,8 @@ import {
   TierGate,
   DigitalGiftSection,
   QuotesSection,
-  WishesSection
+  WishesSection,
+  EventActionButtons,
 } from './shared';
 import Button from '@/components/ui/Button';
 
@@ -205,9 +206,7 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
           </div>
           
           <div className="mt-16 text-center">
-             <Button onClick={() => window.open(mapsUrl)} className="bg-stone-800 text-white rounded-full px-12 py-4 text-xs tracking-widest uppercase">
-               Lihat Lokasi
-             </Button>
+             <EventActionButtons eventName="Acara Pernikahan" eventDate={invitation.eventDate} eventTime={invitation.eventTime} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
           </div>
         </section>
 

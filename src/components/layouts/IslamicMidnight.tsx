@@ -32,7 +32,8 @@ import {
   TierGate,
   DigitalGiftSection,
   QuotesSection,
-  WishesSection
+  WishesSection,
+  EventActionButtons,
 } from './shared';
 
 const StarField = () => {
@@ -227,12 +228,7 @@ export default function IslamicMidnight({ invitation, isPreview = false }: { inv
                     <MapPin size={14} className="shrink-0 mt-0.5" />
                     <p>{invitation.venueName}<br/>{invitation.venueAddress}</p>
                   </div>
-                  <button 
-                    onClick={() => window.open(mapsUrl)}
-                    className="w-full py-3 rounded-xl border border-[#c5a059]/30 text-[#c5a059] text-[10px] font-bold uppercase tracking-widest hover:bg-[#c5a059] hover:text-[#1a2b23] transition-all"
-                  >
-                    Buka Google Maps
-                  </button>
+                  <EventActionButtons eventName={item.label} eventDate={invitation.eventDate} eventTime={item.time} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
                </AnimatedSection>
              ))}
           </div>
