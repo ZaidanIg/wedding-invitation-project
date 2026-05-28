@@ -49,12 +49,24 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      # Build dijalankan di GitHub runner — TIDAK memakan Vercel Build Minutes
+      # Debug: verifikasi NEXT_PUBLIC vars ada di pulled env
+      - name: 🔍 Debug — Verify Pulled Env
+        run: |
+          echo "=== Checking pulled env files ==="
+          ls -la .vercel/ 2>/dev/null || echo ".vercel dir not found"
+          echo "--- NEXT_PUBLIC vars in preview env ---"
+          grep -i "NEXT_PUBLIC" .vercel/.env.preview.local 2>/dev/null | sed 's/=.*/=[REDACTED]/' || echo "No NEXT_PUBLIC vars found in pulled env!"
+
+      # Build dijalankan di GitHub runner — NEXT_PUBLIC vars diinject dari GitHub Secrets
+      # agar ter-bake ke dalam JavaScript bundle dengan benar
       - name: 🏗️ Build Project (on GitHub Runner)
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          # NEXT_PUBLIC_* harus diinject secara eksplisit agar ter-compile ke bundle
+          NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: ${{ secrets.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
 
       # Deploy artefak hasil build ke Vercel (pre-built, 0 Vercel Build Minutes)
       - name: 🌐 Deploy Pre-built to Vercel (Staging)
