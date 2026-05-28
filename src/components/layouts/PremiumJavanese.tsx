@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Invitation } from '@/types';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -153,36 +153,40 @@ function FallingSparkles() {
 
   if (!mounted) return null;
 
+  const sparkles = useMemo(() => {
+    return [...Array(35)].map(() => ({
+      left: Math.random() * 100,
+      delay: Math.random() * 5,
+      duration: Math.random() * 3 + 4,
+      size: Math.random() * 5 + 5,
+      x2: (Math.random() - 0.5) * 80,
+      x3: (Math.random() - 0.5) * 80,
+    }));
+  }, []);
+
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
-      {[...Array(35)].map((_, i) => {
-        const left = Math.random() * 100;
-        const delay = Math.random() * 5;
-        const duration = Math.random() * 3 + 4;
-        const size = Math.random() * 5 + 5; // 5px to 10px (tebal)
-
-        return (
-          <motion.div
-            key={i}
-            initial={{ y: -50, opacity: 0 }}
-            animate={{
-              y: ['-5vh', '105vh'],
-              x: [0, (Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80],
-              opacity: [0, 0.9, 0.9, 0],
-              rotate: [0, 180, 360],
-              scale: [0.5, 1.2, 0.8]
-            }}
-            transition={{
-              duration: duration,
-              repeat: Infinity,
-              delay: delay,
-              ease: "linear"
-            }}
-            style={{ left: `${left}%`, width: size, height: size }}
-            className="absolute top-0 bg-gradient-to-b from-[#D4AF37] via-white to-transparent rounded-full shadow-[0_0_12px_rgba(212,175,55,0.9)] blur-[0.5px]"
-          />
-        );
-      })}
+      {sparkles.map((sparkle, i) => (
+        <motion.div
+          key={i}
+          initial={{ y: -50, opacity: 0 }}
+          animate={{
+            y: ['-5vh', '105vh'],
+            x: [0, sparkle.x2, sparkle.x3],
+            opacity: [0, 0.9, 0.9, 0],
+            rotate: [0, 180, 360],
+            scale: [0.5, 1.2, 0.8]
+          }}
+          transition={{
+            duration: sparkle.duration,
+            repeat: Infinity,
+            delay: sparkle.delay,
+            ease: "linear"
+          }}
+          style={{ left: `${sparkle.left}%`, width: sparkle.size, height: sparkle.size }}
+          className="absolute top-0 bg-gradient-to-b from-[#D4AF37] via-white to-transparent rounded-full shadow-[0_0_12px_rgba(212,175,55,0.9)] blur-[0.5px]"
+        />
+      ))}
     </div>
   );
 }

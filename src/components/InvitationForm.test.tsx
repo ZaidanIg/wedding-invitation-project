@@ -95,16 +95,18 @@ describe('InvitationForm Component', () => {
   });
 
   it('renders the first step correctly', () => {
+    storeState.step = 2; // Step 2 is Couple Details now
     render(<InvitationForm />);
-    // Verify step 1 fields exist using exact label text
-    expect(screen.getByText(/Nama Mempelai Pria/i)).toBeInTheDocument();
+    // Verify step 2 fields exist using exact label text
+    expect(screen.getByText(/Nama Lengkap Mempelai Pria/i)).toBeInTheDocument();
   });
 
   it('updates zustand state when input changes', () => {
+    storeState.step = 2;
     render(<InvitationForm />);
     
-    // The placeholder is exactly "John Doe" for Groom Name
-    const groomInput = screen.getByPlaceholderText('John Doe');
+    // The placeholder is exactly "Contoh: Nama Lengkap Mempelai Pria" for Groom Name
+    const groomInput = screen.getByPlaceholderText('Contoh: Nama Lengkap Mempelai Pria');
     fireEvent.change(groomInput, { target: { value: 'Zaidan' } });
     
     expect(storeState.setCoupleDetails).toHaveBeenCalledWith(expect.objectContaining({
