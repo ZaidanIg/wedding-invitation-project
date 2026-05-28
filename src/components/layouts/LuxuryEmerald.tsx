@@ -1,7 +1,7 @@
 'use client';
 import { getCoupleSlug } from '@/lib/utils';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
@@ -38,13 +38,15 @@ function GoldParticles() {
 
   if (!mounted) return null;
 
-  const items = Array.from({ length: 30 }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    delay: `${Math.random() * 10}s`,
-    duration: 10 + Math.random() * 15,
-    size: 2 + Math.random() * 4,
-  }));
+  const items = useMemo(() => {
+    return Array.from({ length: 30 }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 10}s`,
+      duration: 10 + Math.random() * 15,
+      size: 2 + Math.random() * 4,
+    }));
+  }, []);
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -83,14 +85,16 @@ function FlyingBirds() {
 
   if (!mounted) return null;
 
-  const birds = Array.from({ length: 6 }, (_, i) => ({
-    id: i,
-    startPos: { x: -50, y: 15 + Math.random() * 60 },
-    endPos: { x: 450, y: 10 + Math.random() * 80 },
-    delay: Math.random() * 15,
-    duration: 15 + Math.random() * 10,
-    scale: 0.4 + Math.random() * 0.4,
-  }));
+  const birds = useMemo(() => {
+    return Array.from({ length: 6 }, (_, i) => ({
+      id: i,
+      startPos: { x: -50, y: 15 + Math.random() * 60 },
+      endPos: { x: 450, y: 10 + Math.random() * 80 },
+      delay: Math.random() * 15,
+      duration: 15 + Math.random() * 10,
+      scale: 0.4 + Math.random() * 0.4,
+    }));
+  }, []);
 
   return (
     <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
@@ -133,15 +137,17 @@ function FlyingBirds() {
 }
 
 function FloatingFlowers() {
-  const items = Array.from({ length: 12 }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
-    delay: Math.random() * 20,
-    duration: 15 + Math.random() * 20,
-    size: `${20 + Math.random() * 40}px`,
-    rotate: Math.random() * 360,
-  }));
+  const items = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      delay: Math.random() * 20,
+      duration: 15 + Math.random() * 20,
+      size: `${20 + Math.random() * 40}px`,
+      rotate: Math.random() * 360,
+    }));
+  }, []);
   
   return (
     <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden opacity-20">

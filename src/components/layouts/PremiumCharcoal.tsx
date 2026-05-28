@@ -1,7 +1,7 @@
 'use client';
 import { getCoupleSlug } from '@/lib/utils';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
@@ -36,14 +36,16 @@ function GoldDustParticles() {
 
   if (!mounted) return null;
 
-  const particles = Array.from({ length: 30 }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    delay: `${Math.random() * 8}s`,
-    duration: 8 + Math.random() * 12,
-    size: 2 + Math.random() * 5,
-    drift: (Math.random() * 60) - 30, // left-right drift distance
-  }));
+  const particles = useMemo(() => {
+    return Array.from({ length: 30 }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 8}s`,
+      duration: 8 + Math.random() * 12,
+      size: 2 + Math.random() * 5,
+      drift: (Math.random() * 60) - 30, // left-right drift distance
+    }));
+  }, []);
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">

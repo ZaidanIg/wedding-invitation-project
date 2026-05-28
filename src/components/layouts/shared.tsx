@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen, MapPin, Coffee, Utensils, CalendarDays } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
@@ -356,27 +356,37 @@ export function Snowfall() {
 
   if (!mounted) return null;
 
+  const snowflakes = useMemo(() => {
+    return [...Array(30)].map(() => ({
+      x1: Math.random() * 100 + "%",
+      scale: Math.random() * 0.5 + 0.3,
+      x2: (Math.random() * 100 - 50) + "vw",
+      duration: Math.random() * 10 + 10,
+      delay: Math.random() * 20
+    }));
+  }, []);
+
   return (
     <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
-      {[...Array(30)].map((_, i) => (
+      {snowflakes.map((flake, i) => (
         <motion.div
           key={i}
           initial={{ 
             opacity: 0,
-            x: Math.random() * 100 + "%",
+            x: flake.x1,
             y: -20,
-            scale: Math.random() * 0.5 + 0.3
+            scale: flake.scale
           }}
           animate={{ 
             opacity: [0, 1, 1, 0],
             y: "110vh",
-            x: (Math.random() * 100 - 50) + "vw"
+            x: flake.x2
           }}
           transition={{
-            duration: Math.random() * 10 + 10,
+            duration: flake.duration,
             repeat: Infinity,
             ease: "linear",
-            delay: Math.random() * 20
+            delay: flake.delay
           }}
           className="absolute w-2 h-2 bg-white/20 rounded-full blur-[1px]"
         />
