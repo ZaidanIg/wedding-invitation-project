@@ -48,4 +48,17 @@ export const billingRepository = {
       where: { idempotencyKey: key },
     });
   },
+
+  async findLatestTransactionByBaseIdempotencyKey(baseKey: string) {
+    return prisma.transaction.findFirst({
+      where: { idempotencyKey: { startsWith: baseKey } },
+      orderBy: { createdAt: 'desc' },
+    });
+  },
+
+  async countTransactionsByBaseIdempotencyKey(baseKey: string) {
+    return prisma.transaction.count({
+      where: { idempotencyKey: { startsWith: baseKey } },
+    });
+  },
 };
