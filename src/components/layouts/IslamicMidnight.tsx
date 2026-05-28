@@ -43,8 +43,6 @@ const StarField = () => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
-
   const stars = useMemo(() => {
     return [...Array(20)].map(() => ({
       top: `${Math.random() * 100}%`,
@@ -53,6 +51,8 @@ const StarField = () => {
       delay: Math.random() * 2,
     }));
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">

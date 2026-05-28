@@ -151,8 +151,6 @@ function FallingSparkles() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) return null;
-
   const sparkles = useMemo(() => {
     return [...Array(35)].map(() => ({
       left: Math.random() * 100,
@@ -163,6 +161,8 @@ function FallingSparkles() {
       x3: (Math.random() - 0.5) * 80,
     }));
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
