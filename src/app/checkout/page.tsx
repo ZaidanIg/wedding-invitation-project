@@ -28,6 +28,19 @@ interface SnapPaymentResult {
   payment_type?: string;
 }
 
+interface InvitationTransaction {
+  id: string;
+}
+
+interface InvitationData {
+  groomName: string;
+  brideName: string;
+  eventDate?: string;
+  venueName?: string;
+  venueAddress?: string;
+  transactions?: InvitationTransaction[];
+}
+
 declare global {
   interface Window {
     snap: {
@@ -146,7 +159,7 @@ function CheckoutContent() {
   const planKey = searchParams.get('plan') || 'PREMIUM';
   const invitationId = searchParams.get('invitationId') || '';
 
-  const [invitationData, setInvitationData] = useState<Record<string, unknown> | null>(null);
+  const [invitationData, setInvitationData] = useState<InvitationData | null>(null);
   const [isLoadingInvitation, setIsLoadingInvitation] = useState(false);
   const [isCheckoutProcessing, setIsCheckoutProcessing] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
