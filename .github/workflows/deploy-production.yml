@@ -65,8 +65,9 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           # NEXT_PUBLIC_* harus diinject secara eksplisit agar ter-compile ke bundle
-          NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: ${{ secrets.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY }}
-          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          # Gunakan secret khusus production agar berbeda dari staging
+          NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: ${{ secrets.PROD_NEXT_PUBLIC_MIDTRANS_CLIENT_KEY }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.PROD_NEXT_PUBLIC_APP_URL }}
 
       # Deploy artefak hasil build ke Vercel production (pre-built, 0 Vercel Build Minutes)
       - name: 🏁 Deploy Pre-built to Vercel (Production)
