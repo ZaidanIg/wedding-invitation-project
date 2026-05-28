@@ -1,7 +1,7 @@
 'use client';
 import { getCoupleSlug } from '@/lib/utils';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -45,24 +45,33 @@ const StarField = () => {
 
   if (!mounted) return null;
 
+  const stars = useMemo(() => {
+    return [...Array(20)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      duration: 3 + Math.random() * 2,
+      delay: Math.random() * 2,
+    }));
+  }, []);
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(20)].map((_, i) => (
+      {stars.map((star, i) => (
         <motion.div
           key={i}
           className="absolute w-1 h-1 bg-[#c5a059] rounded-full opacity-20"
           style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
+            top: star.top,
+            left: star.left,
           }}
           animate={{
             opacity: [0.1, 0.4, 0.1],
             scale: [1, 1.5, 1],
           }}
           transition={{
-            duration: 3 + Math.random() * 2,
+            duration: star.duration,
             repeat: Infinity,
-            delay: Math.random() * 2,
+            delay: star.delay,
           }}
         />
       ))}
