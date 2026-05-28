@@ -4,7 +4,6 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { Eye, Sparkles } from 'lucide-react';
-import ThemeMiniPreview from './ThemeMiniPreview';
 import type { Layout } from '@/types';
 import ThemePreviewModal from './ThemePreviewModal';
 
@@ -324,12 +323,26 @@ export default function ShowcaseSection({ fullGallery = false }: { fullGallery?:
 
 // ── Reusable Theme Card ──────────────────────────────────────────────────────
 function ThemeCard({ theme }: { theme: typeof themes[number] }) {
+  const [primary, secondary, accent] = theme.palette;
+
   return (
     <>
       <div className="relative aspect-[3/4] rounded-3xl overflow-hidden border border-[#eceae4] mb-6 group-hover:border-rose-500/30 transition-all duration-700 shadow-sm group-hover:shadow-2xl group-hover:shadow-rose-500/10 bg-white">
-        {/* Real Live Theme Preview */}
-        <div className="absolute inset-0 pointer-events-none group-hover:scale-[1.02] transition-transform duration-700">
-          <ThemeMiniPreview layout={theme.slug} />
+        {/* Static palette preview — zero JS cost */}
+        <div className="absolute inset-0 pointer-events-none group-hover:scale-[1.02] transition-transform duration-700 flex flex-col">
+          {/* Hero band — primary color */}
+          <div className="flex-[3] w-full" style={{ backgroundColor: primary }} />
+          {/* Content area — white with subtle pattern */}
+          <div className="flex-[2] w-full bg-white flex flex-col items-center justify-center gap-3 px-6">
+            {/* Simulated title */}
+            <div className="w-3/4 h-3 rounded-full opacity-30" style={{ backgroundColor: secondary }} />
+            <div className="w-1/2 h-2 rounded-full opacity-20" style={{ backgroundColor: secondary }} />
+            {/* Accent line */}
+            <div className="w-8 h-0.5 rounded-full mt-1" style={{ backgroundColor: accent || secondary }} />
+            <div className="w-2/3 h-2 rounded-full opacity-20 mt-1" style={{ backgroundColor: primary }} />
+          </div>
+          {/* Bottom strip — secondary color */}
+          <div className="h-12 w-full opacity-80" style={{ backgroundColor: secondary }} />
         </div>
 
         {/* Hover overlay */}

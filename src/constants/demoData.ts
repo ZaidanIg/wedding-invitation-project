@@ -51,13 +51,14 @@ export const MOCK_INVITATION: Invitation = {
   viewCount: 0,
   createdAt: '2024-01-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  greeting: '',
+  greeting: 'Dengan penuh rasa syukur dan kebahagiaan, kami mengundang Anda untuk merayakan hari istimewa kami.',
   mainBody: '',
   eventInfo: '',
   closing: '',
   fullText: '',
-  tone: '',
-  language: '',
-  layout: '',
+  tone: 'romantic',
+  language: 'id',
+  layout: 'premium-javanese',
+  musicUrl: '/music/Epic Spectrum - Sky Clearing (freetouse.com).mp3',
   schedule: []
 };
