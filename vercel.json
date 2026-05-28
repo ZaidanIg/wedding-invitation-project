@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "main": false,
+      "staging": false,
+      "dev": false,
+      "features/b2b-migration": false
+    }
+  },
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- src/ public/ prisma/ package.json next.config.ts"
+}
