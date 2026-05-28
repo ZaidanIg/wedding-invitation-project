@@ -700,7 +700,7 @@ export function getCalendarUrl(eventName: string, eventDate: string, eventTime: 
   const [hour, min] = eventTime.split(':');
   
   const start = `${year}${month}${day}T${hour}${min}00`;
-  let endHour = parseInt(hour, 10) + 2;
+  const endHour = parseInt(hour, 10) + 2;
   const end = `${year}${month}${day}T${endHour.toString().padStart(2, '0')}${min}00`;
   
   const text = encodeURIComponent(`Acara: ${eventName}`);

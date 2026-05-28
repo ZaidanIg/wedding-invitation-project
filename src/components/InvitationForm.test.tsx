@@ -31,7 +31,7 @@ jest.mock('framer-motion', () => {
 });
 
 // 3. Mock Zustand Store matching actual FormWizardState
-let storeState = {
+const storeState = {
   step: 1,
   targetTier: 'BASIC',
   coupleDetails: {
