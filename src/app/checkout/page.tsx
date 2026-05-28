@@ -3,7 +3,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,15 +18,26 @@ import {
   Calendar,
   MapPin,
   FileText,
-  User
 } from 'lucide-react';
 import { showToast } from '@/components/ui/Toast';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+
+interface SnapPaymentResult {
+  order_id?: string;
+  gross_amount?: string;
+  payment_type?: string;
+}
 
 declare global {
   interface Window {
-    snap: any;
+    snap: {
+      pay: (token: string, options: {
+        onSuccess?: (result: SnapPaymentResult) => void;
+        onPending?: (result: SnapPaymentResult) => void;
+        onError?: (result: SnapPaymentResult) => void;
+        onClose?: () => void;
+      }) => void;
+    };
   }
 }
 
@@ -136,7 +146,7 @@ function CheckoutContent() {
   const planKey = searchParams.get('plan') || 'PREMIUM';
   const invitationId = searchParams.get('invitationId') || '';
 
-  const [invitationData, setInvitationData] = useState<any>(null);
+  const [invitationData, setInvitationData] = useState<Record<string, unknown> | null>(null);
   const [isLoadingInvitation, setIsLoadingInvitation] = useState(false);
   const [isCheckoutProcessing, setIsCheckoutProcessing] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -319,8 +329,7 @@ function CheckoutContent() {
         // Open Midtrans Snap popup directly inline!
         if (typeof window.snap !== 'undefined') {
           window.snap.pay(data.data.token, {
-            onSuccess: (result: any) => {
-              console.log('Payment success result:', result);
+            onSuccess: (result: SnapPaymentResult) => {
               setPaymentDetails({
                 orderId: result.order_id,
                 grossAmount: result.gross_amount ? Number(result.gross_amount) : total,
@@ -328,13 +337,13 @@ function CheckoutContent() {
               });
               setShowSuccessModal(true);
             },
-            onPending: (result: any) => {
+            onPending: () => {
               showToast('info', 'Pembayaran tertunda. Silakan selesaikan pembayaran Anda.');
               setTimeout(() => {
                 router.push('/dashboard');
               }, 2000);
             },
-            onError: (result: any) => {
+            onError: () => {
               showToast('error', 'Gagal memproses pembayaran. Silakan coba lagi.');
             },
             onClose: () => {
@@ -343,7 +352,7 @@ function CheckoutContent() {
           });
         } else {
           // Fallback to redirect if snap.js is not loaded
-          window.location.href = data.data.redirect_url;
+          router.push(data.data.redirect_url as string);
         }
       } else {
         throw new Error('Tidak ada token pembayaran yang diterima');
@@ -606,7 +615,7 @@ function CheckoutContent() {
 
                 {/* Decorative Logos */}
                 <div className="mt-4 flex flex-wrap gap-2.5 items-center justify-center p-3 rounded-2xl border border-stone-200/30 bg-[#fdfcf9]/60">
-                  {['qris.png', 'gopay.png', 'bca.png', 'mandiri.png', 'shopeepay.png'].map((logo, i) => (
+                  {['qris.png', 'gopay.png', 'bca.png', 'mandiri.png', 'shopeepay.png'].map((logo) => (
                     <div key={logo} className="text-[10px] text-stone-400 font-semibold px-2 py-0.5 bg-stone-100 rounded-lg border border-stone-200/20">
                       {logo.split('.')[0].toUpperCase()}
                     </div>
