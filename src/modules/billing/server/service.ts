@@ -155,7 +155,7 @@ export const billingService = {
       },
       custom_expiry: {
         order_time:
-          new Date().toISOString().replace('T', ' ').substring(0, 19) + ' +0700',
+          `${yyyy}-${mm}-${dd} ${String(jakartaTime.getHours()).padStart(2, '0')}:${String(jakartaTime.getMinutes()).padStart(2, '0')}:${String(jakartaTime.getSeconds()).padStart(2, '0')} +0700`,
         expiry_duration: 24,
         unit: 'hour',
       },
