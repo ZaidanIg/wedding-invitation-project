@@ -29,6 +29,7 @@ function FloatingOrnaments() {
 }
 
 function EnvelopeSection({ data, onOpen, guestName }: { data: Invitation; onOpen: () => void; guestName: string }) {
+  const { heroPhoto } = resolvePhotos(data);
 
   return (
     <motion.section
@@ -75,9 +76,20 @@ function EnvelopeSection({ data, onOpen, guestName }: { data: Invitation; onOpen
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8, ease: 'backOut' }}
-            className="relative w-28 h-28 md:w-32 md:h-32 mb-6"
+            className="relative w-48 h-64 md:w-56 md:h-72 mb-8 mx-auto"
           >
-            <Image src="/assets/javaneseTheme/Assets/ornament-30.png" alt="gunungan" fill className="object-contain" unoptimized />
+            {/* Glowing Stroke (Blinking) */}
+            <div className="absolute inset-0 rounded-[80px] border-[3px] border-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.7)] animate-pulse z-20 pointer-events-none"></div>
+            
+            {/* Main Photo */}
+            <div className="absolute inset-0 rounded-[80px] overflow-hidden z-10 bg-[#F8F5F0]">
+              <Image src={heroPhoto} alt="Couple Photo" fill className="object-cover" unoptimized />
+            </div>
+
+            {/* Ornament at the bottom edge */}
+            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-28 h-28 z-30 pointer-events-none">
+              <Image src="/assets/javaneseTheme/Assets/ornament-30.png" alt="Ornament 30" fill className="object-contain" unoptimized />
+            </div>
           </motion.div>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -259,7 +271,7 @@ function GroomSection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, scaleX: 0 }}
         whileInView={{ opacity: 1, scaleX: 1 }}
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 1, ease: "easeOut" }}
         className="relative w-48 h-12 sm:w-64 sm:h-16 mb-12"
       >
@@ -270,7 +282,7 @@ function GroomSection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.5 }}
+        viewport={{ once: false, amount: 0.5 }}
         transition={{ duration: 0.8, delay: 0.2 }}
         className="text-center max-w-sm w-full z-10"
       >
@@ -360,7 +372,7 @@ function GroomSection({ data }: { data: Invitation }) {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.8 }}
           className="flex flex-col items-center text-center"
         >
@@ -388,7 +400,7 @@ function GroomSection({ data }: { data: Invitation }) {
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="my-4 text-5xl sm:text-6xl font-display italic text-[#D4AF37]"
           style={{ fontFamily: "'Playfair Display', serif" }}
@@ -400,7 +412,7 @@ function GroomSection({ data }: { data: Invitation }) {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           className="flex flex-col items-center text-center"
         >
@@ -443,19 +455,11 @@ function DateSection({ data }: { data: Invitation }) {
       <FloatingOrnaments />
       
       {/* Background Ornaments */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        whileInView={{ opacity: 0.15, scale: 1 }}
-        transition={{ duration: 1 }}
-        className="absolute top-10 left-0 w-64 h-64 pointer-events-none"
-      >
-        <Image src="/assets/javaneseTheme/Assets/ornament-45.png" alt="Ornament" fill className="object-contain object-left" unoptimized />
-      </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.8 }}
         className="text-center mb-12 relative z-10"
       >
@@ -476,7 +480,7 @@ function DateSection({ data }: { data: Invitation }) {
           scale: 1,
           boxShadow: ["0px 0px 15px rgba(212,175,55,0.4)", "0px 0px 35px rgba(212,175,55,0.8)", "0px 0px 15px rgba(212,175,55,0.4)"]
         }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ 
           opacity: { duration: 0.6 },
           scale: { duration: 0.6 },
@@ -514,7 +518,7 @@ function DateSection({ data }: { data: Invitation }) {
               key={item.id || idx}
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.5, delay: idx * 0.15 }}
               className="flex flex-col items-center pb-6 border-b border-[#D4AF37]/30 last:border-0 last:pb-0"
             >
@@ -533,7 +537,7 @@ function DateSection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
         className="w-full max-w-sm h-12 relative mb-12 z-10"
       >
@@ -544,7 +548,7 @@ function DateSection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
         className="w-full max-w-md bg-white p-8 rounded-3xl shadow-lg border border-[#D4AF37]/20 flex flex-col items-center text-center relative z-10 mb-12"
       >
@@ -573,7 +577,7 @@ function DateSection({ data }: { data: Invitation }) {
         <motion.a
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 0.5, delay: 0.2 }}
           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.venueName + ' ' + data.venueAddress)}`}
           target="_blank"
@@ -598,7 +602,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
         className="text-center mb-16 relative z-10"
       >
@@ -620,7 +624,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
               key={story.id || index}
               initial={{ opacity: 0, x: isEven ? 30 : -30 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: false, amount: 0.5 }}
               transition={{ duration: 0.8 }}
               className="flex items-center w-full mb-12 last:mb-0"
             >
@@ -630,7 +634,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: false }}
                     transition={{ duration: 0.6, delay: 0.1 }}
                   >
                     <h4 className="text-base sm:text-xl font-display text-[#4A3728]" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
@@ -651,7 +655,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: false }}
                     transition={{ duration: 0.6, delay: 0.1 }}
                   >
                     <h4 className="text-base sm:text-xl font-display text-[#4A3728]" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
@@ -688,7 +692,7 @@ function GallerySection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
         className="text-center mb-12 relative z-10 px-6"
       >
@@ -714,7 +718,7 @@ function GallerySection({ data }: { data: Invitation }) {
                 key={index}
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: false }}
                 transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
                 className={`w-full overflow-hidden relative shadow-md rounded-[16px] border border-white/50 break-inside-avoid mb-4 group ${aspectClass}`}
               >
@@ -752,7 +756,7 @@ function MemoriesSection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
         className="text-center mb-12 relative z-10"
       >
@@ -771,13 +775,10 @@ function MemoriesSection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
         className="w-full max-w-md relative z-10 rounded-[30px] overflow-hidden shadow-2xl border-4 border-[#F8F5F0]"
       >
-        <div className="absolute -top-4 -left-4 w-16 h-16 pointer-events-none opacity-60 z-20">
-          <Image src="/assets/javaneseTheme/Assets/ornament-37.png" alt="Ornament" fill className="object-contain" unoptimized />
-        </div>
 
         <div className="aspect-video w-full bg-slate-100 relative">
           <iframe
@@ -802,7 +803,7 @@ function RsvpSection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
         className="text-center mb-12 relative z-10"
       >
@@ -818,7 +819,7 @@ function RsvpSection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.6, delay: 0.2 }}
         className="w-full max-w-md relative z-10"
       >
@@ -859,9 +860,9 @@ function GiftSection({ data }: { data: Invitation }) {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
-        className="text-center mb-12 relative z-10"
+        className="text-center mb-4 relative z-10"
       >
         <div className="w-16 h-16 bg-[#F8F5F0] rounded-full flex items-center justify-center mx-auto mb-6">
           <Gift className="w-8 h-8 text-[#D4AF37]" />
@@ -881,7 +882,7 @@ function GiftSection({ data }: { data: Invitation }) {
             key={gift.id || idx}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 0.5, delay: idx * 0.1 }}
             className="bg-[#F8F5F0] rounded-2xl p-6 shadow-md border border-[#D4AF37]/20 flex flex-col items-center text-center relative overflow-hidden"
           >
@@ -893,7 +894,7 @@ function GiftSection({ data }: { data: Invitation }) {
             <motion.button
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.4, delay: 0.2 + idx * 0.1 }}
               onClick={() => handleCopy(gift.accountNumber)}
               className="flex items-center gap-2 px-6 py-2.5 bg-white text-[#4A3728] text-sm font-bold uppercase tracking-wider rounded-full border border-[#D4AF37]/30 hover:bg-[#D4AF37] hover:text-white transition-colors shadow-sm"
@@ -914,8 +915,8 @@ function GiftSection({ data }: { data: Invitation }) {
 // MAIN COMPONENT
 // ==========================================
 
-export default function PremiumJavanese({ invitation: data }: { invitation: Invitation }) {
-  const [isOpened, setIsOpened] = useState(false);
+export default function PremiumJavanese({ invitation: data, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
+  const [isOpened, setIsOpened] = useState(isPreview); // auto-open in preview
   const [guestName, setGuestName] = useState(data.rsvpName || 'Tamu Undangan');
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -948,9 +949,11 @@ export default function PremiumJavanese({ invitation: data }: { invitation: Invi
 
   return (
     <div className={`relative w-full max-w-lg mx-auto bg-[#F8F5F0] shadow-[0_0_40px_rgba(0,0,0,0.1)] font-sans text-slate-800 overflow-x-hidden ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
-      <AnimatePresence>
-        {!isOpened && <EnvelopeSection data={data} guestName={guestName} onOpen={handleOpen} />}
-      </AnimatePresence>
+      {!isPreview && (
+        <AnimatePresence>
+          {!isOpened && <EnvelopeSection data={data} guestName={guestName} onOpen={handleOpen} />}
+        </AnimatePresence>
+      )}
 
       <HeroSection data={data} />
       <GroomSection data={data} />

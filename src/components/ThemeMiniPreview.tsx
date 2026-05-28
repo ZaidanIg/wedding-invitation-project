@@ -28,7 +28,7 @@ export default function ThemeMiniPreview({ layout, isInteractable = false, scale
         layout: layout
       }
     };
-    return <LayoutComponent invitation={invitation} isPreview={false} />;
+    return <LayoutComponent invitation={invitation} isPreview={true} />;
   };
 
   return (
