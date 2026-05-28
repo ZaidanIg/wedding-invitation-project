@@ -74,8 +74,8 @@ export const billingService = {
     }
 
     // --- Idempotency Check ---
-    const idempotencyKey = generateIdempotencyKey(user.id, invitationId ?? null, plan);
-    const existingTx = await billingRepository.findTransactionByIdempotencyKey(idempotencyKey);
+    const baseIdempotencyKey = generateIdempotencyKey(user.id, invitationId ?? null, plan);
+    const existingTx = await billingRepository.findLatestTransactionByBaseIdempotencyKey(baseIdempotencyKey);
 
     if (existingTx && existingTx.status === 'PENDING' && existingTx.paymentUrl) {
       const token = existingTx.paymentUrl.split('/').pop();
@@ -87,6 +87,9 @@ export const billingService = {
         };
       }
     }
+
+    const attemptCount = await billingRepository.countTransactionsByBaseIdempotencyKey(baseIdempotencyKey);
+    const idempotencyKey = attemptCount > 0 ? `${baseIdempotencyKey}-${attemptCount}` : baseIdempotencyKey;
 
     // Generate custom Order ID format: ORD-YYYYMMDD-XXXX
     const now = new Date();
