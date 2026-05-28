@@ -1,0 +1,74 @@
+name: 🚀 Deploy — Staging
+
+on:
+  push:
+    branches:
+      - staging
+  workflow_dispatch:
+
+
+# Batalkan run lama jika ada push baru ke branch yang sama
+concurrency:
+  group: deploy-staging-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-staging:
+    name: Build & Deploy to Staging
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🔍 Lint Check
+        run: npm run lint
+
+      - name: 🧪 Run Unit Tests
+        run: npm run test -- --passWithNoTests
+
+      - name: 🔧 Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      # Pull env vars dan konfigurasi Vercel dari cloud (untuk env staging)
+      - name: 📡 Pull Vercel Environment (Staging)
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      # Build dijalankan di GitHub runner — TIDAK memakan Vercel Build Minutes
+      - name: 🏗️ Build Project (on GitHub Runner)
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      # Deploy artefak hasil build ke Vercel (pre-built, 0 Vercel Build Minutes)
+      - name: 🌐 Deploy Pre-built to Vercel (Staging)
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$url" >> $GITHUB_OUTPUT
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: ✅ Deployment Summary
+        run: |
+          echo "### 🚀 Staging Deployed!" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
