@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - staging
+  workflow_dispatch:
+
 
 # Batalkan run lama jika ada push baru ke branch yang sama
 concurrency:
