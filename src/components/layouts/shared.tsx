@@ -354,8 +354,6 @@ export function Snowfall() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
-
   const snowflakes = useMemo(() => {
     return [...Array(30)].map(() => ({
       x1: Math.random() * 100 + "%",
@@ -365,6 +363,8 @@ export function Snowfall() {
       delay: Math.random() * 20
     }));
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
