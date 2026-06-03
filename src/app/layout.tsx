@@ -51,8 +51,16 @@ const cormorant = Cormorant_Garamond({
   display: 'swap',
 });
 
+const getBaseUrl = () => {
+  let url = process.env.NEXT_PUBLIC_APP_URL || 'https://sahinaja.com';
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = `https://${url}`;
+  }
+  return new URL(url);
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://sahinaja.com'),
+  metadataBase: getBaseUrl(),
   title: {
     default: 'Sahinaja — Undangan Digital Pernikahan Premium & Mewah',
     template: '%s | Sahinaja',
