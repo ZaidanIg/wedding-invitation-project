@@ -77,7 +77,7 @@ model PasswordResetToken {
 // fields because they serve a distinct role-based purpose.
 
 model Invitation {
-  id             String        @id @default(cuid())
+  id             String    @id @default(cuid())
   groomName      String
   groomParents   String?
   brideName      String
@@ -91,36 +91,36 @@ model Invitation {
   eventInfo      String
   closing        String
   fullText       String
-  tone           String        @default("formal")
-  language       String        @default("id")
-  slug           String        @unique @default(cuid())
-  viewCount      Int           @default(0)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  tone           String    @default("formal")
+  language       String    @default("id")
+  slug           String    @unique @default(cuid())
+  viewCount      Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
   headerPhotoUrl String?
   groomPhotoUrl  String?
   bridePhotoUrl  String?
   userId         String
   musicUrl       String?
   videoUrl       String?
-  layout         String        @default("elegant-cream")
+  layout         String    @default("elegant-cream")
   quotes         String?
   /// Tier reflects the current ACTIVE plan of this invitation.
   /// Source of truth: Transaction.status === SUCCESS && Transaction.tier
   /// isPaid is REMOVED — derive payment status from transactions relation.
-  tier           Tier          @default(DRAFT)
-  aiRegenCount   Int           @default(0)
-  qrEnabled      Boolean       @default(true)
+  tier           Tier      @default(DRAFT)
+  aiRegenCount   Int       @default(0)
+  qrEnabled      Boolean   @default(true)
   expiresAt      DateTime?
 
   // Relations
-  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  guests         Guest[]
-  transactions   Transaction[]
-  events         InvitationEvent[]
-  stories        InvitationStory[]
-  gifts          InvitationGift[]
-  photos         InvitationPhoto[]
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guests       Guest[]
+  transactions Transaction[]
+  events       InvitationEvent[]
+  stories      InvitationStory[]
+  gifts        InvitationGift[]
+  photos       InvitationPhoto[]
 
   @@index([slug])
   @@index([userId])
@@ -215,25 +215,25 @@ model Guest {
 // idempotencyKey ensures no duplicate checkout sessions are created for the same intent.
 
 model Transaction {
-  id              String            @id  // ORD-YYYYMMDD-XXXX (human-readable order number)
-  idempotencyKey  String            @unique
-  userId          String
-  invitationId    String?
-  amount          Int
-  type            TransactionType
-  status          TransactionStatus @default(PENDING)
-  tier            Tier?
-  paymentUrl      String?
-  midtransId      String?           @unique
-  paymentMethod   String?           // gopay, bank_transfer, credit_card, etc.
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id             String            @id // ORD-YYYYMMDD-XXXX (human-readable order number)
+  idempotencyKey String            @unique
+  userId         String
+  invitationId   String?
+  amount         Int
+  type           TransactionType
+  status         TransactionStatus @default(PENDING)
+  tier           Tier?
+  paymentUrl     String?
+  midtransId     String?           @unique
+  paymentMethod  String? // gopay, bank_transfer, credit_card, etc.
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   // Relations
-  invitation      Invitation?        @relation(fields: [invitationId], references: [id])
-  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  webhooks        PaymentWebhook[]
-  history         TransactionHistory[]
+  invitation Invitation?          @relation(fields: [invitationId], references: [id])
+  user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  webhooks   PaymentWebhook[]
+  history    TransactionHistory[]
 
   @@index([userId])
   @@index([invitationId])
@@ -249,7 +249,7 @@ model PaymentWebhook {
   id              String      @id @default(cuid())
   transactionId   String
   rawPayload      Json
-  midtransNotifId String      @unique  // Idempotency: <order_id>:<transaction_status>
+  midtransNotifId String      @unique // Idempotency: <order_id>:<transaction_status>
   processedAt     DateTime    @default(now())
   transaction     Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
@@ -266,7 +266,7 @@ model TransactionHistory {
   newStatus     String
   /// Who triggered the change: WEBHOOK | RECONCILER | ADMIN | SYSTEM
   changedBy     String
-  metadata      Json?       // Optional: raw midtrans data, IP address, etc.
+  metadata      Json? // Optional: raw midtrans data, IP address, etc.
   createdAt     DateTime    @default(now())
   transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
@@ -290,11 +290,11 @@ enum Tier {
 
 enum TransactionStatus {
   PENDING
-  SETTLEMENT  // Final success for bank transfer / virtual account
-  SUCCESS     // Final success for credit card (capture + accept)
-  FAILED      // Payment failed / denied
-  EXPIRED     // Order expired (24h timeout or Midtrans expire)
-  CANCELLED   // Manually cancelled
+  SETTLEMENT // Final success for bank transfer / virtual account
+  SUCCESS // Final success for credit card (capture + accept)
+  FAILED // Payment failed / denied
+  EXPIRED // Order expired (24h timeout or Midtrans expire)
+  CANCELLED // Manually cancelled
 }
 
 enum TransactionType {
@@ -309,6 +309,74 @@ enum RsvpStatus {
 }
 
 enum PhotoType {
-  GALLERY      // General gallery photos
-  PREWEDDING   // Prewedding specific photos
+  GALLERY // General gallery photos
+  PREWEDDING // Prewedding specific photos
+}
+
+// ── ERP Expansion (Admin) ─────────────────────────────────────
+
+model Expense {
+  id          String          @id @default(cuid())
+  date        DateTime        @default(now())
+  category    ExpenseCategory
+  description String
+  amount      Int
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([date])
+  @@index([category])
+}
+
+model Lead {
+  id        String     @id @default(cuid())
+  name      String
+  source    LeadSource
+  status    LeadStatus @default(NEW)
+  date      DateTime   @default(now())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([date])
+  @@index([source])
+  @@index([status])
+}
+
+model MarketingSpend {
+  id        String     @id @default(cuid())
+  channel   LeadSource
+  amount    Int
+  date      DateTime   @default(now())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([date])
+  @@index([channel])
+}
+
+enum ExpenseCategory {
+  INFRASTRUCTURE
+  MARKETING
+  PAYROLL
+  SOFTWARE
+  OPERATIONAL
+  OTHER
+}
+
+enum LeadSource {
+  INSTAGRAM
+  TIKTOK
+  GOOGLE
+  REFERRAL
+  WHATSAPP
+  ORGANIC
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  DEMO
+  NEGOTIATION
+  WON
+  LOST
 }
