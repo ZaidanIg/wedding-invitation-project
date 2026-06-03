@@ -13,7 +13,7 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props: any) => <img {...props} alt={props.alt || "mocked-image"} />,
+  default: ({ fill, priority, unoptimized, objectFit, objectPosition, ...props }: any) => <img {...props} alt={props.alt || "mocked-image"} />,
 }));
 
 // Mock Next Auth
@@ -30,8 +30,8 @@ jest.mock('framer-motion', () => {
   return {
     ...actual,
     motion: {
-      div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-      button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
+      div: ({ children, whileInView, initial, animate, exit, transition, viewport, variants, whileHover, whileTap, layout, layoutId, ...props }: any) => <div {...props}>{children}</div>,
+      button: ({ children, whileInView, initial, animate, exit, transition, viewport, variants, whileHover, whileTap, layout, layoutId, ...props }: any) => <button {...props}>{children}</button>,
     },
     AnimatePresence: ({ children }: any) => <>{children}</>,
   };
