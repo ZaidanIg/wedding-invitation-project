@@ -74,8 +74,8 @@ export const billingService = {
     }
 
     // --- Idempotency Check ---
-    const idempotencyKey = generateIdempotencyKey(user.id, invitationId ?? null, plan);
-    const existingTx = await billingRepository.findTransactionByIdempotencyKey(idempotencyKey);
+    const baseIdempotencyKey = generateIdempotencyKey(user.id, invitationId ?? null, plan);
+    const existingTx = await billingRepository.findLatestTransactionByBaseIdempotencyKey(baseIdempotencyKey);
 
     if (existingTx && existingTx.status === 'PENDING' && existingTx.paymentUrl) {
       const token = existingTx.paymentUrl.split('/').pop();
@@ -87,6 +87,9 @@ export const billingService = {
         };
       }
     }
+
+    const attemptCount = await billingRepository.countTransactionsByBaseIdempotencyKey(baseIdempotencyKey);
+    const idempotencyKey = attemptCount > 0 ? `${baseIdempotencyKey}-${attemptCount}` : baseIdempotencyKey;
 
     // Generate custom Order ID format: ORD-YYYYMMDD-XXXX
     const now = new Date();
@@ -123,7 +126,7 @@ export const billingService = {
       credit_card: { secure: true },
       customer_details: {
         first_name: user.name || 'User',
-        email: user.email || '',
+        ...(user.email ? { email: user.email } : {}),
       },
       item_details: [
         {
@@ -152,7 +155,7 @@ export const billingService = {
       },
       custom_expiry: {
         order_time:
-          new Date().toISOString().replace('T', ' ').substring(0, 19) + ' +0700',
+          `${yyyy}-${mm}-${dd} ${String(jakartaTime.getHours()).padStart(2, '0')}:${String(jakartaTime.getMinutes()).padStart(2, '0')}:${String(jakartaTime.getSeconds()).padStart(2, '0')} +0700`,
         expiry_duration: 24,
         unit: 'hour',
       },
