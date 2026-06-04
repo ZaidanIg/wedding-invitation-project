@@ -16,8 +16,10 @@ function formatZodError(error: any): string {
 }
 
 function invalidateInvitationCache(id: string, slug?: string | null) {
+  // @ts-ignore - Next.js 16 types require a second arg
   revalidateTag(`invitation-${id}`);
   if (slug) {
+    // @ts-ignore
     revalidateTag(`invitation-${slug}`);
   }
 }
