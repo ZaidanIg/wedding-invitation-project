@@ -27,7 +27,7 @@ describe('Invitation Validators', () => {
       }
     });
 
-    it('should allow premium tier with up to 10 photos', () => {
+    it('should allow premium tier with up to 6 photos', () => {
       const data = {
         groomName: 'Romeo',
         brideName: 'Juliet',
@@ -41,14 +41,14 @@ describe('Invitation Validators', () => {
         closing: 'Close',
         fullText: 'Text',
         tier: Tier.PREMIUM,
-        photoUrls: Array(10).fill('url'),
+        photoUrls: Array(6).fill('url'),
       };
 
       const result = createInvitationSchema.safeParse(data);
       expect(result.success).toBe(true);
     });
 
-    it('should allow ultimate tier with unlimited photos', () => {
+    it('should allow ultimate tier with up to 10 photos', () => {
       const data = {
         groomName: 'Romeo',
         brideName: 'Juliet',
@@ -62,7 +62,7 @@ describe('Invitation Validators', () => {
         closing: 'Close',
         fullText: 'Text',
         tier: Tier.ULTIMATE,
-        photoUrls: Array(35).fill('url'),
+        photoUrls: Array(10).fill('url'),
       };
 
       const result = createInvitationSchema.safeParse(data);
