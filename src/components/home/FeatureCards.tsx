@@ -50,18 +50,28 @@ export default function FeatureCards() {
   return (
     <section className="py-24 px-4 bg-[#f7f4ed]">
       <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative group/grid">
           {features.map((feature, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="p-8 rounded-2xl bg-[#f7f4ed] border border-[#eceae4] hover:border-[#1c1c1c]/40 transition-all duration-300"
+              viewport={{ once: false, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: (i % 4) * 0.1 }}
+              className="
+                p-8 rounded-2xl bg-[#f7f4ed] border border-[#eceae4] transition-all duration-500 
+                group-hover/grid:blur-[3px] group-hover/grid:opacity-60 group-hover/grid:scale-[0.98]
+                hover:!blur-none hover:!opacity-100 hover:!scale-105 hover:-translate-y-2 hover:bg-white hover:shadow-2xl hover:border-rose-200 hover:!z-10
+                relative z-0 group/card
+              "
             >
-              <div className="w-12 h-12 rounded-full bg-[#1c1c1c]/5 flex items-center justify-center mb-6">
-                <feature.icon className="h-6 w-6 text-[#1c1c1c]" />
+              <div className="w-14 h-14 rounded-full bg-[#1c1c1c]/5 flex items-center justify-center mb-6 group-hover/card:bg-rose-50 transition-colors duration-500">
+                <feature.icon className="
+                  h-6 w-6 transition-colors duration-500
+                  text-[#1c1c1c] 
+                  group-hover/grid:text-white
+                  group-hover/card:!text-rose-500
+                " />
               </div>
               <h3 className="text-xl font-bold text-[#1c1c1c] mb-3">{feature.title}</h3>
               <p className="text-[#5f5f5d] text-sm leading-relaxed">

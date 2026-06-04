@@ -27,12 +27,24 @@ export default function HowItWorks() {
     <section className="py-32 px-4 bg-[#fcfbf8] overflow-hidden border-y border-[#eceae4]">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-24">
-          <h2 className="text-3xl sm:text-[54px] font-display font-bold text-[#1c1c1c] tracking-tight sm:tracking-[-1.5px] mb-6">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: "-50px" }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl sm:text-[54px] font-display font-bold text-[#1c1c1c] tracking-tight sm:tracking-[-1.5px] mb-6"
+          >
             Langkah Sederhana Menuju <br /> <span className="italic font-normal">Momen Sempurna</span>
-          </h2>
-          <p className="text-[#5f5f5d] max-w-2xl mx-auto text-lg leading-relaxed">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-[#5f5f5d] max-w-2xl mx-auto text-lg leading-relaxed"
+          >
             Kami menyediakan layanan yang mudah dan cepat. Cukup dengan hitungan detik menuju kisah cinta tanpa titik.
-          </p>
+          </motion.p>
         </div>
 
         <div className="relative">
@@ -45,8 +57,8 @@ export default function HowItWorks() {
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: idx * 0.2 }}
+                viewport={{ once: false, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: idx * 0.15 }}
                 className="flex flex-col items-center text-center group"
               >
                 <div className="w-20 h-20 rounded-full bg-white border border-[#eceae4] flex items-center justify-center mb-10 shadow-sm group-hover:border-[#1c1c1c]/40 transition-all duration-700 group-hover:shadow-focus">
@@ -59,24 +71,6 @@ export default function HowItWorks() {
           </div>
         </div>
 
-        {/* Benefits List - Editorial style */}
-        <div className="mt-32 grid grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10 border-t border-[#eceae4] pt-20">
-          {[
-            'RSVP & QR Check-in',
-            'Digital Gift / Amplop',
-            'Integrasi Google Maps',
-            'Galeri, Video & Musik',
-            'Link Undangan Eksklusif',
-            'AI Text Generation',
-            'WhatsApp Broadcast',
-            'Dashboard Analytics',
-          ].map((benefit, i) => (
-            <div key={i} className="flex items-center gap-4 group">
-              <div className="h-2 w-2 rounded-full bg-[#1c1c1c]/20 group-hover:bg-[#1c1c1c] transition-colors" />
-              <span className="text-[15px] font-bold text-[#1c1c1c] tracking-tight">{benefit}</span>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );

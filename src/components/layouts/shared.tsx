@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen, MapPin, Coffee, Utensils, CalendarDays } from 'lucide-react';
+import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen, MapPin, Coffee, Utensils, CalendarDays, ChevronsDown } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Lock, Sparkles, MessageCircle, Check } from 'lucide-react';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 
 import type { Tier, Invitation, Guest } from '@/types';
 import { createContext, useContext } from 'react';
@@ -526,7 +526,61 @@ export function AudioPlayer({
   const requiredRank = TIER_RANK['PREMIUM'];
 
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const isAutoScrollingRef = useRef(false);
+
+  // Modern Web Guidance: Scroll-aware visibility fallback for unsupported browsers
+  useEffect(() => {
+    // If browser supports CSS scroll-state, let CSS handle visibility. We set isVisible=true to not block it.
+    if (typeof CSS !== 'undefined' && CSS.supports('container-type', 'scroll-state')) {
+      setIsVisible(true);
+      return;
+    }
+
+    if (!containerRef.current) return;
+
+    // Fallback: Use IntersectionObserver
+    // Find the nearest scroller container dynamically
+    const scroller = containerRef.current.closest('.scroller-container') || document.documentElement;
+    const observerRoot = scroller === document.documentElement ? null : scroller;
+    
+    // Create a temporary sentinel element at the very top
+    const sentinel = document.createElement('div');
+    sentinel.style.position = 'absolute';
+    sentinel.style.top = '0';
+    sentinel.style.height = '1px';
+    sentinel.style.width = '100%';
+    sentinel.style.pointerEvents = 'none';
+    sentinel.style.visibility = 'hidden';
+
+    // Insert sentinel into the DOM
+    if (scroller === document.documentElement) {
+      document.body.insertBefore(sentinel, document.body.firstChild);
+    } else {
+      // Must be relative/absolute so it anchors correctly inside the container
+      if (getComputedStyle(scroller).position === 'static') {
+         (scroller as HTMLElement).style.position = 'relative';
+      }
+      scroller.insertBefore(sentinel, scroller.firstChild);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // If sentinel is NOT intersecting, it means we scrolled down
+        setIsVisible(!entry.isIntersecting);
+      });
+    }, { root: observerRoot });
+
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+      if (sentinel.parentNode) sentinel.parentNode.removeChild(sentinel);
+    };
+  }, []);
 
   if (currentRank < requiredRank) {
     return null;
@@ -549,6 +603,10 @@ export function AudioPlayer({
         });
       }
     }
+  };
+
+  const toggleAutoScroll = () => {
+    setIsAutoScrolling(!isAutoScrolling);
   };
 
   // Sync internal state with external control prop (for cover page autoplay)
@@ -579,21 +637,66 @@ export function AudioPlayer({
     }
   }, [onPlayChange]);
 
+  // Auto scroll logic
+  useEffect(() => {
+    isAutoScrollingRef.current = isAutoScrolling;
+    let animationFrameId: number;
+    let lastTime = performance.now();
+
+    const scrollLoop = (time: number) => {
+      if (isAutoScrollingRef.current) {
+        // Scroll 1 pixel roughly every 16ms (60fps)
+        const delta = time - lastTime;
+        if (delta >= 16) {
+          // If in preview frame (e.g. create page), scroll the container, otherwise scroll window
+          const previewContainer = document.getElementById('preview-container');
+          if (previewContainer && isPreview) {
+             previewContainer.scrollBy({ top: 1, left: 0, behavior: 'instant' });
+          } else {
+             window.scrollBy({ top: 1, left: 0, behavior: 'instant' });
+          }
+          lastTime = time;
+        }
+        animationFrameId = requestAnimationFrame(scrollLoop);
+      }
+    };
+
+    if (isAutoScrolling) {
+      lastTime = performance.now();
+      animationFrameId = requestAnimationFrame(scrollLoop);
+    }
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [isAutoScrolling, isPreview]);
+
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div ref={containerRef} className={`fixed top-1/2 right-4 -translate-y-1/2 z-[100] flex flex-col gap-3 floating-widgets transition-all duration-500 ease-out ${!isVisible ? 'opacity-0 translate-y-5 scale-90 pointer-events-none' : 'opacity-100 translate-y-0 scale-100'}`}>
       <audio ref={audioRef} src={src} loop preload="auto" />
       <button
         onClick={togglePlay}
-        className={`w-12 h-12 flex items-center justify-center rounded-full shadow-2xl transition-all duration-300 border border-white/20 backdrop-blur-md ${
+        className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full shadow-xl transition-all duration-300 border border-white/20 backdrop-blur-md ${
           isPlaying ? activeColor : `${inactiveColor} animate-pulse-slow`
         }`}
         aria-label={isPlaying ? 'Pause music' : 'Play music'}
       >
         {isPlaying ? (
-          <Pause className="h-5 w-5 fill-current" />
+          <Pause className="h-4 w-4 sm:h-5 sm:w-5 fill-current" />
         ) : (
-          <Music className="h-5 w-5" />
+          <Music className="h-4 w-4 sm:h-5 sm:w-5" />
         )}
+      </button>
+
+      <button
+        onClick={toggleAutoScroll}
+        className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full shadow-xl transition-all duration-300 border border-white/20 backdrop-blur-md ${
+          isAutoScrolling ? activeColor : inactiveColor
+        }`}
+        aria-label={isAutoScrolling ? 'Stop auto scroll' : 'Start auto scroll'}
+        title="Auto Scroll"
+      >
+        <ChevronsDown className={`h-4 w-4 sm:h-5 sm:w-5 ${isAutoScrolling ? 'animate-bounce' : ''}`} />
       </button>
     </div>
   );

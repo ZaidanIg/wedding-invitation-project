@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Invitation, Layout } from '@/types';
-import { layouts } from './layouts';
+import { layouts } from '../layouts';
 
 import { MOCK_INVITATION } from '@/constants/demoData';
 
@@ -44,7 +44,7 @@ export default function ThemeMiniPreview({ layout, isInteractable = false, scale
       >
         {/* Content Layer */}
         <div className={`absolute inset-0 overflow-hidden bg-white ${isInteractable ? '' : 'rounded-[3.5rem]'}`}>
-          <div className="w-full h-full overflow-y-auto no-scrollbar">
+          <div className="w-full h-full overflow-y-auto no-scrollbar scroller-container">
             {renderLayout()}
           </div>
         </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import PricingContent from '@/components/PricingContent';
+import PricingContent from '@/components/pricing/PricingContent';
 
 export const metadata: Metadata = {
   title: 'Paket Harga Undangan Digital',

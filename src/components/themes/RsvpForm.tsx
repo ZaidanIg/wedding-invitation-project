@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { showToast } from '@/components/ui/Toast';
 import { Heart, Send, Check, X, QrCode } from 'lucide-react';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 
 interface RsvpFormProps {
   slug: string;

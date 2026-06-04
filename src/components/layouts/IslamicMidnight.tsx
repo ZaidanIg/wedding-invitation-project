@@ -18,7 +18,7 @@ import {
   Music
 } from 'lucide-react';
 import type { Invitation, Guest } from '@/types';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import {
   AnimatedSection,
   LoveStorySection,

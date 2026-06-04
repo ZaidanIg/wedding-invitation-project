@@ -10,7 +10,7 @@ export default function Footer() {
   if (pathname?.startsWith('/demo/')) return null;
 
   return (
-    <footer className="border-t border-rose-500/5 bg-[#fdfcf9]">
+    <footer className="border-t border-rose-500/5 bg-[#fdfcf9] content-visibility-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
           <Link href="/" className="flex items-center justify-center md:justify-start group">
@@ -32,8 +32,10 @@ export default function Footer() {
         </div>
         
         <div className="mt-6 pt-8 border-t border-[#eceae4]/30 text-center">
-          <p className="text-[10px] text-[#6b6b6b]/40 uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5">
-            © {new Date().getFullYear()} Sahinaja. <br className="md:hidden" /> Semua hak dilindungi.— <span className="text-rose-500/60 font-black">Artefact Project</span>
+          <p className="text-[10px] text-[#6b6b6b]/40 uppercase tracking-widest font-semibold flex flex-wrap items-center justify-center gap-1.5">
+            <span>© {new Date().getFullYear()} Sahinaja. Semua hak dilindungi.</span>
+            <span className="hidden sm:inline">—</span>
+            <span className="text-rose-500/60 font-black">Artefact Project</span>
           </p>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { getCoupleSlug } from '@/lib/utils';
 
 import { useState, useEffect } from 'react';
 import { Heart, MapPin, Clock, Calendar, Music, Camera, ChevronDown, Glasses } from 'lucide-react';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import Image from 'next/image';
 import {
@@ -92,7 +92,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
         bgClass="bg-[#f9e8ec]"
       />
       {/* Hero */}
-      <section className="relative w-full h-[100vh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
+      <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
           <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority unoptimized />
           <div className="absolute inset-0 bg-gradient-to-t from-pink-950/60 via-pink-900/20 to-transparent" />

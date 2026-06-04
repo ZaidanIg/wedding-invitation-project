@@ -3,7 +3,7 @@ import { getCoupleSlug } from '@/lib/utils';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import { getEmbedUrl } from '@/lib/utils';
 import Image from 'next/image';
@@ -434,48 +434,8 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
   );
 }
 
-/* ── Bottom Sticky Nav ── */
-function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
-  const [active, setActive] = useState('home');
-  const items = [
-    { id: 'home', icon: Home, label: 'Home' },
-    { id: 'couple', icon: Users, label: 'Mempelai' },
-    { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
-    { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
-  ];
 
-  useEffect(() => {
-    if (!visible) return;
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
-    }, { threshold: 0.35 });
-    items.forEach(i => { const el = document.getElementById(i.id); if (el) obs.observe(el); });
-    return () => obs.disconnect();
-  }, [visible]);
 
-  if (!visible) return null;
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[98] w-full max-w-lg mx-auto pointer-events-none px-4 pb-6">
-      <div className="flex items-center justify-around bg-[#111111]/90 backdrop-blur-xl rounded-2xl border border-[#d4af37]/20 px-2 py-2.5 shadow-[0_15px_40px_-5px_rgba(0,0,0,0.6)] pointer-events-auto">
-        {items.map((i) => (
-          <a 
-            key={i.id} 
-            href={`#${i.id}`} 
-            onClick={(e: React.MouseEvent) => { 
-              e.preventDefault(); 
-              document.getElementById(i.id)?.scrollIntoView({ behavior: 'smooth' }); 
-            }}
-            className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all duration-300 ${active === i.id ? 'text-[#d4af37] bg-[#d4af37]/10' : 'text-white/40 hover:text-white/70'}`}
-          >
-            <i.icon className="h-4 w-4" />
-            <span className="text-[8px] font-semibold uppercase tracking-wider">{i.label}</span>
-          </a>
-        ))}
-      </div>
-    </nav>
-  );
-}
 
 /* ── MAIN COMPONENT: PremiumCharcoal ── */
 interface LayoutProps {
@@ -540,7 +500,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
       )}
 
       {/* Section 1: Hero Cover */}
-      <section id="home" className="relative w-full h-[100vh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden pb-20">
+      <section id="home" className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden pb-20">
         <div className="absolute inset-0">
           <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority unoptimized />
           <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/30 to-transparent" />
@@ -959,7 +919,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
       {isOpened && invitation.musicUrl && (
         <SpinningGoldVinyl src={invitation.musicUrl} isPreview={isPreview} />
       )}
-      <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
+      
       
       {/* Decorative safety spacer */}
       <div className="h-12 bg-[#111111]" />

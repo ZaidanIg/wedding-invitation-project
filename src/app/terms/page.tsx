@@ -18,9 +18,9 @@ const navItems = [
 const matrixRows = [
   {
     feature: 'Kategori Tema',
-    basic: 'Minimalist',
-    premium: 'Minimalist & Premium',
-    ultimate: 'Semua Katalog',
+    basic: 'Tema Basic',
+    premium: 'Semua Tema',
+    ultimate: 'Semua Tema',
   },
   {
     feature: 'Kuota Foto',
@@ -29,34 +29,28 @@ const matrixRows = [
     ultimate: 'Maks. 10 foto',
   },
   {
-    feature: 'Kuota Tamu',
-    basic: '150 tamu',
-    premium: '300 tamu',
-    ultimate: 'Unlimited',
+    feature: 'Kirim via WhatsApp',
+    basic: 'Maks. 10 nomor',
+    premium: 'Maks. 30 nomor',
+    ultimate: 'Maks. 50 nomor',
   },
   {
-    feature: 'Regenerasi Teks AI',
-    basic: 'Maks. 3 kali',
-    premium: 'Unlimited',
-    ultimate: 'Unlimited',
+    feature: 'Masa Aktif Undangan',
+    basic: '7 Hari',
+    premium: '14 Hari',
+    ultimate: '1 Bulan',
   },
   {
-    feature: 'Musik & RSVP Live',
+    feature: 'Buku Tamu & RSVP Live',
     basic: '—',
     premium: 'Aktif',
     ultimate: 'Aktif',
   },
   {
-    feature: 'Video',
+    feature: 'Video Embed & WA Blast',
     basic: '—',
     premium: '—',
-    ultimate: 'Aktif (Embed saja)',
-  },
-  {
-    feature: 'WhatsApp',
-    basic: '—',
-    premium: 'Manual Redirect',
-    ultimate: 'Automated WA Blast',
+    ultimate: 'Aktif',
   },
 ];
 
@@ -177,7 +171,7 @@ export default function TermsPage() {
                     Sahinaja menyediakan platform bagi
                     pasangan pengantin untuk menyusun undangan pernikahan mereka secara digital.
                     Seluruh bentuk transaksi pembelian paket (<strong>Basic, Premium,
-                    Ultimate</strong>) diproses secara final melalui payment gateway resmi. Semua
+                    Ultimate</strong>) diproses secara instan dan final melalui payment gateway resmi Midtrans dengan dukungan pembayaran <strong>QRIS dan GoPay</strong>. Semua
                     bentuk pembayaran bersifat{' '}
                     <strong className="text-rose-600">Non-Refundable (tidak dapat dikembalikan)</strong>{' '}
                     dengan alasan apa pun, termasuk pembatalan acara, penundaan jadwal, maupun
@@ -197,9 +191,9 @@ export default function TermsPage() {
                   </p>
                   <ul className="space-y-2 pl-1">
                     {[
-                      { tier: 'Paket Basic', detail: 'Akses publik aktif sampai dengan Hari H + 3 Hari' },
-                      { tier: 'Paket Premium', detail: 'Akses publik aktif sampai dengan Hari H + 14 Hari' },
-                      { tier: 'Paket Ultimate', detail: 'Akses publik aktif sampai dengan Hari H + 30 Hari' },
+                      { tier: 'Paket Basic', detail: 'Akses publik aktif selama 7 Hari' },
+                      { tier: 'Paket Premium', detail: 'Akses publik aktif selama 14 Hari' },
+                      { tier: 'Paket Ultimate', detail: 'Akses publik aktif selama 1 Bulan' },
                     ].map((row) => (
                       <li key={row.tier} className="flex gap-3 items-start">
                         <span className="mt-0.5 w-2 h-2 rounded-full bg-rose-400 shrink-0" />

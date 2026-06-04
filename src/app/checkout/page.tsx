@@ -20,7 +20,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { showToast } from '@/components/ui/Toast';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/shared/Navbar';
 
 interface SnapPaymentResult {
   order_id?: string;
@@ -600,8 +600,8 @@ function CheckoutContent() {
 
               {/* Decorative Payment Methods Selection */}
               <div className="mb-8">
-                <span className="text-[10px] uppercase font-bold text-[#6b6b6b] tracking-widest block mb-4">METODE PEMBAYARAN DIKIRIMKAN</span>
-                <div className="grid grid-cols-2 gap-3">
+                <span className="text-[10px] uppercase font-bold text-[#6b6b6b] tracking-widest block mb-4">METODE PEMBAYARAN</span>
+                <div className="grid grid-cols-1 gap-3">
                   <button
                     onClick={() => setSelectedMethod('AUTO')}
                     className={`flex items-center justify-between p-4 rounded-2xl border text-left transition-all ${selectedMethod === 'AUTO'
@@ -610,30 +610,23 @@ function CheckoutContent() {
                       }`}
                   >
                     <div>
-                      <h4 className="text-xs font-bold text-[#1c1c1c]">Instant Gateway</h4>
-                      <p className="text-[9px] text-[#6b6b6b] mt-0.5 font-medium">QRIS, VA, E-Wallet, Kartu</p>
+                      <h4 className="text-xs font-bold text-[#1c1c1c]">Instant QRIS Gateway</h4>
+                      <p className="text-[9px] text-[#6b6b6b] mt-0.5 font-medium">QRIS &amp; GoPay (Verifikasi Instan)</p>
                     </div>
                     <div className="h-4.5 w-4.5 rounded-full border-2 border-rose-500 flex items-center justify-center p-0.5">
                       <div className="h-2 w-2 rounded-full bg-rose-500" />
                     </div>
                   </button>
-
-                  <div className="flex items-center justify-center p-4 rounded-2xl border border-stone-200/40 bg-[#fdfcf9]/40 opacity-50 select-none cursor-not-allowed">
-                    <div>
-                      <h4 className="text-xs font-bold text-stone-400">Transfer Manual</h4>
-                      <p className="text-[9px] text-stone-400 mt-0.5 font-medium">Proses Verifikasi 2 Jam</p>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Decorative Logos */}
-                <div className="mt-4 flex flex-wrap gap-2.5 items-center justify-center p-3 rounded-2xl border border-stone-200/30 bg-[#fdfcf9]/60">
-                  {['qris.png', 'gopay.png', 'bca.png', 'mandiri.png', 'shopeepay.png'].map((logo) => (
+                <div className="mt-4 flex flex-wrap gap-2.5 items-center justify-start p-3 rounded-2xl border border-stone-200/30 bg-[#fdfcf9]/60">
+                  {['qris.png', 'gopay.png'].map((logo) => (
                     <div key={logo} className="text-[10px] text-stone-400 font-semibold px-2 py-0.5 bg-stone-100 rounded-lg border border-stone-200/20">
                       {logo.split('.')[0].toUpperCase()}
                     </div>
                   ))}
-                  <span className="text-[9px] text-[#6b6b6b]/60 font-medium ml-1">& 12 Lainnya</span>
+                  <span className="text-[9px] text-[#6b6b6b]/60 font-medium ml-1">Diproses Instan via Midtrans</span>
                 </div>
               </div>
 

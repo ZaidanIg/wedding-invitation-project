@@ -1,7 +1,7 @@
 import { getCoupleSlug } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { Heart, MapPin, Clock, Calendar, Music, Camera, ChevronDown, Glasses } from 'lucide-react';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import { getEmbedUrl } from '@/lib/utils';
 import Image from 'next/image';
@@ -73,7 +73,7 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
         bgClass="bg-zinc-50 border-b border-[#D4AF37]/20"
       />
       {/* Hero */}
-      <section className="relative w-full h-[100vh] min-h-[600px] flex flex-col overflow-hidden pt-12 pb-8 px-6">
+      <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col overflow-hidden pt-12 pb-8 px-6">
         <div className="absolute inset-0 z-0">
           <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom opacity-15" priority unoptimized />
           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm" />

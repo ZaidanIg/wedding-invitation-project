@@ -56,7 +56,7 @@ export default async function VerifyEmailPage({
   }
 
   return (
-    <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 bg-[#fdf2f4]">
+    <section className="min-h-[calc(100dvh-4rem)] flex items-center justify-center px-4 py-12 bg-[#fdf2f4]">
       <div className="w-full max-w-md">
         <div className="relative bg-white rounded-3xl p-8 sm:p-10 shadow-xl text-center border border-pink-100">
           <div className="flex justify-center mb-6">
