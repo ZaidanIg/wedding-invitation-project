@@ -254,11 +254,9 @@ export const invitationService = {
     const updated = await invitationRepository.findById(id);
 
     // Revalidate cache
-    // @ts-ignore - Next.js 16 types require a second arg
-    revalidateTag(`invitation-${id}`);
+    revalidateTag(`invitation-${id}`, {});
     if (existing.slug) {
-      // @ts-ignore
-      revalidateTag(`invitation-${existing.slug}`);
+      revalidateTag(`invitation-${existing.slug}`, {});
     }
 
     return invitationMapper.toResponse(updated as Record<string, unknown>);
