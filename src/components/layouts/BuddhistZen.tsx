@@ -25,6 +25,9 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 const LotusIcon = ({ className, size = 24 }: { className?: string; size?: number }) => (
   <svg
@@ -253,6 +256,12 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
       </AnimatePresence>
 
       <div className="relative z-0">
+        <OpeningPhraseSection
+          phrase={invitation.openingPhrase}
+          style={invitation.openingStyle}
+          textColorClass="text-[#3d4432]"
+          bgClass="bg-[#fdfbf7] border-b border-[#a3b18a]/20"
+        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
@@ -389,44 +398,17 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
           </div>
         </section>
 
-        {/* Gallery Section */}
-      {/* Video Embed */}
-      {(invitation as any).videoUrl && (
-        <section className="py-12 px-6 bg-[#fdfbf7] relative z-10">
-          <AnimatedSection>
-            <div className="rounded-3xl overflow-hidden border border-[#a3b18a]/30 shadow-xl h-[280px]">
-              <iframe 
-                width="100%" 
-                height="100%" 
-                frameBorder="0" 
-                style={{ border: 0 }} 
-                src={getEmbedUrl((invitation as any).videoUrl)}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen 
-                title="Wedding Video" 
-              />
-            </div>
-          </AnimatedSection>
-        </section>
-      )}
+        {/* Video Embed */}
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#fdfbf7]" textColor="text-[#a3b18a]" title="Wedding Video" />
 
-        {galleryPhotos.length > 0 && (
-          <section id="gallery" className="py-32 px-4 bg-[#fdfbf7]">
-             <AnimatedSection className="text-center mb-12">
-               <Camera className="mx-auto text-[#a3b18a] mb-4 opacity-40" size={32} />
-               <p className="text-[10px] uppercase tracking-[0.3em] text-[#a3b18a] font-bold">Zen Gallery</p>
-             </AnimatedSection>
-             <div className="columns-2 gap-3 space-y-3">
-                {galleryPhotos.map((src: string, idx: number) => (
-                  <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
-                    <div className="relative overflow-hidden rounded-[2rem] shadow-sm grayscale-[0.2] hover:grayscale-0 transition-all duration-700">
-                       <Image src={src} alt="Gallery" width={400} height={600} className="w-full h-auto object-cover" />
-                    </div>
-                  </AnimatedSection>
-                ))}
-             </div>
-          </section>
-        )}
+        {/* Gallery Section */}
+        <GallerySection
+          photos={galleryPhotos}
+          bgColor="bg-[#fdfbf7]"
+          textColor="text-[#3d4432]"
+          borderColor="border-[#a3b18a]"
+          title="Zen Gallery"
+        />
 
         {/* Ultimate: VIP Zen Management */}
         <TierGate 

@@ -1,6 +1,8 @@
 // GET  /api/admin/invitations/[id] — Get single invitation detail
 // PATCH /api/admin/invitations/[id] — Override tier / reset AI count
 import { NextRequest, NextResponse } from 'next/server';
+import { successResponse, errorResponse } from '@/lib/api-response';
+import { handleServiceError } from '@/lib/errors';
 import { auth } from '@/lib/auth';
 import { adminService } from '@/modules/admin/server/service';
 import { ValidationError } from '@/lib/errors';
@@ -13,16 +15,16 @@ export async function GET(
 ) {
   const session = await auth();
   if (!session?.user || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
+    return errorResponse('Unauthorized', 403, 'FORBIDDEN');
   }
   const { id } = await params;
   // Return from the broader invitations list filtered — sufficient for admin use
   const data = await adminService.getInvitations(id);
   const inv = data.find((i) => i.id === id);
   if (!inv) {
-    return NextResponse.json({ success: false, error: 'Invitation not found' }, { status: 404 });
+    return errorResponse('Invitation not found', 404, 'NOT_FOUND');
   }
-  return NextResponse.json({ success: true, data: inv });
+  return successResponse(inv);
 }
 
 export async function PATCH(
@@ -31,7 +33,7 @@ export async function PATCH(
 ) {
   const session = await auth();
   if (!session?.user || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
+    return errorResponse('Unauthorized', 403, 'FORBIDDEN');
   }
 
   const { id } = await params;
@@ -42,13 +44,10 @@ export async function PATCH(
       body,
       session.user.email ?? 'unknown'
     );
-    return NextResponse.json({ success: true, data });
+    return successResponse(data);
   } catch (error: unknown) {
-    if (error instanceof ValidationError) {
-      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
-    }
-    const message = error instanceof Error ? error.message : 'Failed to update invitation';
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    const { message, status, code } = handleServiceError(error);
+    return errorResponse(message, status, code);
   }
 }
 

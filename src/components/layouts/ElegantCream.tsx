@@ -25,6 +25,9 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 
 interface LayoutProps {
@@ -55,6 +58,13 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
 
   return (
     <div className="w-full max-w-lg mx-auto bg-[#f5f0eb] text-stone-800 font-sans overflow-hidden relative shadow-2xl">
+      {/* Opening Phrase — user-customizable, renders above hero */}
+      <OpeningPhraseSection
+        phrase={invitation.openingPhrase}
+        style={invitation.openingStyle}
+        textColorClass="text-stone-700"
+        bgClass="bg-[#ede8e0]"
+      />
       {/* Hero */}
       <section className="relative w-full h-[100vh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
@@ -239,24 +249,22 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
       {/* Digital Gift */}
       <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-[#faf9f6]" textColor="text-stone-800" />
 
-      {/* Gallery */}
-      {galleryPhotos.length > 0 && (
-        <section className="py-14 px-8 bg-[#f5f0eb] text-center">
-          <AnimatedSection animation="scale">
-            <div className="inline-flex p-3 rounded-full border border-stone-300 mb-4"><Camera className="h-5 w-5 text-stone-500" /></div>
-            <h2 className="text-2xl font-display font-bold text-stone-800 mb-8">Our Moments</h2>
-          </AnimatedSection>
-          <div className="grid grid-cols-2 gap-3">
-            {galleryPhotos.map((src: string, idx: number) => (
-              <AnimatedSection key={idx} animation="scale" delay={`delay-${(idx + 1) * 100}`} className={idx === 0 ? 'col-span-2' : ''}>
-                <div className={`relative rounded-xl overflow-hidden shadow-sm group ${idx === 0 ? 'h-[250px]' : 'h-[180px]'}`}>
-                  <Image src={src} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" unoptimized />
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* Gallery — shared tier-aware component */}
+      <GallerySection
+        photos={galleryPhotos}
+        bgColor="bg-[#f5f0eb]"
+        textColor="text-stone-800"
+        borderColor="border-stone-300"
+        title="Our Moments"
+      />
+
+      {/* Video Embed — ULTIMATE only, shared component */}
+      <VideoEmbedSection
+        videoUrl={invitation.videoUrl}
+        bgColor="bg-stone-900"
+        textColor="text-white"
+        title="Our Story"
+      />
 
       {/* Quotes */}
       <QuotesSection text={invitation.quotes || ''} bgColor="#fcfbf8" textColor="text-stone-800" />

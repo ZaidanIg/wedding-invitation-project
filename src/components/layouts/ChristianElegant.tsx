@@ -28,9 +28,12 @@ import {
   ParallaxSection,
   ParallaxImage,
   WaveDivider,
-  DigitalGiftSection,
   IconMapper,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
+  DigitalGiftSection,
 } from './shared';
 
 function CoverPage({ groomName, brideName, guestName, onOpen }: {
@@ -239,6 +242,12 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
       </AnimatePresence>
 
       <div className="relative z-0">
+        <OpeningPhraseSection
+          phrase={invitation.openingPhrase}
+          style={invitation.openingStyle}
+          textColorClass="text-stone-800"
+          bgClass="bg-white border-b border-rose-100"
+        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
@@ -379,44 +388,17 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
           </div>
         </section>
 
-        {/* Gallery Section */}
-      {/* Video Embed */}
-      {(invitation as any).videoUrl && (
-        <section className="py-12 px-6 bg-[#f8f7f4] relative z-10">
-          <AnimatedSection>
-            <div className="rounded-3xl overflow-hidden border border-rose-200 shadow-xl h-[280px]">
-              <iframe 
-                width="100%" 
-                height="100%" 
-                frameBorder="0" 
-                style={{ border: 0 }} 
-                src={getEmbedUrl((invitation as any).videoUrl)}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen 
-                title="Wedding Video" 
-              />
-            </div>
-          </AnimatedSection>
-        </section>
-      )}
+        {/* Video Embed */}
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#f8f7f4]" textColor="text-rose-400" title="Wedding Video" />
 
-        {galleryPhotos.length > 0 && (
-          <section id="gallery" className="py-32 px-4 bg-[#faf9f6]">
-             <AnimatedSection className="text-center mb-16">
-               <Camera className="mx-auto text-rose-300 mb-6 opacity-40 animate-pulse" size={40} />
-               <p className="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold">Cherished Moments</p>
-             </AnimatedSection>
-             <div className="columns-2 gap-3 space-y-3">
-                {galleryPhotos.map((src: string, idx: number) => (
-                  <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
-                     <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-white grayscale-[0.2] hover:grayscale-0 transition-all duration-700">
-                        <Image src={src} alt="Gallery" width={400} height={600} className="w-full h-auto object-cover" />
-                     </div>
-                  </AnimatedSection>
-                ))}
-             </div>
-          </section>
-        )}
+        {/* Gallery */}
+        <GallerySection
+          photos={galleryPhotos}
+          bgColor="bg-[#faf9f6]"
+          textColor="text-stone-800"
+          borderColor="border-rose-300"
+          title="Cherished Moments"
+        />
 
         {/* Ultimate: VIP Guest Management */}
         <TierGate 

@@ -1,5 +1,7 @@
 // GET /api/admin/transactions — Paginated transaction list with filters
 import { NextRequest, NextResponse } from 'next/server';
+import { paginatedResponse, errorResponse } from '@/lib/api-response';
+import { handleServiceError } from '@/lib/errors';
 import { auth } from '@/lib/auth';
 import { adminService } from '@/modules/admin/server/service';
 import { ValidationError } from '@/lib/errors';
@@ -9,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session?.user || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
+    return errorResponse('Unauthorized', 403, 'FORBIDDEN');
   }
 
   try {
@@ -24,12 +26,9 @@ export async function GET(req: NextRequest) {
     };
 
     const result = await adminService.getTransactions(rawFilters);
-    return NextResponse.json({ success: true, ...result });
+    return paginatedResponse(result.data, result.meta);
   } catch (error: unknown) {
-    if (error instanceof ValidationError) {
-      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
-    }
-    const message = error instanceof Error ? error.message : 'Failed to fetch transactions';
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    const { message, status, code } = handleServiceError(error);
+    return errorResponse(message, status, code);
   }
 }

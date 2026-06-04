@@ -35,6 +35,9 @@ import {
   QuotesSection,
   WishesSection,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 import Button from '@/components/ui/Button';
 
@@ -117,6 +120,12 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
       </AnimatePresence>
 
       <div className="relative">
+        <OpeningPhraseSection
+          phrase={invitation.openingPhrase}
+          style={invitation.openingStyle}
+          textColorClass="text-stone-800"
+          bgClass="bg-[#fdfcf9] border-b border-stone-200"
+        />
         {/* Hero Section */}
         <section id="home" className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-stone-50">
            <div className="absolute inset-0">
@@ -211,24 +220,15 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
         </section>
 
         {/* Gallery Section */}
-        {galleryPhotos.length > 0 && (
-          <section id="gallery" className="py-24 px-4 text-center">
-             <AnimatedSection className="mb-12">
-                <h2 className="text-2xl font-display font-bold text-stone-800 mb-2">Our Moments</h2>
-                <div className="w-12 h-[1px] bg-[#d4af37] mx-auto" />
-             </AnimatedSection>
-             
-             <div className="grid grid-cols-2 gap-2">
-                {galleryPhotos.map((src: string, idx: number) => (
-                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                    <div className={`relative overflow-hidden rounded-lg ${idx === 0 ? 'h-[300px]' : 'h-[180px]'}`}>
-                       <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
-                    </div>
-                  </AnimatedSection>
-                ))}
-             </div>
-          </section>
-        )}
+        <GallerySection
+          photos={galleryPhotos}
+          bgColor="bg-white"
+          textColor="text-stone-800"
+          borderColor="border-[#d4af37]"
+          title="Our Moments"
+        />
+
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-stone-900" textColor="text-[#d4af37]" title="Our Story" />
 
         {/* RSVP Section */}
         <section id="wishes" className="py-24 px-8 bg-stone-50">

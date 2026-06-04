@@ -24,19 +24,19 @@ const validateTierConstraints = (tier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE
       throw new ForbiddenError('Paket Basic hanya mendukung tema Klasik/Minimalis.');
     }
     // v1.2: photoUrls now maps to InvitationPhoto (type GALLERY)
-    if (data.photoUrls && data.photoUrls.length > 0) {
-      throw new ForbiddenError('Paket Basic tidak mendukung galeri foto (hanya foto utama).');
+    if (data.photoUrls && data.photoUrls.length > 3) {
+      throw new ForbiddenError('Paket Basic hanya mendukung maksimal 3 foto di galeri.');
     }
   } else if (tier === 'PREMIUM') {
-    if (data.photoUrls && data.photoUrls.length > 3) {
-      throw new ForbiddenError('Paket Premium hanya mendukung maksimal 3 foto di galeri.');
+    if (data.photoUrls && data.photoUrls.length > 6) {
+      throw new ForbiddenError('Paket Premium hanya mendukung maksimal 6 foto di galeri.');
     }
     if (data.videoUrl) {
       throw new ForbiddenError('Paket Premium tidak mendukung fitur video. Silakan upgrade ke Paket Ultimate.');
     }
   } else if (tier === 'ULTIMATE') {
-    if (data.photoUrls && data.photoUrls.length > 7) {
-      throw new ForbiddenError('Paket Ultimate hanya mendukung maksimal 7 foto di galeri.');
+    if (data.photoUrls && data.photoUrls.length > 10) {
+      throw new ForbiddenError('Paket Ultimate hanya mendukung maksimal 10 foto di galeri.');
     }
     if (data.videoUrl) {
       const isEmbed = /youtube\.com|youtu\.be|tiktok\.com|instagram\.com|drive\.google\.com/.test(data.videoUrl);
@@ -161,14 +161,14 @@ export const invitationService = {
     }
 
     // DRAFT tier: locked from public access — only owner or ADMIN can view
-    // if (entity.tier === 'DRAFT') {
-    //   const isOwner = requestingUserId && entity.userId === requestingUserId;
-    //   const isAdmin = requestingUserRole === 'ADMIN';
-    //   if (!isOwner && !isAdmin) {
-    //     throw new ForbiddenError('Undangan ini belum aktif dan tidak dapat diakses secara publik.');
-    //   }
-    //   return entity; // Owner/ADMIN can preview draft without expiry check
-    // }
+    if (entity.tier === 'DRAFT') {
+      const isOwner = requestingUserId && entity.userId === requestingUserId;
+      const isAdmin = requestingUserRole === 'ADMIN';
+      if (!isOwner && !isAdmin) {
+        throw new ForbiddenError('Undangan ini belum aktif dan tidak dapat diakses secara publik.');
+      }
+      return entity; // Owner/ADMIN can preview draft without expiry check
+    }
 
     // Evaluate dynamic expiration status relative to server date
     const currentDate = new Date();

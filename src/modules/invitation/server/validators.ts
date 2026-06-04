@@ -52,6 +52,8 @@ const baseInvitationSchema = z.object({
   })).optional().default([]),
   quotes: z.string().optional(),
   qrEnabled: z.boolean().optional().default(true),
+  openingPhrase: z.string().optional(),
+  openingStyle: z.enum(['none', 'arabic-calligraphy', 'latin-elegant']).optional().default('none'),
 });
 
 export const createInvitationSchema = baseInvitationSchema.superRefine((data, ctx) => {
@@ -62,10 +64,16 @@ export const createInvitationSchema = baseInvitationSchema.superRefine((data, ct
       message: 'Paket Basic Maksimal 3 foto galeri',
       path: ['photoUrls'],
     });
-  } else if (data.tier === 'PREMIUM' && data.photoUrls && data.photoUrls.length > 10) {
+  } else if (data.tier === 'PREMIUM' && data.photoUrls && data.photoUrls.length > 6) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: 'Paket Premium Maksimal 10 foto galeri',
+      message: 'Paket Premium Maksimal 6 foto galeri',
+      path: ['photoUrls'],
+    });
+  } else if (data.tier === 'ULTIMATE' && data.photoUrls && data.photoUrls.length > 10) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Paket Ultimate Maksimal 10 foto galeri',
       path: ['photoUrls'],
     });
   }

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Invitation } from '@/types';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { resolvePhotos, AudioPlayer } from './shared';
+import { resolvePhotos, AudioPlayer, OpeningPhraseSection, GallerySection, VideoEmbedSection } from './shared';
 import { ChevronDown, MapPin, Calendar, Clock, Copy, Check, Heart, ExternalLink, Gift, Camera, ChevronLeft, ChevronRight, Music } from 'lucide-react';
 import RsvpForm from '../RsvpForm';
 
@@ -678,127 +678,6 @@ function LoveStorySection({ data }: { data: Invitation }) {
   );
 }
 
-function GallerySection({ data }: { data: Invitation }) {
-  // Gunakan foto bawaan jika data.photoUrls kosong (untuk keperluan preview)
-  const photos = data.photoUrls && data.photoUrls.length > 0
-    ? data.photoUrls
-    : [
-      '/assets/javaneseTheme/Assets/cover-1.png',
-      '/assets/javaneseTheme/Assets/cover-2.png',
-      '/assets/javaneseTheme/Assets/cover-1.png'
-    ];
-
-  return (
-    <section id="gallery-section" className="relative pt-24 pb-40 flex flex-col items-center bg-[#F8F5F0] overflow-hidden">
-      {/* Ornaments */}
-      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-white to-transparent pointer-events-none"></div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.8 }}
-        className="text-center mb-12 relative z-10 px-6"
-      >
-        <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2">Momen Bahagia</p>
-        <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-          Galeri Foto
-        </h2>
-        <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
-      </motion.div>
-
-      {/* Pinterest-style Masonry Grid */}
-      <div className="w-full relative z-10 px-4 sm:px-6 sm:max-w-2xl mx-auto pb-8">
-        <div className="columns-2 sm:columns-3 gap-4">
-          {photos.map((photo, index) => {
-            // Create varied aspect ratios for the Pinterest masonry effect
-            let aspectClass = 'aspect-[3/4]';
-            if (index % 4 === 0) aspectClass = 'aspect-square';
-            else if (index % 3 === 0) aspectClass = 'aspect-[4/5]';
-            else if (index % 2 === 0) aspectClass = 'aspect-[2/3]';
-
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
-                className={`w-full overflow-hidden relative shadow-md rounded-[16px] border border-white/50 break-inside-avoid mb-4 group ${aspectClass}`}
-              >
-                <Image
-                  src={photo}
-                  alt={`Gallery ${index + 1}`}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
-                  unoptimized
-                />
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-
-      <SectionBottomDivider />
-    </section>
-  );
-}
-
-function MemoriesSection({ data }: { data: Invitation }) {
-  // Jika tidak ada URL video, kita bisa me-return null. 
-  // Namun untuk keperluan preview, kita tampilkan placeholder jika kosong.
-  const hasVideo = !!data.videoUrl;
-  const videoSrc = hasVideo
-    ? data.videoUrl?.replace('watch?v=', 'embed/')
-    : 'https://www.youtube.com/embed/jfKfPfyJRdk';
-
-  // Jika kita benar-benar ingin hide saat tidak ada video (production behavior):
-  // if (!hasVideo) return null;
-
-  return (
-    <section id="memories-section" className="relative pt-24 pb-40 px-6 flex flex-col items-center bg-white overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.8 }}
-        className="text-center mb-12 relative z-10"
-      >
-        <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2">Kenangan Indah</p>
-        <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-          Our Memories
-        </h2>
-        <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
-        {!hasVideo && (
-          <p className="text-sm text-amber-600 bg-amber-50 p-2 rounded-lg italic max-w-sm mx-auto border border-amber-200">
-            (Preview) Video placeholder. Tambahkan URL YouTube di dashboard untuk mengganti video ini.
-          </p>
-        )}
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.8 }}
-        className="w-full max-w-md relative z-10 rounded-[30px] overflow-hidden shadow-2xl border-4 border-[#F8F5F0]"
-      >
-
-        <div className="aspect-video w-full bg-slate-100 relative">
-          <iframe
-            src={videoSrc}
-            className="absolute inset-0 w-full h-full"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
-      </motion.div>
-
-      <SectionBottomDivider />
-    </section>
-  );
-}
 
 function RsvpSection({ data }: { data: Invitation }) {
   return (
@@ -959,18 +838,27 @@ export default function PremiumJavanese({ invitation: data, isPreview = false }:
         </AnimatePresence>
       )}
 
+      {isOpened && (
+        <OpeningPhraseSection
+          phrase={data.openingPhrase}
+          style={data.openingStyle}
+          textColorClass="text-[#4A3728]"
+          bgClass="bg-[#F8F5F0] border-b border-[#D4AF37]/30"
+        />
+      )}
+
       <HeroSection data={data} />
       <GroomSection data={data} />
       <DateSection data={data} />
 
-      <MemoriesSection data={data} />
+      <VideoEmbedSection videoUrl={data.videoUrl} bgColor="bg-white" textColor="text-[#4A3728]" title="Our Memories" />
 
       {data.loveStory && data.loveStory.length > 0 && (
         <LoveStorySection data={data} />
       )}
 
       <GiftSection data={data} />
-      <GallerySection data={data} />
+      <GallerySection photos={resolvePhotos(data).galleryPhotos} bgColor="bg-[#F8F5F0]" textColor="text-[#4A3728]" borderColor="border-[#D4AF37]" title="Galeri Foto" />
       <RsvpSection data={data} />
 
       {/* Audio Button */}

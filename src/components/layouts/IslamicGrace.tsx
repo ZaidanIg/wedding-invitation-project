@@ -56,6 +56,9 @@ import {
   useTier,
   WishesSection,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 import Button from '@/components/ui/Button';
 
@@ -306,6 +309,12 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
       </AnimatePresence>
 
       <div className="relative z-0">
+        <OpeningPhraseSection
+          phrase={invitation.openingPhrase}
+          style={invitation.openingStyle}
+          textColorClass="text-[#1a2b23]"
+          bgClass="bg-[#fdfcf9] border-b border-[#c5a059]/20"
+        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0">
@@ -432,45 +441,17 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
            </div>
         </section>
 
-        {/* Gallery */}
-      {/* Video Embed */}
-      {(invitation as any).videoUrl && (
-        <section className="py-12 px-6 bg-[#1a2b23] relative z-10">
-          <AnimatedSection>
-            <div className="rounded-3xl overflow-hidden border border-[#c5a059]/30 shadow-2xl h-[280px]">
-              <iframe 
-                width="100%" 
-                height="100%" 
-                frameBorder="0" 
-                style={{ border: 0 }} 
-                src={getEmbedUrl((invitation as any).videoUrl)}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen 
-                title="Wedding Video" 
-              />
-            </div>
-          </AnimatedSection>
-        </section>
-      )}
+        {/* Video Embed */}
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#1a2b23]" textColor="text-[#c5a059]" title="Wedding Video" />
 
-        {galleryPhotos.length > 0 && (
-          <section id="gallery" className="py-24 px-4 bg-[#fdfcf9]">
-             <AnimatedSection className="text-center mb-16">
-                <h2 className="text-3xl font-display font-bold text-[#1a2b23] mb-4">Galeri Momen</h2>
-                <div className="h-px w-16 bg-[#c5a059] mx-auto" />
-             </AnimatedSection>
-             
-             <div className="grid grid-cols-2 gap-2">
-                {galleryPhotos.map((src: string, idx: number) => (
-                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                    <div className={`relative overflow-hidden rounded-3xl ${idx === 0 ? 'h-72' : 'h-48'} border-4 border-white shadow-xl`}>
-                       <Image src={src} alt="Gallery" fill className="object-cover" unoptimized />
-                    </div>
-                  </AnimatedSection>
-                ))}
-             </div>
-          </section>
-        )}
+        {/* Gallery */}
+        <GallerySection
+          photos={galleryPhotos}
+          bgColor="bg-[#fdfcf9]"
+          textColor="text-[#1a2b23]"
+          borderColor="border-[#c5a059]"
+          title="Galeri Momen"
+        />
 
         {/* VIP Section */}
         <TierGate 
