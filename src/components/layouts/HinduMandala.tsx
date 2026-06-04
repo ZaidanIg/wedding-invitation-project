@@ -29,6 +29,9 @@ import {
   DigitalGiftSection,
   IconMapper,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 
 function CoverPage({ groomName, brideName, guestName, onOpen }: {
@@ -237,6 +240,12 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
       </AnimatePresence>
 
       <div className="relative z-0">
+        <OpeningPhraseSection
+          phrase={invitation.openingPhrase}
+          style={invitation.openingStyle}
+          textColorClass="text-amber-900"
+          bgClass="bg-[#fffcf5] border-b border-amber-200"
+        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
@@ -395,46 +404,17 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
           </div>
         </section>
 
-        {/* Gallery Section */}
-      {/* Video Embed */}
-      {(invitation as any).videoUrl && (
-        <section className="py-12 px-6 bg-[#fff8f0] relative z-10">
-          <AnimatedSection>
-            <div className="rounded-3xl overflow-hidden border border-[#d4af37]/30 shadow-xl h-[280px]">
-              <iframe 
-                width="100%" 
-                height="100%" 
-                frameBorder="0" 
-                style={{ border: 0 }} 
-                src={getEmbedUrl((invitation as any).videoUrl)}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen 
-                title="Wedding Video" 
-              />
-            </div>
-          </AnimatedSection>
-        </section>
-      )}
+        {/* Video Embed */}
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#fff8f0]" textColor="text-[#d4af37]" title="Wedding Video" />
 
-        {galleryPhotos.length > 0 && (
-          <section id="gallery" className="py-40 px-4 bg-[#fffcf5] relative">
-             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/handmade-paper.png')]" />
-             <AnimatedSection className="text-center mb-24 relative z-10">
-               <Camera className="mx-auto text-amber-600 mb-6 opacity-40 animate-pulse" size={48} />
-               <p className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-black italic">Sacred Moments</p>
-             </AnimatedSection>
-             <div className="grid grid-cols-2 gap-4 relative z-10">
-                {galleryPhotos.map((src: string, idx: number) => (
-                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                    <div className={`relative overflow-hidden rounded-[3rem] shadow-3xl border-4 border-white group ${idx === 0 ? 'h-80' : 'h-56'}`}>
-                       <Image src={src} alt="Gallery" fill className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" unoptimized />
-                       <div className="absolute inset-0 bg-amber-900/10 group-hover:opacity-0 transition-opacity" />
-                    </div>
-                  </AnimatedSection>
-                ))}
-             </div>
-          </section>
-        )}
+        {/* Gallery Section */}
+        <GallerySection
+          photos={galleryPhotos}
+          bgColor="bg-[#fffcf5]"
+          textColor="text-amber-900"
+          borderColor="border-amber-600"
+          title="Sacred Moments"
+        />
 
         {/* Ultimate: VIP Mandala Experience */}
         <TierGate 

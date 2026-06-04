@@ -1,12 +1,14 @@
 import { auth } from '@/lib/auth';
 import { adminService } from '@/modules/admin/server/service';
 import { NextResponse } from 'next/server';
+import { errorResponse } from '@/lib/api-response';
+import { handleServiceError } from '@/lib/errors';
 
 export async function GET() {
   try {
     const session = await auth();
     if (!session?.user || session.user.role !== 'ADMIN') {
-      return new NextResponse('Forbidden', { status: 403 });
+      return errorResponse('Forbidden', 403, 'FORBIDDEN');
     }
 
     const buffer = await adminService.generateExportExcel();
@@ -22,7 +24,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('[Admin Export Error]', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    const { message, status, code } = handleServiceError(error);
+    return errorResponse(message, status, code);
   }
 }

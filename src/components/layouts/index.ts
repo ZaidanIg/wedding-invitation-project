@@ -15,21 +15,55 @@ import PremiumCharcoal from './PremiumCharcoal';
 import PremiumJavanese from './PremiumJavanese';
 
 export const layouts = {
-  'elegant-cream': ElegantCream,
-  'luxury-emerald': LuxuryEmerald,
-  'rose-garden': RoseGarden,
-  'royal-blue': RoyalBlue,
-  'golden-classic': GoldenClassic,
-  'islamic-grace': IslamicGrace,
-  'islamic-minimalist': IslamicClassic,
-  'islamic-midnight': IslamicMidnight,
-  'islamic-arabesque': IslamicArabesque,
-  'christian-elegant': ChristianElegant,
-  'hindu-mandala': HinduMandala,
-  'buddhist-zen': BuddhistZen,
-  'confucian-oriental': ConfucianOriental,
-  'premium-charcoal': PremiumCharcoal,
-  'premium-javanese': PremiumJavanese,
+  // ── Modern Neutral Slugs (used for new invitations) ──────────
+  'elegant-cream':    ElegantCream,
+  'luxury-emerald':   LuxuryEmerald,
+  'rose-garden':      RoseGarden,
+  'royal-blue':       RoyalBlue,
+  'golden-classic':   GoldenClassic,
+
+  // ── New neutral slugs (map to existing layout components) ────
+  'sand-dunes':       IslamicClassic,
+  'midnight-velvet':  IslamicMidnight,
+  'arabesque-pattern': IslamicArabesque,
+  'forest-grace':     IslamicGrace,
+  'garden-chapel':    ChristianElegant,
+  'mandala-fusion':   HinduMandala,
+  'zen-garden':       BuddhistZen,
+  'oriental-luxe':    ConfucianOriental,
+  'onyx-premium':     PremiumCharcoal,
+  'batik-heritage':   PremiumJavanese,
+
+  // ── Legacy slugs — kept for backward compat (old DB records) ─
+  'islamic-grace':        IslamicGrace,
+  'islamic-minimalist':   IslamicClassic,
+  'islamic-midnight':     IslamicMidnight,
+  'islamic-arabesque':    IslamicArabesque,
+  'christian-elegant':    ChristianElegant,
+  'hindu-mandala':        HinduMandala,
+  'buddhist-zen':         BuddhistZen,
+  'confucian-oriental':   ConfucianOriental,
+  'premium-charcoal':     PremiumCharcoal,
+  'premium-javanese':     PremiumJavanese,
 } as const;
 
 export type LayoutType = keyof typeof layouts;
+
+// Display labels for UI (form + pricing page)
+export const LAYOUT_LABELS: Record<string, string> = {
+  'elegant-cream':     'Ivory Bloom',
+  'royal-blue':        'Azure Classic',
+  'rose-garden':       'Blush Garden',
+  'golden-classic':    'Golden Classic',
+  'luxury-emerald':    'Emerald Forest',
+  'sand-dunes':        'Sand Dunes',
+  'midnight-velvet':   'Midnight Velvet',
+  'arabesque-pattern': 'Arabesque Pattern',
+  'forest-grace':      'Forest Grace',
+  'garden-chapel':     'Garden Chapel',
+  'mandala-fusion':    'Mandala Fusion',
+  'zen-garden':        'Zen Garden',
+  'oriental-luxe':     'Oriental Luxe',
+  'onyx-premium':      'Onyx Premium',
+  'batik-heritage':    'Batik Heritage',
+};

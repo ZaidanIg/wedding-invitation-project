@@ -22,6 +22,9 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 
 interface LayoutProps {
@@ -63,6 +66,12 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
 
   return (
     <div className="w-full max-w-lg mx-auto bg-white text-zinc-900 font-sans overflow-hidden relative shadow-2xl border-x border-[#D4AF37]/20">
+      <OpeningPhraseSection
+        phrase={invitation.openingPhrase}
+        style={invitation.openingStyle}
+        textColorClass="text-[#8B6914]"
+        bgClass="bg-zinc-50 border-b border-[#D4AF37]/20"
+      />
       {/* Hero */}
       <section className="relative w-full h-[100vh] min-h-[600px] flex flex-col overflow-hidden pt-12 pb-8 px-6">
         <div className="absolute inset-0 z-0">
@@ -230,51 +239,23 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
       {/* Digital Gift */}
       <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-zinc-50" textColor="text-zinc-800" />
 
-      {/* ═══ LOVE STORY ═══ */}
-      <LoveStorySection 
-        story={invitation.loveStory || []} 
-        bgColor="bg-white" 
-        accentColor="text-[#D4AF37]" 
+      {/* Love Story */}
+      <LoveStorySection
+        story={invitation.loveStory || []}
+        bgColor="bg-white"
+        accentColor="text-[#D4AF37]"
         textColor="text-stone-800"
       />
 
-      {/* Video Embed */}
-      {(invitation as any).videoUrl && (
-        <section className="py-12 px-6 bg-zinc-50">
-          <AnimatedSection>
-            <div className="rounded-3xl overflow-hidden border border-[#D4AF37]/30 shadow-md h-[280px]">
-              <iframe 
-                width="100%" 
-                height="100%" 
-                frameBorder="0" 
-                style={{ border: 0 }} 
-                src={getEmbedUrl((invitation as any).videoUrl)}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen 
-                title="Wedding Video" 
-              />
-            </div>
-          </AnimatedSection>
-        </section>
-      )}
+      <GallerySection
+        photos={galleryPhotos}
+        bgColor="bg-white"
+        textColor="text-zinc-800"
+        borderColor="border-[#D4AF37]/20"
+        title="Captured Moments"
+      />
 
-      {/* Greeting */}
-      {galleryPhotos.length > 0 && (
-        <section className="py-16 px-8 bg-white text-center">
-          <AnimatedSection>
-            <h2 className="text-sm uppercase tracking-[0.3em] text-[#D4AF37] mb-8">Captured Moments</h2>
-          </AnimatedSection>
-          <div className="grid grid-cols-2 gap-1">
-            {galleryPhotos.map((src: string, idx: number) => (
-              <AnimatedSection key={idx} animation="scale" delay={`delay-${(idx + 1) * 100}`} className={idx === 0 ? 'col-span-2' : ''}>
-                <div className={`relative overflow-hidden group bg-zinc-100 ${idx === 0 ? 'h-[300px]' : 'h-[200px]'}`}>
-                  <Image src={src} alt={`Gallery ${idx + 1}`} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out" unoptimized />
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </section>
-      )}
+      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-zinc-900" textColor="text-[#D4AF37]" title="Our Story" />
 
       {/* Quotes */}
       <QuotesSection text={invitation.quotes || ''} bgColor="bg-stone-50" textColor="text-[#D4AF37]" />

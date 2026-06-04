@@ -112,6 +112,10 @@ model Invitation {
   aiRegenCount   Int       @default(0)
   qrEnabled      Boolean   @default(true)
   expiresAt      DateTime?
+  /// Kalimat pembuka undangan opsional (Bismillah, Om Swastyastu, dll.)
+  openingPhrase  String?
+  /// Gaya render kalimat pembuka: arabic-calligraphy | latin-elegant | none
+  openingStyle   String?   @default("none")
 
   // Relations
   user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)

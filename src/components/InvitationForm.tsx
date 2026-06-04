@@ -67,22 +67,24 @@ const musicOptions = [
 ];
 
 const layoutOptions: { value: Layout; label: string; bg: string; border: string; preview: string; category: 'klasik' | 'premium' }[] = [
-  { value: 'elegant-cream', label: 'Cream', bg: 'bg-[#f7f4ed]', border: 'border-[#eceae4]', preview: 'bg-[#1c1c1c]/10', category: 'klasik' },
-  { value: 'royal-blue', label: 'Royal Blue', bg: 'bg-[#e8f0fe]', border: 'border-blue-300', preview: 'bg-blue-200', category: 'klasik' },
-  { value: 'rose-garden', label: 'Rose Garden', bg: 'bg-[#fdf2f4]', border: 'border-pink-300', preview: 'bg-pink-200', category: 'klasik' },
-  { value: 'islamic-minimalist', label: 'Islamic Classic', bg: 'bg-[#fdfcf9]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/20', category: 'klasik' },
-  { value: 'islamic-midnight', label: 'Islamic Midnight', bg: 'bg-[#0a0f0d]', border: 'border-[#c5a059]', preview: 'bg-[#c5a059]/40', category: 'klasik' },
-  { value: 'islamic-arabesque', label: 'Islamic Arabesque', bg: 'bg-[#f0fdfa]', border: 'border-[#2dd4bf]', preview: 'bg-[#2dd4bf]/20', category: 'klasik' },
-  { value: 'golden-classic', label: 'Golden Classic', bg: 'bg-white', border: 'border-[#D4AF37]', preview: 'bg-[#D4AF37]/20', category: 'premium' },
-  { value: 'luxury-emerald', label: 'Emerald', bg: 'bg-[#042f2e]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/30', category: 'premium' },
-  { value: 'islamic-grace', label: 'Islamic Grace', bg: 'bg-[#1a2b23]', border: 'border-[#c5a059]', preview: 'bg-[#c5a059]/30', category: 'premium' },
-  { value: 'christian-elegant', label: 'Christian Elegant', bg: 'bg-[#f8f7f4]', border: 'border-rose-200', preview: 'bg-rose-100/50', category: 'premium' },
-  { value: 'hindu-mandala', label: 'Hindu Mandala', bg: 'bg-[#fff8f0]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/20', category: 'premium' },
-  { value: 'buddhist-zen', label: 'Buddhist Zen', bg: 'bg-[#fdfbf7]', border: 'border-[#a3b18a]', preview: 'bg-[#a3b18a]/20', category: 'premium' },
-  { value: 'confucian-oriental', label: 'Confucian Oriental', bg: 'bg-[#fffcf9]', border: 'border-[#8b0000]', preview: 'bg-[#8b0000]/20', category: 'premium' },
-  { value: 'premium-charcoal', label: 'Premium Charcoal', bg: 'bg-[#111111]', border: 'border-[#d4af37]', preview: 'bg-[#d4af37]/30', category: 'premium' },
-  { value: 'premium-sunda-3d', label: 'Premium Sunda 3D', bg: 'bg-[#F8F4E6]', border: 'border-[#4A5D23]', preview: 'bg-[#D4AF37]/30', category: 'premium' },
-  { value: 'premium-javanese', label: 'Javanese Classic', bg: 'bg-[#F8F5F0]', border: 'border-[#D4AF37]', preview: 'bg-[#8B5A2B]/30', category: 'premium' },
+  // ── Klasik (tersedia di semua tier) ──
+  { value: 'elegant-cream',    label: 'Ivory Bloom',       bg: 'bg-[#f7f4ed]', border: 'border-[#eceae4]',   preview: 'bg-[#1c1c1c]/10',    category: 'klasik' },
+  { value: 'royal-blue',       label: 'Azure Classic',     bg: 'bg-[#e8f0fe]', border: 'border-blue-300',     preview: 'bg-blue-200',         category: 'klasik' },
+  { value: 'rose-garden',      label: 'Blush Garden',      bg: 'bg-[#fdf2f4]', border: 'border-pink-300',     preview: 'bg-pink-200',         category: 'klasik' },
+  { value: 'sand-dunes',       label: 'Sand Dunes',        bg: 'bg-[#fdfcf9]', border: 'border-[#d4af37]',   preview: 'bg-[#d4af37]/20',     category: 'klasik' },
+  { value: 'midnight-velvet',  label: 'Midnight Velvet',   bg: 'bg-[#0a0f0d]', border: 'border-[#c5a059]',   preview: 'bg-[#c5a059]/40',     category: 'klasik' },
+  { value: 'arabesque-pattern',label: 'Arabesque Pattern', bg: 'bg-[#f0fdfa]', border: 'border-[#2dd4bf]',   preview: 'bg-[#2dd4bf]/20',     category: 'klasik' },
+  // ── Premium ──
+  { value: 'golden-classic',   label: 'Golden Classic',    bg: 'bg-white',     border: 'border-[#D4AF37]',   preview: 'bg-[#D4AF37]/20',     category: 'premium' },
+  { value: 'luxury-emerald',   label: 'Emerald Forest',    bg: 'bg-[#042f2e]', border: 'border-[#d4af37]',   preview: 'bg-[#d4af37]/30',     category: 'premium' },
+  { value: 'forest-grace',     label: 'Forest Grace',      bg: 'bg-[#1a2b23]', border: 'border-[#c5a059]',   preview: 'bg-[#c5a059]/30',     category: 'premium' },
+  { value: 'garden-chapel',    label: 'Garden Chapel',     bg: 'bg-[#f8f7f4]', border: 'border-rose-200',     preview: 'bg-rose-100/50',      category: 'premium' },
+  { value: 'mandala-fusion',   label: 'Mandala Fusion',    bg: 'bg-[#fff8f0]', border: 'border-[#d4af37]',   preview: 'bg-[#d4af37]/20',     category: 'premium' },
+  { value: 'zen-garden',       label: 'Zen Garden',        bg: 'bg-[#fdfbf7]', border: 'border-[#a3b18a]',   preview: 'bg-[#a3b18a]/20',     category: 'premium' },
+  { value: 'oriental-luxe',    label: 'Oriental Luxe',     bg: 'bg-[#fffcf9]', border: 'border-[#8b0000]',   preview: 'bg-[#8b0000]/20',     category: 'premium' },
+  { value: 'onyx-premium',     label: 'Onyx Premium',      bg: 'bg-[#111111]', border: 'border-[#d4af37]',   preview: 'bg-[#d4af37]/30',     category: 'premium' },
+  { value: 'premium-sunda-3d', label: 'Nusantara 3D',      bg: 'bg-[#F8F4E6]', border: 'border-[#4A5D23]',   preview: 'bg-[#D4AF37]/30',     category: 'premium' },
+  { value: 'batik-heritage',   label: 'Batik Heritage',    bg: 'bg-[#F8F5F0]', border: 'border-[#D4AF37]',   preview: 'bg-[#8B5A2B]/30',     category: 'premium' },
 ];
 
 const steps = [
@@ -94,9 +96,9 @@ const steps = [
 ];
 
 const tiers = [
-  { id: 'BASIC', name: 'Minimalist Plan', price: 'Rp 75.000', description: 'Sangat cocok untuk undangan minimalis yang elegan.', features: ['Hapus Watermark', '2 Foto Mempelai', '2 Foto Galeri', 'Aktif Selamanya', 'Semua Tema Klasik'], color: 'text-blue-500', bg: 'bg-blue-50' },
-  { id: 'PREMIUM', name: 'Premium Plan', price: 'Rp 150.000', description: 'Fitur lengkap untuk momen pernikahan yang tak terlupakan.', features: ['10 Foto Galeri', 'Love Story Section', 'Countdown Timer', 'Musik Latar Kustom', 'Akses Tema Klasik'], color: 'text-rose-500', bg: 'bg-rose-50' },
-  { id: 'ULTIMATE', name: 'Ultimate Plan', price: 'Rp 250.000', description: 'Justifikasi termewah dengan fitur manajemen tamu modern.', features: ['Akses Tema Premium', 'Sistem QR Check-in', 'Link Per Tamu', 'WA Blast Integration', 'Unlimited Galeri Foto'], color: 'text-amber-500', bg: 'bg-amber-50/50' },
+  { id: 'BASIC', name: 'Minimalist Plan', price: 'Rp 75.000', description: 'Sangat cocok untuk undangan minimalis yang elegan.', features: ['Hapus Watermark', '2 Foto Mempelai', '3 Foto Galeri', 'Aktif Selamanya', 'Semua Tema Klasik'], color: 'text-blue-500', bg: 'bg-blue-50' },
+  { id: 'PREMIUM', name: 'Premium Plan', price: 'Rp 150.000', description: 'Fitur lengkap untuk momen pernikahan yang tak terlupakan.', features: ['6 Foto Galeri', 'Love Story Section', 'Countdown Timer', 'Musik Latar Kustom', 'Akses Tema Klasik'], color: 'text-rose-500', bg: 'bg-rose-50' },
+  { id: 'ULTIMATE', name: 'Ultimate Plan', price: 'Rp 250.000', description: 'Justifikasi termewah dengan fitur manajemen tamu modern.', features: ['Akses Tema Premium', 'Sistem QR Check-in', 'Link Per Tamu', 'WA Blast Integration', '10 Foto Galeri', 'Video Embed'], color: 'text-amber-500', bg: 'bg-amber-50/50' },
 ];
 
 export default function InvitationForm() {
@@ -566,28 +568,30 @@ export default function InvitationForm() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8"><div className="space-y-4"><h3 className="font-bold text-xs uppercase tracking-widest flex items-center gap-2"><User className="h-3 w-3 text-blue-400" /> Mempelai Pria</h3><div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-4 rounded-3xl min-h-[180px] flex items-center justify-center">{store.groomPhotoUrl ? (<div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-md"><Image src={store.groomPhotoUrl} alt="G" fill className="object-cover" unoptimized /><button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setGroomPhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button></div>) : (<UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-4 py-2 rounded-lg', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setGroomPhotoUrl(res[0].ufsUrl); }} />)}</div></div><div className="space-y-4"><h3 className="font-bold text-xs uppercase tracking-widest flex items-center gap-2"><User className="h-3 w-3 text-pink-400" /> Mempelai Wanita</h3><div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-4 rounded-3xl min-h-[180px] flex items-center justify-center">{store.bridePhotoUrl ? (<div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-md"><Image src={store.bridePhotoUrl} alt="B" fill className="object-cover" unoptimized /><button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setBridePhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button></div>) : (<UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-4 py-2 rounded-lg', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setBridePhotoUrl(res[0].ufsUrl); }} />)}</div></div></div>
 
-                        {hasPremium && (
+                        <div className="space-y-4">
+                          <h3 className="font-bold text-sm flex items-center gap-2">Galeri Foto {isBasic && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 3)</span>} {isPremium && !isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 6)</span>} {isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 10)</span>}</h3>
                           <div className="space-y-4">
-                            <h3 className="font-bold text-sm flex items-center gap-2">Galeri Foto {isPremium && !isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 3)</span>} {isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Unlimited)</span>}</h3>
-                            <div className="space-y-4">
-                              {(isPremium && !isUltimate && store.photoUrls.length >= 3) ? (
-                                <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
-                                   <AlertCircle className="h-4 w-4" /> Batas galeri Paket Premium tercapai (3 foto).
-                                </div>
-                              ) : (isUltimate && store.photoUrls.length >= 7) ? (
-                                <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
-                                   <AlertCircle className="h-4 w-4" /> Batas galeri Paket Ultimate tercapai (7 foto).
-                                </div>
-                              ) : (
-                                <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-8 rounded-3xl">
-                                  <UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-widest px-8 py-2.5 rounded-xl', container: 'p-4 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res) res.forEach(f => store.addPhotoUrl(f.ufsUrl)); }} />
-                                </div>
-                              )}
+                            {(isBasic && store.photoUrls.length >= 3) ? (
+                              <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
+                                 <AlertCircle className="h-4 w-4" /> Batas galeri Paket Basic tercapai (3 foto).
+                              </div>
+                            ) : (isPremium && !isUltimate && store.photoUrls.length >= 6) ? (
+                              <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
+                                 <AlertCircle className="h-4 w-4" /> Batas galeri Paket Premium tercapai (6 foto).
+                              </div>
+                            ) : (isUltimate && store.photoUrls.length >= 10) ? (
+                              <div className="bg-amber-50 p-4 rounded-xl text-[10px] text-amber-600 flex items-center gap-2 border border-amber-100">
+                                 <AlertCircle className="h-4 w-4" /> Batas galeri Paket Ultimate tercapai (10 foto).
+                              </div>
+                            ) : (
+                              <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-8 rounded-3xl">
+                                <UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-widest px-8 py-2.5 rounded-xl', container: 'p-4 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res) res.forEach(f => store.addPhotoUrl(f.ufsUrl)); }} />
+                              </div>
+                            )}
                               <div className="grid grid-cols-4 gap-2 mt-4">{store.photoUrls.map((u, i) => (<div key={i} className="relative aspect-square rounded-xl overflow-hidden border shadow-sm group"><Image src={u} alt="G" fill className="object-cover group-hover:scale-110 transition-transform" unoptimized /><button className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" onClick={() => store.removePhotoUrl(u)}><Trash2 className="h-3.5 w-3.5 text-white" /></button></div>))}</div>
                             </div>
                           </div>
-                        )}
-                      </div>
+                        </div>
                       </div>
                     </motion.div>
               )}
@@ -598,7 +602,48 @@ export default function InvitationForm() {
                       <div className="text-center mb-10"><Sparkles className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Pengaturan Akhir</h2></div>
                       <div className="space-y-10">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Select label="Nuansa Bahasa" options={toneOptions} value={store.stylePreferences.tone} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, tone: e.target.value as any })} /><Select label="Bahasa" options={languageOptions} value={store.stylePreferences.language} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, language: e.target.value as any })} /></div>
-                        
+
+                        {/* Opening Phrase */}
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">
+                              Kalimat Pembuka <span className="text-stone-300 font-normal">(Opsional)</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={store.stylePreferences.openingPhrase || ''}
+                              onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, openingPhrase: e.target.value })}
+                              placeholder="Contoh: بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ atau Om Swastyastu..."
+                              className="w-full px-5 py-4 rounded-2xl bg-[#fcfbf8] border border-[#eceae4] focus:ring-1 focus:ring-stone-300 transition-all text-stone-800 placeholder:text-stone-300 text-sm"
+                            />
+                            <p className="text-[10px] text-stone-400 mt-2 ml-1">Akan ditampilkan di bagian paling atas undangan dengan gaya yang dipilih.</p>
+                          </div>
+                          {(store.stylePreferences.openingPhrase || '') && (
+                            <div className="grid grid-cols-3 gap-3">
+                              {([
+                                { id: 'none', label: 'Tanpa Gaya', icon: '—' },
+                                { id: 'arabic-calligraphy', label: 'Kaligrafi Arab', icon: '𝓐' },
+                                { id: 'latin-elegant', label: 'Teks Elegan', icon: '❦' },
+                              ] as const).map((opt) => (
+                                <button
+                                  key={opt.id}
+                                  type="button"
+                                  onClick={() => store.setStylePreferences({ ...store.stylePreferences, openingStyle: opt.id })}
+                                  className={`p-3 rounded-2xl text-center text-[10px] font-bold transition-all border ${
+                                    (store.stylePreferences.openingStyle || 'none') === opt.id
+                                      ? 'bg-[#1c1c1c] text-white border-[#1c1c1c]'
+                                      : 'bg-white text-stone-400 border-[#eceae4] hover:border-stone-300'
+                                  }`}
+                                >
+                                  <span className="block text-xl mb-1">{opt.icon}</span>
+                                  {opt.label}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+
                         {hasPremium && (
                           <div className="space-y-3">
                             <div className="relative">

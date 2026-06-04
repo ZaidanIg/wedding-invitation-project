@@ -25,6 +25,9 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 
 /* ── Falling Gold Dust Particles ── */
@@ -527,6 +530,15 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
       {/* Gold Dust background particles when invitation is opened */}
       {isOpened && <GoldDustParticles />}
 
+      {isOpened && (
+        <OpeningPhraseSection
+          phrase={invitation.openingPhrase}
+          style={invitation.openingStyle}
+          textColorClass="text-[#d4af37]"
+          bgClass="bg-[#111111] border-b border-[#d4af37]/20"
+        />
+      )}
+
       {/* Section 1: Hero Cover */}
       <section id="home" className="relative w-full h-[100vh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden pb-20">
         <div className="absolute inset-0">
@@ -756,33 +768,17 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
         </AnimatedSection>
       </section>
 
-      {/* Section 6: Photo Carousel */}
-      <section className="py-12 bg-[#111111]">
-        <PhotoCarousel 
-          photos={[heroPhoto, photo2, photo3]} 
-          className="h-[380px] sm:h-[480px]" 
-        />
-      </section>
+      {/* Video Embed */}
+      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#161616]" textColor="text-[#d4af37]" title="Wedding Video" />
 
-      {/* Section 6.5: Video Embed */}
-      {(invitation as any).videoUrl && (
-        <section className="py-12 px-6 bg-[#161616]">
-          <AnimatedSection>
-            <div className="rounded-3xl overflow-hidden border border-[#d4af37]/30 shadow-2xl h-[280px]">
-              <iframe 
-                width="100%" 
-                height="100%" 
-                frameBorder="0" 
-                style={{ border: 0 }} 
-                src={getEmbedUrl((invitation as any).videoUrl)}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen 
-                title="Wedding Video" 
-              />
-            </div>
-          </AnimatedSection>
-        </section>
-      )}
+      {/* Gallery Section */}
+      <GallerySection
+        photos={galleryPhotos}
+        bgColor="bg-[#111111]"
+        textColor="text-[#d4af37]"
+        borderColor="border-[#d4af37]"
+        title="Our Gallery"
+      />
 
       {/* Section 7: Ceremony & Reception Details */}
       <section className="py-24 px-8 bg-[#161616] text-center relative overflow-hidden">
