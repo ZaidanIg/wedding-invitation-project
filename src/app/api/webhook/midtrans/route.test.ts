@@ -1,6 +1,6 @@
-import { prisma } from '../../../lib/prisma';
+import { prisma } from '../../../../lib/prisma';
 import crypto from 'crypto';
-import { sendInvoiceEmail } from '../../../lib/email';
+import { sendInvoiceEmail } from '../../../../lib/email';
 
 // Provide globals for Next.js Web API in Node (Jest)
 global.Request = class Request {
@@ -31,7 +31,7 @@ jest.mock('next/server', () => {
 import { POST } from './route';
 
 // Mock Dependencies
-jest.mock('../../../lib/prisma', () => ({
+jest.mock('../../../../lib/prisma', () => ({
   prisma: {
     paymentWebhook: {
       findUnique: jest.fn(),
@@ -59,8 +59,8 @@ jest.mock('../../../lib/prisma', () => ({
 // Now wire up $transaction to pass the prisma mock itself
 (prisma.$transaction as jest.Mock).mockImplementation((cb) => cb(prisma));
 
-jest.mock('../../../lib/email', () => ({
-  sendInvoiceEmail: jest.fn(),
+jest.mock('../../../../lib/email', () => ({
+  sendInvoiceEmail: jest.fn().mockResolvedValue(true),
 }));
 
 describe('Midtrans Webhook POST API', () => {

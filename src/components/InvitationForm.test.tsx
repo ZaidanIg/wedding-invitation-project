@@ -121,7 +121,7 @@ describe('InvitationForm Component', () => {
 
     it('should show layout options correctly', () => {
       render(<InvitationForm />);
-      expect(screen.getByText(/Islamic Classic/i)).toBeInTheDocument();
+      expect(screen.getByText(/Ivory Bloom/i)).toBeInTheDocument();
     });
 
     it('should transition to step 2 when "Lanjut Ke Pasangan" is clicked', () => {
