@@ -29,6 +29,9 @@ import {
   DigitalGiftSection,
   IconMapper,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 
 function GoldPeonyCorner({ className = "" }: { className?: string }) {
@@ -252,6 +255,12 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
       </AnimatePresence>
 
       <div className="relative z-0">
+        <OpeningPhraseSection
+          phrase={invitation.openingPhrase}
+          style={invitation.openingStyle}
+          textColorClass="text-[#8B0000]"
+          bgClass="bg-[#fffcf5] border-b border-[#FFD700]/30"
+        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
@@ -453,45 +462,17 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
           </div>
         </section>
 
-        {/* Gallery Section */}
-      {/* Video Embed */}
-      {(invitation as any).videoUrl && (
-        <section className="py-12 px-6 bg-[#fffcf9] relative z-10">
-          <AnimatedSection>
-            <div className="rounded-3xl overflow-hidden border border-[#8b0000]/30 shadow-xl h-[280px]">
-              <iframe 
-                width="100%" 
-                height="100%" 
-                frameBorder="0" 
-                style={{ border: 0 }} 
-                src={getEmbedUrl((invitation as any).videoUrl)}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen 
-                title="Wedding Video" 
-              />
-            </div>
-          </AnimatedSection>
-        </section>
-      )}
+        {/* Video Embed */}
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#fffcf9]" textColor="text-[#8B0000]" title="Wedding Video" />
 
-        {galleryPhotos.length > 0 && (
-          <section id="gallery" className="py-40 px-4 bg-[#fffcf5] relative">
-             <AnimatedSection className="text-center mb-24">
-               <Camera className="mx-auto text-[#FFD700] mb-6 opacity-60 animate-pulse" size={48} />
-               <p className="text-[10px] uppercase tracking-[0.5em] text-[#8B0000] font-black italic">Oriental Memories</p>
-             </AnimatedSection>
-             <div className="grid grid-cols-2 gap-4">
-                {galleryPhotos.map((src: string, idx: number) => (
-                  <AnimatedSection key={idx} animation="scale" className={idx === 0 ? 'col-span-2' : ''}>
-                    <div className={`relative overflow-hidden rounded-[3.5rem] shadow-3xl border-4 border-white group ${idx === 0 ? 'h-80' : 'h-64'}`}>
-                       <Image src={src} alt="Gallery" fill className="object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[0.2] group-hover:grayscale-0" unoptimized />
-                       <div className="absolute inset-0 bg-[#8B0000]/10 group-hover:opacity-0 transition-opacity" />
-                    </div>
-                  </AnimatedSection>
-                ))}
-             </div>
-          </section>
-        )}
+        {/* Gallery Section */}
+        <GallerySection
+          photos={galleryPhotos}
+          bgColor="bg-[#fffcf5]"
+          textColor="text-[#8B0000]"
+          borderColor="border-[#FFD700]"
+          title="Oriental Memories"
+        />
 
         {/* Ultimate: VIP Oriental Management */}
         <TierGate 

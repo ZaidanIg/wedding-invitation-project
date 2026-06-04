@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { successResponse, errorResponse } from '@/lib/api-response';
+import { handleServiceError } from '@/lib/errors';
 import { prisma } from '@/lib/prisma';
 import { utapi } from '@/lib/utapi';
 
@@ -111,9 +113,7 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error('[CRON Cleanup Error]:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' }, 
-      { status: 500 }
-    );
+    const { message, status, code } = handleServiceError(error);
+    return errorResponse(message, status, code);
   }
 }

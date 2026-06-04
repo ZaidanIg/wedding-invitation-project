@@ -660,13 +660,14 @@ export function resolvePhotos(invitation: any) {
   const groomPhoto = invitation.groomPhotoUrl || photos[0];
   const bridePhoto = invitation.bridePhotoUrl || photos[0];
   
-  // Enforce tier-based gallery photos limit
+  // Enforce tier-based gallery photos limit (synced with service.ts & UI)
   const tier = invitation.tier || 'BASIC';
-  let limit = 0;
-  if (tier === 'PREMIUM') limit = 3;
-  else if (tier === 'ULTIMATE') limit = 7;
+  let galleryLimit = 0;
+  if (tier === 'BASIC') galleryLimit = 3;
+  else if (tier === 'PREMIUM') galleryLimit = 6;
+  else if (tier === 'ULTIMATE') galleryLimit = 10;
   
-  const galleryPhotos = photos.slice(0, limit);
+  const galleryPhotos = photos.slice(0, galleryLimit);
   
   return {
     photos,
@@ -1089,5 +1090,194 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
         ))}
       </div>
     </div>
+  );
+}
+/* ── Opening Phrase Section ── */
+// Renders the customizable opening phrase (Bismillah, Om Swastyastu, etc.)
+// at the very top of any invitation layout.
+export function OpeningPhraseSection({
+  phrase,
+  style = 'none',
+  textColorClass = 'text-white',
+  bgClass = 'bg-black/20',
+}: {
+  phrase?: string | null;
+  style?: string | null;
+  textColorClass?: string;
+  bgClass?: string;
+}) {
+  if (!phrase || style === 'none' || !style) return null;
+
+  if (style === 'arabic-calligraphy') {
+    return (
+      <>
+        {/* Arabic Google Font loaded inline */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
+          rel="stylesheet"
+        />
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
+          className={`w-full py-8 px-6 text-center relative overflow-hidden ${bgClass}`}
+        >
+          {/* Decorative lines */}
+          <div className="flex items-center justify-center gap-4 mb-3 opacity-40">
+            <div className="h-px w-16 bg-current" />
+            <div className="w-1.5 h-1.5 rounded-full bg-current" />
+            <div className="h-px w-16 bg-current" />
+          </div>
+
+          <p
+            className={`text-3xl sm:text-4xl leading-[2] tracking-wider ${textColorClass}`}
+            style={{ fontFamily: "'Amiri', serif", direction: 'rtl' }}
+          >
+            {phrase}
+          </p>
+
+          <div className="flex items-center justify-center gap-4 mt-3 opacity-40">
+            <div className="h-px w-16 bg-current" />
+            <div className="w-1.5 h-1.5 rounded-full bg-current" />
+            <div className="h-px w-16 bg-current" />
+          </div>
+        </motion.div>
+      </>
+    );
+  }
+
+  // latin-elegant
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1, ease: 'easeOut' }}
+      className={`w-full py-8 px-6 text-center relative overflow-hidden ${bgClass}`}
+    >
+      <div className="flex items-center justify-center gap-4 mb-3 opacity-30">
+        <div className="h-px w-20 bg-current" />
+        <Heart className={`h-3 w-3 ${textColorClass}`} />
+        <div className="h-px w-20 bg-current" />
+      </div>
+      <p
+        className={`text-base sm:text-lg font-serif italic tracking-wide leading-relaxed ${textColorClass}`}
+      >
+        {phrase}
+      </p>
+      <div className="flex items-center justify-center gap-4 mt-3 opacity-30">
+        <div className="h-px w-20 bg-current" />
+        <Heart className={`h-3 w-3 ${textColorClass}`} />
+        <div className="h-px w-20 bg-current" />
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── Gallery Section (Tier-Aware) ── */
+// Automatically respects BASIC (3), PREMIUM (6), ULTIMATE (10) photo limits.
+export function GallerySection({
+  photos,
+  bgColor = 'bg-white',
+  textColor = 'text-stone-800',
+  borderColor = 'border-stone-200',
+  title = 'Our Moments',
+}: {
+  photos: string[];
+  bgColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  title?: string;
+}) {
+  if (!photos || photos.length === 0) return null;
+
+  return (
+    <section className={`py-14 px-6 ${bgColor} text-center`}>
+      <AnimatedSection animation="scale">
+        <div className={`inline-flex p-3 rounded-full border ${borderColor} mb-4`}>
+          <Camera className={`h-5 w-5 ${textColor} opacity-60`} />
+        </div>
+        <h2 className={`text-2xl font-display font-bold ${textColor} mb-8`}>{title}</h2>
+      </AnimatedSection>
+
+      <div className="grid grid-cols-2 gap-3">
+        {photos.map((src: string, idx: number) => (
+          <AnimatedSection
+            key={idx}
+            animation="scale"
+            delay={`delay-${(idx + 1) * 100}`}
+            className={idx === 0 && photos.length > 1 ? 'col-span-2' : ''}
+          >
+            <div
+              className={`relative rounded-2xl overflow-hidden shadow-sm group border ${borderColor} ${
+                idx === 0 && photos.length > 1 ? 'h-[260px]' : 'h-[180px]'
+              }`}
+            >
+              <Image
+                src={src}
+                alt={`Momen ${idx + 1}`}
+                fill
+                className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                unoptimized
+              />
+            </div>
+          </AnimatedSection>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── Video Embed Section (ULTIMATE Only) ── */
+// Safely renders a YouTube/Instagram/TikTok iframe.
+export function VideoEmbedSection({
+  videoUrl,
+  bgColor = 'bg-stone-900',
+  textColor = 'text-white',
+  title = 'Our Story',
+}: {
+  videoUrl?: string | null;
+  bgColor?: string;
+  textColor?: string;
+  title?: string;
+}) {
+  const { tier } = useTier();
+  const currentRank = TIER_RANK[tier] || 0;
+  const requiredRank = TIER_RANK['ULTIMATE'];
+
+  if (currentRank < requiredRank) return null;
+  if (!videoUrl) return null;
+
+  // Convert YouTube watch URLs to embed format
+  let embedUrl = videoUrl;
+  const ytMatch = videoUrl.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/
+  );
+  if (ytMatch) {
+    embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&modestbranding=1`;
+  }
+  // Instagram Reels already use /embed/ URLs
+
+  return (
+    <section className={`py-16 px-4 ${bgColor} text-center`}>
+      <AnimatedSection>
+        <div className={`inline-flex p-3 rounded-full bg-white/10 mb-4`}>
+          <Camera className={`h-5 w-5 ${textColor} opacity-80`} />
+        </div>
+        <h2 className={`text-2xl font-display font-bold ${textColor} mb-8`}>{title}</h2>
+      </AnimatedSection>
+      <AnimatedSection delay="delay-200">
+        <div className="relative w-full max-w-sm mx-auto rounded-2xl overflow-hidden shadow-2xl border border-white/10" style={{ paddingBottom: '56.25%', height: 0 }}>
+          <iframe
+            src={embedUrl}
+            title={title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="absolute top-0 left-0 w-full h-full rounded-2xl"
+            loading="lazy"
+          />
+        </div>
+      </AnimatedSection>
+    </section>
   );
 }

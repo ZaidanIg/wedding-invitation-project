@@ -21,6 +21,9 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 
 interface LayoutProps {
@@ -69,6 +72,12 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
 
   return (
     <div className="w-full max-w-lg mx-auto bg-[#e8f0fe] text-slate-800 font-sans overflow-hidden relative shadow-2xl">
+      <OpeningPhraseSection
+        phrase={invitation.openingPhrase}
+        style={invitation.openingStyle}
+        textColorClass="text-blue-900"
+        bgClass="bg-[#d0e1fd]"
+      />
       {/* Hero */}
       <section className="relative w-full h-[100vh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
@@ -264,24 +273,15 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
       {/* Digital Gift */}
       <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-white" textColor="text-blue-900" />
 
-      {/* Gallery */}
-      {galleryPhotos.length > 0 && (
-        <section className="py-14 px-8 bg-[#e8f0fe] text-center">
-          <AnimatedSection animation="scale">
-            <div className="inline-flex p-3 rounded-full bg-blue-100 border border-blue-200 mb-4"><Camera className="h-5 w-5 text-blue-500" /></div>
-            <h2 className="text-2xl font-display font-bold text-blue-800 mb-8">Gallery</h2>
-          </AnimatedSection>
-          <div className="grid grid-cols-2 gap-3">
-            {galleryPhotos.map((src: string, idx: number) => (
-              <AnimatedSection key={idx} animation="scale" delay={`delay-${(idx + 1) * 100}`} className={idx === 0 ? 'col-span-2' : ''}>
-                <div className={`relative rounded-2xl overflow-hidden shadow-md border-2 border-blue-200/50 group ${idx === 0 ? 'h-[250px]' : 'h-[180px]'}`}>
-                  <Image src={src} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" unoptimized />
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </section>
-      )}
+      <GallerySection
+        photos={galleryPhotos}
+        bgColor="bg-[#e8f0fe]"
+        textColor="text-blue-800"
+        borderColor="border-blue-200"
+        title="Gallery"
+      />
+
+      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-slate-900" textColor="text-white" title="Our Story" />
 
       {/* Quotes */}
       <QuotesSection text={invitation.quotes || ''} bgColor="bg-slate-50" textColor="text-blue-900" />

@@ -32,8 +32,11 @@ import {
   TierGate,
   DigitalGiftSection,
   QuotesSection,
-  WishesSection,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
+  WishesSection,
 } from './shared';
 
 const StarField = () => {
@@ -141,6 +144,12 @@ export default function IslamicMidnight({ invitation, isPreview = false }: { inv
       </AnimatePresence>
 
       <div className="relative">
+        <OpeningPhraseSection
+          phrase={invitation.openingPhrase}
+          style={invitation.openingStyle}
+          textColorClass="text-[#c5a059]"
+          bgClass="bg-[#0a0f0d] border-b border-[#c5a059]/20"
+        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6">
            <div className="absolute inset-0">
@@ -244,24 +253,15 @@ export default function IslamicMidnight({ invitation, isPreview = false }: { inv
         </section>
 
         {/* Gallery Section */}
-        {galleryPhotos.length > 0 && (
-          <section id="gallery" className="py-32 px-4 text-center bg-[#0d1411]">
-             <AnimatedSection className="mb-16">
-                <h2 className="text-3xl font-display font-bold text-white mb-4 italic">Captured Moments</h2>
-                <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-[#c5a059] to-transparent mx-auto" />
-             </AnimatedSection>
-             
-             <div className="columns-2 gap-2 space-y-2">
-                {galleryPhotos.map((src: string, idx: number) => (
-                  <AnimatedSection key={idx} animation="scale" className="break-inside-avoid">
-                     <div className="relative overflow-hidden rounded-2xl border border-white/10">
-                        <Image src={src} alt="Gallery" width={400} height={400} className="w-full h-auto object-cover" unoptimized />
-                     </div>
-                  </AnimatedSection>
-                ))}
-             </div>
-          </section>
-        )}
+        <GallerySection
+          photos={galleryPhotos}
+          bgColor="bg-[#0d1411]"
+          textColor="text-white"
+          borderColor="border-[#c5a059]"
+          title="Captured Moments"
+        />
+
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#0a0f0d]" textColor="text-[#c5a059]" title="Our Story" />
 
         {/* RSVP & Wishes */}
         <section id="wishes" className="py-32 px-8">

@@ -22,6 +22,9 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
 } from './shared';
 
 interface LayoutProps {
@@ -82,6 +85,12 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
 
   return (
     <div className="w-full max-w-lg mx-auto bg-[#fdf2f4] text-rose-950 font-sans overflow-hidden relative shadow-2xl">
+      <OpeningPhraseSection
+        phrase={invitation.openingPhrase}
+        style={invitation.openingStyle}
+        textColorClass="text-rose-800"
+        bgClass="bg-[#f9e8ec]"
+      />
       {/* Hero */}
       <section className="relative w-full h-[100vh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
@@ -249,24 +258,15 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
       {/* Digital Gift */}
       <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-white" textColor="text-rose-800" />
 
-      {/* Gallery */}
-      {galleryPhotos.length > 0 && (
-        <section className="py-14 px-8 bg-[#fdf2f4] text-center">
-          <AnimatedSection animation="scale">
-            <div className="inline-flex p-3 rounded-full bg-pink-100 border border-pink-200 mb-4"><Camera className="h-5 w-5 text-rose-500" /></div>
-            <h2 className="text-2xl font-display font-bold text-rose-800 mb-8">Our Moments</h2>
-          </AnimatedSection>
-          <div className="grid grid-cols-2 gap-3">
-            {galleryPhotos.map((src: string, idx: number) => (
-              <AnimatedSection key={idx} animation="scale" delay={`delay-${(idx + 1) * 100}`} className={idx === 0 ? 'col-span-2' : ''}>
-                <div className={`relative overflow-hidden shadow-md group border-2 border-white ${idx === 0 ? 'h-[250px] rounded-3xl' : 'h-[180px] rounded-2xl'}`}>
-                  <Image src={src} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out" unoptimized />
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </section>
-      )}
+      <GallerySection
+        photos={galleryPhotos}
+        bgColor="bg-[#fdf2f4]"
+        textColor="text-rose-800"
+        borderColor="border-pink-200"
+        title="Our Moments"
+      />
+
+      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-rose-950" textColor="text-white" title="Our Story" />
 
       {/* Quotes */}
       <QuotesSection text={invitation.quotes || ''} bgColor="bg-white" textColor="text-rose-900" />
