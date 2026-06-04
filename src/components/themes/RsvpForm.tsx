@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { showToast } from '@/components/ui/Toast';
 import { Heart, Send, Check, X, QrCode } from 'lucide-react';
@@ -26,6 +26,33 @@ export default function RsvpForm({ slug, tier, qrEnabled, initialSubmitted, init
   const [isSubmitted, setIsSubmitted] = useState(initialSubmitted || false);
   const [guestId, setGuestId] = useState<string | null>(initialGuestId || null);
 
+  // Check localStorage and cookies on mount to maximize Next.js static caching
+  // by offloading state to the client
+  useEffect(() => {
+    // 1. Check LocalStorage
+    const localData = localStorage.getItem(`sahinaja_rsvp_${slug}`);
+    if (localData) {
+      try {
+        const parsed = JSON.parse(localData);
+        if (parsed && parsed.guestId) {
+          setIsSubmitted(true);
+          setGuestId(parsed.guestId);
+          setStatus(parsed.status);
+          return;
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // 2. Check document.cookie as fallback
+    const match = document.cookie.match(new RegExp(`(^| )rsvp_submitted_${slug}=([^;]+)`));
+    if (match) {
+      setIsSubmitted(true);
+      setGuestId(match[2]);
+    }
+  }, [slug]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!status || !name.trim()) return;
@@ -49,6 +76,15 @@ export default function RsvpForm({ slug, tier, qrEnabled, initialSubmitted, init
       
       if (data.data?.id) {
         setGuestId(data.data.id);
+        // Save to localStorage to persist client-side without SSR opting
+        try {
+          localStorage.setItem(`sahinaja_rsvp_${slug}`, JSON.stringify({
+            guestId: data.data.id,
+            status,
+          }));
+        } catch (e) {
+          // ignore
+        }
       }
       
       setIsSubmitted(true);

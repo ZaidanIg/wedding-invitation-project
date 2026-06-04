@@ -5,6 +5,7 @@
 
 import { prisma } from '@/lib/prisma';
 import type { ScheduleItem, LoveStoryItem, DigitalGiftItem } from '@/types';
+import { unstable_cache } from 'next/cache';
 
 const INVITATION_RELATIONS = {
   _count: { select: { guests: true } },
@@ -130,17 +131,31 @@ export const invitationRepository = {
   },
 
   async findById(id: string) {
-    return prisma.invitation.findUnique({
-      where: { id },
-      include: INVITATION_RELATIONS,
-    });
+    const getCached = unstable_cache(
+      async (invitationId: string) => {
+        return prisma.invitation.findUnique({
+          where: { id: invitationId },
+          include: INVITATION_RELATIONS,
+        });
+      },
+      [`invitation-${id}`],
+      { tags: [`invitation-${id}`] }
+    );
+    return getCached(id);
   },
 
   async findBySlug(slug: string) {
-    return prisma.invitation.findUnique({
-      where: { slug },
-      include: INVITATION_RELATIONS,
-    });
+    const getCached = unstable_cache(
+      async (invitationSlug: string) => {
+        return prisma.invitation.findUnique({
+          where: { slug: invitationSlug },
+          include: INVITATION_RELATIONS,
+        });
+      },
+      [`invitation-slug-${slug}`],
+      { tags: [`invitation-${slug}`] } // We use the same tag prefix for easy invalidation
+    );
+    return getCached(slug);
   },
 
   /**

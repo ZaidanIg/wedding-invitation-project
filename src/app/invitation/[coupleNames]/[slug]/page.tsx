@@ -3,7 +3,6 @@ import { notFound, redirect } from 'next/navigation';
 import { invitationService } from '@/modules/invitation/server/service';
 import { invitationMapper } from '@/modules/invitation/server/mapper';
 import { auth } from '@/lib/auth';
-import { cookies } from 'next/headers';
 import InvitationPreview from '@/components/themes/InvitationPreview';
 import RsvpForm from '@/components/themes/RsvpForm';
 import type { Invitation } from '@/types';
@@ -110,15 +109,6 @@ export default async function InvitationPage({ params, searchParams }: PageProps
 
 
 
-  const cookieStore = await cookies();
-  const rsvpCookie = cookieStore.get(`rsvp_submitted_${slug}`);
-  const rsvpGuestId = rsvpCookie?.value || null;
-
-  let rsvpSubmitted = false;
-  let rsvpStatus = null;
-  let rsvpName = '';
-  let rsvpPhone = '';
-
   // Serialize for client components using the mapper
   // v1.2: mapper reconstructs photoUrls/schedule/loveStory/digitalGifts from relations
   const mapped = invitationMapper.toResponse(invitation as Record<string, unknown>);
@@ -129,25 +119,15 @@ export default async function InvitationPage({ params, searchParams }: PageProps
     updatedAt: g.updatedAt.toISOString(),
   }));
 
-  if (rsvpGuestId) {
-    const matchedGuest = guests.find((g) => g.id === rsvpGuestId);
-    if (matchedGuest) {
-      rsvpSubmitted = true;
-      rsvpStatus = matchedGuest.rsvpStatus;
-      rsvpName = matchedGuest.name;
-      rsvpPhone = matchedGuest.phone || '';
-    }
-  }
-
   const serialized: Invitation = {
     ...mapped,
     tier: mapped.tier as import('@/types').Tier,
     guests,
-    rsvpSubmitted,
-    rsvpGuestId,
-    rsvpStatus: rsvpStatus as any,
-    rsvpName,
-    rsvpPhone,
+    rsvpSubmitted: false, // Handled client-side
+    rsvpGuestId: null,    // Handled client-side
+    rsvpStatus: null,     // Handled client-side
+    rsvpName: '',         // Handled client-side
+    rsvpPhone: '',        // Handled client-side
   };
 
   const showRsvp = serialized.tier !== 'BASIC' && serialized.tier !== 'DRAFT';

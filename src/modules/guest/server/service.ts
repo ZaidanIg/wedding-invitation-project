@@ -9,9 +9,17 @@ import { guestRepository } from './repository';
 import { submitRsvpSchema, checkinSchema, submitAttendanceSchema } from './validators';
 import { guestMapper } from './mapper';
 import type { ZodError } from 'zod';
+import { revalidateTag } from 'next/cache';
 
 function formatZodError(error: any): string {
   return error.errors.map((e: any) => e.message).join(', ');
+}
+
+function invalidateInvitationCache(id: string, slug?: string | null) {
+  revalidateTag(`invitation-${id}`);
+  if (slug) {
+    revalidateTag(`invitation-${slug}`);
+  }
 }
 
 export const guestService = {
@@ -61,6 +69,7 @@ export const guestService = {
             attendees: attendees ?? guestByCookie.attendees,
           }
         });
+        invalidateInvitationCache(invitation.id, invitation.slug);
         return guestMapper.toResponse(updated);
       }
     }
@@ -99,6 +108,7 @@ export const guestService = {
           attendees: attendees ?? existingGuest.attendees,
         }
       });
+      invalidateInvitationCache(invitation.id, invitation.slug);
       return guestMapper.toResponse(updated);
     }
 
@@ -113,6 +123,7 @@ export const guestService = {
       isVip: parsed.data.isVip,
     });
 
+    invalidateInvitationCache(invitation.id, invitation.slug);
     return guestMapper.toResponse(guest);
   },
 
@@ -168,6 +179,7 @@ export const guestService = {
     }
 
     const updated = await guestRepository.markCheckedIn(parsed.data.guestId);
+    invalidateInvitationCache(guest.invitationId); // We don't have slug easily here, but id is enough if backend is doing id based
     return guestMapper.toResponse(updated);
   },
 
@@ -216,6 +228,7 @@ export const guestService = {
         }
       });
 
+      invalidateInvitationCache(invitation.id, invitation.slug);
       return guestMapper.toResponse(updated);
     }
 
@@ -233,6 +246,7 @@ export const guestService = {
       }
     });
 
+    invalidateInvitationCache(invitation.id, invitation.slug);
     return guestMapper.toResponse(newGuest);
   },
 };
