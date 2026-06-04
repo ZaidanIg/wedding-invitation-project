@@ -67,9 +67,9 @@ export const sendVerificationCodeEmail = async (email: string, code: string) => 
     const info = await transporter.sendMail(mailOptions);
     console.log('Verification code email sent: %s', info.messageId);
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error sending verification code email:', error);
-    return false;
+    throw new Error(`SMTP Error: ${error.message || 'Unknown SMTP Error'}`);
   }
 };
 

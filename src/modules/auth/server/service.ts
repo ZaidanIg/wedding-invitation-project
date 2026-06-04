@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { ValidationError, ConflictError, NotFoundError } from '@/lib/errors';
+import { ValidationError, ConflictError, NotFoundError, AppError } from '@/lib/errors';
 import { authRepository } from './repository';
 import { sendCodeSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from './validators';
 import { sendVerificationCodeEmail, sendPasswordResetEmail } from '@/lib/email';
@@ -38,10 +38,10 @@ export const authService = {
       expires,
     });
 
-    // Send email
-    const emailSent = await sendVerificationCodeEmail(email, code);
-    if (!emailSent) {
-      throw new Error('Gagal mengirimkan kode verifikasi ke email Anda.');
+    try {
+      await sendVerificationCodeEmail(email, code);
+    } catch (error: any) {
+      throw new AppError(`Email System Error: ${error.message}`, 500, 'EMAIL_ERROR');
     }
 
     return { message: 'Kode verifikasi telah dikirim ke email Anda.' };
