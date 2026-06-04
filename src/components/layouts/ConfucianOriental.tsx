@@ -10,7 +10,7 @@ import {
   Music, Share2, Users, QrCode, Scroll,
   Home, CalendarDays, Pause
 } from 'lucide-react';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import { getEmbedUrl } from '@/lib/utils';
 import { 
@@ -121,39 +121,7 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
-  const [active, setActive] = useState('home');
-  const items = [
-    { id: 'home', icon: Home, label: 'Home' },
-    { id: 'couple', icon: Users, label: 'Mempelai' },
-    { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
-    { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
-  ];
 
-  useEffect(() => {
-    if (!visible) return;
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
-    }, { threshold: 0.3 });
-    items.forEach(i => { const el = document.getElementById(i.id); if (el) obs.observe(el); });
-    return () => obs.disconnect();
-  }, [visible]);
-
-  if (!visible) return null;
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[100] w-full max-w-lg mx-auto pointer-events-none px-4 pb-6">
-      <div className="flex items-center justify-around bg-[#8B0000]/95 backdrop-blur-2xl rounded-2xl border border-[#FFD700]/20 px-2 py-2 shadow-3xl pointer-events-auto ring-1 ring-[#FFD700]/10">
-        {items.map((i) => (
-          <a key={i.id} href={`#${i.id}`} onClick={(e: React.MouseEvent) => { e.preventDefault(); document.getElementById(i.id)?.scrollIntoView({ behavior: 'smooth' }); }}
-            className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-500 ${active === i.id ? 'text-[#FFD700] bg-[#FFD700]/10' : 'text-white/40 hover:text-white/70'}`}>
-            <i.icon className="h-4 w-4" /><span className="text-[8px] font-black uppercase tracking-widest">{i.label}</span>
-          </a>
-        ))}
-      </div>
-    </nav>
-  );
-}
 
 export default function ConfucianOriental({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
   const { tier } = useTier();
@@ -571,7 +539,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
 
         <div className="relative h-24 bg-[#8B0000]" />
         {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
-        <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
+        
       </div>
     </div>
   );

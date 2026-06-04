@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Heart, ArrowRight, Eye } from 'lucide-react';
 import Link from 'next/link';
 import Input from '@/components/ui/Input';
-import ThemeMiniPreview from '@/components/ThemeMiniPreview';
+import ThemeMiniPreview from '@/components/themes/ThemeMiniPreview';
 import type { Layout } from '@/types';
 
 const FEATURED_THEMES: { slug: Layout; label: string }[] = [

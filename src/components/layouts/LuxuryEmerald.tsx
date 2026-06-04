@@ -3,7 +3,7 @@ import { getCoupleSlug } from '@/lib/utils';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import { getEmbedUrl } from '@/lib/utils';
 import Image from 'next/image';
@@ -154,7 +154,7 @@ function FloatingFlowers() {
       {items.map((item) => (
         <motion.div
           key={item.id}
-          initial={{ y: '100vh', x: item.left, rotate: 0 }}
+          initial={{ y: '100dvh', x: item.left, rotate: 0 }}
           animate={{
             y: '-20vh',
             x: [item.left, `${parseFloat(item.left) + 10}%`, `${parseFloat(item.left) - 10}%`, item.left],
@@ -215,39 +215,7 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-function BottomNav({ visible, hasGallery }: { visible: boolean; hasGallery: boolean }) {
-  const [active, setActive] = useState('home');
-  const items = [
-    { id: 'home', icon: Home, label: 'Home' },
-    { id: 'couple', icon: Users, label: 'Mempelai' },
-    { id: 'date', icon: CalendarDays, label: 'Tanggal' },
-    ...(hasGallery ? [{ id: 'gallery', icon: Camera, label: 'Galeri' }] : []),
-    { id: 'wishes', icon: MessageCircle, label: 'Ucapan' },
-  ];
 
-  useEffect(() => {
-    if (!visible) return;
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
-    }, { threshold: 0.3 });
-    items.forEach(i => { const el = document.getElementById(i.id); if (el) obs.observe(el); });
-    return () => obs.disconnect();
-  }, [visible]);
-
-  if (!visible) return null;
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[100] w-full max-w-lg mx-auto pointer-events-none px-4 pb-6">
-      <div className="flex items-center justify-around bg-[#042f2e]/90 backdrop-blur-xl rounded-2xl border border-[#d4af37]/20 px-2 py-2 shadow-2xl pointer-events-auto">
-        {items.map((i) => (
-          <a key={i.id} href={`#${i.id}`} onClick={(e: React.MouseEvent) => { e.preventDefault(); document.getElementById(i.id)?.scrollIntoView({ behavior: 'smooth' }); }}
-            className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-300 ${active === i.id ? 'text-[#d4af37] bg-[#d4af37]/10' : 'text-white/40 hover:text-white/70'}`}>
-            <i.icon className="h-4 w-4" /><span className="text-[9px] font-medium">{i.label}</span>
-          </a>
-        ))}
-      </div>
-    </nav>
-  );
-}
 
 function EmeraldAudio({ src, isPreview }: { src: string; isPreview?: boolean }) {
     const { tier } = useTier();
@@ -559,7 +527,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
         </>
       )}
 
-      <section id="home" className="relative w-full h-[100vh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
+      <section id="home" className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
           <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority unoptimized />
           <div className="absolute inset-0 bg-gradient-to-t from-[#042f2e]/80 via-[#042f2e]/30 to-transparent" />
@@ -809,7 +777,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
 
       <div className="h-20 bg-[#042f2e]" />
       {isOpened && invitation.musicUrl && <EmeraldAudio src={invitation.musicUrl} isPreview={isPreview} />}
-      <BottomNav visible={isOpened} hasGallery={galleryPhotos.length > 0} />
+      
     </div>
   );
 }

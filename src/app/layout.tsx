@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display, Dancing_Script, Cinzel, Montserrat, Outfit, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/shared/Navbar';
+import Footer from '@/components/shared/Footer';
 import ToastContainer from '@/components/ui/Toast';
-import ErrorBoundary from '@/components/ErrorBoundary';
-import Providers from '@/components/Providers';
-import WhatsAppFloat from '@/components/WhatsAppFloat';
+import ErrorBoundary from '@/components/shared/ErrorBoundary';
+import Providers from '@/components/shared/Providers';
+import WhatsAppFloat from '@/components/shared/WhatsAppFloat';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -128,12 +128,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${inter.variable} ${playfair.variable} ${dancingScript.variable} ${cinzel.variable} ${montserrat.variable} ${outfit.variable} ${cormorant.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#f7f4ed] text-[#1c1c1c] overflow-x-hidden">
+      <body className="min-h-full flex flex-col bg-[#f7f4ed] text-[#1c1c1c] overflow-x-clip">
         <Providers>
           <ErrorBoundary>
-            <div className="flex flex-col min-h-screen w-full overflow-x-hidden relative">
+            <div className="flex flex-col min-h-screen w-full overflow-x-clip relative">
               <Navbar />
-              <main className="flex-1 w-full overflow-x-hidden">{children}</main>
+              <main className="flex-1 w-full overflow-x-clip">{children}</main>
               <Footer />
               <WhatsAppFloat />
             </div>

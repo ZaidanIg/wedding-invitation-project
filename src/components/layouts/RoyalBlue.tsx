@@ -1,7 +1,7 @@
 import { getCoupleSlug } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { Heart, MapPin, Clock, Calendar, Music, Camera, ChevronDown, Glasses } from 'lucide-react';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import Image from 'next/image';
 import {
@@ -79,7 +79,7 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
         bgClass="bg-[#d0e1fd]"
       />
       {/* Hero */}
-      <section className="relative w-full h-[100vh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
+      <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
           <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority unoptimized />
           <div className="absolute inset-0 bg-gradient-to-t from-blue-900/70 via-blue-900/30 to-blue-900/10" />

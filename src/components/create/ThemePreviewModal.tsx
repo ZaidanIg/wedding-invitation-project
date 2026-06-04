@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Smartphone, ExternalLink } from 'lucide-react';
-import ThemeMiniPreview from './ThemeMiniPreview';
+import ThemeMiniPreview from '../themes/ThemeMiniPreview';
 import type { Layout } from '@/types';
 
 interface ThemePreviewModalProps {
@@ -37,11 +37,18 @@ export default function ThemePreviewModal({ layout, onClose, themeName }: ThemeP
 
           {/* Phone Preview */}
           <div className="w-full h-full relative flex items-center justify-center py-12">
-            <div className="relative w-[320px] h-[650px] md:w-[375px] md:h-[760px] transform scale-[0.85] md:scale-95 transition-transform">
-              <div className="absolute inset-0 border-[12px] border-[#1c1c1c] rounded-[3.5rem] overflow-hidden shadow-2xl bg-white ring-1 ring-black/10">
+            {/* The scaled wrapper for the exact 375x812 phone size */}
+            <div className="relative w-[375px] h-[812px] shrink-0 scale-[0.75] md:scale-[0.85] lg:scale-[0.9] origin-center">
+              
+              {/* The content container without the border pushing the content inward */}
+              <div className="absolute inset-0 rounded-[3.5rem] overflow-hidden bg-white shadow-2xl">
                 <ThemeMiniPreview layout={layout} isInteractable={true} scale={1} hideNotch={true} />
               </div>
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-[#1c1c1c] rounded-b-2xl z-20" />
+
+              {/* The Mockup Overlay - on top of content so it doesn't squish */}
+              <div className="absolute inset-0 border-[12px] border-[#1c1c1c] rounded-[3.5rem] shadow-2xl ring-1 ring-black/10 pointer-events-none z-50" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-[#1c1c1c] rounded-b-2xl pointer-events-none z-[60]" />
+              
             </div>
           </div>
 

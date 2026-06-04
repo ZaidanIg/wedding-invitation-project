@@ -1,5 +1,5 @@
 'use client';
-import InvitationForm from '@/components/InvitationForm';
+import InvitationForm from '@/components/create/InvitationForm';
 import { motion } from 'framer-motion';
 
 export default function CreatePage() {

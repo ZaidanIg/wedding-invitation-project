@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { resolvePhotos, AudioPlayer, OpeningPhraseSection, GallerySection, VideoEmbedSection } from './shared';
 import { ChevronDown, MapPin, Calendar, Clock, Copy, Check, Heart, ExternalLink, Gift, Camera, ChevronLeft, ChevronRight, Music } from 'lucide-react';
-import RsvpForm from '../RsvpForm';
+import RsvpForm from '../themes/RsvpForm';
 
 // ==========================================
 // TEMPLATE SECTIONS - SILAKAN ISI MANUAL

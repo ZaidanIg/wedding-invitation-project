@@ -2,9 +2,16 @@
 
 import { useEffect } from 'react';
 import type { Invitation } from '@/types';
-import { layouts } from './layouts';
+import { layouts } from '../layouts';
 import Link from 'next/link';
-import { TierProvider } from './layouts/shared';
+import { TierProvider } from '../layouts/shared';
+import ThemeNavbar from './ThemeNavbar';
+
+const PREMIUM_LAYOUTS = [
+  'golden-classic', 'luxury-emerald', 'forest-grace', 'garden-chapel', 
+  'mandala-fusion', 'zen-garden', 'oriental-luxe', 'onyx-premium', 
+  'premium-sunda-3d', 'batik-heritage', 'premium-charcoal', 'premium-javanese'
+];
 
 interface InvitationPreviewProps {
   invitation: Invitation;
@@ -48,6 +55,8 @@ export default function InvitationPreview({ invitation, isPreview = false }: Inv
             </span>
           </div>
         )}
+        
+        {PREMIUM_LAYOUTS.includes(invitation.layout) && <ThemeNavbar />}
       </div>
     </TierProvider>
   );

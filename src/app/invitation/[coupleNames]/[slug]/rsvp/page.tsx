@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import RsvpTable from '@/components/RsvpTable';
+import RsvpTable from '@/components/dashboard/RsvpTable';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
-import WaBlastModal from '@/components/WaBlastModal';
-import AddGuestModal from '@/components/AddGuestModal';
+import WaBlastModal from '@/components/dashboard/WaBlastModal';
+import AddGuestModal from '@/components/dashboard/AddGuestModal';
 import { UserPlus, Sparkles, Eye, MessageSquare, ArrowLeft } from 'lucide-react';
 import type { Guest } from '@/types';
 
@@ -59,7 +59,7 @@ export default function RsvpManagementPage() {
   }, [params.slug]);
 
   return (
-    <section className="min-h-[calc(100vh-4rem)] py-12 px-4 pt-20 mt-12">
+    <section className="min-h-[calc(100dvh-4rem)] py-12 px-4 pt-20 mt-12">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">

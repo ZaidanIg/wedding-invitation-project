@@ -10,8 +10,8 @@ import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
-import WhatsAppGenerator from './WhatsAppGenerator';
-import SafeQRCodeSVG from '@/components/SafeQRCodeSVG';
+import WhatsAppGenerator from '../dashboard/WhatsAppGenerator';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Tier } from '@/types';
 import { getCoupleSlug } from '@/lib/utils';
 
@@ -244,8 +244,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
               <div className="flex flex-col sm:flex-row gap-4">
                 {/* Edit even while draft */}
                 <Link href={`/create?edit=${invitation.id}`} className="flex-1">
-                  <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
-                    <Pencil className="h-4 w-4 mr-2 text-rose-500 group-hover:text-white transition-colors" />
+                  <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm transition-all group">
+                    <Pencil className="h-4 w-4 mr-2 text-rose-500 transition-colors" />
                     Edit Undangan
                   </Button>
                 </Link>
@@ -307,8 +307,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* Edit — all active tiers */}
                 <Link href={`/create?edit=${invitation.id}`} className="w-full">
-                  <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
-                    <Pencil className="h-5 w-5 mr-3 text-rose-500 group-hover:text-white transition-colors" />
+                  <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm transition-all group">
+                    <Pencil className="h-5 w-5 mr-3 text-rose-500 transition-colors" />
                     Edit
                   </Button>
                 </Link>
@@ -316,8 +316,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
                 {/* Lihat Hasil — all active */}
                 {canViewResult ? (
                   <Link href={invitationUrl} target="_blank" className="w-full">
-                    <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
-                      <ExternalLink className="h-5 w-5 mr-3 text-blue-500 group-hover:text-white transition-colors" />
+                    <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm transition-all group">
+                      <ExternalLink className="h-5 w-5 mr-3 text-blue-500 transition-colors" />
                       Lihat Hasil
                     </Button>
                   </Link>
@@ -327,8 +327,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
 
                 {/* Salin Link — all active */}
                 {canCopyLink ? (
-                  <Button variant="secondary" onClick={handleCopyLink} className="h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
-                    <Copy className="h-5 w-5 mr-3 text-rose-500 group-hover:text-white transition-colors" />
+                  <Button variant="secondary" onClick={handleCopyLink} className="h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm transition-all group">
+                    <Copy className="h-5 w-5 mr-3 text-rose-500 transition-colors" />
                     Salin Link
                   </Button>
                 ) : null}
@@ -345,8 +345,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
                 {/* Buku Tamu — PREMIUM & ULTIMATE only */}
                 {canManageGuest ? (
                   <Link href={`${invitationUrl}/rsvp`} className="w-full">
-                    <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
-                      <Users className="h-5 w-5 mr-3 text-emerald-500 group-hover:text-white transition-colors" />
+                    <Button variant="secondary" className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm transition-all group">
+                      <Users className="h-5 w-5 mr-3 text-emerald-500 transition-colors" />
                       Buku Tamu
                     </Button>
                   </Link>

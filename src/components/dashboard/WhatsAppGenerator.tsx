@@ -48,8 +48,8 @@ Terima kasih.`;
 
   if (!isOpen) {
     return (
-      <Button variant="secondary" onClick={() => setIsOpen(true)} className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm hover:bg-[#1c1c1c] hover:text-white transition-all group">
-        <MessageSquare className="h-5 w-5 mr-3 text-emerald-500 group-hover:text-white transition-colors" />
+      <Button variant="secondary" onClick={() => setIsOpen(true)} className="w-full h-12 rounded-2xl border-[#eceae4] bg-white text-[#1c1c1c] font-bold text-sm shadow-sm transition-all group">
+        <MessageSquare className="h-5 w-5 mr-3 text-emerald-500 transition-colors" />
         Kirim Ke WhatsApp
       </Button>
     );
