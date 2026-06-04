@@ -37,7 +37,7 @@ import {
 import type { Tone, Language, Layout } from '@/types';
 import Image from 'next/image';
 import { UploadDropzone } from '@/lib/uploadthing';
-import InvitationPreview from '@/components/InvitationPreview';
+import InvitationPreview from '@/components/themes/InvitationPreview';
 
 const toneOptions = [
   { value: 'formal', label: 'Formal - Elegan & Berwibawa' },
@@ -381,8 +381,8 @@ export default function InvitationForm() {
           <button onClick={() => store.setActiveMobileTab("preview")} className={`flex-1 py-3 text-sm font-bold text-center border-b-2 transition-all ${store.activeMobileTab === "preview" ? 'border-[#1c1c1c] text-[#1c1c1c]' : 'border-transparent text-stone-400'}`}>Pratinjau</button>
         </div>
 
-        <Card className="bg-white border-[#eceae4] shadow-xl relative overflow-hidden w-full max-w-6xl mx-auto h-[calc(100vh-140px)] min-h-[600px] mb-8 lg:mt-4">
-          <div className="absolute top-0 left-0 w-full h-1 bg-rose-500 z-50" />
+        <Card className="bg-white border-[#eceae4] shadow-xl relative overflow-hidden w-full max-w-6xl mx-auto h-[calc(100dvh-140px)] min-h-[600px] mb-8 lg:mt-4">
+          <div className="absolute top-0 left-0 w-full h-1 bg-rose-500 z-10" />
           <div className="flex flex-col lg:flex-row h-full">
           
           {/* FORM COLUMN */}
@@ -395,7 +395,7 @@ export default function InvitationForm() {
                       <div className="text-center mb-10"><Palette className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Pilih Tema</h2></div>
                       <div className="space-y-4">
                         <p className="text-sm text-stone-500 text-center mb-8">Pilih tata letak dan tema dasar undangan Anda. Pratinjau di samping akan langsung menyesuaikan dengan pilihan Anda.</p>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-1 min-[450px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                           {layoutOptions
                             .filter(opt => hasPremium || opt.category === 'klasik')
                             .map((opt) => (
@@ -827,8 +827,9 @@ export default function InvitationForm() {
                     <div className="w-12 h-1 bg-white/10 rounded-full" />
                   </div>
                   <div 
+                    id="preview-container"
                     ref={previewScrollRef}
-                    className="absolute inset-0 bg-white overflow-y-auto no-scrollbar scroll-smooth"
+                    className="absolute inset-0 bg-white overflow-y-auto no-scrollbar scroll-smooth scroller-container overscroll-contain"
                     style={{ touchAction: 'pan-y' }}
                   >
                     <InvitationPreview key={store.stylePreferences.layout} invitation={mockInvitation} isPreview={true} />

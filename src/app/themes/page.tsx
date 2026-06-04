@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import ShowcaseSection from '@/components/ShowcaseSection';
-import TryItWidget from '@/components/TryItWidget';
+import ShowcaseSection from '@/components/home/ShowcaseSection';
+import TryItWidget from '@/components/home/TryItWidget';
 
 export const metadata: Metadata = {
   title: 'Koleksi Tema Undangan',

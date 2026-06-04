@@ -123,6 +123,7 @@ export const billingService = {
         order_id: transaction.id,
         gross_amount: amount,
       },
+      enabled_payments: ['gopay', 'other_qris'],
       credit_card: { secure: true },
       customer_details: {
         first_name: user.name || 'User',

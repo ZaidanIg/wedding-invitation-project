@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function HeroSection() {
   return (
@@ -25,23 +26,47 @@ export default function HeroSection() {
       <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center md:text-left flex justify-center md:justify-start">
         <div className="max-w-3xl flex flex-col items-center md:items-start w-full">
           {/* Subtle Accent */}
-          <div className="mb-6 flex items-center justify-center text-center md:justify-center sm:text-xs gap-3 animate-fade-in">
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: "-50px" }}
+            transition={{ duration: 0.6 }}
+            className="mb-6 flex items-center justify-center text-center md:justify-center sm:text-xs gap-3"
+          >
             <span className="font-handwriting text-2xl text-rose-600/80 text-center md:text-left">- Suratan pertama untuk cerita kasih selamanya -</span>
-          </div>
+          </motion.div>
 
           {/* Heading */}
-          <h1 className="text-4xl sm:text-[72px] md:text-[84px] font-display font-bold leading-[1.0] tracking-tight sm:tracking-[-0.03em] text-[#1c1c1c] mb-8 animate-fade-in-up text-center md:text-left">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl sm:text-[72px] md:text-[84px] font-display font-bold leading-[1.0] tracking-tight sm:tracking-[-0.03em] text-[#1c1c1c] mb-8 text-center md:text-left"
+          >
             Rayakan Momen <br />
             <span className="text-rose-500 italic font-normal">Terindah</span> Bersama
-          </h1>
+          </motion.h1>
 
           {/* Subtitle */}
-          <p className="text-base md:justify-center sm:text-lg text-[#5f5f5d] max-w-xl mb-12 leading-relaxed animate-fade-in-up delay-200 text-balance text-center md:text-left mx-auto md:mx-0">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-base md:justify-center sm:text-lg text-[#5f5f5d] max-w-xl mb-12 leading-relaxed text-balance text-center md:text-left mx-auto md:mx-0"
+          >
             Izinkan kami membantu mewujudkan cita dan harapan Anda mengarungi perjalanan panjang bersama dengan undangan digital mewah, elegan, dan menyenangkan hati.
-          </p>
+          </motion.p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center md:justify-start gap-4 sm:gap-6 animate-fade-in-up delay-300 w-full sm:w-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center md:justify-start gap-4 sm:gap-6 w-full sm:w-auto"
+          >
             <Link
               href="/create"
               className="group relative inline-flex items-center justify-center gap-3 px-10 py-4.5 text-base font-bold rounded-2xl bg-rose-gradient text-white shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 hover:scale-[1.02] transition-all duration-500 animate-glow-pulse"
@@ -57,7 +82,7 @@ export default function HeroSection() {
               Lihat Paket Harga
               <Heart className="h-4 w-4 text-rose-400" />
             </Link>
-          </div>
+          </motion.div>
         </div>
 
         {/* Subtle Brand Floating Accent */}

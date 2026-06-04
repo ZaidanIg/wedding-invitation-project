@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import InvitationCard from '@/components/InvitationCard';
+import InvitationCard from '@/components/themes/InvitationCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { Plus, CheckSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Invitation } from '@/types';
-import WeddingCountdown from '@/components/WeddingCountdown';
+import WeddingCountdown from '@/components/themes/WeddingCountdown';
 
 type InvitationWithCount = Invitation & { _count?: { guests: number } };
 
@@ -60,8 +60,8 @@ export default function DashboardPage() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Link href="/dashboard/checklist" className="w-full sm:w-auto">
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto h-16 px-8 rounded-2xl font-bold border-[#eceae4] bg-white text-[#1c1c1c] hover:bg-[#1c1c1c] hover:text-white transition-all group">
-                <CheckSquare className="h-5 w-5 mr-2 text-rose-500 group-hover:text-white transition-colors" />
+              <Button size="lg" variant="secondary" className="w-full sm:w-auto h-16 px-8 rounded-2xl font-bold border-[#eceae4] bg-white text-[#1c1c1c] transition-all group">
+                <CheckSquare className="h-5 w-5 mr-2 text-rose-500 transition-colors" />
                 Checklist
               </Button>
             </Link>
