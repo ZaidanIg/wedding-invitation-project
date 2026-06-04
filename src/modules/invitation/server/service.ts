@@ -7,6 +7,7 @@ import { NotFoundError, ForbiddenError, ValidationError } from '@/lib/errors';
 import { invitationRepository } from './repository';
 import { createInvitationSchema, updateInvitationSchema } from './validators';
 import { invitationMapper } from './mapper';
+import { revalidateTag } from 'next/cache';
 
 function formatZodError(error: any): string {
   const issues = error?.issues || error?.errors || [];
@@ -251,6 +252,13 @@ export const invitationService = {
     }
 
     const updated = await invitationRepository.findById(id);
+
+    // Revalidate cache
+    revalidateTag(`invitation-${id}`);
+    if (existing.slug) {
+      revalidateTag(`invitation-${existing.slug}`);
+    }
+
     return invitationMapper.toResponse(updated as Record<string, unknown>);
   },
 
