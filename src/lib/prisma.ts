@@ -44,6 +44,7 @@ function createPrismaClient(): PrismaClient {
     max: process.env.NODE_ENV === 'production' ? 1 : 10,
     idleTimeoutMillis: 5000,
     connectionTimeoutMillis: 10000,
+    allowExitOnIdle: true,
   });
   const adapter = new PrismaPg(pool);
 
