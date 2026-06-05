@@ -63,18 +63,11 @@ jobs:
           echo "--- NEXT_PUBLIC vars in preview env ---"
           grep -i "NEXT_PUBLIC" .vercel/.env.preview.local 2>/dev/null | sed 's/=.*/=[REDACTED]/' || echo "No NEXT_PUBLIC vars found in pulled env!"
 
-      # Build dijalankan di GitHub runner — Vercel CLI akan otomatis menggunakan `.vercel/.env.preview.local`
-      - name: 🏗️ Build Project (on GitHub Runner)
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      # Deploy artefak hasil build ke Vercel (pre-built, 0 Vercel Build Minutes)
-      - name: 🌐 Deploy Pre-built to Vercel (Staging)
+      # Deploy source code ke Vercel (Build dijalankan di server Vercel)
+      - name: 🌐 Deploy to Vercel (Staging)
         id: deploy
         run: |
-          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          url=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
           echo "url=$url" >> $GITHUB_OUTPUT
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}

@@ -44,7 +44,20 @@ export default function ThemeMiniPreview({ layout, isInteractable = false, scale
       >
         {/* Content Layer */}
         <div className={`absolute inset-0 overflow-hidden bg-white ${isInteractable ? '' : 'rounded-[3.5rem]'}`}>
-          <div className="w-full h-full overflow-y-auto no-scrollbar scroller-container">
+          <div className="w-full h-full overflow-y-auto no-scrollbar scroller-container preview-mode-overrides" style={{ containerType: 'size' }}>
+            <style>{`
+              .preview-mode-overrides .min-h-screen,
+              .preview-mode-overrides .min-h-\\[100dvh\\] { min-height: 100cqh !important; }
+              .preview-mode-overrides .h-screen,
+              .preview-mode-overrides .h-\\[100dvh\\] { height: 100cqh !important; }
+              .preview-mode-overrides .h-\\[30vh\\] { height: 30cqh !important; }
+              .preview-mode-overrides .h-\\[40vh\\] { height: 40cqh !important; }
+              .preview-mode-overrides .h-\\[50vh\\] { height: 50cqh !important; }
+              .preview-mode-overrides .h-\\[60vh\\] { height: 60cqh !important; }
+              .preview-mode-overrides .h-\\[70vh\\] { height: 70cqh !important; }
+              .preview-mode-overrides .h-\\[80vh\\] { height: 80cqh !important; }
+              .preview-mode-overrides .h-\\[90vh\\] { height: 90cqh !important; }
+            `}</style>
             {renderLayout()}
           </div>
         </div>

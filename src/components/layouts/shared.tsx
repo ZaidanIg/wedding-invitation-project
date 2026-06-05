@@ -582,10 +582,6 @@ export function AudioPlayer({
     };
   }, []);
 
-  if (currentRank < requiredRank) {
-    return null;
-  }
-
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -670,6 +666,10 @@ export function AudioPlayer({
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
   }, [isAutoScrolling, isPreview]);
+
+  if (currentRank < requiredRank) {
+    return null;
+  }
 
   return (
     <div ref={containerRef} className={`fixed top-1/2 right-4 -translate-y-1/2 z-[100] flex flex-col gap-3 floating-widgets transition-all duration-500 ease-out ${!isVisible ? 'opacity-0 translate-y-5 scale-90 pointer-events-none' : 'opacity-100 translate-y-0 scale-100'}`}>

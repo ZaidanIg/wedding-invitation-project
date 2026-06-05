@@ -66,8 +66,7 @@ export default function DashboardPage() {
               </Button>
             </Link>
             <Link href="/create" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto h-16 px-10 bg-rose-gradient text-white shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 rounded-2xl font-bold">
-                <Plus className="h-5 w-5 mr-2" />
+              <Button size="lg" className="w-full sm:w-auto h-16 px-10 bg-rose-gradient text-white shadow-xl shadow-rose-500/20 hover:shadow-rose-500/40 rounded-2xl font-bold whitespace-nowrap">
                 Buat Undangan Baru
               </Button>
             </Link>
