@@ -24,9 +24,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isComingSoonRoute = pathname === '/coming-soon';
-
-  if (isDemoRoute || isComingSoonRoute) return null;
+  if (isDemoRoute) return null;
 
   const navLinks = [
     { href: '/', label: 'Home' },

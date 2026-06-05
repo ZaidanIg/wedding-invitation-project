@@ -13,7 +13,7 @@ export default function WhatsAppFloat() {
   const [hovered, setHovered] = useState(false);
   const pathname = usePathname();
 
-  if (pathname?.startsWith('/invitation') || pathname === '/coming-soon') {
+  if (pathname?.startsWith('/invitation')) {
     return null;
   }
 

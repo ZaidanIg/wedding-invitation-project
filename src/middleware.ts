@@ -12,25 +12,12 @@ export function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   const pathname = url.pathname;
 
-  // 0. Coming Soon Redirect (Production Only)
-  if (process.env.NODE_ENV === 'production') {
-    const isLaunchReady = new Date() >= LAUNCH_DATE;
-    
-    // If not ready, redirect everything to /coming-soon except critical paths
-    if (!isLaunchReady) {
-      if (
-        !pathname.startsWith('/admin') &&
-        !pathname.startsWith('/api') &&
-        pathname !== '/coming-soon'
-      ) {
-        return NextResponse.redirect(new URL('/coming-soon', request.url));
-      }
-    } else {
-      // If ready, redirect /coming-soon back to home
-      if (pathname === '/coming-soon') {
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-    }
+  // 0. Coming Soon Header (Production Domain Only)
+  const isProductionDomain = hostname === 'sahinaja.com' || hostname === 'www.sahinaja.com';
+  const isLaunchReady = new Date() >= LAUNCH_DATE;
+  
+  if (isProductionDomain && !isLaunchReady) {
+    request.headers.set('x-is-coming-soon', 'true');
   }
 
   // 1. Subdomain Routing (admin.sahinaja.com)
@@ -53,7 +40,11 @@ export function middleware(request: NextRequest) {
   }
 
   // 3. Global Headers
-  const response = NextResponse.next();
+  const response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
   if (pathname.startsWith('/api/')) {
     response.headers.set('X-API-Version', '1.2');
   }
