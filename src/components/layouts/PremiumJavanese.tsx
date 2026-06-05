@@ -802,7 +802,6 @@ export default function PremiumJavanese({ invitation: data, isPreview = false }:
   const [isOpened, setIsOpened] = useState(isPreview); // auto-open in preview
   const [guestName, setGuestName] = useState(data.rsvpName || 'Tamu Undangan');
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (!data.rsvpName) {
@@ -818,14 +817,12 @@ export default function PremiumJavanese({ invitation: data, isPreview = false }:
     setTimeout(() => {
       const heroEl = document.getElementById('hero-section');
       if (heroEl) {
-        heroEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: heroEl.offsetTop, behavior: 'smooth' });
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-    }, 900); // wait for exit animation to finish
-    if (audioRef.current) {
-      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
-    }
+    }, 900); // wait for exit animation
+    setIsPlaying(true);
   };
 
   if (!data) return null;
@@ -861,27 +858,8 @@ export default function PremiumJavanese({ invitation: data, isPreview = false }:
       <GallerySection photos={resolvePhotos(data).galleryPhotos} bgColor="bg-[#F8F5F0]" textColor="text-[#4A3728]" borderColor="border-[#D4AF37]" title="Galeri Foto" />
       <RsvpSection data={data} />
 
-      {/* Audio Button */}
-      <div className="fixed bottom-6 right-6 z-[99]">
-        <audio ref={audioRef} src={data.musicUrl || "https://res.cloudinary.com/sahindigital/video/upload/v1714529341/wedding-music/javanese-gamelan.mp3"} loop preload="auto" />
-        <button
-          onClick={() => {
-            if (audioRef.current) {
-              if (isPlaying) {
-                audioRef.current.pause();
-                setIsPlaying(false);
-              } else {
-                audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
-              }
-            }
-          }}
-          className={`w-12 h-12 flex items-center justify-center rounded-full shadow-2xl transition-all duration-500 border border-[#D4AF37]/50 backdrop-blur-md ${
-            isPlaying ? 'bg-[#4A3728] text-[#D4AF37] animate-[spin_4s_linear_infinite]' : 'bg-[#F8F5F0] text-[#4A3728]'
-          }`}
-        >
-          <Music className="w-5 h-5" />
-        </button>
-      </div>
+      {/* Standard Audio Player & Auto Scroll */}
+      {data.musicUrl && <AudioPlayer src={data.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} activeColor="bg-[#4A3728] text-[#D4AF37]" inactiveColor="bg-[#F8F5F0] text-[#4A3728]" />}
     </div>
   );
 }

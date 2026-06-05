@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   const pathname = usePathname();
-  if (pathname?.startsWith('/demo/')) return null;
+  if (pathname?.startsWith('/demo/') || pathname === '/coming-soon') return null;
 
   return (
     <footer className="border-t border-rose-500/5 bg-[#fdfcf9] content-visibility-auto">

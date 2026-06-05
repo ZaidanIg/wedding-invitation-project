@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { Eye, Sparkles, ArrowRight } from 'lucide-react';
 import type { Layout } from '@/types';
@@ -216,15 +216,25 @@ export default function ShowcaseSection({ fullGallery = false }: { fullGallery?:
     return fullGallery ? filteredThemes.slice(0, visibleCount) : themes;
   }, [filteredThemes, fullGallery, visibleCount]);
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
+
   return (
-    <section className={`${fullGallery ? 'py-12 bg-[#fdfcf9]' : 'py-32'} px-4 overflow-hidden relative content-visibility-auto`}>
+    <section ref={sectionRef} className={`${fullGallery ? 'py-12 bg-[#fdfcf9]' : 'py-32'} px-4 overflow-hidden relative content-visibility-auto`}>
       {/* Parallax Background for Homepage */}
       {!fullGallery && (
-        <>
-          <div className="absolute inset-0 bg-[url('/images/paralax.jpg')] bg-cover bg-center bg-fixed bg-no-repeat z-0" />
+        <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+          <motion.div 
+            className="absolute -top-[25%] left-0 right-0 w-full h-[150%] bg-[url('/images/paralax.jpg')] bg-cover bg-center bg-no-repeat" 
+            style={{ y: backgroundY }}
+          />
           {/* Subtle dark gradient overlay to ensure text readability without hiding the image */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60 z-0 pointer-events-none" />
-        </>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60" />
+        </div>
       )}
 
       <div className="max-w-7xl mx-auto relative z-10">

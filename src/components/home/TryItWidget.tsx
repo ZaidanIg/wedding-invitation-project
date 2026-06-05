@@ -195,10 +195,10 @@ export default function TryItWidget() {
                 {/* Notch */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#1c1c1c] rounded-b-xl z-10" />
                 <div className="w-full h-full overflow-hidden">
-                  <div className="w-[375px] h-[812px] origin-top-left sm:hidden" style={{ transform: `scale(${220/375})` }}>
+                  <div className="w-[375px] h-[812px] origin-top-left sm:hidden" style={{ transform: `scale(${200/375})` }}>
                     <ThemeMiniPreview layout={selectedTheme} isInteractable={true} scale={1} hideNotch hideMockup groomName={displayGroomName} brideName={displayBrideName} />
                   </div>
-                  <div className="w-[375px] h-[812px] origin-top-left hidden sm:block" style={{ transform: `scale(${260/375})` }}>
+                  <div className="w-[375px] h-[812px] origin-top-left hidden sm:block" style={{ transform: `scale(${240/375})` }}>
                     <ThemeMiniPreview layout={selectedTheme} isInteractable={true} scale={1} hideNotch hideMockup groomName={displayGroomName} brideName={displayBrideName} />
                   </div>
                 </div>

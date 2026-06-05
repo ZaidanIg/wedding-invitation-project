@@ -42,7 +42,9 @@ export default function ThemeNavbar() {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      // Find the scroll container (it might be the body or a specific wrapper)
+      // Since it's an iframe, we scroll the window
+      window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
       setActiveSection(id);
     }
   };

@@ -821,14 +821,13 @@ export default function InvitationForm() {
           {/* PREVIEW COLUMN */}
           <div className={`w-full lg:w-[45%] xl:w-[40%] flex flex-col items-center justify-center bg-[#fcfbf8] relative overflow-hidden ${store.activeMobileTab === "preview" ? 'flex' : 'hidden lg:flex'}`}>
             <div className="w-full h-full p-4 lg:p-8 flex items-center justify-center relative overflow-hidden">
-              {/* MOCKUP WRAPPER - strictly locked to 375x812 to prevent flexbox squishing */}
+              {/* MOCKUP WRAPPER - Responsive with aspect ratio */}
               <div 
-                className="relative mx-auto origin-center shrink-0 transition-transform scale-[0.75] sm:scale-[0.85] lg:scale-[0.7] xl:scale-[0.8] 2xl:scale-[0.9]"
-                style={{ width: '375px', height: '812px', minWidth: '375px', minHeight: '812px' }}
+                className="relative mx-auto flex justify-center shrink-0 w-full max-w-[400px]"
+                style={{ aspectRatio: '375/812', maxHeight: '100%' }}
               >
                 <div 
-                  className="relative w-full h-full rounded-[3.5rem] border-[12px] border-[#1c1c1c] bg-[#1c1c1c] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
-                  style={{ transform: 'translate3d(0, 0, 0)' }}
+                  className="relative w-full h-full rounded-[2.5rem] sm:rounded-[3.5rem] border-[8px] sm:border-[12px] border-[#1c1c1c] bg-[#1c1c1c] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
                 >
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-[#1c1c1c] rounded-b-3xl z-50 flex items-center justify-center">
                     <div className="w-12 h-1 bg-white/10 rounded-full" />

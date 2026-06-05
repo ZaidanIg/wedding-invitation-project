@@ -644,13 +644,8 @@ export function AudioPlayer({
         // Scroll 1 pixel roughly every 16ms (60fps)
         const delta = time - lastTime;
         if (delta >= 16) {
-          // If in preview frame (e.g. create page), scroll the container, otherwise scroll window
-          const previewContainer = document.getElementById('preview-container');
-          if (previewContainer && isPreview) {
-             previewContainer.scrollBy({ top: 1, left: 0, behavior: 'instant' });
-          } else {
-             window.scrollBy({ top: 1, left: 0, behavior: 'instant' });
-          }
+          // Since we are inside an iframe, window.scrollBy perfectly scrolls the invitation preview
+          window.scrollBy({ top: 1, left: 0, behavior: 'instant' });
           lastTime = time;
         }
         animationFrameId = requestAnimationFrame(scrollLoop);
