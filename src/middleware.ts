@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const LAUNCH_DATE = new Date('2026-06-11T17:00:00Z');
+
 /**
  * Global middleware.
  * Injects X-API-Version: 1.2 header on all /api/* responses.
@@ -9,6 +11,27 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const hostname = request.headers.get('host') || '';
   const pathname = url.pathname;
+
+  // 0. Coming Soon Redirect (Production Only)
+  if (process.env.NODE_ENV === 'production') {
+    const isLaunchReady = new Date() >= LAUNCH_DATE;
+    
+    // If not ready, redirect everything to /coming-soon except critical paths
+    if (!isLaunchReady) {
+      if (
+        !pathname.startsWith('/admin') &&
+        !pathname.startsWith('/api') &&
+        pathname !== '/coming-soon'
+      ) {
+        return NextResponse.redirect(new URL('/coming-soon', request.url));
+      }
+    } else {
+      // If ready, redirect /coming-soon back to home
+      if (pathname === '/coming-soon') {
+        return NextResponse.redirect(new URL('/', request.url));
+      }
+    }
+  }
 
   // 1. Subdomain Routing (admin.sahinaja.com)
   // Rewrite everything on the admin subdomain to the `/admin` folder internally.

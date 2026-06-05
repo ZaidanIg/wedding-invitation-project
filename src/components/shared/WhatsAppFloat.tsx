@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 
-const WHATSAPP_NUMBER = '6282116179745';
+const WHATSAPP_NUMBER = '6287763461221';
 const WHATSAPP_MESSAGE = encodeURIComponent(
   'Halo Sahinaja! Saya ingin bertanya lebih lanjut tentang undangan digital pernikahan. 😊'
 );
@@ -13,7 +13,7 @@ export default function WhatsAppFloat() {
   const [hovered, setHovered] = useState(false);
   const pathname = usePathname();
 
-  if (pathname?.startsWith('/invitation')) {
+  if (pathname?.startsWith('/invitation') || pathname === '/coming-soon') {
     return null;
   }
 

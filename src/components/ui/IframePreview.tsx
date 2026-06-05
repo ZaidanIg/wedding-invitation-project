@@ -38,13 +38,22 @@ const IframePreview = forwardRef(({ children, ...props }: any, ref) => {
     const doc = contentRef.contentWindow.document;
     doc.head.innerHTML = '';
     
+    // Add viewport meta tag to simulate mobile rendering correctly
+    const meta = doc.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1';
+    doc.head.appendChild(meta);
+    
     const styles = document.head.querySelectorAll('style, link[rel="stylesheet"], link[rel="preconnect"], link[rel="preload"]');
     styles.forEach(style => doc.head.appendChild(style.cloneNode(true)));
     
+    doc.documentElement.style.overflowX = 'hidden';
     doc.body.style.margin = '0';
     doc.body.style.padding = '0';
     doc.body.style.backgroundColor = 'transparent';
     doc.body.style.overflowX = 'hidden';
+    doc.documentElement.style.width = '100%';
+    doc.body.style.width = '100%';
     
   }, [contentRef]);
 
