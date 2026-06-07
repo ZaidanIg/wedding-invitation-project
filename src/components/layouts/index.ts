@@ -13,6 +13,7 @@ import BuddhistZen from './BuddhistZen';
 import ConfucianOriental from './ConfucianOriental';
 import PremiumCharcoal from './PremiumCharcoal';
 import PremiumJavanese from './PremiumJavanese';
+import ElegantSundanese from './ElegantSundanese';
 
 export const layouts = {
   // ── Modern Neutral Slugs (used for new invitations) ──────────
@@ -31,8 +32,9 @@ export const layouts = {
   'mandala-fusion':   HinduMandala,
   'zen-garden':       BuddhistZen,
   'oriental-luxe':    ConfucianOriental,
-  'onyx-premium':     PremiumCharcoal,
-  'batik-heritage':   PremiumJavanese,
+  'onyx-premium':       PremiumCharcoal,
+  'batik-heritage':     PremiumJavanese,
+  'elegant-sundanese':  ElegantSundanese,
 
   // ── Legacy slugs — kept for backward compat (old DB records) ─
   'islamic-grace':        IslamicGrace,
@@ -64,6 +66,7 @@ export const LAYOUT_LABELS: Record<string, string> = {
   'mandala-fusion':    'Mandala Fusion',
   'zen-garden':        'Zen Garden',
   'oriental-luxe':     'Oriental Luxe',
-  'onyx-premium':      'Onyx Premium',
-  'batik-heritage':    'Batik Heritage',
+  'onyx-premium':       'Onyx Premium',
+  'batik-heritage':     'Batik Heritage',
+  'elegant-sundanese':  'Elegant Sundanese',
 };

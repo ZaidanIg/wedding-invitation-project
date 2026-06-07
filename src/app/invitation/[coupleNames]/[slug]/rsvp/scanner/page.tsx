@@ -19,6 +19,66 @@ export default function RsvpScannerPage() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const isProcessingRef = useRef(false);
 
+  async function onScanSuccess(decodedText: string) {
+    if (isProcessingRef.current) return;
+    isProcessingRef.current = true;
+    setIsProcessing(true);
+    setScanResult(null);
+
+    // Vibrate to acknowledge scan
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(150);
+    }
+
+    try {
+      const res = await fetch(`/api/invitations/${params.slug}/checkin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guestId: decodedText }),
+      });
+
+      if (res.status === 401) {
+        setScanResult({
+          success: false,
+          message: 'Akses Ditolak',
+          details: 'Silakan login sebagai pemilik undangan terlebih dahulu di browser ini.'
+        });
+        showToast('error', 'Akses ditolak. Silakan login.');
+        return;
+      }
+
+      const data = await res.json();
+
+      if (data.success) {
+        setScanResult({
+          success: true,
+          guest: data.data,
+          message: 'Check-in Berhasil!'
+        });
+        showToast('success', `Check-in berhasil: ${data.data.name}`);
+      } else {
+        setScanResult({
+          success: false,
+          message: data.message || 'Check-in Gagal'
+        });
+        showToast('error', data.message || 'Gagal melakukan check-in');
+      }
+    } catch (error) {
+      console.error('Check-in error:', error);
+      setScanResult({
+        success: false,
+        message: 'Kesalahan Server. Silakan scan ulang.'
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  }
+
+  const resetScan = async () => {
+    isProcessingRef.current = false;
+    setScanResult(null);
+  };
+
   useEffect(() => {
     // Check if secure context for camera access
     const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
@@ -96,67 +156,10 @@ export default function RsvpScannerPage() {
       };
       stopScanner();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.slug]);
 
-  async function onScanSuccess(decodedText: string) {
-    if (isProcessingRef.current) return;
-    isProcessingRef.current = true;
-    setIsProcessing(true);
-    setScanResult(null);
-
-    // Vibrate to acknowledge scan
-    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-      navigator.vibrate(150);
-    }
-
-    try {
-      const res = await fetch(`/api/invitations/${params.slug}/checkin`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guestId: decodedText }),
-      });
-
-      if (res.status === 401) {
-        setScanResult({
-          success: false,
-          message: 'Akses Ditolak',
-          details: 'Silakan login sebagai pemilik undangan terlebih dahulu di browser ini.'
-        });
-        showToast('error', 'Akses ditolak. Silakan login.');
-        return;
-      }
-
-      const data = await res.json();
-
-      if (data.success) {
-        setScanResult({
-          success: true,
-          guest: data.data,
-          message: 'Check-in Berhasil!'
-        });
-        showToast('success', `Check-in berhasil: ${data.data.name}`);
-      } else {
-        setScanResult({
-          success: false,
-          message: data.message || 'Check-in Gagal'
-        });
-        showToast('error', data.message || 'Gagal melakukan check-in');
-      }
-    } catch (error) {
-      console.error('Check-in error:', error);
-      setScanResult({
-        success: false,
-        message: 'Kesalahan Server. Silakan scan ulang.'
-      });
-    } finally {
-      setIsProcessing(false);
-    }
-  }
-
-  const resetScan = async () => {
-    isProcessingRef.current = false;
-    setScanResult(null);
-  };
+  // Moved up
 
   return (
     <section className="min-h-screen bg-[#fdfcf9] py-12 px-4 pt-24">

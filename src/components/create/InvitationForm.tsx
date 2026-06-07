@@ -85,7 +85,7 @@ const layoutOptions: { value: Layout; label: string; bg: string; border: string;
   { value: 'zen-garden',       label: 'Zen Garden',        bg: 'bg-[#fdfbf7]', border: 'border-[#a3b18a]',   preview: 'bg-[#a3b18a]/20',     category: 'premium' },
   { value: 'oriental-luxe',    label: 'Oriental Luxe',     bg: 'bg-[#fffcf9]', border: 'border-[#8b0000]',   preview: 'bg-[#8b0000]/20',     category: 'premium' },
   { value: 'onyx-premium',     label: 'Onyx Premium',      bg: 'bg-[#111111]', border: 'border-[#d4af37]',   preview: 'bg-[#d4af37]/30',     category: 'premium' },
-  { value: 'premium-sunda-3d', label: 'Nusantara 3D',      bg: 'bg-[#F8F4E6]', border: 'border-[#4A5D23]',   preview: 'bg-[#D4AF37]/30',     category: 'premium' },
+  { value: 'elegant-sundanese', label: 'Elegant Sundanese',      bg: 'bg-[#FAF1DB]', border: 'border-[#F4CD78]',   preview: 'bg-[#F4CD78]/30',     category: 'premium' },
   { value: 'batik-heritage',   label: 'Batik Heritage',    bg: 'bg-[#F8F5F0]', border: 'border-[#D4AF37]',   preview: 'bg-[#8B5A2B]/30',     category: 'premium' },
 ];
 

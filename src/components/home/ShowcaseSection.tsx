@@ -127,12 +127,12 @@ const themes: {
     palette: ['#fffcf9', '#8b0000', '#d4af37'],
   },
   {
-    name: 'Sunda 3D',
-    slug: 'premium-sunda-3d',
+    name: 'Elegant Sundanese',
+    slug: 'elegant-sundanese',
     tag: '✨ Premium',
     isLuxury: true,
     category: 'Oriental',
-    palette: ['#fffcf9', '#8b0000', '#d4af37'],
+    palette: ['#FFFFFF', '#F4CD78', '#A57318'],
   },
   {
     name: 'Premium Javanese',

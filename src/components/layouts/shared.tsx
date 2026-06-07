@@ -742,11 +742,11 @@ export function CurvedDivider({ fill = '#faf7f0', position = 'top' }: { fill?: s
 
 /* ── Fallback Photos ── */
 export const fallbackPhotos = [
-  'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=800&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=800&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=800&auto=format&fit=crop',
+  '/assets/ElegantSundanesseTheme/assets/foto cover.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 1.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 2.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 3.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 4.jpg',
 ];
 
 /* ── Helper: resolve photos ── */
@@ -1280,17 +1280,20 @@ export function GallerySection({
   textColor = 'text-stone-800',
   borderColor = 'border-stone-200',
   title = 'Our Moments',
+  children,
 }: {
   photos: string[];
   bgColor?: string;
   textColor?: string;
   borderColor?: string;
   title?: string;
+  children?: React.ReactNode;
 }) {
   if (!photos || photos.length === 0) return null;
 
   return (
-    <section className={`py-14 px-6 ${bgColor} text-center`}>
+    <section id="gallery" className={`relative py-14 px-6 ${bgColor} text-center`}>
+      {children}
       <AnimatedSection animation="scale">
         <div className={`inline-flex p-3 rounded-full border ${borderColor} mb-4`}>
           <Camera className={`h-5 w-5 ${textColor} opacity-60`} />

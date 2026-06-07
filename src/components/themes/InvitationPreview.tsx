@@ -10,7 +10,8 @@ import ThemeNavbar from './ThemeNavbar';
 const PREMIUM_LAYOUTS = [
   'golden-classic', 'luxury-emerald', 'forest-grace', 'garden-chapel', 
   'mandala-fusion', 'zen-garden', 'oriental-luxe', 'onyx-premium', 
-  'premium-sunda-3d', 'batik-heritage', 'premium-charcoal', 'premium-javanese'
+  'batik-heritage', 'premium-charcoal', 'premium-javanese',
+  'elegant-sundanese'
 ];
 
 interface InvitationPreviewProps {
