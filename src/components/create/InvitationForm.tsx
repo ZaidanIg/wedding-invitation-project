@@ -34,6 +34,8 @@ import {
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
+import { MOCK_INVITATION } from '@/constants/demoData';
+import IframePreview from '@/components/ui/IframePreview';
 import type { Tone, Language, Layout } from '@/types';
 import Image from 'next/image';
 import { UploadDropzone } from '@/lib/uploadthing';
@@ -83,7 +85,7 @@ const layoutOptions: { value: Layout; label: string; bg: string; border: string;
   { value: 'zen-garden',       label: 'Zen Garden',        bg: 'bg-[#fdfbf7]', border: 'border-[#a3b18a]',   preview: 'bg-[#a3b18a]/20',     category: 'premium' },
   { value: 'oriental-luxe',    label: 'Oriental Luxe',     bg: 'bg-[#fffcf9]', border: 'border-[#8b0000]',   preview: 'bg-[#8b0000]/20',     category: 'premium' },
   { value: 'onyx-premium',     label: 'Onyx Premium',      bg: 'bg-[#111111]', border: 'border-[#d4af37]',   preview: 'bg-[#d4af37]/30',     category: 'premium' },
-  { value: 'premium-sunda-3d', label: 'Nusantara 3D',      bg: 'bg-[#F8F4E6]', border: 'border-[#4A5D23]',   preview: 'bg-[#D4AF37]/30',     category: 'premium' },
+  { value: 'elegant-sundanese', label: 'Elegant Sundanese',      bg: 'bg-[#FAF1DB]', border: 'border-[#F4CD78]',   preview: 'bg-[#F4CD78]/30',     category: 'premium' },
   { value: 'batik-heritage',   label: 'Batik Heritage',    bg: 'bg-[#F8F5F0]', border: 'border-[#D4AF37]',   preview: 'bg-[#8B5A2B]/30',     category: 'premium' },
 ];
 
@@ -274,6 +276,7 @@ export default function InvitationForm() {
   if (!session) return null;
 
   const mockInvitation = {
+    ...MOCK_INVITATION,
     ...store.generatedInvitation,
     ...store.coupleDetails,
     ...store.eventDetails,
@@ -391,11 +394,11 @@ export default function InvitationForm() {
               <AnimatePresence mode="wait">
               {store.step === 1 && (
                 <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="absolute inset-0 w-full h-full flex flex-col bg-white">
-                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto no-scrollbar pt-8">
+                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto overscroll-y-contain pb-32 pt-8">
                       <div className="text-center mb-10"><Palette className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Pilih Tema</h2></div>
                       <div className="space-y-4">
                         <p className="text-sm text-stone-500 text-center mb-8">Pilih tata letak dan tema dasar undangan Anda. Pratinjau di samping akan langsung menyesuaikan dengan pilihan Anda.</p>
-                        <div className="grid grid-cols-1 min-[450px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                           {layoutOptions
                             .filter(opt => hasPremium || opt.category === 'klasik')
                             .map((opt) => (
@@ -419,7 +422,7 @@ export default function InvitationForm() {
 
               {store.step === 2 && (
                 <motion.div key="step2" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="absolute inset-0 w-full h-full flex flex-col bg-white">
-                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto no-scrollbar pt-8">
+                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto overscroll-y-contain pb-32 pt-8">
                       <div className="text-center mb-10"><Heart className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold text-[#1c1c1c]">Data Pasangan</h2></div>
                       <div className="space-y-8">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -449,7 +452,7 @@ export default function InvitationForm() {
 
               {store.step === 3 && (
                 <motion.div key="step3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="absolute inset-0 w-full h-full flex flex-col bg-white">
-                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto no-scrollbar pt-8">
+                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto overscroll-y-contain pb-32 pt-8">
                       <div className="text-center mb-10"><Calendar className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Detail Acara</h2></div>
                       
                       {subStep === 1 && (
@@ -550,7 +553,7 @@ export default function InvitationForm() {
 
               {store.step === 4 && (
                 <motion.div key="step4" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="absolute inset-0 w-full h-full flex flex-col bg-white">
-                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto no-scrollbar pt-8">
+                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto overscroll-y-contain pb-32 pt-8">
                       <div className="text-center mb-10"><Camera className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Galeri Foto</h2></div>
                       <div className="space-y-12">
                         <div className="space-y-4">
@@ -598,7 +601,7 @@ export default function InvitationForm() {
 
               {store.step === 5 && (
                 <motion.div key="step5" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="absolute inset-0 w-full h-full flex flex-col bg-white">
-                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto no-scrollbar pt-8">
+                    <div className="p-4 sm:p-8 flex-1 overflow-y-auto overscroll-y-contain pb-32 pt-8">
                       <div className="text-center mb-10"><Sparkles className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Pengaturan Akhir</h2></div>
                       <div className="space-y-10">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Select label="Nuansa Bahasa" options={toneOptions} value={store.stylePreferences.tone} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, tone: e.target.value as any })} /><Select label="Bahasa" options={languageOptions} value={store.stylePreferences.language} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, language: e.target.value as any })} /></div>
@@ -818,21 +821,21 @@ export default function InvitationForm() {
           {/* PREVIEW COLUMN */}
           <div className={`w-full lg:w-[45%] xl:w-[40%] flex flex-col items-center justify-center bg-[#fcfbf8] relative overflow-hidden ${store.activeMobileTab === "preview" ? 'flex' : 'hidden lg:flex'}`}>
             <div className="w-full h-full p-4 lg:p-8 flex items-center justify-center relative overflow-hidden">
-              <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[360px] flex justify-center scale-90 sm:scale-100 origin-center">
+              {/* MOCKUP WRAPPER - Responsive with aspect ratio */}
+              <div 
+                className="relative mx-auto flex justify-center shrink-0 w-full max-w-[400px]"
+                style={{ aspectRatio: '375/812', maxHeight: '100%' }}
+              >
                 <div 
-                  className="relative w-full aspect-[9/19] rounded-[3.5rem] border-[12px] border-[#1c1c1c] bg-[#1c1c1c] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
-                  style={{ transform: 'translate3d(0, 0, 0)' }}
+                  className="relative w-full h-full rounded-[2.5rem] sm:rounded-[3.5rem] border-[8px] sm:border-[12px] border-[#1c1c1c] bg-[#1c1c1c] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
                 >
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-[#1c1c1c] rounded-b-3xl z-50 flex items-center justify-center">
                     <div className="w-12 h-1 bg-white/10 rounded-full" />
                   </div>
-                  <div 
-                    id="preview-container"
-                    ref={previewScrollRef}
-                    className="absolute inset-0 bg-white overflow-y-auto no-scrollbar scroll-smooth scroller-container overscroll-contain"
-                    style={{ touchAction: 'pan-y' }}
-                  >
-                    <InvitationPreview key={store.stylePreferences.layout} invitation={mockInvitation} isPreview={true} />
+                  <div className="absolute inset-0 bg-white overflow-hidden rounded-[2.5rem]">
+                    <IframePreview ref={previewScrollRef} title="Live Preview" className="w-full h-full">
+                       <InvitationPreview key={store.stylePreferences.layout} invitation={mockInvitation} isPreview={true} />
+                    </IframePreview>
                   </div>
                   {/* Scroll indicator */}
                   <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-0.5 opacity-60 animate-bounce">

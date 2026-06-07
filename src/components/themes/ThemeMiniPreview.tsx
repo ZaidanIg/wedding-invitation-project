@@ -5,6 +5,7 @@ import type { Invitation, Layout } from '@/types';
 import { layouts } from '../layouts';
 
 import { MOCK_INVITATION } from '@/constants/demoData';
+import IframePreview from '@/components/ui/IframePreview';
 
 interface ThemeMiniPreviewProps {
   layout: Layout;
@@ -44,8 +45,10 @@ export default function ThemeMiniPreview({ layout, isInteractable = false, scale
       >
         {/* Content Layer */}
         <div className={`absolute inset-0 overflow-hidden bg-white ${isInteractable ? '' : 'rounded-[3.5rem]'}`}>
-          <div className="w-full h-full overflow-y-auto no-scrollbar scroller-container">
-            {renderLayout()}
+          <div className="w-full h-full overflow-hidden">
+            <IframePreview title="Theme Preview" className="w-full h-full">
+              {renderLayout()}
+            </IframePreview>
           </div>
         </div>
         

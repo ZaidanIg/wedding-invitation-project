@@ -60,21 +60,6 @@ export default function DemoPage({ params }: PageProps) {
         <LayoutComponent invitation={invitation} isPreview={false} />
       </div>
 
-      {/* Floating CTA Bar */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[10000] w-[90%] max-w-md">
-        <div className="glass-dark rounded-2xl p-4 flex items-center justify-between shadow-2xl border border-white/10">
-          <div className="flex flex-col">
-            <span className="text-white/50 text-[10px] uppercase tracking-wider font-bold">Tertarik dengan tema ini?</span>
-            <span className="text-white text-sm font-display font-medium">Buat undangan premium Anda</span>
-          </div>
-          <button 
-            onClick={() => window.location.href = '/create'}
-            className="bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-lg shadow-rose-500/20"
-          >
-            Mulai Sekarang
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

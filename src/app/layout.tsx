@@ -129,6 +129,15 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${inter.variable} ${playfair.variable} ${dancingScript.variable} ${cinzel.variable} ${montserrat.variable} ${outfit.variable} ${cormorant.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#f7f4ed] text-[#1c1c1c] overflow-x-clip">
+        {/* Polyfills for Popover and Anchor Positioning */}
+        <script type="module" dangerouslySetInnerHTML={{ __html: `
+          if (!HTMLElement.prototype.hasOwnProperty("popover")) {
+            import("https://unpkg.com/@oddbird/popover-polyfill@latest");
+          }
+          if (!("anchorName" in document.documentElement.style)) {
+            import("https://unpkg.com/@oddbird/css-anchor-positioning");
+          }
+        ` }} />
         <Providers>
           <ErrorBoundary>
             <div className="flex flex-col min-h-screen w-full overflow-x-clip relative">

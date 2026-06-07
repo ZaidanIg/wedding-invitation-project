@@ -14,7 +14,6 @@ function createPrismaClient(): PrismaClient {
   // Best Practice SSL verification
   if (process.env.DB_CA_CERT) {
     // Use certificate injected from Environment Variables (Netlify)
-    // Handle literal \n if Netlify escapes newlines
     const ca = process.env.DB_CA_CERT.includes('\\n') 
       ? process.env.DB_CA_CERT.replace(/\\n/g, '\n')
       : process.env.DB_CA_CERT;
@@ -23,7 +22,7 @@ function createPrismaClient(): PrismaClient {
       rejectUnauthorized: true,
       ca: ca,
     };
-  } else {
+  } else if (process.env.NODE_ENV === 'production') {
     // Fallback for local development
     try {
       const certPath = path.join(process.cwd(), 'prisma', 'ca.pem');
@@ -36,6 +35,10 @@ function createPrismaClient(): PrismaClient {
     } catch (e) {
       console.warn('Local ca.pem not found for SSL connection.');
     }
+  } else {
+    // Force rejectUnauthorized: false in local dev to avoid TLS errors
+    // especially when connecting to generic poolers (e.g., Supabase)
+    sslConfig = { rejectUnauthorized: false };
   }
 
   const pool = new Pool({

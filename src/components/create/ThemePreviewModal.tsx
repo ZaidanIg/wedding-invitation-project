@@ -3,7 +3,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Smartphone, ExternalLink } from 'lucide-react';
-import ThemeMiniPreview from '../themes/ThemeMiniPreview';
+import IframePreview from '@/components/ui/IframePreview';
+import { layouts } from '../layouts';
+import { MOCK_INVITATION } from '@/constants/demoData';
 import type { Layout } from '@/types';
 
 interface ThemePreviewModalProps {
@@ -36,19 +38,34 @@ export default function ThemePreviewModal({ layout, onClose, themeName }: ThemeP
 
 
           {/* Phone Preview */}
-          <div className="w-full h-full relative flex items-center justify-center py-12">
-            {/* The scaled wrapper for the exact 375x812 phone size */}
-            <div className="relative w-[375px] h-[812px] shrink-0 scale-[0.75] md:scale-[0.85] lg:scale-[0.9] origin-center">
-              
-              {/* The content container without the border pushing the content inward */}
-              <div className="absolute inset-0 rounded-[3.5rem] overflow-hidden bg-white shadow-2xl">
-                <ThemeMiniPreview layout={layout} isInteractable={true} scale={1} hideNotch={true} />
+          <div className="w-full h-full relative flex items-center justify-center p-4 sm:p-8">
+            {/* The responsive aspect-ratio wrapper */}
+            <div 
+              className="relative mx-auto flex justify-center shrink-0 w-full max-w-[400px]"
+              style={{ aspectRatio: '375/812', maxHeight: '100%' }}
+            >
+              {/* Content container */}
+              <div className="relative w-full h-full rounded-[2.5rem] sm:rounded-[3.5rem] border-[8px] sm:border-[12px] border-[#1c1c1c] bg-[#1c1c1c] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] overflow-hidden">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-[#1c1c1c] rounded-b-3xl z-50 flex items-center justify-center">
+                  <div className="w-12 h-1 bg-white/10 rounded-full" />
+                </div>
+                
+                <div className="absolute inset-0 bg-white overflow-hidden rounded-[2.5rem]">
+                  <IframePreview title="Theme Preview" className="w-full h-full">
+                    {(() => {
+                      const LayoutComponent = (layouts as any)[layout] || layouts['elegant-cream'];
+                      const invitation = {
+                        ...MOCK_INVITATION,
+                        stylePreferences: {
+                          ...MOCK_INVITATION.stylePreferences,
+                          layout: layout
+                        }
+                      };
+                      return <LayoutComponent invitation={invitation} isPreview={true} />;
+                    })()}
+                  </IframePreview>
+                </div>
               </div>
-
-              {/* The Mockup Overlay - on top of content so it doesn't squish */}
-              <div className="absolute inset-0 border-[12px] border-[#1c1c1c] rounded-[3.5rem] shadow-2xl ring-1 ring-black/10 pointer-events-none z-50" />
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-[#1c1c1c] rounded-b-2xl pointer-events-none z-[60]" />
-              
             </div>
           </div>
 

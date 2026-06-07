@@ -112,7 +112,7 @@ export default function TermsPage() {
                   ✉️ official@sahinaja.com
                 </a>
                 <a
-                  href="https://wa.me/6282116179745"
+                  href="https://wa.me/6287763461221"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-xs text-rose-500 hover:underline font-medium"

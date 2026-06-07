@@ -91,7 +91,8 @@ export default function Navbar() {
             {session?.user ? (
               <div className="relative">
                 <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  popoverTarget="user-menu-popover"
+                  style={{ anchorName: '--user-menu-anchor' } as React.CSSProperties}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-rose-500/10 hover:border-rose-500/40 transition-all duration-200 shadow-sm"
                 >
                   {session.user.image ? (
@@ -110,39 +111,55 @@ export default function Navbar() {
                   </span>
                 </button>
 
-                {isUserMenuOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-52 glass rounded-2xl shadow-2xl shadow-rose-500/10 py-2 animate-slide-up">
+                <div 
+                  id="user-menu-popover" 
+                  popover="auto"
+                  className="w-52 glass rounded-2xl shadow-2xl shadow-rose-500/10 py-2 animate-slide-up"
+                  style={{
+                    positionAnchor: '--user-menu-anchor',
+                    bottom: 'auto',
+                    left: 'auto',
+                    top: 'anchor(bottom)',
+                    right: 'anchor(right)',
+                    margin: 0,
+                    marginTop: '12px'
+                  } as React.CSSProperties}
+                >
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
+                    onClick={() => {
+                      const popover = document.getElementById('user-menu-popover');
+                      if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
+                    }}
+                  >
+                    <Heart className="h-4 w-4" />
+                    My Invitations
+                  </Link>
+                  {session.user.role === 'ADMIN' && (
                     <Link
-                      href="/dashboard"
+                      href="/admin"
                       className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <Heart className="h-4 w-4" />
-                      My Invitations
-                    </Link>
-                    {session.user.role === 'ADMIN' && (
-                      <Link
-                        href="/admin"
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <User className="h-4 w-4" />
-                        Admin Dashboard
-                      </Link>
-                    )}
-                    <div className="h-px bg-rose-500/5 mx-4 my-1" />
-                    <button
                       onClick={() => {
-                        setIsUserMenuOpen(false);
-                        signOut({ callbackUrl: '/' });
+                        const popover = document.getElementById('user-menu-popover');
+                        if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-50 transition-all"
                     >
-                      <LogOut className="h-4 w-4" />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
+                      <User className="h-4 w-4" />
+                      Admin Dashboard
+                    </Link>
+                  )}
+                  <div className="h-px bg-rose-500/5 mx-4 my-1" />
+                  <button
+                    onClick={() => {
+                      signOut({ callbackUrl: '/' });
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-50 transition-all"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </button>
+                </div>
               </div>
             ) : (
               <Link
@@ -156,16 +173,31 @@ export default function Navbar() {
 
           {/* Mobile menu button */}
           <button
+            popoverTarget="mobile-menu-popover"
+            style={{ anchorName: '--mobile-menu-anchor' } as React.CSSProperties}
             className="md:hidden p-2 rounded-xl text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden pb-6 pt-2 border-t border-rose-500/5 space-y-1 animate-fade-in bg-[#fdfcf9]">
+        {/* Mobile Navigation Popover */}
+        <div 
+          id="mobile-menu-popover" 
+          popover="auto"
+          onToggle={(e: any) => setIsMobileMenuOpen(e.newState === 'open')}
+          className="md:hidden w-[calc(100vw-2rem)] max-w-[320px] rounded-[2rem] shadow-2xl shadow-rose-500/20 py-4 animate-fade-in bg-[#fdfcf9] border border-rose-500/10 backdrop-blur-2xl"
+          style={{
+            positionAnchor: '--mobile-menu-anchor',
+            bottom: 'auto',
+            left: 'auto',
+            top: 'anchor(bottom)',
+            right: 'anchor(right)',
+            margin: 0,
+            marginTop: '16px'
+          } as React.CSSProperties}
+        >
+          <div className="space-y-1">
             {!isAdminRoute && navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -175,7 +207,10 @@ export default function Navbar() {
                     ? 'text-rose-500 bg-rose-500/10 shadow-sm shadow-rose-500/5' 
                     : 'text-[#6b6b6b] hover:text-[#1c1c1c] hover:bg-rose-500/5'
                 }`}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  const popover = document.getElementById('mobile-menu-popover');
+                  if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
+                }}
               >
                 {link.label}
               </Link>
@@ -186,14 +221,16 @@ export default function Navbar() {
                   <Link
                     href="/admin"
                     className="block mx-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      const popover = document.getElementById('mobile-menu-popover');
+                      if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
+                    }}
                   >
                     Admin Dashboard
                   </Link>
                 )}
                 <button
                   onClick={() => {
-                    setIsMobileMenuOpen(false);
                     signOut({ callbackUrl: '/' });
                   }}
                   className="block w-[calc(100%-1.5rem)] mx-3 px-5 py-3.5 rounded-2xl text-sm text-rose-500 font-bold hover:bg-rose-50 transition-all text-left"
@@ -205,13 +242,16 @@ export default function Navbar() {
               <Link
                 href="/auth/signin"
                 className="block mx-4 mt-4 text-center px-6 py-3 text-sm font-bold rounded-xl bg-rose-gradient text-white shadow-lg shadow-rose-500/20"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  const popover = document.getElementById('mobile-menu-popover');
+                  if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
+                }}
               >
                 Sign In
               </Link>
             )}
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );

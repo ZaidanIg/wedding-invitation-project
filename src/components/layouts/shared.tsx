@@ -582,10 +582,6 @@ export function AudioPlayer({
     };
   }, []);
 
-  if (currentRank < requiredRank) {
-    return null;
-  }
-
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -648,13 +644,8 @@ export function AudioPlayer({
         // Scroll 1 pixel roughly every 16ms (60fps)
         const delta = time - lastTime;
         if (delta >= 16) {
-          // If in preview frame (e.g. create page), scroll the container, otherwise scroll window
-          const previewContainer = document.getElementById('preview-container');
-          if (previewContainer && isPreview) {
-             previewContainer.scrollBy({ top: 1, left: 0, behavior: 'instant' });
-          } else {
-             window.scrollBy({ top: 1, left: 0, behavior: 'instant' });
-          }
+          // Since we are inside an iframe, window.scrollBy perfectly scrolls the invitation preview
+          window.scrollBy({ top: 1, left: 0, behavior: 'instant' });
           lastTime = time;
         }
         animationFrameId = requestAnimationFrame(scrollLoop);
@@ -670,6 +661,10 @@ export function AudioPlayer({
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
   }, [isAutoScrolling, isPreview]);
+
+  if (currentRank < requiredRank) {
+    return null;
+  }
 
   return (
     <div ref={containerRef} className={`fixed top-1/2 right-4 -translate-y-1/2 z-[100] flex flex-col gap-3 floating-widgets transition-all duration-500 ease-out ${!isVisible ? 'opacity-0 translate-y-5 scale-90 pointer-events-none' : 'opacity-100 translate-y-0 scale-100'}`}>
@@ -747,11 +742,11 @@ export function CurvedDivider({ fill = '#faf7f0', position = 'top' }: { fill?: s
 
 /* ── Fallback Photos ── */
 export const fallbackPhotos = [
-  'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=800&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=800&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=800&auto=format&fit=crop',
+  '/assets/ElegantSundanesseTheme/assets/foto cover.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 1.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 2.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 3.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 4.jpg',
 ];
 
 /* ── Helper: resolve photos ── */
@@ -1285,17 +1280,20 @@ export function GallerySection({
   textColor = 'text-stone-800',
   borderColor = 'border-stone-200',
   title = 'Our Moments',
+  children,
 }: {
   photos: string[];
   bgColor?: string;
   textColor?: string;
   borderColor?: string;
   title?: string;
+  children?: React.ReactNode;
 }) {
   if (!photos || photos.length === 0) return null;
 
   return (
-    <section className={`py-14 px-6 ${bgColor} text-center`}>
+    <section id="gallery" className={`relative py-14 px-6 ${bgColor} text-center`}>
+      {children}
       <AnimatedSection animation="scale">
         <div className={`inline-flex p-3 rounded-full border ${borderColor} mb-4`}>
           <Camera className={`h-5 w-5 ${textColor} opacity-60`} />

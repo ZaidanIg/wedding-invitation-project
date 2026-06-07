@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 
-const WHATSAPP_NUMBER = '6282116179745';
+const WHATSAPP_NUMBER = '6287763461221';
 const WHATSAPP_MESSAGE = encodeURIComponent(
   'Halo Sahinaja! Saya ingin bertanya lebih lanjut tentang undangan digital pernikahan. 😊'
 );

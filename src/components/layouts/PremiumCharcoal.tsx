@@ -28,6 +28,7 @@ import {
   OpeningPhraseSection,
   GallerySection,
   VideoEmbedSection,
+  AudioPlayer
 } from './shared';
 
 /* ── Falling Gold Dust Particles ── */
@@ -169,78 +170,7 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
   );
 }
 
-/* ── Interactive Spinning Gold Vinyl Player ── */
-function SpinningGoldVinyl({ src, isPreview }: { src: string; isPreview?: boolean }) {
-    const { tier } = useTier();
-    const currentRank = TIER_RANK[tier] || 0;
-  const requiredRank = TIER_RANK['PREMIUM'];
 
-  const [playing, setPlaying] = useState(false);
-  const ref = useRef<HTMLAudioElement | null>(null);
-
-  if (currentRank < requiredRank || !src) {
-    return null;
-  }
-
-  const toggle = () => {
-    if (!ref.current) return;
-    if (playing) {
-      ref.current.pause();
-      setPlaying(false);
-    } else {
-      ref.current.play()
-        .then(() => setPlaying(true))
-        .catch((err) => {
-          console.error('Audio play blocked:', err);
-          setPlaying(false);
-        });
-    }
-  };
-
-  useEffect(() => {
-    const audio = ref.current;
-    if (audio && !isPreview) {
-      const attemptPlay = () => {
-        audio.play()
-          .then(() => setPlaying(true))
-          .catch(() => setPlaying(false));
-      };
-      
-      attemptPlay();
-      
-      const handleEnded = () => setPlaying(false);
-      audio.addEventListener('ended', handleEnded);
-      return () => audio.removeEventListener('ended', handleEnded);
-    }
-  }, [src, isPreview]);
-
-  return (
-    <div className="fixed bottom-24 right-4 z-[99] flex justify-end">
-      <audio ref={ref} src={src} loop preload="auto">
-        <source src={src} type="audio/mpeg" />
-      </audio>
-      <button 
-        onClick={toggle} 
-        className={`w-12 h-12 flex items-center justify-center rounded-full shadow-3xl border border-[#d4af37]/40 backdrop-blur-lg transition-all duration-500 relative overflow-hidden bg-[#111111]`}
-      >
-        {/* Golden Vinyl Groove Lines */}
-        <div className={`absolute inset-1 rounded-full border border-[#d4af37]/15 transition-transform duration-[6000ms] ease-linear ${playing ? 'animate-spin' : ''}`}>
-          <div className="absolute inset-1 rounded-full border border-[#d4af37]/10" />
-          <div className="absolute inset-2 rounded-full border border-[#d4af37]/5" />
-          {/* Gold Center Label */}
-          <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-[#d4af37] to-[#f5f0eb] flex items-center justify-center shadow-inner">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#111111]" />
-          </div>
-        </div>
-
-        {/* Music Icons Overlay */}
-        <span className="relative z-10 text-[#d4af37]">
-          {playing ? <Pause className="h-3.5 w-3.5 stroke-[2.5]" /> : <Music className="h-3.5 w-3.5 stroke-[2.5]" />}
-        </span>
-      </button>
-    </div>
-  );
-}
 
 /* ── Custom Wishes (RSVP) Section ── */
 function WishesSection({ invitation }: { invitation: Invitation }) {
@@ -446,6 +376,7 @@ interface LayoutProps {
 export default function PremiumCharcoal({ invitation, isPreview = false }: LayoutProps) {
   const { tier } = useTier();
   const [isOpened, setIsOpened] = useState(isPreview);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
@@ -472,6 +403,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
 
   const handleOpen = () => {
     setIsOpened(true);
+    setIsPlaying(true);
   };
 
   return (
@@ -915,9 +847,9 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
         )}
       </section>
 
-      {/* Sticky music widget & Bottom navigation bar when opened */}
+      {/* Standard Audio Player & Auto Scroll */}
       {isOpened && invitation.musicUrl && (
-        <SpinningGoldVinyl src={invitation.musicUrl} isPreview={isPreview} />
+        <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} activeColor="bg-[#d4af37] text-[#111111]" inactiveColor="bg-[#111111]/80 text-[#d4af37]" />
       )}
       
       

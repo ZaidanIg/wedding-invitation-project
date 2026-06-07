@@ -26,6 +26,7 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
+  AudioPlayer
 } from './shared';
 
 /* ── Specific Parts for LuxuryEmerald ── */
@@ -217,66 +218,6 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 
 
 
-function EmeraldAudio({ src, isPreview }: { src: string; isPreview?: boolean }) {
-    const { tier } = useTier();
-    const currentRank = TIER_RANK[tier] || 0;
-  const requiredRank = TIER_RANK['PREMIUM'];
-
-  const [playing, setPlaying] = useState(false);
-  const ref = useRef<HTMLAudioElement | null>(null);
-
-  if (currentRank < requiredRank) {
-    return null;
-  }
-
-  const toggle = () => {
-    if (!ref.current) return;
-    if (playing) {
-      ref.current.pause();
-      setPlaying(false);
-    } else {
-      ref.current.play()
-        .then(() => setPlaying(true))
-        .catch((err) => {
-          console.error('Audio playback error:', err);
-          setPlaying(false);
-        });
-    }
-  };
-
-  useEffect(() => {
-    const audio = ref.current;
-    if (audio && !isPreview) {
-      const attemptPlay = () => {
-        audio.play()
-          .then(() => setPlaying(true))
-          .catch(() => {
-            setPlaying(false);
-          });
-      };
-      
-      attemptPlay();
-      
-      const handleEnded = () => setPlaying(false);
-      audio.addEventListener('ended', handleEnded);
-      return () => audio.removeEventListener('ended', handleEnded);
-    }
-  }, [src, isPreview]);
-
-  const positionClass = isPreview ? 'sticky' : 'fixed';
-  return (
-    <div className={`${positionClass} bottom-20 right-4 z-[100] flex justify-end`}>
-      <audio ref={ref} src={src} loop preload="auto">
-        <source src={src} type="audio/mpeg" />
-      </audio>
-      <button 
-        onClick={toggle} 
-        className={`w-11 h-11 flex items-center justify-center rounded-full shadow-2xl border border-[#d4af37]/30 backdrop-blur-md transition-all duration-300 ${playing ? 'bg-[#d4af37] text-[#042f2e]' : 'bg-[#042f2e]/80 text-[#d4af37] animate-pulse-slow'}`}>
-        {playing ? <Pause className="h-4 w-4 fill-current" /> : <Music className="h-4 w-4" />}
-      </button>
-    </div>
-  );
-}
 
 function IslamicDivider() {
   return (
@@ -485,6 +426,7 @@ interface LayoutProps {
 export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutProps) {
   const { tier } = useTier();
   const [isOpened, setIsOpened] = useState(isPreview);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
@@ -511,6 +453,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
 
   const handleOpen = () => {
     setIsOpened(true);
+    setIsPlaying(true);
   };
 
   return (
@@ -776,7 +719,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
       </section>
 
       <div className="h-20 bg-[#042f2e]" />
-      {isOpened && invitation.musicUrl && <EmeraldAudio src={invitation.musicUrl} isPreview={isPreview} />}
+      {isOpened && invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} activeColor="bg-[#d4af37] text-[#042f2e]" inactiveColor="bg-[#042f2e]/80 text-[#d4af37]" />}
       
     </div>
   );
