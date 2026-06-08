@@ -184,25 +184,39 @@ export function LoveStorySection({
           <p className={`text-[10px] uppercase tracking-[0.3em] ${accentColor} opacity-60 mb-16`}>Perjalanan Cinta Kami</p>
         </AnimatedSection>
 
-        <div className="max-w-md mx-auto relative">
-          {/* Timeline Line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent -translate-x-1/2" />
+        <div className="max-w-md mx-auto relative flex flex-col items-center">
+          {story.map((item, idx) => {
+            const isLast = idx === story.length - 1;
+            const isEven = idx % 2 === 0;
 
-          {story.map((item, idx) => (
-            <div key={item.id} className={`relative mb-20 last:mb-0 ${idx % 2 === 0 ? 'text-right pr-[50%] mr-8' : 'text-left pl-[50%] ml-8'}`}>
-              <AnimatedSection animation={idx % 2 === 0 ? 'left' : 'right'}>
-                {/* Year Bubble */}
-                <div className={`absolute top-0 w-12 h-12 rounded-full ${bgColor} border border-white/20 flex items-center justify-center z-10 ${idx % 2 === 0 ? '-right-14' : '-left-14'}`}>
-                  <span className={`text-[10px] font-bold ${accentColor}`}>{item.year}</span>
-                </div>
+            return (
+              <div key={item.id} className="w-full flex flex-col items-center relative">
+                <AnimatedSection animation="up" className="relative w-full max-w-[85%] z-10">
+                  <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-5 rounded-2xl flex flex-col items-center text-center w-full relative">
+                    <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-md bg-white/5">
+                      <Image src={item.photoUrl || '/images/hero-image.jpg'} alt={item.title} fill className="object-cover" unoptimized />
+                    </div>
+                    <span className={`text-[10px] font-bold tracking-widest uppercase mb-1 ${accentColor}`}>{item.year}</span>
+                    <h3 className={`text-lg font-display font-bold ${textColor} mb-2`}>{item.title}</h3>
+                    <p className={`text-sm ${textColor} opacity-60 leading-relaxed italic`}>&ldquo;{item.description}&rdquo;</p>
+                  </div>
+                </AnimatedSection>
 
-                <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-5 rounded-2xl">
-                  <h3 className={`text-lg font-display font-bold ${textColor} mb-2`}>{item.title}</h3>
-                  <p className={`text-sm ${textColor} opacity-60 leading-relaxed italic`}>&ldquo;{item.description}&rdquo;</p>
-                </div>
-              </AnimatedSection>
-            </div>
-          ))}
+                {!isLast && (
+                  <div className={`relative w-full h-20 my-[-4px] z-0 opacity-60 ${accentColor}`}>
+                    <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                      {isEven ? (
+                        <path d="M 50 0 C 90 0, 90 100, 50 100" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" fill="none" vectorEffect="non-scaling-stroke" />
+                      ) : (
+                        <path d="M 50 0 C 10 0, 10 100, 50 100" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" fill="none" vectorEffect="non-scaling-stroke" />
+                      )}
+                    </svg>
+                    <div className={`absolute top-1/2 -translate-y-1/2 ${isEven ? 'left-[80%]' : 'left-[20%]'} -translate-x-1/2 w-3 h-3 rounded-full bg-[#111111] border-2 border-current z-10 shadow-sm`} />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <AnimatedSection delay="delay-500">
@@ -742,11 +756,11 @@ export function CurvedDivider({ fill = '#faf7f0', position = 'top' }: { fill?: s
 
 /* ── Fallback Photos ── */
 export const fallbackPhotos = [
-  'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=800&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=800&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=800&auto=format&fit=crop',
+  '/assets/ElegantSundanesseTheme/assets/foto cover.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 1.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 2.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 3.jpg',
+  '/assets/ElegantSundanesseTheme/assets/photo 4.jpg',
 ];
 
 /* ── Helper: resolve photos ── */
@@ -1190,87 +1204,6 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
     </div>
   );
 }
-/* ── Opening Phrase Section ── */
-// Renders the customizable opening phrase (Bismillah, Om Swastyastu, etc.)
-// at the very top of any invitation layout.
-export function OpeningPhraseSection({
-  phrase,
-  style = 'none',
-  textColorClass = 'text-white',
-  bgClass = 'bg-black/20',
-}: {
-  phrase?: string | null;
-  style?: string | null;
-  textColorClass?: string;
-  bgClass?: string;
-}) {
-  if (!phrase || style === 'none' || !style) return null;
-
-  if (style === 'arabic-calligraphy') {
-    return (
-      <>
-        {/* Arabic Google Font loaded inline */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
-          rel="stylesheet"
-        />
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
-          className={`w-full py-8 px-6 text-center relative overflow-hidden ${bgClass}`}
-        >
-          {/* Decorative lines */}
-          <div className="flex items-center justify-center gap-4 mb-3 opacity-40">
-            <div className="h-px w-16 bg-current" />
-            <div className="w-1.5 h-1.5 rounded-full bg-current" />
-            <div className="h-px w-16 bg-current" />
-          </div>
-
-          <p
-            className={`text-3xl sm:text-4xl leading-[2] tracking-wider ${textColorClass}`}
-            style={{ fontFamily: "'Amiri', serif", direction: 'rtl' }}
-          >
-            {phrase}
-          </p>
-
-          <div className="flex items-center justify-center gap-4 mt-3 opacity-40">
-            <div className="h-px w-16 bg-current" />
-            <div className="w-1.5 h-1.5 rounded-full bg-current" />
-            <div className="h-px w-16 bg-current" />
-          </div>
-        </motion.div>
-      </>
-    );
-  }
-
-  // latin-elegant
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, ease: 'easeOut' }}
-      className={`w-full py-8 px-6 text-center relative overflow-hidden ${bgClass}`}
-    >
-      <div className="flex items-center justify-center gap-4 mb-3 opacity-30">
-        <div className="h-px w-20 bg-current" />
-        <Heart className={`h-3 w-3 ${textColorClass}`} />
-        <div className="h-px w-20 bg-current" />
-      </div>
-      <p
-        className={`text-base sm:text-lg font-serif italic tracking-wide leading-relaxed ${textColorClass}`}
-      >
-        {phrase}
-      </p>
-      <div className="flex items-center justify-center gap-4 mt-3 opacity-30">
-        <div className="h-px w-20 bg-current" />
-        <Heart className={`h-3 w-3 ${textColorClass}`} />
-        <div className="h-px w-20 bg-current" />
-      </div>
-    </motion.div>
-  );
-}
 
 /* ── Gallery Section (Tier-Aware) ── */
 // Automatically respects BASIC (3), PREMIUM (6), ULTIMATE (10) photo limits.
@@ -1280,17 +1213,20 @@ export function GallerySection({
   textColor = 'text-stone-800',
   borderColor = 'border-stone-200',
   title = 'Our Moments',
+  children,
 }: {
   photos: string[];
   bgColor?: string;
   textColor?: string;
   borderColor?: string;
   title?: string;
+  children?: React.ReactNode;
 }) {
   if (!photos || photos.length === 0) return null;
 
   return (
-    <section className={`py-14 px-6 ${bgColor} text-center`}>
+    <section id="gallery" className={`relative py-14 px-6 ${bgColor} text-center`}>
+      {children}
       <AnimatedSection animation="scale">
         <div className={`inline-flex p-3 rounded-full border ${borderColor} mb-4`}>
           <Camera className={`h-5 w-5 ${textColor} opacity-60`} />

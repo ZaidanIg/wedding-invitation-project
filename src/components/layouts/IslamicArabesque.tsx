@@ -32,7 +32,7 @@ import {
   DigitalGiftSection,
   WishesSection,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
 } from './shared';
@@ -113,12 +113,6 @@ export default function IslamicArabesque({ invitation, isPreview = false }: { in
       </AnimatePresence>
 
       <div className="relative">
-        <OpeningPhraseSection
-          phrase={invitation.openingPhrase}
-          style={invitation.openingStyle}
-          textColorClass="text-[#0f766e]"
-          bgClass="bg-[#f0fdfa] border-b border-[#2dd4bf]/20"
-        />
         {/* Hero */}
         <section id="home" className="relative h-[90vh] flex items-end justify-center pb-24 overflow-hidden">
            <div className="absolute inset-0">

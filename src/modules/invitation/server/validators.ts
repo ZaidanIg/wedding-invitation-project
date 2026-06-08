@@ -52,8 +52,6 @@ const baseInvitationSchema = z.object({
   })).optional().default([]),
   quotes: z.string().optional(),
   qrEnabled: z.boolean().optional().default(true),
-  openingPhrase: z.string().optional(),
-  openingStyle: z.enum(['none', 'arabic-calligraphy', 'latin-elegant']).optional().default('none'),
 });
 
 export const createInvitationSchema = baseInvitationSchema.superRefine((data, ctx) => {

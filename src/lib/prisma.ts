@@ -8,6 +8,9 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// Force clear the cache for hot-reload to pick up new models
+delete (globalThis as any).prisma;
+
 function createPrismaClient(): PrismaClient {
   let sslConfig: any = undefined;
 

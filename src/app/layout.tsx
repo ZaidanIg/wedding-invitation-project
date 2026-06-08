@@ -1,12 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display, Dancing_Script, Cinzel, Montserrat, Outfit, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/shared/Navbar';
-import Footer from '@/components/shared/Footer';
 import ToastContainer from '@/components/ui/Toast';
 import ErrorBoundary from '@/components/shared/ErrorBoundary';
 import Providers from '@/components/shared/Providers';
-import WhatsAppFloat from '@/components/shared/WhatsAppFloat';
+import PublicShell from '@/components/shared/PublicShell';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -140,12 +138,7 @@ export default function RootLayout({
         ` }} />
         <Providers>
           <ErrorBoundary>
-            <div className="flex flex-col min-h-screen w-full overflow-x-clip relative">
-              <Navbar />
-              <main className="flex-1 w-full overflow-x-clip">{children}</main>
-              <Footer />
-              <WhatsAppFloat />
-            </div>
+            <PublicShell>{children}</PublicShell>
             <ToastContainer />
           </ErrorBoundary>
         </Providers>

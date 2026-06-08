@@ -22,7 +22,7 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
 } from './shared';
@@ -66,12 +66,6 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
 
   return (
     <div className="w-full max-w-lg mx-auto bg-white text-zinc-900 font-sans overflow-hidden relative shadow-2xl border-x border-[#D4AF37]/20">
-      <OpeningPhraseSection
-        phrase={invitation.openingPhrase}
-        style={invitation.openingStyle}
-        textColorClass="text-[#8B6914]"
-        bgClass="bg-zinc-50 border-b border-[#D4AF37]/20"
-      />
       {/* Hero */}
       <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col overflow-hidden pt-12 pb-8 px-6">
         <div className="absolute inset-0 z-0">

@@ -21,7 +21,7 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
 } from './shared';
@@ -72,12 +72,6 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
 
   return (
     <div className="w-full max-w-lg mx-auto bg-[#e8f0fe] text-slate-800 font-sans overflow-hidden relative shadow-2xl">
-      <OpeningPhraseSection
-        phrase={invitation.openingPhrase}
-        style={invitation.openingStyle}
-        textColorClass="text-blue-900"
-        bgClass="bg-[#d0e1fd]"
-      />
       {/* Hero */}
       <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">

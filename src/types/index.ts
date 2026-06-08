@@ -6,7 +6,7 @@
 // ---- Enums ----
 export type Tone = 'formal' | 'romantic' | 'modern' | 'playful';
 export type Language = 'id' | 'en';
-export type Layout = 'elegant-cream' | 'royal-blue' | 'rose-garden' | 'golden-classic' | 'luxury-emerald' | 'islamic-grace' | 'islamic-minimalist' | 'islamic-midnight' | 'islamic-arabesque' | 'christian-elegant' | 'hindu-mandala' | 'buddhist-zen' | 'confucian-oriental' | 'premium-charcoal' | 'premium-sunda-3d' | 'premium-javanese' | 'sand-dunes' | 'midnight-velvet' | 'arabesque-pattern' | 'forest-grace' | 'garden-chapel' | 'mandala-fusion' | 'zen-garden' | 'oriental-luxe' | 'onyx-premium' | 'batik-heritage';
+export type Layout = 'elegant-cream' | 'royal-blue' | 'rose-garden' | 'golden-classic' | 'luxury-emerald' | 'islamic-grace' | 'islamic-minimalist' | 'islamic-midnight' | 'islamic-arabesque' | 'christian-elegant' | 'hindu-mandala' | 'buddhist-zen' | 'confucian-oriental' | 'premium-charcoal' | 'elegant-sundanese' | 'premium-javanese' | 'sand-dunes' | 'midnight-velvet' | 'arabesque-pattern' | 'forest-grace' | 'garden-chapel' | 'mandala-fusion' | 'zen-garden' | 'oriental-luxe' | 'onyx-premium' | 'batik-heritage';
 export type RsvpStatus = 'PENDING' | 'ATTENDING' | 'NOT_ATTENDING';
 export type Role = 'USER' | 'ADMIN';
 export type Tier = 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE';
@@ -115,8 +115,6 @@ export interface Invitation {
   aiRegenCount: number;
   videoUrl?: string | null;
   qrEnabled?: boolean;
-  openingPhrase?: string | null;
-  openingStyle?: string | null;
   createdAt: string;
   updatedAt: string;
   guests?: Guest[];
@@ -260,8 +258,6 @@ export interface FormWizardState {
     musicUrl?: string;
     videoUrl?: string;
     layout: Layout;
-    openingPhrase?: string;
-    openingStyle?: 'none' | 'arabic-calligraphy' | 'latin-elegant';
   };
   photoUrls: string[];
   headerPhotoUrl?: string;

@@ -29,6 +29,7 @@ export default function RsvpForm({ slug, tier, qrEnabled, initialSubmitted, init
   // Check localStorage and cookies on mount to maximize Next.js static caching
   // by offloading state to the client
   useEffect(() => {
+    /* eslint-disable */
     // 1. Check LocalStorage
     const localData = localStorage.getItem(`sahinaja_rsvp_${slug}`);
     if (localData) {
@@ -51,6 +52,7 @@ export default function RsvpForm({ slug, tier, qrEnabled, initialSubmitted, init
       setIsSubmitted(true);
       setGuestId(match[2]);
     }
+    /* eslint-enable */
   }, [slug]);
 
   const handleSubmit = async (e: React.FormEvent) => {

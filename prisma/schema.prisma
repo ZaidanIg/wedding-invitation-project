@@ -20,6 +20,7 @@ model User {
   invitations   Invitation[]
   sessions      Session[]
   transactions  Transaction[]
+  promoUsages   PromoUsage[]
 }
 
 model Account {
@@ -112,10 +113,7 @@ model Invitation {
   aiRegenCount   Int       @default(0)
   qrEnabled      Boolean   @default(true)
   expiresAt      DateTime?
-  /// Kalimat pembuka undangan opsional (Bismillah, Om Swastyastu, dll.)
-  openingPhrase  String?
-  /// Gaya render kalimat pembuka: arabic-calligraphy | latin-elegant | none
-  openingStyle   String?   @default("none")
+
 
   // Relations
   user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -232,12 +230,16 @@ model Transaction {
   paymentMethod  String? // gopay, bank_transfer, credit_card, etc.
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
+  promoCode      String?
+  discountAmount Int               @default(0)
 
   // Relations
   invitation Invitation?          @relation(fields: [invitationId], references: [id])
   user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  promo      Promo?               @relation(fields: [promoCode], references: [code])
   webhooks   PaymentWebhook[]
   history    TransactionHistory[]
+  promoUsage PromoUsage?
 
   @@index([userId])
   @@index([invitationId])
@@ -315,6 +317,47 @@ enum RsvpStatus {
 enum PhotoType {
   GALLERY // General gallery photos
   PREWEDDING // Prewedding specific photos
+}
+
+// ── Promos & Vouchers ─────────────────────────────────────────
+
+model Promo {
+  id                String       @id @default(cuid())
+  code              String       @unique
+  description       String?
+  discountPercent   Int          @default(0) // 1-100%
+  maxDiscountAmount Int?         // Opsional: Maksimal diskon dalam Rupiah
+  maxGlobalUsage    Int          @default(0) // 0 = unlimited
+  usageCount        Int          @default(0)
+  usageLimitPerUser Int          @default(1)
+  usageLimitPerIp   Int          @default(1)
+  isActive          Boolean      @default(true)
+  expiresAt         DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  transactions Transaction[]
+  usages       PromoUsage[]
+
+  @@index([code])
+  @@index([isActive])
+}
+
+model PromoUsage {
+  id            String      @id @default(cuid())
+  promoCode     String
+  userId        String
+  transactionId String      @unique
+  ipAddress     String
+  createdAt     DateTime    @default(now())
+
+  promo         Promo       @relation(fields: [promoCode], references: [code], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([promoCode])
+  @@index([userId])
+  @@index([ipAddress])
 }
 
 // ── ERP Expansion (Admin) ─────────────────────────────────────

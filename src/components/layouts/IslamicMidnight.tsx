@@ -33,7 +33,7 @@ import {
   DigitalGiftSection,
   QuotesSection,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
   WishesSection,
@@ -144,12 +144,6 @@ export default function IslamicMidnight({ invitation, isPreview = false }: { inv
       </AnimatePresence>
 
       <div className="relative">
-        <OpeningPhraseSection
-          phrase={invitation.openingPhrase}
-          style={invitation.openingStyle}
-          textColorClass="text-[#c5a059]"
-          bgClass="bg-[#0a0f0d] border-b border-[#c5a059]/20"
-        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6">
            <div className="absolute inset-0">

@@ -1,94 +1,162 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Home, Heart, Calendar, Image as ImageIcon, Send } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { Home, Heart, CalendarDays, Image as ImageIcon, Send, Gift } from 'lucide-react';
+
+const ITEM_DEFS = [
+  { type: 'home', icon: Home, label: 'Home', possibleIds: ['home', 'hero', 'hero-section', 'header'] },
+  { type: 'couple', icon: Heart, label: 'Couple', possibleIds: ['couple', 'bride-groom', 'groom-section', 'profiles'] },
+  { type: 'date', icon: CalendarDays, label: 'Date', possibleIds: ['date', 'event', 'events', 'date-section', 'ceremony'] },
+  { type: 'gallery', icon: ImageIcon, label: 'Gallery', possibleIds: ['gallery', 'gallery-section', 'photos'] },
+  { type: 'rsvp', icon: Send, label: 'RSVP', possibleIds: ['rsvp', 'wishes', 'rsvp-section', 'guestbook'] },
+  { type: 'gift', icon: Gift, label: 'Gift', isButton: true, possibleIds: ['gift', 'digital-gift', 'gift-section', 'angpao', 'envelope-section'] },
+];
 
 export default function ThemeNavbar() {
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection, setActiveSection] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const [navItems, setNavItems] = useState<any[]>([]);
 
+  // Ref to the navbar container — gives us correct ownerDocument (works inside iframe too)
+  const containerRef = useRef<HTMLDivElement>(null);
+  // Lock scroll-driven updates while a programmatic scroll is in progress
+  const isScrollingRef = useRef(false);
+  const scrollLockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+  const getDoc = (): Document => containerRef.current?.ownerDocument ?? document;
+  const getWin = (): Window => (getDoc().defaultView ?? window) as Window;
+
+  // ── 1. Scan DOM for known section IDs ───────────────────────────────────────
   useEffect(() => {
-    // Show navbar after a slight delay for better UX
-    const timer = setTimeout(() => setIsVisible(true), 1000);
+    const timer = setTimeout(() => {
+      const doc = getDoc();
+      const elements = Array.from(doc.querySelectorAll('[id]'));
+      const foundItems: any[] = [];
+      const addedTypes = new Set<string>();
 
-    const sections = ['home', 'couple', 'date', 'gallery', 'rsvp'];
-    
+      elements.forEach((el) => {
+        const id = el.id.toLowerCase();
+        for (const def of ITEM_DEFS) {
+          if (!addedTypes.has(def.type) && def.possibleIds.includes(id)) {
+            foundItems.push({ ...def, id: el.id });
+            addedTypes.add(def.type);
+            break;
+          }
+        }
+      });
+
+      // Keep gift button at the end
+      const giftIndex = foundItems.findIndex(item => item.isButton);
+      if (giftIndex !== -1 && giftIndex !== foundItems.length - 1) {
+        const giftItem = foundItems.splice(giftIndex, 1)[0];
+        foundItems.push(giftItem);
+      }
+
+      setNavItems(foundItems);
+      if (foundItems.length > 0) setActiveSection(foundItems[0].id);
+      setIsVisible(true);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── 2. Scroll spy ────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (navItems.length === 0) return;
+
     const handleScroll = () => {
-      // Find the section currently in view
-      let current = 'home';
-      for (const section of sections) {
-        const el = document.getElementById(section);
+      // If we triggered the scroll programmatically, ignore scroll events
+      if (isScrollingRef.current) return;
+
+      const doc = getDoc();
+      const win = getWin();
+      const viewH = win.innerHeight;
+      let current = navItems[0].id;
+
+      for (const item of navItems) {
+        const el = doc.getElementById(item.id);
         if (el) {
           const rect = el.getBoundingClientRect();
-          // If the top of the section is near the top of the viewport
-          if (rect.top <= 150 && rect.bottom >= 150) {
-            current = section;
+          if (rect.top <= viewH / 2 && rect.bottom >= viewH / 2) {
+            current = item.id;
+          } else if (rect.top <= 150 && rect.bottom >= 150) {
+            current = item.id;
           }
         }
       }
       setActiveSection(current);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // Initial check
+    const win = getWin();
+    win.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
+    return () => win.removeEventListener('scroll', handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navItems]);
 
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
+  // ── 3. Click → scroll ────────────────────────────────────────────────────────
   const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      // Find the scroll container (it might be the body or a specific wrapper)
-      // Since it's an iframe, we scroll the window
-      window.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
-      setActiveSection(id);
-    }
+    const doc = getDoc();
+    const win = getWin();
+    const el = doc.getElementById(id);
+    if (!el) return;
+
+    // Lock scroll spy so it doesn't fight with our setActiveSection
+    isScrollingRef.current = true;
+    if (scrollLockTimer.current) clearTimeout(scrollLockTimer.current);
+
+    setActiveSection(id);
+    win.scrollTo({ top: el.offsetTop, behavior: 'smooth' });
+
+    // Release lock after smooth scroll animation (~800 ms)
+    scrollLockTimer.current = setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 900);
   };
 
-  const navItems = [
-    { id: 'home', icon: Home, label: 'HOME' },
-    { id: 'couple', icon: Heart, label: 'COUPLE' },
-    { id: 'date', icon: Calendar, label: 'EVENT' },
-    { id: 'gallery', icon: ImageIcon, label: 'GALLERY' },
-    { id: 'rsvp', icon: Send, label: 'RSVP' },
-  ];
-
-  if (!isVisible) return null;
+  if (!isVisible || navItems.length === 0) return null;
 
   return (
-    <div className="fixed bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 z-[90] animate-fade-in w-full max-w-[340px] px-4 pointer-events-none">
-      <div className="bg-[#1c1c1c]/85 backdrop-blur-xl shadow-2xl shadow-black/40 border border-white/10 rounded-full px-4 py-2.5 flex items-center justify-between pointer-events-auto">
+    <div
+      ref={containerRef}
+      className="fixed bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 z-[90] w-full max-w-[360px] px-4 pointer-events-none"
+      style={{ animation: 'fadeIn 0.4s ease-out forwards' }}
+    >
+      <div className="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 rounded-full px-3 py-2 flex items-center justify-between pointer-events-auto overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeSection === item.id;
+
+          if (item.isButton) {
+            return (
+              <button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}
+                className="flex items-center gap-1.5 bg-[#111111] hover:bg-black text-white px-3.5 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 ml-1 active:scale-95 whitespace-nowrap flex-shrink-0"
+              >
+                <Icon className="h-4 w-4" />
+                <span className="text-[10px] font-bold tracking-wider">{item.label}</span>
+              </button>
+            );
+          }
+
           return (
             <button
               key={item.id}
               onClick={() => scrollTo(item.id)}
-              className="flex flex-col items-center justify-center flex-1 h-[42px] relative group cursor-pointer"
+              className="flex flex-col items-center justify-center flex-1 h-[42px] min-w-[48px] relative group cursor-pointer active:scale-95 transition-transform flex-shrink-0"
             >
-              <div 
-                className={`transition-all duration-500 ease-out flex items-center justify-center ${
-                  isActive 
-                    ? 'text-[#d4af37] -translate-y-2.5 scale-110 drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]' 
-                    : 'text-white/40 hover:text-white/80 hover:-translate-y-1'
+              <div
+                className={`transition-all duration-300 ease-out flex items-center justify-center ${
+                  isActive ? 'text-black -translate-y-1' : 'text-gray-400 hover:text-black'
                 }`}
               >
-                <Icon className="h-5 w-5" strokeWidth={isActive ? 2 : 1.5} />
+                <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={isActive ? 2.5 : 1.5} />
               </div>
-              <span 
-                className={`absolute bottom-0 text-[8px] sm:text-[9px] font-bold tracking-widest transition-all duration-500 ease-out whitespace-nowrap ${
-                  isActive ? 'text-[#d4af37] opacity-100 translate-y-0' : 'opacity-0 translate-y-2 text-white/40'
-                }`}
-              >
-                {item.label}
-              </span>
               {isActive && (
-                <div className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-[#d4af37] shadow-[0_0_6px_rgba(212,175,55,0.8)]" />
+                <div className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-black shadow-[0_0_4px_rgba(0,0,0,0.3)]" />
               )}
             </button>
           );
