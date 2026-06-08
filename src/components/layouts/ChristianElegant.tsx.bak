@@ -1,0 +1,466 @@
+'use client';
+import { getCoupleSlug } from '@/lib/utils';
+
+import React, { useState } from 'react';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Heart, Calendar, MapPin, Clock, Camera, 
+  MessageCircle, Sparkles, ChevronDown, 
+  Music, Share2, Users, QrCode, BookOpen,
+  Home, CalendarDays, Pause
+} from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
+import type { Invitation, Guest } from '@/types';
+import { getEmbedUrl } from '@/lib/utils';
+import { 
+  formatEventDate, 
+  getMapsUrl, 
+  resolvePhotos, 
+  AnimatedSection, 
+  CountdownTimer, 
+  LoveStorySection, 
+  WishesSection, 
+  AudioPlayer,
+  TierGate,
+  useTier,
+  ParallaxSection,
+  ParallaxImage,
+  WaveDivider,
+  IconMapper,
+  EventActionButtons,
+  OpeningPhraseSection,
+  GallerySection,
+  VideoEmbedSection,
+  DigitalGiftSection,
+} from './shared';
+
+function CoverPage({ groomName, brideName, guestName, onOpen }: {
+  groomName: string; brideName: string; guestName: string; onOpen: () => void;
+}) {
+  return (
+    <motion.div 
+      style={{ zIndex: 9999 }}
+      className="absolute inset-0 w-full h-full overflow-hidden pointer-events-auto z-[9999]"
+    >
+      {/* Left Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '-100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#ffffff' }}
+        className="absolute left-0 top-0 w-1/2 h-full border-r border-rose-100 z-10"
+      >
+        <div className="absolute inset-6 border-r-0 border border-rose-100/50 pointer-events-none rounded-l-[3rem]" />
+      </motion.div>
+
+      {/* Right Door */}
+      <motion.div 
+        initial={{ x: 0 }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%', transition: { duration: 1.4, ease: [0.76, 0, 0.24, 1] } }}
+        style={{ backgroundColor: '#ffffff' }}
+        className="absolute right-0 top-0 w-1/2 h-full border-l border-rose-100 z-10"
+      >
+        <div className="absolute inset-6 border-l-0 border border-rose-100/50 pointer-events-none rounded-r-[3rem]" />
+      </motion.div>
+
+      {/* Centered Content overlay (z-30) inside separate flex wrapper to avoid Safari flexbug */}
+      <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none z-30">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          exit={{ opacity: 0, scale: 0.8, y: -20, transition: { duration: 0.6 } }} 
+          transition={{ delay: 0.2, duration: 0.8 }} 
+          className="flex flex-col items-center px-6 max-w-md text-center pointer-events-auto"
+        >
+          <div className="mb-8 inline-flex p-5 rounded-full bg-rose-50 border border-rose-100 shadow-sm relative animate-pulse-slow">
+            <Heart className="text-rose-400 animate-heartbeat" fill="currentColor" size={40} />
+          </div>
+
+          <p className="text-[10px] uppercase tracking-[0.5em] text-stone-400 mb-8 font-bold">God Joined Us</p>
+          <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 mb-2 italic drop-shadow-sm leading-tight">{groomName}</h1>
+          <span className="text-2xl font-serif italic text-rose-300 block my-3">&</span>
+          <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 italic drop-shadow-sm leading-tight">{brideName}</h1>
+          
+          <div className="flex items-center justify-center gap-4 my-10">
+            <div className="h-[1px] w-10 bg-rose-100" />
+            <Heart className="h-3 w-3 text-rose-200" fill="currentColor" />
+            <div className="h-[1px] w-10 bg-rose-100" />
+          </div>
+          
+          <div className="space-y-1.5 mb-10">
+            <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-2 font-bold">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+            <p className="text-2xl font-display font-bold text-stone-800 tracking-wide">{guestName}</p>
+          </div>
+          
+          <motion.button 
+            onClick={onOpen} 
+            whileHover={{ scale: 1.05 }} 
+            whileTap={{ scale: 0.95 }}
+            className="px-14 py-5 rounded-2xl bg-[#1c1c1c] text-white font-bold text-xs tracking-[0.3em] uppercase transition-all hover:bg-stone-800 shadow-2xl cursor-pointer"
+          >
+            Buka Undangan
+          </motion.button>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
+
+
+export default function ChristianElegant({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
+  const { tier } = useTier();
+  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [isOpened, setIsOpened] = useState(isPreview);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [guestName, setGuestName] = useState('Tamu Undangan');
+  const { formattedDate, dayName, dayNumber, monthName } = formatEventDate(invitation.eventDate);
+  const { heroPhoto, galleryPhotos, photo2, photo3 } = resolvePhotos(invitation);
+  const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isPreview) {
+      const p = new URLSearchParams(window.location.search);
+      const to = p.get('to');
+      if (to) {
+        setGuestName(decodeURIComponent(to));
+        if (invitation.guests) {
+          const decodedTo = decodeURIComponent(to).trim().toLowerCase();
+          const guest = invitation.guests.find(
+            (g) => g.name.trim().toLowerCase() === decodedTo
+          );
+          if (guest) {
+            setMatchedGuest(guest);
+          }
+        }
+      }
+    }
+  }, [isPreview, invitation.guests]);
+
+  const handleOpen = () => {
+    setIsOpened(true);
+    setIsPlaying(true);
+  };
+
+  if (!mounted) {
+    return (
+      <div className="w-full max-w-lg mx-auto bg-white text-stone-800 relative shadow-2xl font-sans h-screen overflow-hidden">
+        {/* Left Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#ffffff' }}
+          className="absolute left-0 top-0 w-1/2 h-full border-r border-rose-100 z-10"
+        >
+          <div className="absolute inset-6 border-r-0 border border-rose-100/50 pointer-events-none rounded-l-[3rem]" />
+        </div>
+
+        {/* Right Door */}
+        <div 
+          style={{ zIndex: 9999, backgroundColor: '#ffffff' }}
+          className="absolute right-0 top-0 w-1/2 h-full border-l border-rose-100 z-10"
+        >
+          <div className="absolute inset-6 border-l-0 border border-rose-100/50 pointer-events-none rounded-r-[3rem]" />
+        </div>
+
+        {/* Centered Content overlay inside separate flex wrapper */}
+        <div style={{ zIndex: 9999 }} className="absolute inset-0 w-full h-full flex items-center justify-center z-30">
+          <div className="flex flex-col items-center px-6 max-w-md text-center">
+            <div className="mb-8 inline-flex p-5 rounded-full bg-rose-50 border border-rose-100 shadow-sm relative animate-pulse-slow">
+              <Heart className="text-rose-400 animate-heartbeat" fill="currentColor" size={40} />
+            </div>
+
+            <p className="text-[10px] uppercase tracking-[0.5em] text-stone-400 mb-8 font-bold">God Joined Us</p>
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 mb-2 italic drop-shadow-sm leading-tight">{invitation.groomName}</h1>
+            <span className="text-2xl font-serif italic text-rose-300 block my-3">&</span>
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 italic drop-shadow-sm leading-tight">{invitation.brideName}</h1>
+            
+            <div className="flex items-center justify-center gap-4 my-10">
+              <div className="h-[1px] w-10 bg-rose-100" />
+              <div className="h-[1px] w-10 bg-rose-100" />
+            </div>
+            
+            <div className="space-y-1.5 mb-10">
+              <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-2 font-bold">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+              <p className="text-2xl font-display font-bold text-stone-800 tracking-wide">{guestName}</p>
+            </div>
+            
+            <button 
+              className="px-14 py-5 rounded-2xl bg-[#1c1c1c] text-white font-bold text-xs tracking-[0.3em] uppercase transition-all shadow-2xl cursor-pointer"
+            >
+              Buka Undangan
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`w-full max-w-lg mx-auto bg-white text-stone-800 relative shadow-2xl font-sans ${!isOpened ? 'h-screen overflow-hidden' : 'min-h-screen pb-24'}`}>
+      
+      <AnimatePresence>
+        {!isOpened && <CoverPage groomName={invitation.groomName} brideName={invitation.brideName} guestName={guestName} onOpen={handleOpen} />}
+      </AnimatePresence>
+
+      <div className="relative z-0">
+        {/* Hero Section */}
+        <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+           <div className="absolute inset-0">
+             <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom scale-105" priority unoptimized />
+             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/10 to-white" />
+           </div>
+           
+           <div className="relative z-10 text-white mt-auto pb-40">
+              <AnimatedSection animation="up">
+                <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/70 mb-6">In God's Grace</p>
+                <h1 className="text-7xl font-display font-bold mb-6 drop-shadow-2xl italic leading-tight">
+                  {invitation.groomName.split(' ')[0]} <br/>
+                  <span className="text-rose-300 font-serif">&amp;</span> <br/>
+                  {invitation.brideName.split(' ')[0]}
+                </h1>
+                <div className="h-[1px] w-12 bg-rose-300/50 mx-auto mb-6" />
+                <p className="font-bold tracking-[0.4em] text-[10px] uppercase opacity-90">{formattedDate}</p>
+              </AnimatedSection>
+              
+              <TierGate tier={tier} minTier="PREMIUM">
+              <div className="mt-16 bg-white/10 backdrop-blur-md p-8 rounded-[3rem] border border-white/20 shadow-2xl">
+                <CountdownTimer targetDate={invitation.eventDate} textColor="text-white" labelColor="text-white/60" separatorColor="text-rose-300/30" />
+              </div>
+            </TierGate>
+           </div>
+        </section>
+
+        {/* Opening/Bible Quote */}
+        <section className="py-32 px-10 text-center bg-stone-50 relative overflow-hidden">
+           <div className="absolute -top-24 -right-24 w-64 h-64 bg-rose-100 rounded-full blur-[100px] opacity-30" />
+           <AnimatedSection>
+              <div className="mb-10 inline-flex p-5 rounded-3xl bg-white border border-stone-100 shadow-sm">
+                <BookOpen className="text-rose-300 opacity-60" size={32} />
+              </div>
+              <p className="text-stone-500 text-lg leading-relaxed italic mb-8 px-4 font-serif">
+                {invitation.quotes || '"Therefore what God has joined together, let no one separate."'}
+              </p>
+              <div className="flex items-center justify-center gap-6">
+                 <div className="h-[1px] w-8 bg-rose-200" />
+                 <span className="text-xs font-black uppercase tracking-[0.3em] text-rose-400">Mark 10:9</span>
+                 <div className="h-[1px] w-8 bg-rose-200" />
+              </div>
+           </AnimatedSection>
+        </section>
+
+        {/* Couple Details */}
+        <section id="couple" className="py-32 px-8 bg-white text-center">
+           <AnimatedSection className="mb-20"><p className="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold">The Holy Union</p></AnimatedSection>
+           <div className="space-y-32">
+              <AnimatedSection animation="left">
+                 <div className="relative w-56 h-72 mx-auto mb-10 rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white rotate-[-3deg]">
+                    <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" unoptimized />
+                 </div>
+                 <h3 className="text-4xl font-display font-bold text-stone-800 mb-2 italic">{invitation.groomName}</h3>
+                 <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] mb-4">The Groom</p>
+                 <p className="text-xs text-stone-400 leading-relaxed max-w-xs mx-auto italic">
+                   Son of {invitation.groomParents || 'Mr. & Mrs. Parents'}
+                 </p>
+              </AnimatedSection>
+
+              <AnimatedSection animation="scale" className="flex items-center justify-center py-4">
+                 <div className="h-[1px] w-12 bg-stone-100" />
+                 <Heart className="mx-8 text-rose-300 animate-heartbeat" fill="currentColor" size={24} />
+                 <div className="h-[1px] w-12 bg-stone-100" />
+              </AnimatedSection>
+
+              <AnimatedSection animation="right">
+                 <div className="relative w-56 h-72 mx-auto mb-10 rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white rotate-[3deg]">
+                    <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" unoptimized />
+                 </div>
+                 <h3 className="text-4xl font-display font-bold text-stone-800 mb-2 italic">{invitation.brideName}</h3>
+                 <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] mb-4">The Bride</p>
+                 <p className="text-xs text-stone-400 leading-relaxed max-w-xs mx-auto italic">
+                   Daughter of {invitation.brideParents || 'Mr. & Mrs. Parents'}
+                 </p>
+              </AnimatedSection>
+           </div>
+        </section>
+
+        <ParallaxImage src={photo2} alt="Wedding Photo" className="h-[50vh]" />
+
+        {/* Love Story */}
+        <TierGate 
+          tier={invitation.tier} 
+          minTier="BASIC"
+          
+        >
+          <LoveStorySection 
+            story={invitation.loveStory || []} 
+            bgColor="bg-[#faf9f6]" 
+            accentColor="text-rose-300" 
+            textColor="text-stone-800" 
+          />
+        </TierGate>
+
+        {/* Date Section for BottomNav targeting */}
+        <div id="date" />
+
+        {/* Agenda */}
+        <section className="py-32 px-8 bg-white relative">
+          <div className="text-center mb-20">
+             <p className="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold mb-4">God's Appointment</p>
+             <h2 className="text-4xl font-display font-bold text-stone-800 italic">Wedding Event</h2>
+          </div>
+
+          <AnimatedSection animation="scale" className="mb-20">
+            <div className="inline-flex items-center gap-10 border border-stone-100 rounded-[2.5rem] px-12 py-8 shadow-sm bg-stone-50/50 backdrop-blur-sm mx-auto w-full justify-center">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-black">{dayName}</span>
+              <div className="flex flex-col items-center">
+                <span className="text-5xl font-display font-bold text-stone-800">{dayNumber}</span>
+              </div>
+              <span className="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-black">{monthName}</span>
+            </div>
+          </AnimatedSection>
+          
+          <div className="space-y-8">
+             {(invitation.schedule || [
+               { id: '1', label: 'Holy Matrimony', time: invitation.eventTime, icon: 'heart' },
+               { id: '2', label: 'Wedding Reception', time: '18:00 - End', icon: 'utensils' }
+             ]).map((item: any, idx: number) => (
+               <AnimatedSection key={item.id} className="p-10 rounded-[3rem] bg-stone-50 border border-stone-100 hover:shadow-2xl transition-all duration-700 group">
+                  <div className="flex justify-between items-start mb-10">
+                     <div className="p-5 rounded-3xl bg-white shadow-sm group-hover:bg-[#1c1c1c] transition-colors group-hover:text-white">
+                       <IconMapper name={item.icon} size={28} className="text-rose-300" />
+                     </div>
+                     <span className="text-[10px] font-black bg-[#1c1c1c] text-white px-5 py-2 rounded-full uppercase tracking-widest">{item.time}</span>
+                  </div>
+                  <h4 className="text-3xl font-display font-bold text-stone-800 mb-4 italic leading-tight">{item.label}</h4>
+                  <div className="space-y-8">
+                    <p className="text-xs text-stone-400 leading-relaxed flex items-start gap-3 italic">
+                       <MapPin size={18} className="shrink-0 mt-0.5 text-rose-300" />
+                       <span>{invitation.venueName}<br/>{invitation.venueAddress}</span>
+                    </p>
+                    <EventActionButtons eventName={item.label} eventDate={invitation.eventDate} eventTime={item.time} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
+                  </div>
+               </AnimatedSection>
+             ))}
+          </div>
+        </section>
+
+        {/* Video Embed */}
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#f8f7f4]" textColor="text-rose-400" title="Wedding Video" />
+
+        {/* Gallery */}
+        <GallerySection
+          photos={galleryPhotos}
+          bgColor="bg-[#faf9f6]"
+          textColor="text-stone-800"
+          borderColor="border-rose-300"
+          title="Cherished Moments"
+        />
+
+        {/* Ultimate: VIP Guest Management */}
+        <TierGate 
+          tier={invitation.tier} 
+          minTier="ULTIMATE"
+          
+        >
+          <section className="py-32 px-8 bg-white relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-96 h-96 bg-rose-50 rounded-full blur-[100px] opacity-50 -mr-48 -mt-48" />
+             <div className="max-w-xl mx-auto relative z-10">
+                <AnimatedSection className="mb-20 text-center">
+                  <div className="inline-flex p-6 rounded-[2.5rem] bg-rose-50 mb-10 shadow-2xl border border-rose-100">
+                    <QrCode className="h-10 w-10 text-rose-400" />
+                  </div>
+                  <h2 className="text-4xl font-display font-bold text-stone-800 mb-4 italic leading-tight">Digital Grace Access</h2>
+                  <p className="text-stone-400 text-[10px] uppercase tracking-widest mb-10 font-black">Ultimate Recognition</p>
+                  <p className="text-stone-400 text-xs mx-auto leading-relaxed px-6 italic">
+                    Ensuring a seamless welcome for our most honored guests through God's grace and modern excellence.
+                  </p>
+                </AnimatedSection>
+
+                <div className="grid grid-cols-1 gap-8">
+                   <div className="p-12 rounded-[3.5rem] bg-stone-50 border border-stone-100 flex flex-col items-center text-center shadow-xl group">
+                      <QrCode className="h-16 w-16 text-rose-200 mb-10 group-hover:scale-110 transition-transform duration-700" />
+                      <h4 className="text-2xl font-display font-bold text-stone-800 mb-3 italic">Smart Digital Check-in</h4>
+                      <p className="text-xs text-stone-500 leading-relaxed mb-12 italic">Present your personalized seal for immediate entry into the celebration.</p>
+                      <div className="w-48 h-48 bg-white p-8 rounded-[3rem] shadow-inner flex items-center justify-center border border-rose-50">
+                         <QrCode className="h-24 w-24 text-stone-100" />
+                      </div>
+                   </div>
+
+                   <div className="p-12 rounded-[3.5rem] bg-[#1c1c1c] text-white flex flex-col items-center text-center shadow-2xl ring-1 ring-white/10">
+                      <Share2 className="h-12 w-12 text-rose-300 mb-10" />
+                      <h4 className="text-2xl font-display font-bold mb-3 italic">Personalized Invitation</h4>
+                      <p className="text-xs text-white/40 mb-12 leading-relaxed px-6 italic">Individualized digital experiences crafted uniquely for every guest on our list.</p>
+                      <div className="px-8 py-4 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-rose-200 w-full truncate text-center">
+                         sahinaja.com/u/alex-emily?to=The+Simpsons
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </section>
+        </TierGate>
+
+        <DigitalGiftSection gifts={(invitation as any).digitalGifts || []} bgColor="bg-[#faf9f6]" textColor="text-stone-800" />
+
+        {/* RSVP & Wishes */}
+        <section id="wishes" className="py-32 px-8 bg-white">
+           <div className="text-center mb-20">
+             <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
+                <MessageCircle className="text-rose-400" size={32} />
+             </div>
+             <h2 className="text-4xl font-display font-bold text-stone-800 italic mb-4">Prayers & Wishes</h2>
+             <p className="text-[10px] text-stone-400 uppercase tracking-[0.3em] font-black">Blessings from the Heart</p>
+           </div>
+           <WishesSection invitation={invitation} />
+        </section>
+
+        {/* Footer */}
+        <section className="py-48 px-8 text-center bg-stone-50 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/clean-gray-paper.png')]" />
+          <AnimatedSection>
+            <Heart className="mx-auto text-rose-300 mb-12 animate-heartbeat" fill="currentColor" size={32} />
+            <p className="text-lg italic text-stone-400 mb-20 max-w-sm mx-auto px-6 font-serif leading-relaxed">
+              "And over all these virtues put on love, which binds them all together in perfect unity."
+            </p>
+            <h3 className="text-6xl font-display font-bold text-stone-800 mb-6 italic leading-tight">
+              {invitation.groomName.split(' ')[0]} <br/>
+              <span className="text-rose-300 font-serif">&amp;</span> <br/>
+              {invitation.brideName.split(' ')[0]}
+            </h3>
+             <div className="h-[1px] w-20 bg-rose-200 mx-auto mt-12 mb-6" />
+            <p className="text-[10px] font-black text-stone-400 tracking-[0.6em] uppercase">{formattedDate}</p>
+          </AnimatedSection>
+
+          {invitation.tier === 'ULTIMATE' && invitation.qrEnabled !== false && (
+            <AnimatedSection delay="delay-500">
+              <div className="mt-12 flex flex-col items-center justify-center gap-3 px-6 max-w-sm mx-auto">
+                <div className="bg-white p-3.5 rounded-2xl inline-block shadow-lg border border-rose-100">
+                  <SafeQRCodeSVG
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invitation/${getCoupleSlug(invitation.groomName, invitation.brideName)}/${invitation.slug}/attendance`}
+                    size={130}
+                    level="H"
+                    fgColor="#1c1c1c"
+                  />
+                </div>
+                <p className="text-xs text-stone-800 font-semibold mt-1">
+                  QR Code Buku Tamu (Attendance)
+                </p>
+                <p className="text-[9px] text-stone-500 leading-relaxed font-sans max-w-[240px] text-center">
+                  Pindai QR Code ini untuk melakukan pengisian Buku Tamu secara digital saat menghadiri acara.
+                </p>
+              </div>
+            </AnimatedSection>
+          )}
+        </section>
+
+        {invitation.musicUrl && <AudioPlayer src={invitation.musicUrl} isPreview={isPreview} isPlayingProp={isPlaying} onPlayChange={setIsPlaying} />}
+        
+      </div>
+    </div>
+  );
+}

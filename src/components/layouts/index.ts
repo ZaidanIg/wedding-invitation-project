@@ -51,22 +51,46 @@ export const layouts = {
 
 export type LayoutType = keyof typeof layouts;
 
-// Display labels for UI (form + pricing page)
-export const LAYOUT_LABELS: Record<string, string> = {
-  'elegant-cream':     'Ivory Bloom',
-  'royal-blue':        'Azure Classic',
-  'rose-garden':       'Blush Garden',
-  'golden-classic':    'Golden Classic',
-  'luxury-emerald':    'Emerald Forest',
-  'sand-dunes':        'Sand Dunes',
-  'midnight-velvet':   'Midnight Velvet',
-  'arabesque-pattern': 'Arabesque Pattern',
-  'forest-grace':      'Forest Grace',
-  'garden-chapel':     'Garden Chapel',
-  'mandala-fusion':    'Mandala Fusion',
-  'zen-garden':        'Zen Garden',
-  'oriental-luxe':     'Oriental Luxe',
-  'onyx-premium':       'Onyx Premium',
-  'batik-heritage':     'Batik Heritage',
-  'elegant-sundanese':  'Elegant Sundanese',
-};
+export const LAYOUT_LABELS: Record<string, string> = (() => {
+  const allLabels: Record<string, string> = {
+    'elegant-cream':     'Ivory Bloom',
+    'royal-blue':        'Azure Classic',
+    'rose-garden':       'Blush Garden',
+    'golden-classic':    'Golden Classic',
+    'luxury-emerald':    'Emerald Forest',
+    'sand-dunes':        'Sand Dunes',
+    'midnight-velvet':   'Midnight Velvet',
+    'arabesque-pattern': 'Arabesque Pattern',
+    'forest-grace':      'Forest Grace',
+    'garden-chapel':     'Garden Chapel',
+    'mandala-fusion':    'Mandala Fusion',
+    'zen-garden':        'Zen Garden',
+    'oriental-luxe':     'Oriental Luxe',
+    'onyx-premium':       'Onyx Premium',
+    'batik-heritage':     'Batik Heritage',
+    'elegant-sundanese':  'Elegant Sundanese',
+  };
+
+  // Hide experimental themes in production (main branch)
+  if (process.env.NEXT_PUBLIC_APP_URL === 'https://sahinaja.com') {
+    const experimentalThemes = [
+      'forest-grace',
+      'garden-chapel',
+      'mandala-fusion',
+      'zen-garden',
+      'oriental-luxe',
+      // Legacy slugs just in case
+      'islamic-grace',
+      'christian-elegant',
+      'hindu-mandala',
+      'buddhist-zen',
+      'confucian-oriental'
+    ];
+    
+    experimentalThemes.forEach(theme => {
+      delete allLabels[theme];
+    });
+  }
+
+  return allLabels;
+})();

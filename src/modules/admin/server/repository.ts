@@ -188,34 +188,44 @@ export const adminRepository = {
   },
 
   /**
-   * List all users with aggregated stats.
+   * List users with pagination and optional search.
    */
-  async getUsers(search?: string) {
-    return prisma.user.findMany({
-      where: search
-        ? {
-            OR: [
-              { name: { contains: search, mode: 'insensitive' } },
-              { email: { contains: search, mode: 'insensitive' } },
-            ],
-          }
-        : undefined,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        createdAt: true,
-        _count: {
-          select: { invitations: true },
+  async getUsers(search?: string, page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    const where = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' as const } },
+            { email: { contains: search, mode: 'insensitive' as const } },
+          ],
+        }
+      : undefined;
+
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          createdAt: true,
+          _count: {
+            select: { invitations: true },
+          },
+          transactions: {
+            where: { status: { in: ['SUCCESS', 'SETTLEMENT'] } },
+            select: { amount: true },
+          },
         },
-        transactions: {
-          where: { status: { in: ['SUCCESS', 'SETTLEMENT'] } },
-          select: { amount: true },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.user.count({ where }),
+    ]);
+
+    return { users, total };
   },
 
   /**
@@ -342,4 +352,84 @@ export const adminRepository = {
       }),
     ]);
   },
+
+  // ── Expenses ──
+  async getExpenses(page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    const [expenses, total] = await Promise.all([
+      prisma.expense.findMany({
+        orderBy: { date: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.expense.count(),
+    ]);
+    return { expenses, total };
+  },
+
+  async createExpense(data: { category: any; amount: number; description: string; date?: Date }) {
+    return prisma.expense.create({
+      data: {
+        category: data.category,
+        amount: data.amount,
+        description: data.description,
+        date: data.date ?? new Date(),
+      },
+    });
+  },
+
+  async deleteExpense(id: string) {
+    return prisma.expense.delete({
+      where: { id },
+    });
+  },
+
+  // ── Leads ──
+  async getLeads() {
+    return prisma.lead.findMany({
+      orderBy: { date: 'desc' },
+    });
+  },
+
+  async createLead(data: { name: string; source: any; status?: any; date?: Date }) {
+    return prisma.lead.create({
+      data: {
+        name: data.name,
+        source: data.source,
+        status: data.status ?? 'NEW',
+        date: data.date ?? new Date(),
+      },
+    });
+  },
+
+  async updateLeadStatus(id: string, status: any) {
+    return prisma.lead.update({
+      where: { id },
+      data: { status },
+    });
+  },
+
+  async deleteLead(id: string) {
+    return prisma.lead.delete({
+      where: { id },
+    });
+  },
+
+  // ── Marketing Spends ──
+  async getMarketingSpends() {
+    return prisma.marketingSpend.findMany({
+      orderBy: { date: 'desc' },
+    });
+  },
+
+  async createMarketingSpend(data: { channel: any; amount: number; date?: Date }) {
+    return prisma.marketingSpend.create({
+      data: {
+        channel: data.channel,
+        amount: data.amount,
+        date: data.date ?? new Date(),
+      },
+    });
+  },
 };
+

@@ -25,7 +25,7 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
 } from './shared';
@@ -224,12 +224,6 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
       </AnimatePresence>
 
       <div className="relative z-0">
-        <OpeningPhraseSection
-          phrase={invitation.openingPhrase}
-          style={invitation.openingStyle}
-          textColorClass="text-[#3d4432]"
-          bgClass="bg-[#fdfbf7] border-b border-[#a3b18a]/20"
-        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">

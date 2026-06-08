@@ -6,6 +6,7 @@ import { MOCK_INVITATION } from '@/constants/demoData';
 import { Layout } from '@/types';
 import { notFound } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
+import InvitationPreview from '@/components/themes/InvitationPreview';
 
 interface PageProps {
   params: Promise<{ layout: string }>;
@@ -23,6 +24,7 @@ export default function DemoPage({ params }: PageProps) {
   // Override mock invitation layout to match the URL parameter
   const invitation = {
     ...MOCK_INVITATION,
+    layout: layout as Layout,
     stylePreferences: {
       ...MOCK_INVITATION.stylePreferences,
       layout: layout as Layout
@@ -57,7 +59,7 @@ export default function DemoPage({ params }: PageProps) {
       </div>
 
       <div className="w-full max-w-lg relative bg-white shadow-[0_0_100px_rgba(0,0,0,0.1)]">
-        <LayoutComponent invitation={invitation} isPreview={false} />
+        <InvitationPreview invitation={invitation} isPreview={true} />
       </div>
 
     </div>

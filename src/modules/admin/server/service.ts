@@ -10,6 +10,10 @@ import {
   updateUserRoleSchema,
   transactionFilterSchema,
   chartQuerySchema,
+  createExpenseSchema,
+  createLeadSchema,
+  updateLeadStatusSchema,
+  createMarketingSpendSchema,
 } from './validators';
 import type {
   AdminMetricsDto,
@@ -111,11 +115,12 @@ export const adminService = {
   },
 
   /**
-   * Get all users with aggregated spend & invitation count.
+   * Get users with pagination and aggregated spend & invitation count.
    */
-  async getUsers(search?: string): Promise<AdminUserDto[]> {
-    const users = await adminRepository.getUsers(search);
-    return users.map((u) => ({
+  async getUsers(search?: string, page = 1, limit = 20) {
+    const { users, total } = await adminRepository.getUsers(search, page, limit);
+    const totalPages = Math.ceil(total / limit);
+    const data: AdminUserDto[] = users.map((u) => ({
       id: u.id,
       name: u.name,
       email: u.email,
@@ -124,6 +129,7 @@ export const adminService = {
       totalSpent: u.transactions.reduce((sum, t) => sum + t.amount, 0),
       invitationCount: u._count.invitations,
     }));
+    return { data, meta: { page, limit, total, totalPages } };
   },
 
   /**
@@ -297,4 +303,82 @@ export const adminService = {
     const buffer = await workbook.xlsx.writeBuffer();
     return Buffer.from(buffer as any);
   },
+
+  // ── Expenses ──
+  async getExpenses(page = 1, limit = 20) {
+    const { expenses, total } = await adminRepository.getExpenses(page, limit);
+    const totalPages = Math.ceil(total / limit);
+    return { data: expenses, meta: { page, limit, total, totalPages } };
+  },
+
+  async createExpense(payload: unknown) {
+    const data = createExpenseSchema.parse(payload);
+    return adminRepository.createExpense({
+      ...data,
+      date: data.date ? new Date(data.date) : undefined,
+    });
+  },
+
+  async deleteExpense(id: string) {
+    return adminRepository.deleteExpense(id);
+  },
+
+  // ── Leads ──
+  async getLeads() {
+    return adminRepository.getLeads();
+  },
+
+  async createLead(payload: unknown) {
+    const data = createLeadSchema.parse(payload);
+    return adminRepository.createLead({
+      ...data,
+      date: data.date ? new Date(data.date) : undefined,
+    });
+  },
+
+  async updateLeadStatus(id: string, payload: unknown) {
+    const { status } = updateLeadStatusSchema.parse(payload);
+    return adminRepository.updateLeadStatus(id, status);
+  },
+
+  async deleteLead(id: string) {
+    return adminRepository.deleteLead(id);
+  },
+
+  // ── Marketing Spends ──
+  async getMarketingSpends() {
+    return adminRepository.getMarketingSpends();
+  },
+
+  async createMarketingSpend(payload: unknown) {
+    const data = createMarketingSpendSchema.parse(payload);
+    return adminRepository.createMarketingSpend({
+      ...data,
+      date: data.date ? new Date(data.date) : undefined,
+    });
+  },
+
+  // ── Profit & Loss Statement ──
+  async getProfitLossSummary() {
+    const [transactions, { expenses }] = await Promise.all([
+      adminRepository.getAllDataForExport().then(([tx]) => tx),
+      // Use a very high limit to aggregate ALL expenses for an accurate P&L total.
+      adminRepository.getExpenses(1, 100_000),
+    ]);
+
+    const totalRevenue = transactions
+      .filter((tx) => ['SUCCESS', 'SETTLEMENT'].includes(tx.status))
+      .reduce((sum, tx) => sum + tx.amount, 0);
+
+    const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+
+    return {
+      totalRevenue,
+      totalExpenses,
+      netProfit: totalRevenue - totalExpenses,
+      revenueCount: transactions.filter((tx) => ['SUCCESS', 'SETTLEMENT'].includes(tx.status)).length,
+      expenseCount: expenses.length,
+    };
+  },
 };
+

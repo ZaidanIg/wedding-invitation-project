@@ -38,7 +38,7 @@ import { MOCK_INVITATION } from '@/constants/demoData';
 import IframePreview from '@/components/ui/IframePreview';
 import type { Tone, Language, Layout } from '@/types';
 import Image from 'next/image';
-import { UploadDropzone } from '@/lib/uploadthing';
+import { R2UploadDropzone as UploadDropzone } from './R2UploadDropzone';
 import InvitationPreview from '@/components/themes/InvitationPreview';
 
 const toneOptions = [
@@ -224,6 +224,7 @@ export default function InvitationForm() {
           tone: store.stylePreferences.tone,
           language: store.stylePreferences.language,
           layout: store.stylePreferences.layout,
+
           musicUrl: store.stylePreferences.musicUrl === "custom" ? customMusicUrl.trim() : store.stylePreferences.musicUrl,
           videoUrl: store.stylePreferences.videoUrl,
           schedule: store.eventDetails.schedule,
@@ -287,6 +288,7 @@ export default function InvitationForm() {
     tone: store.stylePreferences.tone,
     language: store.stylePreferences.language,
     layout: store.stylePreferences.layout,
+
     musicUrl: store.stylePreferences.musicUrl === "custom" ? customMusicUrl.trim() : store.stylePreferences.musicUrl,
     videoUrl: store.stylePreferences.videoUrl,
     qrEnabled: store.qrEnabled,
@@ -425,24 +427,70 @@ export default function InvitationForm() {
                     <div className="p-4 sm:p-8 flex-1 overflow-y-auto overscroll-y-contain pb-32 pt-8">
                       <div className="text-center mb-10"><Heart className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold text-[#1c1c1c]">Data Pasangan</h2></div>
                       <div className="space-y-8">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                          <div>
-                            <Input label="Nama Lengkap Mempelai Pria" placeholder="Contoh: Nama Lengkap Mempelai Pria" value={store.coupleDetails.groomName} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, groomName: e.target.value })} />
-                            <p className="text-xs text-stone-500 mt-2">Catatan: Nama lengkap yang akan tampil di halaman depan undangan. Disarankan tanpa gelar.</p>
+                        {/* Header Photo Card */}
+                        <div className="bg-[#fcfbf8] border border-[#eceae4] p-4 sm:p-6 rounded-3xl shadow-sm">
+                          <h3 className="font-bold text-sm mb-4 flex items-center gap-2"><Camera className="w-4 h-4 text-rose-500"/> Foto Header / Sampul Utama</h3>
+                          {isFree ? (
+                            <div className="bg-stone-50 border border-stone-200 p-6 rounded-2xl text-center">
+                              <Lock className="h-6 w-6 mx-auto mb-2 text-stone-300" />
+                              <p className="text-[10px] uppercase font-bold tracking-widest text-stone-400">Terkunci di Paket Gratis</p>
+                              <Button variant="ghost" size="sm" onClick={() => router.push('/pricing')} className="text-rose-500 mt-2 text-xs">Upgrade Paket</Button>
+                            </div>
+                          ) : (
+                            <div className="bg-white border-2 border-dashed border-[#eceae4] p-4 rounded-2xl">
+                              {store.headerPhotoUrl ? (
+                                <div className="relative aspect-video rounded-xl overflow-hidden shadow-sm">
+                                  <Image src={store.headerPhotoUrl} alt="Header" fill className="object-cover" unoptimized />
+                                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full text-red-500 shadow-xl" onClick={() => store.setHeaderPhotoUrl('')}><Trash2 className="h-4 w-4" /></button>
+                                </div>
+                              ) : (
+                                <UploadDropzone endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-wider px-4 py-2 rounded-xl w-auto max-w-full truncate', container: 'p-6 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setHeaderPhotoUrl(res[0].ufsUrl); }} />
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Groom Card */}
+                        <div className="bg-[#fcfbf8] border border-[#eceae4] p-4 sm:p-6 rounded-3xl shadow-sm flex flex-col sm:flex-row gap-6">
+                          <div className="w-full sm:w-1/3 space-y-3">
+                             <h3 className="font-bold text-sm flex items-center gap-2"><User className="w-4 h-4 text-blue-500"/> Foto Mempelai Pria</h3>
+                             <div className="bg-white border-2 border-dashed border-[#eceae4] p-2 rounded-2xl h-[180px] flex items-center justify-center">
+                              {store.groomPhotoUrl ? (
+                                <div className="relative w-full h-full rounded-xl overflow-hidden shadow-sm">
+                                  <Image src={store.groomPhotoUrl} alt="Groom" fill className="object-cover" unoptimized />
+                                  <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setGroomPhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button>
+                                </div>
+                              ) : (
+                                <UploadDropzone endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-3 py-1.5 rounded-lg w-auto max-w-full truncate', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setGroomPhotoUrl(res[0].ufsUrl); }} />
+                              )}
+                             </div>
                           </div>
-                          <div>
-                            <Input label="Nama Orang Tua Mempelai Pria" placeholder="Bapak [Nama Bapak] & Ibu [Nama Ibu]" value={store.coupleDetails.groomParents} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, groomParents: e.target.value })} />
-                            <p className="text-xs text-stone-500 mt-2">Catatan: Gunakan format standar: Bapak [Nama] & Ibu [Nama].</p>
+                          <div className="w-full sm:w-2/3 space-y-4">
+                            <Input label="Nama Lengkap Mempelai Pria" placeholder="Contoh: Nama Lengkap Mempelai Pria" value={store.coupleDetails.groomName} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, groomName: e.target.value })} />
+                            <Input label="Nama Orang Tua" placeholder="Bapak [Nama] & Ibu [Nama]" value={store.coupleDetails.groomParents} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, groomParents: e.target.value })} />
+                            <p className="text-[10px] text-stone-500 mt-1">Disarankan menggunakan nama lengkap tanpa gelar untuk tampilan yang lebih elegan.</p>
                           </div>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                          <div>
-                            <Input label="Nama Lengkap Mempelai Wanita" placeholder="Contoh: Nama Lengkap Mempelai Wanita" value={store.coupleDetails.brideName} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, brideName: e.target.value })} />
-                            <p className="text-xs text-stone-500 mt-2">Catatan: Nama lengkap yang akan tampil di halaman depan undangan. Disarankan tanpa gelar.</p>
+
+                        {/* Bride Card */}
+                        <div className="bg-[#fcfbf8] border border-[#eceae4] p-4 sm:p-6 rounded-3xl shadow-sm flex flex-col sm:flex-row gap-6">
+                          <div className="w-full sm:w-1/3 space-y-3">
+                             <h3 className="font-bold text-sm flex items-center gap-2"><User className="w-4 h-4 text-pink-500"/> Foto Mempelai Wanita</h3>
+                             <div className="bg-white border-2 border-dashed border-[#eceae4] p-2 rounded-2xl h-[180px] flex items-center justify-center">
+                              {store.bridePhotoUrl ? (
+                                <div className="relative w-full h-full rounded-xl overflow-hidden shadow-sm">
+                                  <Image src={store.bridePhotoUrl} alt="Bride" fill className="object-cover" unoptimized />
+                                  <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setBridePhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button>
+                                </div>
+                              ) : (
+                                <UploadDropzone endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-3 py-1.5 rounded-lg w-auto max-w-full truncate', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setBridePhotoUrl(res[0].ufsUrl); }} />
+                              )}
+                             </div>
                           </div>
-                          <div>
-                            <Input label="Nama Orang Tua Mempelai Wanita" placeholder="Bapak [Nama Bapak] & Ibu [Nama Ibu]" value={store.coupleDetails.brideParents} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, brideParents: e.target.value })} />
-                            <p className="text-xs text-stone-500 mt-2">Catatan: Gunakan format standar: Bapak [Nama] & Ibu [Nama].</p>
+                          <div className="w-full sm:w-2/3 space-y-4">
+                            <Input label="Nama Lengkap Mempelai Wanita" placeholder="Contoh: Nama Lengkap Mempelai Wanita" value={store.coupleDetails.brideName} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, brideName: e.target.value })} />
+                            <Input label="Nama Orang Tua" placeholder="Bapak [Nama] & Ibu [Nama]" value={store.coupleDetails.brideParents} onChange={(e) => store.setCoupleDetails({ ...store.coupleDetails, brideParents: e.target.value })} />
+                            <p className="text-[10px] text-stone-500 mt-1">Disarankan menggunakan nama lengkap tanpa gelar untuk tampilan yang lebih elegan.</p>
                           </div>
                         </div>
                       </div>
@@ -514,7 +562,26 @@ export default function InvitationForm() {
                           <div className="space-y-6">
                             {store.eventDetails.loveStory.map((item, index) => (
                               <div key={item.id} className="bg-[#fcfbf8] p-4 sm:p-6 rounded-2xl border border-[#eceae4] relative">
-                                <button className="absolute top-4 right-4 text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors" onClick={() => { const newStory = store.eventDetails.loveStory.filter((_, i) => i !== index); store.setEventDetails({ ...store.eventDetails, loveStory: newStory }); }}><Trash2 className="h-4 w-4" /></button>
+                                <button className="absolute top-4 right-4 text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors z-10" onClick={() => { const newStory = store.eventDetails.loveStory.filter((_, i) => i !== index); store.setEventDetails({ ...store.eventDetails, loveStory: newStory }); }}><Trash2 className="h-4 w-4" /></button>
+                                
+                                {isUltimate && (
+                                  <div className="mb-4">
+                                    <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-500 mb-2 ml-1">Foto Momen</label>
+                                    <div className="bg-white border-2 border-dashed border-[#eceae4] rounded-xl w-full min-h-[80px] flex items-center justify-center overflow-hidden">
+                                      {item.photoUrl ? (
+                                        <div className="relative w-full h-32 rounded-lg overflow-hidden shadow-sm">
+                                          <Image src={item.photoUrl} alt="Moment" fill className="object-cover" unoptimized />
+                                          <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500 shadow-sm hover:scale-110 transition-transform" onClick={() => { const newStory = [...store.eventDetails.loveStory]; delete newStory[index].photoUrl; store.setEventDetails({ ...store.eventDetails, loveStory: newStory }); }}><Trash2 className="h-4 w-4" /></button>
+                                        </div>
+                                      ) : (
+                                        <div className="w-full">
+                                          <UploadDropzone endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-xs px-4 py-1.5 rounded-full w-auto max-w-[120px] truncate mx-auto', container: 'py-6 px-4 border-none bg-transparent flex flex-col items-center justify-center gap-2 w-full h-auto m-0' }} onClientUploadComplete={(res) => { if (res?.[0]) { const newStory = [...store.eventDetails.loveStory]; newStory[index].photoUrl = res[0].ufsUrl; store.setEventDetails({ ...store.eventDetails, loveStory: newStory }); } }} />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                                
                                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
                                   <div className="sm:col-span-1"><Input label="Tahun/Waktu" value={item.year} onChange={(e) => { const newStory = [...store.eventDetails.loveStory]; newStory[index].year = e.target.value; store.setEventDetails({ ...store.eventDetails, loveStory: newStory }); }} /></div>
                                   <div className="sm:col-span-3"><Input label="Judul Momen" value={item.title} onChange={(e) => { const newStory = [...store.eventDetails.loveStory]; newStory[index].title = e.target.value; store.setEventDetails({ ...store.eventDetails, loveStory: newStory }); }} /></div>
@@ -556,20 +623,7 @@ export default function InvitationForm() {
                     <div className="p-4 sm:p-8 flex-1 overflow-y-auto overscroll-y-contain pb-32 pt-8">
                       <div className="text-center mb-10"><Camera className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Galeri Foto</h2></div>
                       <div className="space-y-12">
-                        <div className="space-y-4">
-                          <h3 className="font-bold text-sm flex items-center gap-2">Foto Header / Sampul</h3>
-                          {isFree ? (
-                            <div className="bg-stone-50 border border-stone-200 p-6 rounded-3xl text-center">
-                              <Lock className="h-6 w-6 mx-auto mb-2 text-stone-300" />
-                              <p className="text-[10px] uppercase font-bold tracking-widest text-stone-400">Terkunci di Paket Gratis</p>
-                              <Button variant="ghost" size="sm" onClick={() => router.push('/pricing')} className="text-rose-500 mt-2 text-xs">Upgrade Paket</Button>
-                            </div>
-                          ) : (
-                            <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-6 rounded-3xl">{store.headerPhotoUrl ? (<div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg"><Image src={store.headerPhotoUrl} alt="H" fill className="object-cover" unoptimized /><button className="absolute top-3 right-3 p-2 bg-white rounded-full text-red-500 shadow-xl" onClick={() => store.setHeaderPhotoUrl('')}><Trash2 className="h-4 w-4" /></button></div>) : (<UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-rose-500 text-[10px] uppercase font-bold tracking-widest px-8 py-2.5 rounded-xl', container: 'p-6 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setHeaderPhotoUrl(res[0].ufsUrl); }} />)}</div>
-                          )}
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8"><div className="space-y-4"><h3 className="font-bold text-xs uppercase tracking-widest flex items-center gap-2"><User className="h-3 w-3 text-blue-400" /> Mempelai Pria</h3><div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-4 rounded-3xl min-h-[180px] flex items-center justify-center">{store.groomPhotoUrl ? (<div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-md"><Image src={store.groomPhotoUrl} alt="G" fill className="object-cover" unoptimized /><button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setGroomPhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button></div>) : (<UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-4 py-2 rounded-lg', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setGroomPhotoUrl(res[0].ufsUrl); }} />)}</div></div><div className="space-y-4"><h3 className="font-bold text-xs uppercase tracking-widest flex items-center gap-2"><User className="h-3 w-3 text-pink-400" /> Mempelai Wanita</h3><div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-4 rounded-3xl min-h-[180px] flex items-center justify-center">{store.bridePhotoUrl ? (<div className="relative w-full aspect-square rounded-2xl overflow-hidden shadow-md"><Image src={store.bridePhotoUrl} alt="B" fill className="object-cover" unoptimized /><button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setBridePhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button></div>) : (<UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-4 py-2 rounded-lg', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setBridePhotoUrl(res[0].ufsUrl); }} />)}</div></div></div>
+                        {/* Header, Groom, and Bride photos have been moved to Step 2 (Data Pasangan) */}
 
                         <div className="space-y-4">
                           <h3 className="font-bold text-sm flex items-center gap-2">Galeri Foto {isBasic && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 3)</span>} {isPremium && !isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 6)</span>} {isUltimate && <span className="text-[10px] text-blue-500 font-normal ml-2">(Maks 10)</span>}</h3>
@@ -588,7 +642,7 @@ export default function InvitationForm() {
                               </div>
                             ) : (
                               <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-8 rounded-3xl">
-                                <UploadDropzone endpoint="weddingPhotos" appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-widest px-8 py-2.5 rounded-xl', container: 'p-4 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res) res.forEach(f => store.addPhotoUrl(f.ufsUrl)); }} />
+                                <UploadDropzone endpoint="weddingPhotos" multiple={true} content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl w-auto max-w-full truncate', container: 'p-4 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res) res.forEach(f => store.addPhotoUrl(f.ufsUrl)); }} />
                               </div>
                             )}
                               <div className="grid grid-cols-4 gap-2 mt-4">{store.photoUrls.map((u, i) => (<div key={i} className="relative aspect-square rounded-xl overflow-hidden border shadow-sm group"><Image src={u} alt="G" fill className="object-cover group-hover:scale-110 transition-transform" unoptimized /><button className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" onClick={() => store.removePhotoUrl(u)}><Trash2 className="h-3.5 w-3.5 text-white" /></button></div>))}</div>
@@ -605,46 +659,6 @@ export default function InvitationForm() {
                       <div className="text-center mb-10"><Sparkles className="h-7 w-7 text-rose-500 mx-auto mb-2" /><h2 className="text-2xl sm:text-3xl font-display font-bold">Pengaturan Akhir</h2></div>
                       <div className="space-y-10">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6"><Select label="Nuansa Bahasa" options={toneOptions} value={store.stylePreferences.tone} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, tone: e.target.value as any })} /><Select label="Bahasa" options={languageOptions} value={store.stylePreferences.language} onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, language: e.target.value as any })} /></div>
-
-                        {/* Opening Phrase */}
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 ml-1">
-                              Kalimat Pembuka <span className="text-stone-300 font-normal">(Opsional)</span>
-                            </label>
-                            <input
-                              type="text"
-                              value={store.stylePreferences.openingPhrase || ''}
-                              onChange={(e) => store.setStylePreferences({ ...store.stylePreferences, openingPhrase: e.target.value })}
-                              placeholder="Contoh: بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ atau Om Swastyastu..."
-                              className="w-full px-5 py-4 rounded-2xl bg-[#fcfbf8] border border-[#eceae4] focus:ring-1 focus:ring-stone-300 transition-all text-stone-800 placeholder:text-stone-300 text-sm"
-                            />
-                            <p className="text-[10px] text-stone-400 mt-2 ml-1">Akan ditampilkan di bagian paling atas undangan dengan gaya yang dipilih.</p>
-                          </div>
-                          {(store.stylePreferences.openingPhrase || '') && (
-                            <div className="grid grid-cols-3 gap-3">
-                              {([
-                                { id: 'none', label: 'Tanpa Gaya', icon: '—' },
-                                { id: 'arabic-calligraphy', label: 'Kaligrafi Arab', icon: '𝓐' },
-                                { id: 'latin-elegant', label: 'Teks Elegan', icon: '❦' },
-                              ] as const).map((opt) => (
-                                <button
-                                  key={opt.id}
-                                  type="button"
-                                  onClick={() => store.setStylePreferences({ ...store.stylePreferences, openingStyle: opt.id })}
-                                  className={`p-3 rounded-2xl text-center text-[10px] font-bold transition-all border ${
-                                    (store.stylePreferences.openingStyle || 'none') === opt.id
-                                      ? 'bg-[#1c1c1c] text-white border-[#1c1c1c]'
-                                      : 'bg-white text-stone-400 border-[#eceae4] hover:border-stone-300'
-                                  }`}
-                                >
-                                  <span className="block text-xl mb-1">{opt.icon}</span>
-                                  {opt.label}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
 
 
                         {hasPremium && (
@@ -687,8 +701,8 @@ export default function InvitationForm() {
                                   <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] rounded-2xl overflow-hidden">
                                     <UploadDropzone
                                       endpoint="weddingMusic"
-                                      appearance={{ button: 'bg-rose-500 text-[10px] uppercase font-bold tracking-widest px-6 py-2.5 rounded-xl', container: 'p-6 border-none bg-transparent', label: 'text-stone-500 text-xs', allowedContent: 'text-stone-400 text-[10px]' }}
-                                      content={{ label: 'Seret file audio ke sini, atau klik untuk memilih', allowedContent: 'MP3, WAV, AAC — Maks 16 MB' }}
+                                      appearance={{ button: 'bg-rose-500 text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl w-auto max-w-full truncate', container: 'p-6 border-none bg-transparent', label: 'text-stone-500 text-xs', allowedContent: 'text-stone-400 text-[10px]' }}
+                                      content={{ button: 'Unggah Musik', label: 'Seret file audio ke sini, atau klik', allowedContent: 'MP3, WAV, AAC — Maks 16 MB' }}
                                       onClientUploadComplete={(res) => { if (res?.[0]?.ufsUrl) { setCustomMusicUrl(res[0].ufsUrl); showToast("success", "Musik berhasil diunggah!"); } }}
                                       onUploadError={(err) => { showToast("error", `Gagal mengunggah musik: ${err.message}`); }}
                                     />

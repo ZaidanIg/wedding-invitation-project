@@ -35,7 +35,7 @@ import {
   QuotesSection,
   WishesSection,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
 } from './shared';
@@ -120,12 +120,6 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
       </AnimatePresence>
 
       <div className="relative">
-        <OpeningPhraseSection
-          phrase={invitation.openingPhrase}
-          style={invitation.openingStyle}
-          textColorClass="text-stone-800"
-          bgClass="bg-[#fdfcf9] border-b border-stone-200"
-        />
         {/* Hero Section */}
         <section id="home" className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-stone-50">
            <div className="absolute inset-0">

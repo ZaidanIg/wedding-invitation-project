@@ -3,6 +3,8 @@ import { successResponse, errorResponse } from '@/lib/api-response';
 import { handleServiceError } from '@/lib/errors';
 import { prisma } from '@/lib/prisma';
 import { utapi } from '@/lib/utapi';
+import { DeleteObjectsCommand } from '@aws-sdk/client-s3';
+import { r2Client, R2_BUCKET_NAME } from '@/lib/r2';
 
 export const maxDuration = 60; // Max execution time (Vercel limits)
 
@@ -17,6 +19,24 @@ function extractFileKey(url: string | null | undefined): string | null {
     }
   } catch {
     return null; // Invalid URL
+  }
+  return null;
+}
+
+function extractR2Key(url: string | null | undefined): string | null {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    const r2UrlStr = process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
+    if (r2UrlStr) {
+      const r2Domain = new URL(r2UrlStr).hostname;
+      if (parsed.hostname === r2Domain) {
+        // R2 key is the full path without the leading slash (e.g. uploads/userid/filename.jpg)
+        return decodeURIComponent(parsed.pathname.substring(1));
+      }
+    }
+  } catch {
+    return null;
   }
   return null;
 }
@@ -74,14 +94,34 @@ export async function POST(request: Request) {
         ...invitation.photos.map((p) => p.url),  // v1.2: from InvitationPhoto
       ];
 
+      // 1. Delete from UploadThing (legacy)
       const fileKeys = allUrls
         .map(extractFileKey)
         .filter((key): key is string => key !== null);
 
       if (fileKeys.length > 0) {
-        // Delete from UploadThing
         await utapi.deleteFiles(fileKeys);
         totalDeletedFiles += fileKeys.length;
+      }
+
+      // 2. Delete from Cloudflare R2
+      const r2Keys = allUrls
+        .map(extractR2Key)
+        .filter((key): key is string => key !== null);
+
+      if (r2Keys.length > 0 && R2_BUCKET_NAME) {
+        try {
+          const deleteParams = {
+            Bucket: R2_BUCKET_NAME,
+            Delete: {
+              Objects: r2Keys.map((key) => ({ Key: key })),
+            },
+          };
+          await r2Client.send(new DeleteObjectsCommand(deleteParams));
+          totalDeletedFiles += r2Keys.length;
+        } catch (r2Err) {
+          console.error('[Cleanup] Failed to delete R2 objects:', r2Err);
+        }
       }
 
       // v1.2: Clear media atomically (role photos + delete InvitationPhoto records)
