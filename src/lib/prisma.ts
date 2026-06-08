@@ -14,8 +14,13 @@ delete (globalThis as any).prisma;
 function createPrismaClient(): PrismaClient {
   let sslConfig: any = undefined;
 
-  // Best Practice SSL verification
-  if (process.env.DB_CA_CERT) {
+  const dbUrl = process.env.DATABASE_URL || '';
+  const isLocalDb = dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1');
+
+  if (isLocalDb) {
+    // If connecting to a local database (localhost or 127.0.0.1), disable SSL completely
+    sslConfig = false;
+  } else if (process.env.DB_CA_CERT) {
     // Use certificate injected from Environment Variables (Netlify)
     const ca = process.env.DB_CA_CERT.includes('\\n') 
       ? process.env.DB_CA_CERT.replace(/\\n/g, '\n')
@@ -34,12 +39,6 @@ function createPrismaClient(): PrismaClient {
           rejectUnauthorized: true,
           ca: fs.readFileSync(certPath).toString(),
         };
-      } else {
-        // If connecting to a local database on the VPS, disable SSL to prevent self-signed cert errors
-        const dbUrl = process.env.DATABASE_URL || '';
-        if (dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1')) {
-          sslConfig = false;
-        }
       }
     } catch (e) {
       console.warn('Local ca.pem not found for SSL connection.');
@@ -49,6 +48,11 @@ function createPrismaClient(): PrismaClient {
     // especially when connecting to generic poolers (e.g., Supabase)
     sslConfig = { rejectUnauthorized: false };
   }
+
+  const maskedUrl = dbUrl.replace(/:[^:@]+@/, ':***@');
+  console.log(`🔌 [Prisma] DATABASE_URL: ${maskedUrl}`);
+  console.log(`🔌 [Prisma] NODE_ENV: ${process.env.NODE_ENV}`);
+  console.log(`🔌 [Prisma] sslConfig:`, sslConfig);
 
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
