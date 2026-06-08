@@ -34,6 +34,12 @@ function createPrismaClient(): PrismaClient {
           rejectUnauthorized: true,
           ca: fs.readFileSync(certPath).toString(),
         };
+      } else {
+        // If connecting to a local database on the VPS, disable SSL to prevent self-signed cert errors
+        const dbUrl = process.env.DATABASE_URL || '';
+        if (dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1')) {
+          sslConfig = false;
+        }
       }
     } catch (e) {
       console.warn('Local ca.pem not found for SSL connection.');
