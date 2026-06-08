@@ -115,8 +115,6 @@ export interface Invitation {
   aiRegenCount: number;
   videoUrl?: string | null;
   qrEnabled?: boolean;
-  openingPhrase?: string | null;
-  openingStyle?: string | null;
   createdAt: string;
   updatedAt: string;
   guests?: Guest[];
@@ -260,8 +258,6 @@ export interface FormWizardState {
     musicUrl?: string;
     videoUrl?: string;
     layout: Layout;
-    openingPhrase?: string;
-    openingStyle?: 'none' | 'arabic-calligraphy' | 'latin-elegant';
   };
   photoUrls: string[];
   headerPhotoUrl?: string;

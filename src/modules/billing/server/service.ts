@@ -9,6 +9,7 @@ import { PRICING, type PlanKey } from './constants';
 import type { Tier, TransactionType } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
+import { promoService } from './promoService';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const midtransClient = require('midtrans-client');
@@ -34,17 +35,31 @@ export const billingService = {
    * Idempotent: returns existing PENDING transaction if the same intent already exists.
    */
   async createCheckout(
-    payload: { plan: string; invitationId?: string },
+    payload: { plan: string; invitationId?: string; promoCode?: string; clientIp?: string },
     user: { id: string; name?: string | null; email?: string | null }
   ) {
-    const { plan, invitationId } = payload;
+    const { plan, invitationId, promoCode, clientIp = '0.0.0.0' } = payload;
 
     // Validate plan
     if (!PRICING[plan as PlanKey]) {
       throw new ValidationError('Invalid plan selected');
     }
 
-    const subtotal = PRICING[plan as PlanKey];
+    let subtotal: number = PRICING[plan as PlanKey];
+    let discountAmount = 0;
+
+    // Validate and Apply Promo Code
+    if (promoCode) {
+      const promoResult = await promoService.validateAndCalculatePromo(
+        promoCode,
+        subtotal,
+        user.id,
+        clientIp
+      );
+      discountAmount = promoResult.discountAmount;
+      subtotal = promoResult.finalPrice;
+    }
+
     const ppn = Math.round(subtotal * 0.11);
     const adminFee = 2500;
     const amount = subtotal + ppn + adminFee;
@@ -115,7 +130,14 @@ export const billingService = {
       type,
       tier: targetTier,
       status: 'PENDING',
+      promoCode: promoCode ? promoCode.toUpperCase() : null,
+      discountAmount,
     });
+
+    // Record Promo Usage (Reserve quota)
+    if (promoCode) {
+      await promoService.recordUsage(promoCode.toUpperCase(), user.id, transaction.id, clientIp);
+    }
 
     // Create Midtrans Snap payload
     const parameter = {
@@ -132,10 +154,20 @@ export const billingService = {
       item_details: [
         {
           id: plan,
-          price: subtotal,
+          price: PRICING[plan as PlanKey],
           quantity: 1,
           name: `${plan.replace('_', ' ')} Upgrade`,
         },
+        ...(discountAmount > 0
+          ? [
+              {
+                id: 'PROMO_DISCOUNT',
+                price: -discountAmount,
+                quantity: 1,
+                name: `Discount (${promoCode?.toUpperCase()})`,
+              },
+            ]
+          : []),
         {
           id: 'PPN_11',
           price: ppn,
@@ -199,7 +231,7 @@ export const billingService = {
             where: { id: { in: expiredTxs.map((t) => t.id) } },
             data: { status: 'EXPIRED' },
           });
-          await dbTx.transactionHistory.createMany({
+            await dbTx.transactionHistory.createMany({
             data: expiredTxs.map((t) => ({
               transactionId: t.id,
               oldStatus: t.status,
@@ -209,6 +241,11 @@ export const billingService = {
             })),
           });
         });
+        
+        // Restore promo usage for all expired
+        for (const t of expiredTxs) {
+          await promoService.restoreUsage(t.id);
+        }
       }
 
       // Find remaining PENDING transactions
@@ -286,6 +323,12 @@ export const billingService = {
                 },
               });
             });
+            
+            // If failed, canceled or expired, restore the promo quota
+            if (['FAILED', 'CANCELLED', 'EXPIRED'].includes(newStatus)) {
+              await promoService.restoreUsage(tx.id);
+            }
+            
             console.log(`[Reconciler]: Transaction ${tx.id} → ${newStatus}`);
           }
         } catch (err: unknown) {
