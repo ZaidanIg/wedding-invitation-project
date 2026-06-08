@@ -30,7 +30,7 @@ import {
   WaveDivider,
   IconMapper,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
   DigitalGiftSection,
@@ -210,12 +210,6 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
       </AnimatePresence>
 
       <div className="relative z-0">
-        <OpeningPhraseSection
-          phrase={invitation.openingPhrase}
-          style={invitation.openingStyle}
-          textColorClass="text-stone-800"
-          bgClass="bg-white border-b border-rose-100"
-        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">

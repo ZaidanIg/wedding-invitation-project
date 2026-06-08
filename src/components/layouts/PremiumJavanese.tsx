@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Invitation } from '@/types';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { resolvePhotos, AudioPlayer, OpeningPhraseSection, GallerySection, VideoEmbedSection } from './shared';
+import { resolvePhotos, AudioPlayer,  GallerySection, VideoEmbedSection } from './shared';
 import { ChevronDown, MapPin, Calendar, Clock, Copy, Check, Heart, ExternalLink, Gift, Camera, ChevronLeft, ChevronRight, Music } from 'lucide-react';
 import RsvpForm from '../themes/RsvpForm';
 
@@ -617,58 +617,43 @@ function LoveStorySection({ data }: { data: Invitation }) {
         <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
       </motion.div>
 
-      <div className="relative w-full max-w-lg mx-auto z-10">
-        {/* Golden Line */}
-        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#D4AF37]/10 via-[#D4AF37]/50 to-[#D4AF37]/10 -translate-x-1/2"></div>
-
-        {data.loveStory.map((story, index) => {
+      <div className="relative w-full max-w-lg mx-auto z-10 flex flex-col items-center">
+        {(data.loveStory || []).map((story, index) => {
+          const isLast = index === (data.loveStory || []).length - 1;
           const isEven = index % 2 === 0;
+
           return (
-            <motion.div
-              key={story.id || index}
-              initial={{ opacity: 0, x: isEven ? 30 : -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false, amount: 0.5 }}
-              transition={{ duration: 0.8 }}
-              className="flex items-center w-full mb-12 last:mb-0"
-            >
-              {/* Left Side */}
-              <div className="w-1/2 px-3 sm:px-6 text-right">
-                {!isEven && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: false }}
-                    transition={{ duration: 0.6, delay: 0.1 }}
-                  >
-                    <h4 className="text-base sm:text-xl font-display text-[#4A3728]" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
-                    <span className="text-xs font-bold text-[#D4AF37] tracking-wider mb-2 block">{story.year}</span>
-                    <p className="text-xs sm:text-sm text-[#4A3728]/70 leading-relaxed">{story.description}</p>
-                  </motion.div>
-                )}
-              </div>
+            <div key={story.id || index} className="w-full flex flex-col items-center relative">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.4 }}
+                transition={{ duration: 0.6 }}
+                className="relative w-full max-w-[85%] z-10"
+              >
+                <div className="bg-white border border-[#D4AF37]/20 p-5 rounded-2xl shadow-lg w-full flex flex-col items-center text-center">
+                  <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm bg-[#D4AF37]/5">
+                    <Image src={story.photoUrl || '/images/hero-image.jpg'} alt={story.title} fill className="object-cover" unoptimized />
+                  </div>
+                  <span className="text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase mb-1">{story.year}</span>
+                  <h4 className="text-xl font-display text-[#4A3728] mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
+                  <p className="text-xs sm:text-sm text-[#4A3728]/70 leading-relaxed italic">{story.description}</p>
+                </div>
+              </motion.div>
 
-              {/* Center Dot */}
-              <div className="relative flex justify-center items-center w-8 shrink-0">
-                <div className="w-4 h-4 sm:w-6 sm:h-6 bg-white border-4 border-[#D4AF37] rounded-full z-10 shadow-[0_0_10px_rgba(212,175,55,0.3)]"></div>
-              </div>
-
-              {/* Right Side */}
-              <div className="w-1/2 px-3 sm:px-6 text-left">
-                {isEven && (
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: false }}
-                    transition={{ duration: 0.6, delay: 0.1 }}
-                  >
-                    <h4 className="text-base sm:text-xl font-display text-[#4A3728]" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
-                    <span className="text-xs font-bold text-[#D4AF37] tracking-wider mb-2 block">{story.year}</span>
-                    <p className="text-xs sm:text-sm text-[#4A3728]/70 leading-relaxed">{story.description}</p>
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
+              {!isLast && (
+                <div className="relative w-full h-20 my-[-4px] z-0 opacity-60">
+                  <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                    {isEven ? (
+                      <path d="M 50 0 C 90 0, 90 100, 50 100" stroke="#D4AF37" strokeWidth="2" strokeDasharray="4 4" fill="none" vectorEffect="non-scaling-stroke" />
+                    ) : (
+                      <path d="M 50 0 C 10 0, 10 100, 50 100" stroke="#D4AF37" strokeWidth="2" strokeDasharray="4 4" fill="none" vectorEffect="non-scaling-stroke" />
+                    )}
+                  </svg>
+                  <div className={`absolute top-1/2 -translate-y-1/2 ${isEven ? 'left-[80%]' : 'left-[20%]'} -translate-x-1/2 w-3 h-3 rounded-full bg-white border-2 border-[#D4AF37] z-10 shadow-sm`} />
+                </div>
+              )}
+            </div>
           );
         })}
       </div>
@@ -835,14 +820,6 @@ export default function PremiumJavanese({ invitation: data, isPreview = false }:
         </AnimatePresence>
       )}
 
-      {isOpened && (
-        <OpeningPhraseSection
-          phrase={data.openingPhrase}
-          style={data.openingStyle}
-          textColorClass="text-[#4A3728]"
-          bgClass="bg-[#F8F5F0] border-b border-[#D4AF37]/30"
-        />
-      )}
 
       <HeroSection data={data} />
       <GroomSection data={data} />

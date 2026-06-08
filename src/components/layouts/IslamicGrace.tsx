@@ -56,7 +56,7 @@ import {
   useTier,
   WishesSection,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
 } from './shared';
@@ -277,12 +277,6 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
       </AnimatePresence>
 
       <div className="relative z-0">
-        <OpeningPhraseSection
-          phrase={invitation.openingPhrase}
-          style={invitation.openingStyle}
-          textColorClass="text-[#1a2b23]"
-          bgClass="bg-[#fdfcf9] border-b border-[#c5a059]/20"
-        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0">

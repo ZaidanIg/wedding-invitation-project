@@ -99,13 +99,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // On every subsequent request: re-read role from DB to pick up
       // any role changes made after the token was issued (e.g. admin grants).
       // Uses a minimal select to avoid over-fetching.
+      // Wrapped in try/catch so a DB connection timeout (e.g. pg-pool exhaustion)
+      // does NOT throw a JWTSessionError that invalidates the client session.
       if (token.id) {
-        const freshUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { role: true },
-        });
-        if (freshUser) {
-          token.role = freshUser.role;
+        try {
+          const freshUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { role: true },
+          });
+          if (freshUser) {
+            token.role = freshUser.role;
+          }
+        } catch (err) {
+          // Log but do NOT re-throw — returning the existing token keeps
+          // the client session alive despite the transient DB hiccup.
+          console.warn('[auth][jwt] DB lookup failed, using cached role:', err instanceof Error ? err.message : err);
         }
       }
 

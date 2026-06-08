@@ -13,7 +13,14 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const result = await billingService.createCheckout(body, {
+    const clientIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
+    
+    const payload = {
+      ...body,
+      clientIp: clientIp.split(',')[0].trim()
+    };
+
+    const result = await billingService.createCheckout(payload, {
       id: session.user.id,
       name: session.user.name,
       email: session.user.email,

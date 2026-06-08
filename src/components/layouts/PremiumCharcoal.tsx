@@ -25,7 +25,7 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
   AudioPlayer
@@ -422,14 +422,6 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
       {/* Gold Dust background particles when invitation is opened */}
       {isOpened && <GoldDustParticles />}
 
-      {isOpened && (
-        <OpeningPhraseSection
-          phrase={invitation.openingPhrase}
-          style={invitation.openingStyle}
-          textColorClass="text-[#d4af37]"
-          bgClass="bg-[#111111] border-b border-[#d4af37]/20"
-        />
-      )}
 
       {/* Section 1: Hero Cover */}
       <section id="home" className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden pb-20">
@@ -556,29 +548,43 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
             </AnimatedSection>
 
             {/* Vertical timeline inside warm cream block */}
-            <div className="max-w-md mx-auto relative">
-              {/* Timeline Dotted vertical Line */}
-              <div className="absolute left-1/2 top-2 bottom-2 w-[2px] bg-dashed border-l-2 border-dashed border-[#d4af37]/50 -translate-x-1/2" />
+            <div className="max-w-md mx-auto relative flex flex-col items-center">
+              {(invitation.loveStory || []).map((storyItem: any, idx: number) => {
+                const isLast = idx === (invitation.loveStory || []).length - 1;
+                const isEven = idx % 2 === 0;
 
-              {invitation.loveStory.map((storyItem: any, idx: number) => (
-                <div key={storyItem.id || idx} className={`relative mb-14 last:mb-0 ${idx % 2 === 0 ? 'text-right pr-[54%] mr-4' : 'text-left pl-[54%] ml-4'}`}>
-                  <AnimatedSection animation={idx % 2 === 0 ? 'left' : 'right'}>
-                    {/* Year Round Bubble */}
-                    <div className={`absolute top-1.5 w-9 h-9 rounded-full bg-[#111111] text-[#d4af37] border-2 border-[#d4af37] flex items-center justify-center z-25 ${idx % 2 === 0 ? '-right-10' : '-left-10'}`}>
-                      <span className="text-[8px] font-bold tracking-wider">{storyItem.year}</span>
-                    </div>
+                return (
+                  <div key={storyItem.id || idx} className="w-full flex flex-col items-center relative">
+                    <AnimatedSection animation="up" className="relative w-full max-w-[85%] z-10">
+                      <div className="bg-white border border-[#eceae4] p-4.5 rounded-2xl shadow-sm hover:shadow-md transition-shadow relative w-full flex flex-col items-center text-center">
+                        <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm bg-stone-100">
+                          <Image src={storyItem.photoUrl || '/images/hero-image.jpg'} alt={storyItem.title} fill className="object-cover" unoptimized />
+                        </div>
+                        <span className="text-[10px] font-bold tracking-widest text-[#d4af37] mb-1">{storyItem.year}</span>
+                        <h3 className="text-sm font-display font-bold text-[#111111] mb-1.5" style={{ fontFamily: 'var(--font-playfair), serif' }}>
+                          {storyItem.title}
+                        </h3>
+                        <p className="text-[11px] text-stone-600 leading-relaxed font-sans font-medium italic">
+                          "{storyItem.description}"
+                        </p>
+                      </div>
+                    </AnimatedSection>
 
-                    <div className="bg-white border border-[#eceae4] p-4.5 rounded-2xl shadow-sm hover:shadow-md transition-shadow relative">
-                      <h3 className="text-sm font-display font-bold text-[#111111] mb-1.5" style={{ fontFamily: 'var(--font-playfair), serif' }}>
-                        {storyItem.title}
-                      </h3>
-                      <p className="text-[11px] text-stone-600 leading-relaxed font-sans font-medium italic">
-                        "{storyItem.description}"
-                      </p>
-                    </div>
-                  </AnimatedSection>
-                </div>
-              ))}
+                    {!isLast && (
+                      <div className="relative w-full h-20 my-[-4px] z-0 opacity-60">
+                        <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                          {isEven ? (
+                            <path d="M 50 0 C 90 0, 90 100, 50 100" stroke="#d4af37" strokeWidth="2" strokeDasharray="4 4" fill="none" vectorEffect="non-scaling-stroke" />
+                          ) : (
+                            <path d="M 50 0 C 10 0, 10 100, 50 100" stroke="#d4af37" strokeWidth="2" strokeDasharray="4 4" fill="none" vectorEffect="non-scaling-stroke" />
+                          )}
+                        </svg>
+                        <div className={`absolute top-1/2 -translate-y-1/2 ${isEven ? 'left-[80%]' : 'left-[20%]'} -translate-x-1/2 w-3 h-3 rounded-full bg-[#111111] border-2 border-[#d4af37] z-10 shadow-sm`} />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             
             {/* Convex shape transition at bottom of cream block */}

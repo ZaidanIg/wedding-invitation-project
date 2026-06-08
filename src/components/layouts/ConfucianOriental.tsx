@@ -29,7 +29,7 @@ import {
   DigitalGiftSection,
   IconMapper,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
 } from './shared';
@@ -223,12 +223,6 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
       </AnimatePresence>
 
       <div className="relative z-0">
-        <OpeningPhraseSection
-          phrase={invitation.openingPhrase}
-          style={invitation.openingStyle}
-          textColorClass="text-[#8B0000]"
-          bgClass="bg-[#fffcf5] border-b border-[#FFD700]/30"
-        />
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">

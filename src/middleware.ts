@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import NextAuth from 'next-auth';
+import { authConfig } from '@/lib/auth.config';
 
 const LAUNCH_DATE = new Date('2026-06-11T17:00:00Z');
 
+// Edge-compatible auth instance — only uses JWT, no Prisma
+const { auth } = NextAuth(authConfig);
+
 /**
- * Global middleware.
- * Injects X-API-Version: 1.2 header on all /api/* responses.
+ * Global middleware (Edge Runtime compatible).
+ * - Protects /admin/* routes: only ADMIN role can access (redirects others to /admin/login)
+ * - Injects X-API-Version: 1.2 header on all /api/* responses.
  */
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const hostname = request.headers.get('host') || '';
   const pathname = url.pathname;
@@ -31,7 +37,22 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 2. Route Protection / Redirects
+  // 2. Admin Route Protection
+  // All /admin/* paths EXCEPT /admin/login require a valid ADMIN session.
+  const isAdminPath = pathname.startsWith('/admin');
+  const isAdminLoginPath = pathname === '/admin/login';
+
+  if (isAdminPath && !isAdminLoginPath) {
+    // auth() from the Edge-compatible config reads the JWT cookie without DB calls
+    const session = await auth();
+    if (!session || session.user?.role !== 'ADMIN') {
+      const loginUrl = new URL('/admin/login', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // 3. Route Protection / Redirects
   if (pathname === '/create') {
     const plan = url.searchParams.get('plan') || request.cookies.get('selected_plan')?.value;
     if (!plan) {
@@ -39,7 +60,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 3. Global Headers
+  // 4. Global Headers
   const response = NextResponse.next({
     request: {
       headers: request.headers,

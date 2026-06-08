@@ -22,7 +22,7 @@ import {
   TierGate,
   useTier,
   EventActionButtons,
-  OpeningPhraseSection,
+  
   GallerySection,
   VideoEmbedSection,
 } from './shared';
@@ -85,12 +85,6 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
 
   return (
     <div className="w-full max-w-lg mx-auto bg-[#fdf2f4] text-rose-950 font-sans overflow-hidden relative shadow-2xl">
-      <OpeningPhraseSection
-        phrase={invitation.openingPhrase}
-        style={invitation.openingStyle}
-        textColorClass="text-rose-800"
-        bgClass="bg-[#f9e8ec]"
-      />
       {/* Hero */}
       <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">

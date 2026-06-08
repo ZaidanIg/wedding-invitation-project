@@ -18,6 +18,7 @@ import {
   Calendar,
   MapPin,
   FileText,
+  Tag,
 } from 'lucide-react';
 import { showToast } from '@/components/ui/Toast';
 import Navbar from '@/components/shared/Navbar';
@@ -172,10 +173,16 @@ function CheckoutContent() {
     paymentType?: string;
   } | null>(null);
 
+  // Promo States
+  const [promoCodeInput, setPromoCodeInput] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discountAmount: number; description?: string } | null>(null);
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+
   const plan = PLANS[planKey] || PLANS.PREMIUM;
 
   // Pricing Calculations
-  const subtotal = plan.price;
+  const basePrice = plan.price;
+  const subtotal = appliedPromo ? basePrice - appliedPromo.discountAmount : basePrice;
   const ppn = Math.round(subtotal * 0.11); // PPN 11%
   const adminFee = 2500; // Biaya layanan / admin
   const total = subtotal + ppn + adminFee;
@@ -322,6 +329,45 @@ function CheckoutContent() {
     setCheckoutConfirmOpen(true);
   };
 
+  const handleApplyPromo = async () => {
+    if (!promoCodeInput.trim()) {
+      showToast('error', 'Masukkan kode voucher terlebih dahulu');
+      return;
+    }
+    
+    setIsApplyingPromo(true);
+    try {
+      const res = await fetch('/api/checkout/apply-promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCodeInput.trim(), plan: planKey }),
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        setAppliedPromo({
+          code: data.data.promoCode,
+          discountAmount: data.data.discountAmount,
+          description: data.data.description,
+        });
+        showToast('success', 'Voucher berhasil digunakan!');
+        setPromoCodeInput('');
+      } else {
+        showToast('error', data.message || 'Gagal menerapkan voucher');
+        setAppliedPromo(null);
+      }
+    } catch (err) {
+      showToast('error', 'Terjadi kesalahan sistem');
+    } finally {
+      setIsApplyingPromo(false);
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null);
+    showToast('info', 'Voucher dilepas');
+  };
+
   const executeCheckout = async () => {
     setCheckoutConfirmOpen(false);
     setIsCheckoutProcessing(true);
@@ -329,7 +375,11 @@ function CheckoutContent() {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: planKey, invitationId: invitationId || undefined }),
+        body: JSON.stringify({ 
+          plan: planKey, 
+          invitationId: invitationId || undefined,
+          promoCode: appliedPromo?.code
+        }),
       });
 
       const data = await response.json();
@@ -562,9 +612,22 @@ function CheckoutContent() {
                 <div className="flex justify-between text-sm text-[#6b6b6b] font-medium">
                   <span>Subtotal ({plan.name})</span>
                   <span className="text-[#1c1c1c] font-bold">
-                    Rp {subtotal.toLocaleString('id-ID')}
+                    Rp {basePrice.toLocaleString('id-ID')}
                   </span>
                 </div>
+                
+                {appliedPromo && (
+                  <div className="flex justify-between text-sm text-emerald-600 font-bold bg-emerald-50 -mx-4 px-4 py-2 rounded-lg">
+                    <span className="flex items-center gap-1.5">
+                      <Tag className="w-3.5 h-3.5" /> 
+                      Diskon Voucher ({appliedPromo.code})
+                    </span>
+                    <span>
+                      - Rp {appliedPromo.discountAmount.toLocaleString('id-ID')}
+                    </span>
+                  </div>
+                )}
+                
                 <div className="flex justify-between text-sm text-[#6b6b6b] font-medium">
                   <span>PPN / Pajak (11%)</span>
                   <span className="text-[#1c1c1c] font-bold">
@@ -584,6 +647,39 @@ function CheckoutContent() {
                   </span>
                 </div>
               </div>
+
+              {/* Promo Code Input Block */}
+              {!appliedPromo ? (
+                <div className="mb-6 bg-stone-50/50 border border-stone-200/50 rounded-2xl p-4">
+                  <label className="block text-xs font-bold text-[#6b6b6b] mb-2 uppercase tracking-wide">Punya Kode Voucher?</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      placeholder="Masukkan kode..." 
+                      value={promoCodeInput}
+                      onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
+                      className="flex-1 bg-white border border-stone-200 rounded-xl px-3 text-sm font-semibold uppercase focus:outline-none focus:border-rose-500 transition-colors"
+                    />
+                    <button 
+                      onClick={handleApplyPromo}
+                      disabled={isApplyingPromo}
+                      className="bg-[#1c1c1c] hover:bg-[#2c2c2c] text-white px-4 rounded-xl text-xs font-bold transition-colors disabled:opacity-50"
+                    >
+                      {isApplyingPromo ? 'Cek...' : 'Terapkan'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-6 bg-emerald-50 border border-emerald-100 rounded-2xl p-4 flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-emerald-600 tracking-wider block mb-0.5">Voucher Aktif</span>
+                    <p className="text-sm font-bold text-emerald-700">{appliedPromo.code}</p>
+                  </div>
+                  <button onClick={handleRemovePromo} className="text-xs font-bold text-emerald-600 hover:text-emerald-700 underline underline-offset-2">
+                    Hapus
+                  </button>
+                </div>
+              )}
 
               <div className="mt-4 mb-6">
                 <button

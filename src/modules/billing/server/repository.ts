@@ -16,6 +16,8 @@ export const billingRepository = {
     type: TransactionType;
     tier: Tier | null;
     status: TransactionStatus;
+    promoCode?: string | null;
+    discountAmount?: number;
   }) {
     return prisma.transaction.create({
       data: {
@@ -27,6 +29,8 @@ export const billingRepository = {
         type: data.type,
         tier: data.tier,
         status: data.status,
+        promoCode: data.promoCode,
+        discountAmount: data.discountAmount,
       },
     });
   },

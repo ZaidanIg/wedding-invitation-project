@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   resolvePhotos,
   AudioPlayer,
-  OpeningPhraseSection,
+
   GallerySection,
   VideoEmbedSection,
 } from './shared';
@@ -483,7 +483,7 @@ function HeroSection({ data }: { data: Invitation }) {
       </div>
       <GoldDustParticles />
 
-      
+
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
@@ -881,13 +881,13 @@ function DateSection({ data }: { data: Invitation }) {
       >
         <div className="relative z-10 px-6 py-14 flex flex-col items-center">
           <p className="text-[10px] uppercase tracking-[0.3em] font-bold mb-6" style={{ color: C.goldDark }}>Save The Date</p>
-          
+
           <SimpleCountdown targetDate={data.eventDate} />
 
           <p style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-xl sm:text-2xl text-center font-bold mb-6">
             {formattedDate}
           </p>
-          
+
           {/* Glowing horizontal line */}
           <div className="w-20 h-[2px] mb-8 relative">
             <div className="absolute inset-0" style={{ background: C.gold, boxShadow: `0 0 10px 2px ${C.gold}` }} />
@@ -929,7 +929,7 @@ function DateSection({ data }: { data: Invitation }) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: false }}
           transition={{ duration: 0.7 }}
-          className="absolute left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-x-100 -translate-x-[24%] -translate-y-[70%]" 
+          className="absolute left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-x-100 -translate-x-[24%] -translate-y-[70%]"
           style={{ top: 0 }}
         >
           <Image src={A.corner} alt="Separator Corner Left" fill className="object-contain object-left" unoptimized />
@@ -953,7 +953,7 @@ function DateSection({ data }: { data: Invitation }) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: false }}
           transition={{ duration: 0.7 }}
-          className="absolute left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-x-100 -scale-y-100 -translate-x-[24%] -translate-y-[28%]" 
+          className="absolute left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-x-100 -scale-y-100 -translate-x-[24%] -translate-y-[28%]"
           style={{ top: 0 }}
         >
           <Image src={A.corner} alt="Separator Corner Left Flipped" fill className="object-contain object-left" unoptimized />
@@ -1029,7 +1029,7 @@ function DateSection({ data }: { data: Invitation }) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: false }}
           transition={{ duration: 0.7 }}
-          className="absolute left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-x-100 -translate-x-[24%] translate-y-[55%]" 
+          className="absolute left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-x-100 -translate-x-[24%] translate-y-[55%]"
           style={{ bottom: 0 }}
         >
           <Image src={A.corner} alt="Separator Corner Left" fill className="object-contain object-left" unoptimized />
@@ -1086,42 +1086,46 @@ function LoveStorySection({ data }: { data: Invitation }) {
         <p className="text-[10px] tracking-widest mt-0 uppercase font-semibold" style={{ color: C.text }}>Perjalanan cinta kami</p>
       </motion.div>
 
-      <div className="relative w-full max-w-sm mx-auto z-10 pl-4">
-        {/* Vertical Line */}
-        <div
-          className="absolute left-8 top-3 bottom-0 w-[1.5px]"
-          style={{ background: C.gold }}
-        />
-        
-        {data.loveStory.map((story, index) => {
-          const galleryImage = galleryPhotos && galleryPhotos.length > 0 ? galleryPhotos[index % galleryPhotos.length] : null;
+      <div className="relative w-full max-w-lg mx-auto z-10 flex flex-col items-center">
+        {(data.loveStory || []).map((story, index) => {
+          const isLast = index === (data.loveStory || []).length - 1;
+          const isEven = index % 2 === 0;
 
           return (
-            <motion.div
-              key={story.id || index}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false, amount: 0.4 }}
-              transition={{ duration: 0.6 }}
-              className={`relative w-full mb-12 last:mb-0 pl-14 group ${galleryImage ? 'cursor-pointer' : ''}`}
-              onClick={() => galleryImage && setSelectedImage(galleryImage)}
-            >
-              {/* Timeline Node */}
-              <div 
-                className="absolute left-8 top-1 w-4 h-4 rounded-full bg-white -translate-x-1/2"
-                style={{ border: `2px solid ${C.gold}` }}
-              />
+            <div key={story.id || index} className="w-full flex flex-col items-center relative">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.4 }}
+                transition={{ duration: 0.6 }}
+                className="relative w-full max-w-[85%] z-10"
+              >
+                <div className="bg-white border p-5 rounded-2xl shadow-lg w-full flex flex-col items-center text-center" style={{ borderColor: `${C.gold}40` }}>
+                  <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: `${C.gold}10` }}>
+                    <Image src={story.photoUrl || '/images/hero-image.jpg'} alt={story.title} fill className="object-cover" unoptimized />
+                  </div>
+                  <span className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: C.goldDark }}>{story.year}</span>
+                  <h4 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-xl mb-1">{story.title}</h4>
+                  <p className="text-xs sm:text-sm leading-relaxed italic" style={{ color: `${C.text}90` }}>{story.description}</p>
+                </div>
+              </motion.div>
 
-              {/* Text content */}
-              <div className="text-left w-full relative">
-                <h4 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-lg sm:text-xl mb-0 group-hover:text-yellow-700 transition-colors">{story.title}</h4>
-                <span className="text-[11px] block mb-2 mt-1" style={{ color: C.goldDark }}>{story.year}</span>
-                <p className="text-xs leading-relaxed max-w-[85%]" style={{ color: `${C.text}90` }}>{story.description}</p>
-                {galleryImage && (
-                  <span className="text-[10px] mt-2 block italic text-gray-400 group-hover:text-yellow-600 transition-colors">Lihat Foto →</span>
-                )}
-              </div>
-            </motion.div>
+              {!isLast && (
+                <div className="relative w-full h-20 my-[-4px] z-0 opacity-60">
+                  <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                    {isEven ? (
+                      <path d="M 50 0 C 90 0, 90 100, 50 100" stroke={C.gold} strokeWidth="2" strokeDasharray="4 4" fill="none" vectorEffect="non-scaling-stroke" />
+                    ) : (
+                      <path d="M 50 0 C 10 0, 10 100, 50 100" stroke={C.gold} strokeWidth="2" strokeDasharray="4 4" fill="none" vectorEffect="non-scaling-stroke" />
+                    )}
+                  </svg>
+                  <div
+                    className={`absolute top-1/2 -translate-y-1/2 ${isEven ? 'left-[80%]' : 'left-[20%]'} -translate-x-1/2 w-3 h-3 rounded-full bg-white border-2 z-10 shadow-sm`}
+                    style={{ borderColor: C.gold }}
+                  />
+                </div>
+              )}
+            </div>
           );
         })}
       </div>
@@ -1212,7 +1216,7 @@ function GiftSection({ data }: { data: Invitation }) {
               boxShadow: `0px 4px 4px 0px ${C.shadow}`,
             }}
           >
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: false }}
@@ -1221,7 +1225,7 @@ function GiftSection({ data }: { data: Invitation }) {
             >
               <Image src={A.mandala} alt="Mandala" fill className="object-contain" unoptimized />
             </motion.div>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: false }}
@@ -1425,15 +1429,6 @@ export default function ElegantSundanese({
         )}
 
         {/* Opening phrase */}
-        {isOpened && (
-          <OpeningPhraseSection
-            phrase={data.openingPhrase}
-            style={data.openingStyle}
-            textColorClass="text-[#A57318]"
-            bgClass="bg-[rgba(250,241,219,0.76)] border-b border-[#F4CD78]/40"
-          />
-        )}
-
         <HeroSection data={data} />
         <CoupleSection data={data} />
         <DateSection data={data} />
@@ -1459,7 +1454,7 @@ export default function ElegantSundanese({
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: false }}
               transition={{ duration: 0.7 }}
-              className="absolute top-0 left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-y-100 -scale-x-100 -translate-x-[10%] -translate-y-[10%]" 
+              className="absolute top-0 left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-y-100 -scale-x-100 -translate-x-[10%] -translate-y-[10%]"
             >
               <Image src={A.corner} alt="Separator Corner Left" fill className="object-contain object-left-top" unoptimized />
             </motion.div>
