@@ -22,6 +22,7 @@ export default function ComingSoonBanner() {
 
       if (distance < 0) {
         clearInterval(timer);
+        document.documentElement.classList.remove('has-promo-banner');
         return;
       }
 
@@ -33,7 +34,15 @@ export default function ComingSoonBanner() {
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    const initialDistance = LAUNCH_DATE - new Date().getTime();
+    if (initialDistance > 0) {
+      document.documentElement.classList.add('has-promo-banner');
+    }
+
+    return () => {
+      clearInterval(timer);
+      document.documentElement.classList.remove('has-promo-banner');
+    };
   }, []);
 
   if (!mounted || (timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0)) {
@@ -41,8 +50,8 @@ export default function ComingSoonBanner() {
   }
 
   return (
-    <div className="bg-rose-gradient text-white px-4 py-2 text-center shadow-md relative z-50">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-semibold">
+    <div className="bg-rose-gradient text-white px-4 h-10 text-center shadow-md relative z-50 flex items-center justify-center">
+      <div className="max-w-7xl mx-auto flex flex-row items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-semibold">
         <div className="flex items-center gap-1.5">
           <Sparkles className="w-4 h-4 text-yellow-300" />
           <span>Grand Launching Sahinaja dalam:</span>
@@ -57,3 +66,4 @@ export default function ComingSoonBanner() {
     </div>
   );
 }
+

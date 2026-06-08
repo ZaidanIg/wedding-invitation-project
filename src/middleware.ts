@@ -18,49 +18,64 @@ export async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   const pathname = url.pathname;
 
-  // 0. Coming Soon Header (Production Domain Only)
-  const isProductionDomain = hostname === 'sahinaja.com' || hostname === 'www.sahinaja.com';
+  // 0. Coming Soon Header (Production & Staging Domains Only)
+  const isProductionDomain = (
+    hostname === 'sahinaja.com' ||
+    hostname === 'www.sahinaja.com' ||
+    hostname === 'staging.sahinaja.com' ||
+    hostname.includes('satging') ||
+    hostname.includes('staging')
+  ) && !hostname.startsWith('admin.');
+
   const isLaunchReady = new Date() >= LAUNCH_DATE;
   
   if (isProductionDomain && !isLaunchReady) {
     request.headers.set('x-is-coming-soon', 'true');
   }
 
-  // 1. Subdomain Routing (admin.sahinaja.com)
-  // Rewrite everything on the admin subdomain to the `/admin` folder internally.
-  if (
-    hostname === 'admin.sahinaja.com' ||
-    hostname.startsWith('admin.localhost')
-  ) {
-    if (!pathname.startsWith('/admin') && !pathname.startsWith('/api')) {
-      return NextResponse.rewrite(new URL(`/admin${pathname === '/' ? '' : pathname}`, request.url));
-    }
+  // 1. Subdomain Detection & Target Path Calculation
+  // Match any subdomain starting with 'admin.' (e.g. admin.sahinaja.com, admin.staging.sahinaja.com, admin.localhost, admin.satging.com)
+  const isAdminSubdomain = hostname.startsWith('admin.');
+  let targetPathname = pathname;
+  if (isAdminSubdomain && !pathname.startsWith('/admin') && !pathname.startsWith('/api')) {
+    targetPathname = `/admin${pathname === '/' ? '' : pathname}`;
   }
 
   // 2. Admin Route Protection
   // All /admin/* paths EXCEPT /admin/login require a valid ADMIN session.
-  const isAdminPath = pathname.startsWith('/admin');
-  const isAdminLoginPath = pathname === '/admin/login';
+  const targetIsAdminPath = targetPathname.startsWith('/admin');
+  const targetIsAdminLoginPath = targetPathname === '/admin/login';
 
-  if (isAdminPath && !isAdminLoginPath) {
+  if (targetIsAdminPath && !targetIsAdminLoginPath && !targetPathname.startsWith('/api')) {
     // auth() from the Edge-compatible config reads the JWT cookie without DB calls
     const session = await auth();
     if (!session || session.user?.role !== 'ADMIN') {
-      const loginUrl = new URL('/admin/login', request.url);
+      // If we are on the admin subdomain, redirect to /login
+      // If we are on the main domain, redirect to /admin/login
+      const redirectPath = isAdminSubdomain ? '/login' : '/admin/login';
+      const loginUrl = new URL(redirectPath, request.url);
       loginUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(loginUrl);
     }
   }
 
-  // 3. Route Protection / Redirects
+  // 3. Perform the Subdomain Rewrite for Authorized Requests
+  if (isAdminSubdomain && !pathname.startsWith('/admin') && !pathname.startsWith('/api')) {
+    return NextResponse.rewrite(new URL(targetPathname, request.url));
+  }
+
+  // 4. Route Protection / Redirects
   if (pathname === '/create') {
-    const plan = url.searchParams.get('plan') || request.cookies.get('selected_plan')?.value;
-    if (!plan) {
-      return NextResponse.redirect(new URL('/pricing', request.url));
+    const isComingSoon = request.headers.get('x-is-coming-soon') === 'true' || (!isLaunchReady && isProductionDomain);
+    if (!isComingSoon) {
+      const plan = url.searchParams.get('plan') || request.cookies.get('selected_plan')?.value;
+      if (!plan) {
+        return NextResponse.redirect(new URL('/pricing', request.url));
+      }
     }
   }
 
-  // 4. Global Headers
+  // 5. Global Headers
   const response = NextResponse.next({
     request: {
       headers: request.headers,

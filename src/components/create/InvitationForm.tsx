@@ -40,6 +40,7 @@ import type { Tone, Language, Layout } from '@/types';
 import Image from 'next/image';
 import { R2UploadDropzone as UploadDropzone } from './R2UploadDropzone';
 import InvitationPreview from '@/components/themes/InvitationPreview';
+import { LAYOUT_LABELS } from '@/components/layouts';
 
 const toneOptions = [
   { value: 'formal', label: 'Formal - Elegan & Berwibawa' },
@@ -402,7 +403,7 @@ export default function InvitationForm() {
                         <p className="text-sm text-stone-500 text-center mb-8">Pilih tata letak dan tema dasar undangan Anda. Pratinjau di samping akan langsung menyesuaikan dengan pilihan Anda.</p>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                           {layoutOptions
-                            .filter(opt => hasPremium || opt.category === 'klasik')
+                            .filter(opt => (hasPremium || opt.category === 'klasik') && (opt.value in LAYOUT_LABELS))
                             .map((opt) => (
                               <button 
                                 key={opt.value} 

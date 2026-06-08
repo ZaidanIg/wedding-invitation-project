@@ -12,6 +12,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hasBanner, setHasBanner] = useState(false);
   const { data: session } = useSession();
   const pathname = usePathname();
   
@@ -22,6 +23,15 @@ export default function Navbar() {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const checkBanner = () => {
+      setHasBanner(document.documentElement.classList.contains('has-promo-banner'));
+    };
+    checkBanner();
+    const interval = setInterval(checkBanner, 150);
+    return () => clearInterval(interval);
   }, []);
 
   if (isDemoRoute) return null;
@@ -41,7 +51,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#fdfcf9]/80 backdrop-blur-xl border-b border-rose-500/10 py-2' : 'bg-transparent py-4'}`}>
+    <nav className={`fixed ${isScrolled ? 'top-0' : (hasBanner ? 'top-10' : 'top-0')} left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#fdfcf9]/80 backdrop-blur-xl border-b border-rose-500/10 py-2' : 'bg-transparent py-4'}`}>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between min-h-16">
           {/* Logo */}

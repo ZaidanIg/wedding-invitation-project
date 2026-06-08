@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Eye, Sparkles, ArrowRight } from 'lucide-react';
 import type { Layout } from '@/types';
 import ThemePreviewModal from '../create/ThemePreviewModal';
+import { LAYOUT_LABELS } from '@/components/layouts';
 
 type ThemeCategory = 'Semua' | 'Modern' | 'Islami' | 'Kristen' | 'Hindu' | 'Buddha' | 'Oriental';
 
@@ -56,7 +57,7 @@ const themes: {
   },
   {
     name: 'Premium Charcoal',
-    slug: 'premium-charcoal',
+    slug: 'onyx-premium',
     tag: '✨ Premium',
     isLuxury: true,
     category: 'Modern',
@@ -64,7 +65,7 @@ const themes: {
   },
   {
     name: 'Islamic Grace',
-    slug: 'islamic-grace',
+    slug: 'forest-grace',
     tag: '✨ Premium',
     isLuxury: true,
     category: 'Islami',
@@ -72,7 +73,7 @@ const themes: {
   },
   {
     name: 'Islamic Classic',
-    slug: 'islamic-minimalist',
+    slug: 'sand-dunes',
     tag: 'Basic',
     isLuxury: false,
     category: 'Islami',
@@ -80,7 +81,7 @@ const themes: {
   },
   {
     name: 'Islamic Midnight',
-    slug: 'islamic-midnight',
+    slug: 'midnight-velvet',
     tag: 'Basic',
     isLuxury: false,
     category: 'Islami',
@@ -88,7 +89,7 @@ const themes: {
   },
   {
     name: 'Islamic Arabesque',
-    slug: 'islamic-arabesque',
+    slug: 'arabesque-pattern',
     tag: 'Basic',
     isLuxury: false,
     category: 'Islami',
@@ -96,7 +97,7 @@ const themes: {
   },
   {
     name: 'Christian Elegant',
-    slug: 'christian-elegant',
+    slug: 'garden-chapel',
     tag: '✨ Premium',
     isLuxury: true,
     category: 'Kristen',
@@ -104,7 +105,7 @@ const themes: {
   },
   {
     name: 'Hindu Mandala',
-    slug: 'hindu-mandala',
+    slug: 'mandala-fusion',
     tag: '✨ Premium',
     isLuxury: true,
     category: 'Hindu',
@@ -112,7 +113,7 @@ const themes: {
   },
   {
     name: 'Buddhist Zen',
-    slug: 'buddhist-zen',
+    slug: 'zen-garden',
     tag: '✨ Premium',
     isLuxury: true,
     category: 'Buddha',
@@ -120,7 +121,7 @@ const themes: {
   },
   {
     name: 'Confucian Oriental',
-    slug: 'confucian-oriental',
+    slug: 'oriental-luxe',
     tag: '✨ Premium',
     isLuxury: true,
     category: 'Oriental',
@@ -136,7 +137,7 @@ const themes: {
   },
   {
     name: 'Premium Javanese',
-    slug: 'premium-javanese',
+    slug: 'batik-heritage',
     tag: '✨ Premium',
     isLuxury: true,
     category: 'Oriental',
@@ -198,23 +199,28 @@ export default function ShowcaseSection({ fullGallery = false }: { fullGallery?:
     sliderRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  const activeTheme = themes.find(t => t.slug === selectedTheme);
+  // Filter out experimental themes based on LAYOUT_LABELS
+  const availableThemes = useMemo(() => {
+    return themes.filter(t => t.slug in LAYOUT_LABELS);
+  }, []);
+
+  const activeTheme = availableThemes.find(t => t.slug === selectedTheme);
 
   const pricingFilters: { id: PricingFilter; label: string; count: number }[] = [
-    { id: 'Semua', label: 'Semua', count: themes.length },
-    { id: 'Basic', label: 'Basic', count: themes.filter(t => !t.isLuxury).length },
-    { id: 'Premium', label: 'Premium', count: themes.filter(t => t.isLuxury).length },
+    { id: 'Semua', label: 'Semua', count: availableThemes.length },
+    { id: 'Basic', label: 'Basic', count: availableThemes.filter(t => !t.isLuxury).length },
+    { id: 'Premium', label: 'Premium', count: availableThemes.filter(t => t.isLuxury).length },
   ];
 
   const filteredThemes = useMemo(() => {
-    if (activeFilter === 'Basic') return themes.filter(t => !t.isLuxury);
-    if (activeFilter === 'Premium') return themes.filter(t => t.isLuxury);
-    return themes;
-  }, [activeFilter]);
+    if (activeFilter === 'Basic') return availableThemes.filter(t => !t.isLuxury);
+    if (activeFilter === 'Premium') return availableThemes.filter(t => t.isLuxury);
+    return availableThemes;
+  }, [activeFilter, availableThemes]);
 
   const displayedThemes = useMemo(() => {
-    return fullGallery ? filteredThemes.slice(0, visibleCount) : themes;
-  }, [filteredThemes, fullGallery, visibleCount]);
+    return fullGallery ? filteredThemes.slice(0, visibleCount) : availableThemes;
+  }, [filteredThemes, fullGallery, visibleCount, availableThemes]);
 
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -367,7 +373,7 @@ export default function ShowcaseSection({ fullGallery = false }: { fullGallery?:
                 isDragging ? 'cursor-grabbing snap-none' : 'cursor-grab snap-x snap-mandatory'
               }`}
             >
-              {themes.map((theme, i) => (
+              {availableThemes.map((theme, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 30 }}

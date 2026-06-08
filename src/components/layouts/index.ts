@@ -71,8 +71,8 @@ export const LAYOUT_LABELS: Record<string, string> = (() => {
     'elegant-sundanese':  'Elegant Sundanese',
   };
 
-  // Hide experimental themes in production (main branch)
-  if (process.env.NEXT_PUBLIC_APP_URL === 'https://sahinaja.com') {
+  // Hide experimental themes in production (both production VPS and Vercel staging)
+  if (process.env.NODE_ENV === 'production') {
     const experimentalThemes = [
       'forest-grace',
       'garden-chapel',

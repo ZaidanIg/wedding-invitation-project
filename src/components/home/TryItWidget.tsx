@@ -9,18 +9,18 @@ import ThemeMiniPreview from '@/components/themes/ThemeMiniPreview';
 import type { Layout } from '@/types';
 
 const FEATURED_THEMES: { slug: Layout; label: string }[] = [
-  { slug: 'premium-javanese', label: 'Premium Javanese' },
-  { slug: 'islamic-grace', label: 'Islamic Grace' },
-  { slug: 'luxury-emerald', label: 'Luxury Emerald' },
-  { slug: 'premium-charcoal', label: 'Premium Charcoal' },
-  { slug: 'christian-elegant', label: 'Christian Elegant' },
-  { slug: 'rose-garden', label: 'Rose Garden' },
+  { slug: 'batik-heritage', label: 'Batik Heritage' },
+  { slug: 'luxury-emerald', label: 'Emerald Forest' },
+  { slug: 'onyx-premium', label: 'Onyx Premium' },
+  { slug: 'rose-garden', label: 'Blush Garden' },
+  { slug: 'elegant-cream', label: 'Ivory Bloom' },
+  { slug: 'elegant-sundanese', label: 'Elegant Sundanese' },
 ];
 
 export default function TryItWidget() {
   const [groomName, setGroomName] = useState('');
   const [brideName, setBrideName] = useState('');
-  const [selectedTheme, setSelectedTheme] = useState<Layout>('premium-javanese');
+  const [selectedTheme, setSelectedTheme] = useState<Layout>('batik-heritage');
   const [isFocused, setIsFocused] = useState(false);
 
   const displayGroomName = groomName.trim() || 'Nama Pria';
