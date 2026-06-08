@@ -38,7 +38,7 @@ import { MOCK_INVITATION } from '@/constants/demoData';
 import IframePreview from '@/components/ui/IframePreview';
 import type { Tone, Language, Layout } from '@/types';
 import Image from 'next/image';
-import { UploadDropzone } from '@/lib/uploadthing';
+import { R2UploadDropzone as UploadDropzone } from './R2UploadDropzone';
 import InvitationPreview from '@/components/themes/InvitationPreview';
 
 const toneOptions = [
@@ -642,7 +642,7 @@ export default function InvitationForm() {
                               </div>
                             ) : (
                               <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-8 rounded-3xl">
-                                <UploadDropzone endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl w-auto max-w-full truncate', container: 'p-4 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res) res.forEach(f => store.addPhotoUrl(f.ufsUrl)); }} />
+                                <UploadDropzone endpoint="weddingPhotos" multiple={true} content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl w-auto max-w-full truncate', container: 'p-4 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res) res.forEach(f => store.addPhotoUrl(f.ufsUrl)); }} />
                               </div>
                             )}
                               <div className="grid grid-cols-4 gap-2 mt-4">{store.photoUrls.map((u, i) => (<div key={i} className="relative aspect-square rounded-xl overflow-hidden border shadow-sm group"><Image src={u} alt="G" fill className="object-cover group-hover:scale-110 transition-transform" unoptimized /><button className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" onClick={() => store.removePhotoUrl(u)}><Trash2 className="h-3.5 w-3.5 text-white" /></button></div>))}</div>
