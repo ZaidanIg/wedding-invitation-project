@@ -76,8 +76,8 @@ export async function POST(request: Request, { params }: RouteParams) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 15000));
       await sendWhatsAppMessage(guest.phone, message);
-    } catch (err: any) {
-      const errMsg = err.message || '';
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : '';
       if (
         errMsg.includes('disconnected device') || 
         errMsg.includes('device disconnected') || 

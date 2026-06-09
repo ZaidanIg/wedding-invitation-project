@@ -1,5 +1,5 @@
 import { prisma } from '../../src/lib/prisma';
-import { Prisma } from '@prisma/client';
+import { Prisma, TransactionStatus, TransactionType, Tier } from '@prisma/client';
 import { UserFactory } from './user.factory';
 import { InvitationFactory } from './invitation.factory';
 
@@ -18,21 +18,20 @@ export const TransactionFactory = {
       invitationId = invitation.id;
     }
 
-    const baseData: any = {
+    const { userId: _, invitationId: __, ...restOverrides } = overrides || {};
+
+    const baseData: Prisma.TransactionCreateInput = {
       id: `ORD-${Date.now()}`,
       idempotencyKey: `idempotency-${Date.now()}`,
       amount: 150000,
-      type: 'INVITATION_UPGRADE',
-      status: 'PENDING',
-      tier: 'PREMIUM',
+      type: TransactionType.INVITATION_UPGRADE,
+      status: TransactionStatus.PENDING,
+      tier: Tier.PREMIUM,
       midtransId: `midtrans-${Date.now()}`,
-      ...overrides,
+      ...restOverrides,
       user: { connect: { id: userId } },
       invitation: { connect: { id: invitationId } },
     };
-
-    delete (baseData as any).userId;
-    delete (baseData as any).invitationId;
 
     return prisma.transaction.create({
       data: baseData,
@@ -42,7 +41,7 @@ export const TransactionFactory = {
   async createPaid(overrides?: Partial<Prisma.TransactionCreateInput> & { userId?: string; invitationId?: string }) {
     return this.create({
       ...overrides,
-      status: 'PAID',
+      status: TransactionStatus.PAID,
     });
   },
 };

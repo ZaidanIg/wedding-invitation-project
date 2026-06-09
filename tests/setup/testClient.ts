@@ -1,7 +1,9 @@
 import { NextRequest } from 'next/server';
 
+export type RouteHandler = (req: NextRequest, ctx?: unknown) => Promise<Response> | Response;
+
 export const mockSessionState = {
-  current: null as any,
+  current: null as unknown,
 };
 
 /**
@@ -29,23 +31,23 @@ export const testClient = {
     return mockSessionState.current;
   },
 
-  async get(handler: (...args: any[]) => any, url: string, params: any = {}) {
+  async get(handler: RouteHandler, url: string, params: Record<string, unknown> = {}) {
     return this.invoke(handler, url, 'GET', undefined, params);
   },
 
-  async post(handler: (...args: any[]) => any, url: string, body?: any, params: any = {}) {
+  async post(handler: RouteHandler, url: string, body?: Record<string, unknown>, params: Record<string, unknown> = {}) {
     return this.invoke(handler, url, 'POST', body, params);
   },
 
-  async patch(handler: (...args: any[]) => any, url: string, body?: any, params: any = {}) {
+  async patch(handler: RouteHandler, url: string, body?: Record<string, unknown>, params: Record<string, unknown> = {}) {
     return this.invoke(handler, url, 'PATCH', body, params);
   },
 
-  async delete(handler: (...args: any[]) => any, url: string, params: any = {}) {
+  async delete(handler: RouteHandler, url: string, params: Record<string, unknown> = {}) {
     return this.invoke(handler, url, 'DELETE', undefined, params);
   },
 
-  async invoke(handler: (...args: any[]) => any, url: string, method: string, body?: any, params: any = {}) {
+  async invoke(handler: RouteHandler, url: string, method: string, body?: Record<string, unknown>, params: Record<string, unknown> = {}) {
     const req = new NextRequest(url, {
       method,
       body: body ? JSON.stringify(body) : undefined,

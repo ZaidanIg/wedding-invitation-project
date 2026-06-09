@@ -14,7 +14,7 @@ interface CheckoutButtonProps {
 
 export default function CheckoutButton({ plan, invitationId, className, children }: CheckoutButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const _router = useRouter();
 
   const handleCheckout = async () => {
     const planNames: Record<string, string> = {

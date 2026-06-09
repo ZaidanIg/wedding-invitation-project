@@ -60,7 +60,7 @@ export default function SignInPage() {
     const cooldownUntil = sessionStorage.getItem('cooldown_until');
     
     if (savedEmail) {
-      setFormData(prev => ({ ...prev, email: savedEmail }));
+      setTimeout(() => { setFormData(prev => ({ ...prev, email: savedEmail })); }, 0);
     }
     
     if (cooldownUntil) {
@@ -95,7 +95,7 @@ export default function SignInPage() {
           errorKey === 'OAuthNotLinked' ||
           errorKey.toLowerCase().includes('oauth')
         ) {
-          setError('Email Anda sudah terdaftar. Silakan masuk menggunakan kata sandi yang Anda buat sebelumnya.');
+          setTimeout(() => { setError('Email Anda sudah terdaftar. Silakan masuk menggunakan kata sandi yang Anda buat sebelumnya.'); }, 0);
         } else if (errorKey === 'USER_NOT_FOUND') {
           setError('Akun dengan email ini tidak terdaftar. Silakan daftar terlebih dahulu.');
         } else if (errorKey === 'EMAIL_NOT_VERIFIED') {
@@ -174,7 +174,7 @@ export default function SignInPage() {
         sessionStorage.setItem('auth_email', formData.email);
         sessionStorage.setItem('cooldown_until', (Date.now() + 60 * 1000).toString());
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Terjadi kesalahan saat mengirimkan kode verifikasi.');
     } finally {
       setIsSendingCode(false);
@@ -294,7 +294,7 @@ export default function SignInPage() {
         setSuccessMsg('Registrasi berhasil! Silakan masuk dengan email dan kata sandi Anda.');
         setIsLoading(false);
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Terjadi kesalahan yang tidak terduga.');
       setIsLoading(false);
     }

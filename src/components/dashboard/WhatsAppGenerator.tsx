@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageSquare, Copy, ExternalLink, Send } from 'lucide-react';
+import { MessageSquare, Copy, Send } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
 import { getCoupleSlug } from '@/lib/utils';

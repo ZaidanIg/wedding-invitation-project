@@ -5,17 +5,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Calendar,
   MapPin,
-  Clock,
   Heart,
-  ChevronDown,
-  MessageCircle,
-  QrCode,
-  Users,
-  Link as LinkIcon,
-  Sparkles,
-  Music
+  Sparkles
 } from 'lucide-react';
 import type { Invitation, Guest } from '@/types';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
@@ -23,15 +15,12 @@ import {
   AnimatedSection,
   LoveStorySection,
   AudioPlayer,
-  DetailItem,
   formatEventDate,
   resolvePhotos,
   getMapsUrl,
   IconMapper,
   CountdownTimer,
   TierGate,
-  DigitalGiftSection,
-  QuotesSection,
   EventActionButtons,
   
   GallerySection,
@@ -43,7 +32,7 @@ const StarField = () => {
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   const stars = useMemo(() => {
@@ -113,17 +102,17 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 export default function IslamicMidnight({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
   const [isOpened, setIsOpened] = useState(isPreview);
   const [guestName, setGuestName] = useState('Tamu Undangan');
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate } = formatEventDate(invitation.eventDate);
   const { heroPhoto, galleryPhotos } = resolvePhotos(invitation);
-  const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+  const _mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     const to = p.get('to');
     if (to) {
       const decoded = decodeURIComponent(to);
-      setGuestName(decoded);
+      setTimeout(() => { setGuestName(decoded); }, 0);
       if (invitation.guests) {
         const decodedTo = decoded.trim().toLowerCase();
         const guest = invitation.guests.find(

@@ -6,7 +6,6 @@ import Badge from '@/components/ui/Badge';
 import Pagination, { type PaginationMeta } from '@/components/ui/Pagination';
 import { showToast } from '@/components/ui/Toast';
 import { 
-  Users, 
   Search, 
   UserCheck, 
   RefreshCw,
@@ -53,7 +52,7 @@ export default function CustomersPage() {
   }, []);
 
   useEffect(() => {
-    loadUsers(page, debouncedSearch);
+    setTimeout(() => { loadUsers(page, debouncedSearch); }, 0);
   }, [page, debouncedSearch, loadUsers]);
 
   const handleUpdateRole = async (userId: string, currentRole: string) => {

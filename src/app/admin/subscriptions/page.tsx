@@ -1,16 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { showToast } from '@/components/ui/Toast';
 import { 
   Repeat, 
-  RefreshCw, 
-  TrendingUp, 
-  Sparkles, 
-  DollarSign, 
-  Users
+  RefreshCw
 } from 'lucide-react';
 
 const PLAN_PERFORMANCE = [

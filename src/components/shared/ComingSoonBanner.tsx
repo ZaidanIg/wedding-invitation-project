@@ -15,7 +15,7 @@ export default function ComingSoonBanner() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
     const timer = setInterval(() => {
       const now = new Date().getTime();
       const distance = LAUNCH_DATE - now;

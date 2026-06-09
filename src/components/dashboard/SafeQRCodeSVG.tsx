@@ -10,7 +10,7 @@ export default function SafeQRCodeSVG({ value, size = 130, level = 'H', classNam
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   if (!mounted) {

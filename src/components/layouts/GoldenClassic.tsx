@@ -1,9 +1,8 @@
 import { getCoupleSlug } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-import { Heart, MapPin, Clock, Calendar, Music, Camera, ChevronDown, Glasses } from 'lucide-react';
+import { Heart, MapPin, ChevronDown } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
-import { getEmbedUrl } from '@/lib/utils';
 import Image from 'next/image';
 import {
   AnimatedSection,
@@ -14,12 +13,10 @@ import {
   getMapsUrl,
   IconMapper,
   WaveDivider,
-  CurvedDivider,
   LoveStorySection,
   DigitalGiftSection,
   GuestWelcome,
   QuotesSection,
-  TierGate,
   useTier,
   EventActionButtons,
   
@@ -45,8 +42,8 @@ function GoldDivider() {
 
 export default function GoldenClassic({ invitation, isPreview = false }: LayoutProps) {
   const { tier } = useTier();
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
-  const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const { formattedDate } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
@@ -59,7 +56,7 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
         (g) => g.name.trim().toLowerCase() === decodedTo
       );
       if (guest) {
-        setMatchedGuest(guest);
+        setTimeout(() => { setMatchedGuest(guest); }, 0);
       }
     }
   }, [invitation.guests]);

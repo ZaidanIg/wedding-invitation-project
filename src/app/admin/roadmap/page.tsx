@@ -66,7 +66,7 @@ export default function RoadmapPage() {
   useEffect(() => {
     const saved = localStorage.getItem('erp_roadmap');
     if (saved) {
-      setRoadmap(JSON.parse(saved));
+      setTimeout(() => { setRoadmap(JSON.parse(saved)); }, 0);
     } else {
       setRoadmap(DEFAULT_ROADMAP);
       localStorage.setItem('erp_roadmap', JSON.stringify(DEFAULT_ROADMAP));

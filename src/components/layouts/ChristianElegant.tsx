@@ -5,15 +5,12 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Heart, Calendar, MapPin, Clock, Camera, 
-  MessageCircle, Sparkles, ChevronDown, 
-  Music, Share2, Users, QrCode, BookOpen,
-  Home, CalendarDays, Pause
+  Heart, MapPin, 
+  MessageCircle, Share2, QrCode, BookOpen
 } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
-import type { Invitation, Guest } from '@/types';
-import { getEmbedUrl } from '@/lib/utils';
+import type { Invitation, Guest, ScheduleItem } from '@/types';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -25,9 +22,7 @@ import {
   AudioPlayer,
   TierGate,
   useTier,
-  ParallaxSection,
   ParallaxImage,
-  WaveDivider,
   IconMapper,
   EventActionButtons,
   
@@ -113,17 +108,17 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 
 export default function ChristianElegant({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
   const { tier } = useTier();
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const { formattedDate, dayName, dayNumber, monthName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, galleryPhotos, photo2, photo3 } = resolvePhotos(invitation);
-  const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+  const _mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   useEffect(() => {
@@ -131,7 +126,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
       const p = new URLSearchParams(window.location.search);
       const to = p.get('to');
       if (to) {
-        setGuestName(decodeURIComponent(to));
+        setTimeout(() => { setGuestName(decodeURIComponent(to)); }, 0);
         if (invitation.guests) {
           const decodedTo = decodeURIComponent(to).trim().toLowerCase();
           const guest = invitation.guests.find(
@@ -329,7 +324,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
              {(invitation.schedule || [
                { id: '1', label: 'Holy Matrimony', time: invitation.eventTime, icon: 'heart' },
                { id: '2', label: 'Wedding Reception', time: '18:00 - End', icon: 'utensils' }
-             ]).map((item: any, idx: number) => (
+             ]).map((item: ScheduleItem, _idx: number) => (
                <AnimatedSection key={item.id} className="p-10 rounded-[3rem] bg-stone-50 border border-stone-100 hover:shadow-2xl transition-all duration-700 group">
                   <div className="flex justify-between items-start mb-10">
                      <div className="p-5 rounded-3xl bg-white shadow-sm group-hover:bg-[#1c1c1c] transition-colors group-hover:text-white">

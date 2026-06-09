@@ -1,5 +1,4 @@
 // GET /api/admin/metrics — Real-time global KPI metrics
-import { NextResponse } from 'next/server';
 import { successResponse, errorResponse } from '@/lib/api-response';
 import { handleServiceError } from '@/lib/errors';
 import { auth } from '@/lib/auth';

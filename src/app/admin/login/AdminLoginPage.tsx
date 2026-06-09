@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code   = params.get('code') || params.get('error');
-    if (code) setError(ERROR_MAP[code] ?? 'Terjadi kesalahan. Silakan coba lagi.');
+    setTimeout(() => { if (code) setError(ERROR_MAP[code] ?? 'Terjadi kesalahan. Silakan coba lagi.'); }, 0);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

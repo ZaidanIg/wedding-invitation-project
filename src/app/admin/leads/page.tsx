@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Card from '@/components/ui/Card';
-import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
 import { 
@@ -12,8 +11,7 @@ import {
   RefreshCw, 
   ChevronRight, 
   ChevronLeft,
-  Calendar,
-  MessageSquare
+  Calendar
 } from 'lucide-react';
 
 interface Lead {
@@ -69,7 +67,7 @@ export default function LeadsPage() {
   }, []);
 
   useEffect(() => {
-    loadLeads();
+    setTimeout(() => { loadLeads(); }, 0);
   }, [loadLeads]);
 
   const handleCreateLead = async (e: React.FormEvent) => {

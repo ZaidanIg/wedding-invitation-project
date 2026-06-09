@@ -1,5 +1,5 @@
 // GET /api/admin/invitations — List all invitations with RSVP stats
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { successResponse, errorResponse } from '@/lib/api-response';
 import { handleServiceError } from '@/lib/errors';
 import { auth } from '@/lib/auth';

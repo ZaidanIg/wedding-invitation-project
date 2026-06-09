@@ -43,8 +43,9 @@ export async function POST(request: Request) {
       fileUrl,
       key: uniqueKey,
     }, 'Presigned URL generated successfully');
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error generating presigned R2 URL:', error);
-    return errorResponse(error.message || 'Internal Server Error', 500, 'INTERNAL_SERVER_ERROR');
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return errorResponse(message, 500, 'INTERNAL_SERVER_ERROR');
   }
 }

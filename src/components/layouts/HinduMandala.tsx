@@ -5,14 +5,11 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Heart, Calendar, MapPin, Clock, Camera, 
-  MessageCircle, Sparkles, ChevronDown, 
-  Music, Share2, Users, QrCode, Flower2,
-  Home, CalendarDays, Pause
+  Heart, MapPin, 
+  MessageCircle, Sparkles, Users, QrCode, Flower2
 } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
-import type { Invitation, Guest } from '@/types';
-import { getEmbedUrl } from '@/lib/utils';
+import type { Invitation, Guest, ScheduleItem } from '@/types';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -24,7 +21,6 @@ import {
   AudioPlayer,
   TierGate,
   useTier,
-  ParallaxSection,
   ParallaxImage,
   DigitalGiftSection,
   IconMapper,
@@ -111,7 +107,7 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 
 export default function HinduMandala({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
   const { tier } = useTier();
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -121,7 +117,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   useEffect(() => {
@@ -129,7 +125,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
       const p = new URLSearchParams(window.location.search);
       const to = p.get('to');
       if (to) {
-        setGuestName(decodeURIComponent(to));
+        setTimeout(() => { setGuestName(decodeURIComponent(to)); }, 0);
         if (invitation.guests) {
           const decodedTo = decodeURIComponent(to).trim().toLowerCase();
           const guest = invitation.guests.find(
@@ -338,7 +334,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
              {(invitation.schedule || [
                { id: '1', label: 'Upacara Adat', time: invitation.eventTime, icon: 'heart' },
                { id: '2', label: 'Resepsi', time: '13:00 - End', icon: 'utensils' }
-             ]).map((item: any, idx: number) => (
+             ]).map((item: ScheduleItem, _idx: number) => (
                <AnimatedSection key={item.id} className="p-12 rounded-[5rem] bg-[#fffcf5] border border-amber-100 hover:shadow-3xl hover:bg-white transition-all duration-700 group ring-1 ring-amber-900/5">
                   <div className="flex justify-between items-start mb-10">
                      <div className="p-6 rounded-[2.5rem] bg-white shadow-xl group-hover:scale-110 transition-transform ring-1 ring-amber-100">

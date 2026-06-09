@@ -6,12 +6,10 @@ import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
 import { 
-  CreditCard, 
   ChevronLeft, 
   ChevronRight, 
   Eye, 
   RefreshCw,
-  Search,
   Filter
 } from 'lucide-react';
 import type { AdminTransactionDto } from '@/modules/admin/server/dto';
@@ -64,7 +62,7 @@ export default function TransactionsPage() {
   }, []);
 
   useEffect(() => {
-    loadTransactions(txPage, txStatusFilter);
+    setTimeout(() => { loadTransactions(txPage, txStatusFilter); }, 0);
   }, [txPage, txStatusFilter, loadTransactions]);
 
   const formatDate = (iso: string) => {

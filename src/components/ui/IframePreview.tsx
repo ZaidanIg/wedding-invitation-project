@@ -2,7 +2,7 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { createPortal } from 'react-dom';
 
-const IframePreview = forwardRef(({ children, ...props }: any, ref) => {
+const IframePreview = forwardRef(({ children, ...props }: { children?: React.ReactNode; [key: string]: any }, ref) => {
   const [contentRef, setContentRef] = useState<HTMLIFrameElement | null>(null);
   const mountNode = contentRef?.contentWindow?.document?.body;
 
@@ -11,13 +11,13 @@ const IframePreview = forwardRef(({ children, ...props }: any, ref) => {
       querySelector: (selector: string) => {
         return contentRef?.contentWindow?.document?.querySelector(selector);
       },
-      scrollTo: (options: any) => {
+      scrollTo: (options: Record<string, unknown>) => {
         contentRef?.contentWindow?.scrollTo(options);
       },
-      addEventListener: (evt: string, cb: any) => {
+      addEventListener: (evt: string, cb: EventListenerOrEventListenerObject) => {
          contentRef?.contentWindow?.addEventListener(evt, cb);
       },
-      removeEventListener: (evt: string, cb: any) => {
+      removeEventListener: (evt: string, cb: EventListenerOrEventListenerObject) => {
          contentRef?.contentWindow?.removeEventListener(evt, cb);
       },
       get clientHeight() {
@@ -63,7 +63,7 @@ const IframePreview = forwardRef(({ children, ...props }: any, ref) => {
       ref={setContentRef} 
       style={{ width: '100%', height: '100%', border: 'none', backgroundColor: 'transparent' }}
     >
-      {mountNode && createPortal(children, mountNode)}
+      {mountNode && createPortal(children as React.ReactNode, mountNode)}
     </iframe>
   );
 });

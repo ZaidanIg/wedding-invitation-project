@@ -20,7 +20,7 @@ export class ApiClientError extends Error {
 }
 
 interface FetchOptions extends Omit<RequestInit, 'body'> {
-  body?: any;
+  body?: Record<string, unknown>;
 }
 
 /**

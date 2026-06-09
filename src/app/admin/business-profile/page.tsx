@@ -39,7 +39,7 @@ export default function BusinessProfilePage() {
     const savedBankAccount = localStorage.getItem('erp_bank_account');
     const savedBankHolder = localStorage.getItem('erp_bank_holder');
 
-    if (savedName) setCompanyName(savedName);
+    setTimeout(() => { if (savedName) setCompanyName(savedName); }, 0);
     if (savedPhone) setSupportPhone(savedPhone);
     if (savedEmail) setSupportEmail(savedEmail);
     if (savedAddress) setAddress(savedAddress);

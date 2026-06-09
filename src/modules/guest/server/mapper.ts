@@ -4,8 +4,21 @@
 
 import type { GuestResponseDto } from './dto';
 
+type GuestEntity = {
+  id: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  rsvpStatus: string;
+  message?: string | null;
+  attendees?: number;
+  checkedIn?: boolean;
+  isVip?: boolean;
+  createdAt: Date | string;
+};
+
 export const guestMapper = {
-  toResponse(entity: Record<string, any>): GuestResponseDto {
+  toResponse(entity: GuestEntity): GuestResponseDto {
     return {
       id: entity.id,
       name: entity.name,

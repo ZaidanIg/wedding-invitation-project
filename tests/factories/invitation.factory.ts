@@ -11,7 +11,9 @@ export const InvitationFactory = {
       userId = user.id;
     }
 
-    const baseData: any = {
+    const { userId: _, ...restOverrides } = overrides || {};
+
+    const baseData: Prisma.InvitationCreateInput = {
       slug: `slug-${Date.now()}`,
       groomName: 'Groom',
       brideName: 'Bride',
@@ -27,12 +29,9 @@ export const InvitationFactory = {
       status: 'DRAFT',
       tier: 'BASIC',
       layout: 'ElegantSundanese',
-      ...overrides,
+      ...restOverrides,
       user: { connect: { id: userId } },
     };
-
-    // Remove userId from baseData to prevent Prisma errors since we used connect
-    delete (baseData as any).userId;
 
     return prisma.invitation.create({
       data: baseData,
@@ -40,10 +39,11 @@ export const InvitationFactory = {
   },
 
   async createPublished(overrides?: Partial<Prisma.InvitationCreateInput> & { userId?: string }) {
+    const { userId: _, ...restOverrides } = overrides || {};
     return this.create({
-      ...overrides,
+      ...restOverrides,
       status: 'PUBLISHED',
       tier: 'PREMIUM',
-    } as any);
+    } as Prisma.InvitationCreateInput);
   },
 };

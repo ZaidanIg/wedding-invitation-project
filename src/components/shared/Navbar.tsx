@@ -10,7 +10,7 @@ import Image from 'next/image';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [_isUserMenuOpen, _setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [hasBanner, setHasBanner] = useState(false);
   const { data: session } = useSession();
@@ -141,7 +141,7 @@ export default function Navbar() {
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
                     onClick={() => {
                       const popover = document.getElementById('user-menu-popover');
-                      if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
+                      if (popover && (popover as unknown as { hidePopover: () => void }).hidePopover) (popover as unknown as { hidePopover: () => void }).hidePopover();
                     }}
                   >
                     <Heart className="h-4 w-4" />
@@ -153,7 +153,7 @@ export default function Navbar() {
                       className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
                       onClick={() => {
                         const popover = document.getElementById('user-menu-popover');
-                        if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
+                        if (popover && (popover as unknown as { hidePopover: () => void }).hidePopover) (popover as unknown as { hidePopover: () => void }).hidePopover();
                       }}
                     >
                       <User className="h-4 w-4" />
@@ -196,7 +196,7 @@ export default function Navbar() {
         <div 
           id="mobile-menu-popover" 
           popover="auto"
-          onToggle={(e: any) => setIsMobileMenuOpen(e.newState === 'open')}
+          onToggle={(e: unknown) => setIsMobileMenuOpen((e as { newState?: string }).newState === 'open')}
           className="md:hidden w-[calc(100vw-2rem)] max-w-[320px] rounded-[2rem] shadow-2xl shadow-rose-500/20 py-4 animate-fade-in bg-[#fdfcf9] border border-rose-500/10 backdrop-blur-2xl"
           style={{
             positionAnchor: '--mobile-menu-anchor',
@@ -220,7 +220,7 @@ export default function Navbar() {
                 }`}
                 onClick={() => {
                   const popover = document.getElementById('mobile-menu-popover');
-                  if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
+                  if (popover && (popover as unknown as { hidePopover: () => void }).hidePopover) (popover as unknown as { hidePopover: () => void }).hidePopover();
                 }}
               >
                 {link.label}
@@ -234,7 +234,7 @@ export default function Navbar() {
                     className="block mx-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-[#6b6b6b] hover:text-rose-500 hover:bg-rose-500/5 transition-all"
                     onClick={() => {
                       const popover = document.getElementById('mobile-menu-popover');
-                      if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
+                      if (popover && (popover as unknown as { hidePopover: () => void }).hidePopover) (popover as unknown as { hidePopover: () => void }).hidePopover();
                     }}
                   >
                     Admin Dashboard
@@ -255,7 +255,7 @@ export default function Navbar() {
                 className="block mx-4 mt-4 text-center px-6 py-3 text-sm font-bold rounded-xl bg-rose-gradient text-white shadow-lg shadow-rose-500/20"
                 onClick={() => {
                   const popover = document.getElementById('mobile-menu-popover');
-                  if (popover && (popover as any).hidePopover) (popover as any).hidePopover();
+                  if (popover && (popover as unknown as { hidePopover: () => void }).hidePopover) (popover as unknown as { hidePopover: () => void }).hidePopover();
                 }}
               >
                 Sign In

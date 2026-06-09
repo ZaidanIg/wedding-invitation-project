@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 
 expect.extend({
-  toMatchApiContract(received: any) {
+  toMatchApiContract(received: Record<string, unknown>) {
     const pass = 
       received &&
       typeof received.success === 'boolean' &&

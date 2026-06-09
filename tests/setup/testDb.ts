@@ -31,7 +31,7 @@ export const testDb = {
   async disconnect() {
     await prisma.$disconnect();
     // End the underlying pg pool to release Supabase connection limits during Jest tests
-    const { prismaPool } = require('../../src/lib/prisma');
+    const { prismaPool } = await import('../../src/lib/prisma');
     if (prismaPool) {
       await prismaPool.end();
     }

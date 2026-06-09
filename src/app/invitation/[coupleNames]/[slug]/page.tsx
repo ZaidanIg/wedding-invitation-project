@@ -6,7 +6,7 @@ import { auth } from '@/lib/auth';
 import InvitationPreview from '@/components/themes/InvitationPreview';
 import RsvpForm from '@/components/themes/RsvpForm';
 import type { Invitation } from '@/types';
-import { NotFoundError, ForbiddenError } from '@/lib/errors';
+import { ForbiddenError } from '@/lib/errors';
 import { getCoupleSlug } from '@/lib/utils';
 
 
@@ -115,8 +115,8 @@ export default async function InvitationPage({ params, searchParams }: PageProps
 
   const guests = (invitation.guests || []).map((g: any) => ({
     ...g,
-    createdAt: g.createdAt.toISOString(),
-    updatedAt: g.updatedAt.toISOString(),
+    createdAt: g.createdAt instanceof Date ? g.createdAt.toISOString() : new Date(g.createdAt).toISOString(),
+    updatedAt: g.updatedAt instanceof Date ? g.updatedAt.toISOString() : new Date(g.updatedAt).toISOString(),
   }));
 
   const serialized: Invitation = {

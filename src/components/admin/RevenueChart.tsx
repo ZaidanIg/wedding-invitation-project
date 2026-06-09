@@ -1,6 +1,6 @@
 'use client';
 
-import {
+import { 
   LineChart,
   Line,
   XAxis,

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, ChevronLeft, Heart, Sparkles } from 'lucide-react';
+import { Mail, ChevronLeft, Heart } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Card from '@/components/ui/Card';
@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
       } else {
         setMessage({ type: 'error', text: data.message || 'Terjadi kesalahan' });
       }
-    } catch (error) {
+    } catch (_error) {
       setMessage({ type: 'error', text: 'Gagal menghubungi server' });
     } finally {
       setIsLoading(false);

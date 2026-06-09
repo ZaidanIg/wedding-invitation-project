@@ -20,7 +20,7 @@ interface InvitationPreviewProps {
 }
 
 export default function InvitationPreview({ invitation, isPreview = false }: InvitationPreviewProps) {
-  const LayoutComponent = (layouts as any)[invitation.layout] || layouts['elegant-cream'];
+  const LayoutComponent = (layouts as Record<string, React.ElementType>)[invitation.layout] || layouts['elegant-cream'];
   // v1.2: isPaid removed — derive from tier
   const isDraft = invitation.tier === 'DRAFT';
 

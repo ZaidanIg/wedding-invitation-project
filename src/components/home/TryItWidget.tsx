@@ -21,7 +21,7 @@ export default function TryItWidget() {
   const [groomName, setGroomName] = useState('');
   const [brideName, setBrideName] = useState('');
   const [selectedTheme, setSelectedTheme] = useState<Layout>('batik-heritage');
-  const [isFocused, setIsFocused] = useState(false);
+  const [_isFocused, setIsFocused] = useState(false);
 
   const displayGroomName = groomName.trim() || 'Nama Pria';
   const displayBrideName = brideName.trim() || 'Nama Wanita';

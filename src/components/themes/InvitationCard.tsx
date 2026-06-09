@@ -57,9 +57,9 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
   const canManageGuest = isPremium || isUltimate;
   const canWaBlast     = isUltimate;
   const canQrCheckin   = isUltimate && qrEnabled !== false;
-  const canDownloadQR  = isUltimate && qrEnabled !== false;
+  const _canDownloadQR  = isUltimate && qrEnabled !== false;
   const showUpgrade    = isBasic || isPremium;
-  const canViewAnalytics = isPremium || isUltimate;
+  const _canViewAnalytics = isPremium || isUltimate;
   const showSmartNudge = isBasic && invitation.viewCount >= 50;
 
   const formattedDate = new Date(invitation.eventDate).toLocaleDateString('id-ID', {
@@ -69,8 +69,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
   const coupleSlug = getCoupleSlug(invitation.groomName, invitation.brideName);
   const invitationUrl = `/invitation/${coupleSlug}/${invitation.slug}`;
 
-  const pendingTx = invitation.transactions?.find((tx: any) => tx.status === 'PENDING');
-  const paymentLink = pendingTx?.paymentUrl
+  const pendingTx = invitation.transactions?.find((tx: Record<string, unknown>) => tx.status === 'PENDING');
+  const _paymentLink = pendingTx?.paymentUrl
     || `/pricing?invitationId=${invitation.id}`;
   const handleCopyLink = async () => {
     try {
@@ -92,8 +92,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
       
       setQrEnabled(true);
       showToast('success', 'QR Code check-in berhasil diaktifkan untuk undangan ini!');
-    } catch (error: any) {
-      showToast('error', error.message || 'Gagal mengaktifkan QR Code');
+    } catch (error: unknown) {
+      showToast('error', (error as Error).message || 'Gagal mengaktifkan QR Code');
     } finally {
       setIsActivating(false);
     }
@@ -133,8 +133,8 @@ export default function InvitationCard({ invitation, onDelete }: InvitationCardP
       showToast('success', 'Undangan dihapus');
       setShowDeleteModal(false);
       onDelete?.(invitation.id);
-    } catch (error: any) {
-      showToast('error', error.message || 'Gagal menghapus undangan');
+    } catch (error: unknown) {
+      showToast('error', (error as Error).message || 'Gagal menghapus undangan');
     } finally {
       setIsDeleting(false);
     }

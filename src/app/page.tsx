@@ -5,7 +5,6 @@ import HowItWorks from '@/components/home/HowItWorks';
 import HomeFooterCTA from '@/components/home/HomeFooterCTA';
 import ComingSoonBanner from '@/components/shared/ComingSoonBanner';
 import { headers } from 'next/headers';
-import Image from 'next/image';
 
 export default async function HomePage() {
   const headersList = await headers();

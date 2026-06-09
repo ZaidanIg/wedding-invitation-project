@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth';
 import { successResponse, errorResponse } from '@/lib/api-response';
 import { prisma } from '@/lib/prisma';
@@ -16,7 +16,7 @@ const promoSchema = z.object({
   expiresAt: z.string().nullable().optional(),
 });
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   const session = await auth();
   if (!session?.user || session.user.role !== 'ADMIN') {
     return errorResponse('Unauthorized', 403, 'FORBIDDEN');
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       }
     });
     return successResponse(promos);
-  } catch (error) {
+  } catch (_error) {
     return errorResponse('Failed to fetch promos', 500);
   }
 }
@@ -65,9 +65,8 @@ export async function POST(req: NextRequest) {
     return successResponse(promo);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const zodError = error as any;
-      console.error('Zod Validation Error:', zodError.errors);
-      return errorResponse(`Validasi gagal: ${zodError.errors.map((e: any) => e.path.join('.') + ' ' + e.message).join(', ')}`, 400, 'VALIDATION_ERROR');
+      console.error('Zod Validation Error:', error.issues);
+      return errorResponse(`Validasi gagal: ${error.issues.map((e: z.ZodIssue) => e.path.join('.') + ' ' + e.message).join(', ')}`, 400, 'VALIDATION_ERROR');
     }
     console.error('Failed to create promo:', error);
     return errorResponse('Gagal membuat promo', 500);
@@ -92,7 +91,7 @@ export async function PATCH(req: NextRequest) {
     });
 
     return successResponse(promo);
-  } catch (error) {
+  } catch (_error) {
     return errorResponse('Gagal mengubah status promo', 500);
   }
 }
@@ -112,7 +111,7 @@ export async function DELETE(req: NextRequest) {
     });
 
     return successResponse({ deleted: true });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse('Gagal menghapus promo', 500);
   }
 }

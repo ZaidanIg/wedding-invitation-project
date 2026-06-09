@@ -11,8 +11,7 @@ import {
   Plus, 
   Trash2, 
   RefreshCw, 
-  DollarSign, 
-  Tag
+  DollarSign
 } from 'lucide-react';
 
 interface Expense {
@@ -76,7 +75,7 @@ export default function ExpensesPage() {
   }, []);
 
   useEffect(() => {
-    loadExpenses(page);
+    setTimeout(() => { loadExpenses(page); }, 0);
   }, [page, loadExpenses]);
 
   const handleAddExpense = async (e: React.FormEvent) => {

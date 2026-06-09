@@ -26,7 +26,7 @@ export default function DashboardPage() {
     // Cek status onboarding
     if (typeof window !== 'undefined') {
       const dismissed = localStorage.getItem('onboarding_dismissed');
-      if (!dismissed) setShowOnboarding(true);
+      setTimeout(() => { if (!dismissed) setShowOnboarding(true); }, 0);
     }
   }, []);
 

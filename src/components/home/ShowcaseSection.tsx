@@ -156,7 +156,7 @@ export default function ShowcaseSection({ fullGallery = false }: { fullGallery?:
   const observerTarget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setVisibleCount(10); // Reset when filter changes
+    setTimeout(() => { setVisibleCount(10); }, 0); // Reset when filter changes
   }, [activeFilter]);
 
   useEffect(() => {

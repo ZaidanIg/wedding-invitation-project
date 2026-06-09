@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Invitation } from '@/types';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { resolvePhotos, AudioPlayer,  GallerySection, VideoEmbedSection } from './shared';
-import { ChevronDown, MapPin, Calendar, Clock, Copy, Check, Heart, ExternalLink, Gift, Camera, ChevronLeft, ChevronRight, Music } from 'lucide-react';
+import { ChevronDown, MapPin, Clock, Copy, ExternalLink, Gift } from 'lucide-react';
 import RsvpForm from '../themes/RsvpForm';
 
 // ==========================================
@@ -149,7 +149,7 @@ function EnvelopeSection({ data, onOpen, guestName }: { data: Invitation; onOpen
 
 function FallingSparkles() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  setTimeout(() => { useEffect(() => setMounted(true), []); }, 0);
 
   const sparkles = useMemo(() => {
     return [...Array(35)].map(() => ({
@@ -511,7 +511,7 @@ function DateSection({ data }: { data: Invitation }) {
                   year: 'numeric'
                 });
               }
-            } catch (e) { }
+            } catch (_e) { }
             return data.eventDate;
           })()}
         </p>
@@ -792,7 +792,7 @@ export default function PremiumJavanese({ invitation: data, isPreview = false }:
     if (!data.rsvpName) {
       const params = new URLSearchParams(window.location.search);
       const to = params.get('to');
-      if (to) setGuestName(to);
+      setTimeout(() => { if (to) setGuestName(to); }, 0);
     }
   }, [data.rsvpName]);
 

@@ -3,18 +3,13 @@ import { getCoupleSlug } from '@/lib/utils';
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Calendar,
-  MapPin,
-  Clock,
   Heart,
   ChevronDown,
   MessageCircle,
   QrCode,
   Users,
-  Link as LinkIcon,
-  Send,
   Sparkles
 } from 'lucide-react';
 
@@ -36,21 +31,16 @@ const Lantern = ({ className, size = 24 }: { className?: string; size?: number }
 );
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
-import { getEmbedUrl } from '@/lib/utils';
 import {
   AnimatedSection,
   LoveStorySection,
   AudioPlayer,
-  DetailItem,
   formatEventDate,
   resolvePhotos,
   getMapsUrl,
   Snowfall,
-  WaveDivider,
   CountdownTimer,
   DigitalGiftSection,
-  QuotesSection,
-  GuestWelcome,
   IconMapper,
   TierGate,
   useTier,
@@ -60,7 +50,6 @@ import {
   GallerySection,
   VideoEmbedSection,
 } from './shared';
-import Button from '@/components/ui/Button';
 
 interface LayoutProps {
   invitation: Invitation;
@@ -89,7 +78,7 @@ function IslamicDivider() {
   );
 }
 
-function ArchDivider({ color = "#fcfaf5", flip = false }: { color?: string; flip?: boolean }) {
+function _ArchDivider({ color = "#fcfaf5", flip = false }: { color?: string; flip?: boolean }) {
   return (
     <div className={`w-full h-24 relative z-20 ${flip ? '-mb-1' : '-mt-1'}`} style={{ transform: flip ? 'rotate(180deg)' : 'none' }}>
       <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="w-full h-full" fill={color}>
@@ -182,13 +171,13 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
   const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
-  const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
-  const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
-  const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const { formattedDate } = formatEventDate(invitation.eventDate);
+  const { heroPhoto, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
+  const _mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   useEffect(() => {
@@ -196,7 +185,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
     const to = p.get('to');
     if (to) {
       const decoded = decodeURIComponent(to);
-      setGuestName(decoded);
+      setTimeout(() => { setGuestName(decoded); }, 0);
       if (invitation.guests) {
         const decodedTo = decoded.trim().toLowerCase();
         const guest = invitation.guests.find(

@@ -134,7 +134,7 @@ describe('Invitations Module Route Tests', () => {
       expect(res.body.data.deletedAt).toBeDefined();
 
       const dbInv = await prisma.invitation.findUnique({ where: { id: inv.id } });
-      expect((dbInv as any)?.status).toBe('DELETED');
+      expect((dbInv as unknown)?.status).toBe('DELETED');
     });
   });
 });

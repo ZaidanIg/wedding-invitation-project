@@ -6,7 +6,6 @@ import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { showToast } from '@/components/ui/Toast';
 import { 
-  Heart, 
   Search, 
   Settings, 
   RefreshCw,
@@ -49,7 +48,7 @@ export default function ThemesPage() {
   }, []);
 
   useEffect(() => {
-    loadInvitations(invitationSearch);
+    setTimeout(() => { loadInvitations(invitationSearch); }, 0);
   }, [invitationSearch, loadInvitations]);
 
   const handleSaveOverrides = async () => {

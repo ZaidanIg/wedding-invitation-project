@@ -6,6 +6,7 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import { checkRateLimit } from '@/lib/rate-limiter';
 import { headers } from 'next/headers';
+import type { Role } from '@prisma/client';
 
 class CustomAuthError extends CredentialsSignin {
   constructor(code: string) {
@@ -93,7 +94,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // On initial sign-in: populate token from user object
       if (user) {
         token.id = user.id;
-        token.role = (user as any).role;
+        token.role = (user as { role: Role }).role;
       }
 
       // On every subsequent request: re-read role from DB to pick up
@@ -122,7 +123,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user && token.id) {
         session.user.id = token.id as string;
-        session.user.role = token.role as any;
+        session.user.role = token.role as Role;
       }
       return session;
     },

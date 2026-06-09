@@ -1,3 +1,4 @@
+import { z } from 'zod';
 // ============================================================
 // Invitation Service — Business logic & orchestration
 // ============================================================
@@ -7,40 +8,46 @@ import { NotFoundError, ForbiddenError, ValidationError, AppError } from '@/lib/
 import { invitationRepository } from './repository';
 import { createInvitationSchema, updateInvitationSchema } from './validators';
 import { invitationMapper } from './mapper';
+import type { ScheduleItem, LoveStoryItem, DigitalGiftItem } from '@/types';
 import { revalidateTag } from 'next/cache';
 
-function formatZodError(error: any): string {
-  const issues = error?.issues || error?.errors || [];
-  return issues.map((e: any) => e.message).join(', ');
+function formatZodError(error: z.ZodError | Error | unknown): string {
+  if (error instanceof z.ZodError) {
+    return error.issues.map((e: z.ZodIssue) => e.message).join(', ');
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'Unknown validation error';
 }
 
 /**
  * Validates layout and asset limits based on targeted/active plan tier.
  */
-const validateTierConstraints = (tier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE', data: any) => {
+const validateTierConstraints = (tier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE', data: Record<string, unknown>) => {
   if (tier === 'DRAFT') return; // No constraints on draft — payment will set the real tier
   if (tier === 'BASIC') {
     const classicLayouts = ['elegant-cream', 'royal-blue', 'rose-garden', 'islamic-minimalist', 'islamic-midnight', 'islamic-arabesque'];
-    if (data.layout && !classicLayouts.includes(data.layout)) {
+    if (typeof data.layout === 'string' && !classicLayouts.includes(data.layout)) {
       throw new ForbiddenError('Paket Basic hanya mendukung tema Klasik/Minimalis.');
     }
     // v1.2: photoUrls now maps to InvitationPhoto (type GALLERY)
-    if (data.photoUrls && data.photoUrls.length > 3) {
+    if (Array.isArray(data.photoUrls) && data.photoUrls.length > 3) {
       throw new ForbiddenError('Paket Basic hanya mendukung maksimal 3 foto di galeri.');
     }
   } else if (tier === 'PREMIUM') {
-    if (data.photoUrls && data.photoUrls.length > 6) {
+    if (Array.isArray(data.photoUrls) && data.photoUrls.length > 6) {
       throw new ForbiddenError('Paket Premium hanya mendukung maksimal 6 foto di galeri.');
     }
     if (data.videoUrl) {
       throw new ForbiddenError('Paket Premium tidak mendukung fitur video. Silakan upgrade ke Paket Ultimate.');
     }
   } else if (tier === 'ULTIMATE') {
-    if (data.photoUrls && data.photoUrls.length > 10) {
+    if (Array.isArray(data.photoUrls) && data.photoUrls.length > 10) {
       throw new ForbiddenError('Paket Ultimate hanya mendukung maksimal 10 foto di galeri.');
     }
     if (data.videoUrl) {
-      const isEmbed = /youtube\.com|youtu\.be|tiktok\.com|instagram\.com|drive\.google\.com/.test(data.videoUrl);
+      const isEmbed = /youtube\.com|youtu\.be|tiktok\.com|instagram\.com|drive\.google\.com/.test(data.videoUrl as string);
       if (!isEmbed) {
         throw new ValidationError('Link video harus berupa embed URL text dari YouTube, TikTok, Instagram Reels, atau Google Drive.');
       }
@@ -51,7 +58,7 @@ const validateTierConstraints = (tier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE
 /**
  * Forcefully strip features not allowed for a given tier.
  */
-const sanitizeTierFeatures = (tier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE', data: any) => {
+const sanitizeTierFeatures = (tier: 'DRAFT' | 'BASIC' | 'PREMIUM' | 'ULTIMATE', data: Record<string, unknown>) => {
   if (tier === 'DRAFT') return; // Nothing to strip on a draft
   if (tier === 'BASIC') {
     // BASIC: no music, no video. Digital gift IS included.
@@ -221,19 +228,19 @@ export const invitationService = {
 
     // Strip sensitive fields that should not be updated via user API
     // v1.2: isPaid removed from schema
-    const { tier: _, aiRegenCount, userId: __, slug, viewCount, schedule, loveStory, digitalGifts, photoUrls, ...safeData } = parsed.data as Record<string, any>;
+    const { tier: _, _aiRegenCount, userId: __, _slug, _viewCount, schedule, loveStory, digitalGifts, photoUrls, ...safeData } = parsed.data as Record<string, unknown>;
     
     // Enforce constraints
     validateTierConstraints(tier, { ...safeData, photoUrls });
     sanitizeTierFeatures(tier, safeData);
 
     if (safeData.eventDate && typeof safeData.eventDate === 'string') {
-      safeData.eventDate = new Date(safeData.eventDate as string) as any;
+      safeData.eventDate = new Date(safeData.eventDate);
     }
 
     // Recompute expiresAt if eventDate is updated and it's not a draft
     if (safeData.eventDate && existing.tier !== 'DRAFT') {
-      const eventDateObj = new Date(safeData.eventDate);
+      const eventDateObj = safeData.eventDate instanceof Date ? safeData.eventDate : new Date(safeData.eventDate as string);
       let addedDays = 0;
       if (existing.tier === 'BASIC') addedDays = 7;
       else if (existing.tier === 'PREMIUM') addedDays = 14;
@@ -250,12 +257,13 @@ export const invitationService = {
     // Update normalized relations if provided in the payload
     const hasRelationalUpdates = schedule !== undefined || loveStory !== undefined || digitalGifts !== undefined || photoUrls !== undefined;
     if (hasRelationalUpdates) {
-      updated = (await invitationRepository.updateRelations(id, {
-        ...(schedule !== undefined && { events: schedule }),
-        ...(loveStory !== undefined && { stories: loveStory }),
-        ...(digitalGifts !== undefined && { gifts: digitalGifts }),
-        ...(photoUrls !== undefined && { photoUrls }),
-      })) as any;
+      const relUpdated = await invitationRepository.updateRelations(id, {
+        ...(schedule !== undefined && { events: schedule as ScheduleItem[] }),
+        ...(loveStory !== undefined && { stories: loveStory as LoveStoryItem[] }),
+        ...(digitalGifts !== undefined && { gifts: digitalGifts as DigitalGiftItem[] }),
+        ...(photoUrls !== undefined && { photoUrls: photoUrls as string[] }),
+      });
+      if (relUpdated) updated = relUpdated;
     }
 
     // Revalidate cache

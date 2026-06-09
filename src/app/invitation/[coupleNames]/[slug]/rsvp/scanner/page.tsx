@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 export default function RsvpScannerPage() {
   const params = useParams<{ coupleNames: string; slug: string }>();
-  const router = useRouter();
+  const _router = useRouter();
   const [scanResult, setScanResult] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
@@ -84,7 +84,7 @@ export default function RsvpScannerPage() {
     const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
     if (!isHttps && !isLocalhost) {
-      setIsSecure(false);
+      setTimeout(() => { setIsSecure(false); }, 0);
       setCameraError("Akses kamera ditolak. Kamera hanya dapat diakses melalui koneksi aman (HTTPS). Silakan beralih ke HTTPS untuk menggunakan scanner.");
       return;
     }
@@ -109,7 +109,7 @@ export default function RsvpScannerPage() {
           (decodedText) => {
             onScanSuccess(decodedText);
           },
-          (errorMessage) => {
+          (_errorMessage) => {
             // silent fail for frames
           }
         );
@@ -131,7 +131,7 @@ export default function RsvpScannerPage() {
             (decodedText) => {
               onScanSuccess(decodedText);
             },
-            (errorMessage) => {}
+            (_errorMessage) => {}
           );
           isScanning = true;
           setCameraError(null);

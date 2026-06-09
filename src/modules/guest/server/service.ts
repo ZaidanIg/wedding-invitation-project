@@ -1,3 +1,4 @@
+import { z } from 'zod';
 // ============================================================
 // Guest Service — Business logic for RSVP & Check-in
 // ============================================================
@@ -8,11 +9,16 @@ import { prisma } from '@/lib/prisma';
 import { guestRepository } from './repository';
 import { submitRsvpSchema, checkinSchema, submitAttendanceSchema } from './validators';
 import { guestMapper } from './mapper';
-import type { ZodError } from 'zod';
 import { revalidateTag } from 'next/cache';
 
-function formatZodError(error: any): string {
-  return error.errors.map((e: any) => e.message).join(', ');
+function formatZodError(error: z.ZodError | Error | unknown): string {
+  if (error instanceof z.ZodError) {
+    return error.issues.map((e: z.ZodIssue) => e.message).join(', ');
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'Unknown validation error';
 }
 
 function invalidateInvitationCache(id: string, slug?: string | null) {

@@ -356,7 +356,7 @@ function CheckoutContent() {
         showToast('error', data.message || 'Gagal menerapkan voucher');
         setAppliedPromo(null);
       }
-    } catch (err) {
+    } catch (_err) {
       showToast('error', 'Terjadi kesalahan sistem');
     } finally {
       setIsApplyingPromo(false);

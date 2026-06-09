@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { Invitation, Layout } from '@/types';
+import type { Layout } from '@/types';
 import { layouts } from '../layouts';
 
 import { MOCK_INVITATION } from '@/constants/demoData';
@@ -19,7 +19,7 @@ interface ThemeMiniPreviewProps {
 
 export default function ThemeMiniPreview({ layout, isInteractable = false, scale = 0.55, hideNotch = false, hideMockup = false, groomName, brideName }: ThemeMiniPreviewProps) {
   const renderLayout = () => {
-    const LayoutComponent = (layouts as any)[layout] || layouts['elegant-cream'];
+    const LayoutComponent = (layouts as Record<string, React.ElementType>)[layout] || layouts['elegant-cream'];
     const invitation = {
       ...MOCK_INVITATION,
       groomName: groomName || MOCK_INVITATION.groomName,

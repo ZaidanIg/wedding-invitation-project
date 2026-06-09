@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen, MapPin, Coffee, Utensils, CalendarDays, ChevronsDown } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { Lock, Sparkles, MessageCircle, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 
-import type { Tier, Invitation, Guest } from '@/types';
+import type { Tier, Invitation, Guest, LoveStoryItem } from '@/types';
 import { createContext, useContext } from 'react';
 
 /* ── Tier Context & Hooks ── */
@@ -157,7 +157,7 @@ export function LoveStorySection({
   textColor = "text-white",
   floralImage
 }: { 
-  story: any[]; 
+  story: LoveStoryItem[]; 
   bgColor?: string; 
   accentColor?: string; 
   textColor?: string;
@@ -364,18 +364,17 @@ export function FloatingElement({
 export function Snowfall() {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [snowflakes, setSnowflakes] = useState<Array<{ x1: string; scale: number; x2: string; duration: number; delay: number }>>([]);
 
-  const snowflakes = useMemo(() => {
-    return [...Array(30)].map(() => ({
+  useEffect(() => {
+    setSnowflakes([...Array(30)].map(() => ({
       x1: Math.random() * 100 + "%",
       scale: Math.random() * 0.5 + 0.3,
       x2: (Math.random() * 100 - 50) + "vw",
       duration: Math.random() * 10 + 10,
       delay: Math.random() * 20
-    }));
+    })));
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   if (!mounted) return null;
@@ -468,7 +467,7 @@ export function CountdownTimer({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
     const target = new Date(targetDate).getTime();
 
     const update = () => {
@@ -550,7 +549,7 @@ export function AudioPlayer({
   useEffect(() => {
     // If browser supports CSS scroll-state, let CSS handle visibility. We set isVisible=true to not block it.
     if (typeof CSS !== 'undefined' && CSS.supports('container-type', 'scroll-state')) {
-      setIsVisible(true);
+      setTimeout(() => { setIsVisible(true); }, 0);
       return;
     }
 
@@ -622,7 +621,7 @@ export function AudioPlayer({
   // Sync internal state with external control prop (for cover page autoplay)
   useEffect(() => {
     if (isPlayingProp !== undefined) {
-      setIsPlaying(isPlayingProp);
+      setTimeout(() => { setIsPlaying(isPlayingProp); }, 0);
       if (audioRef.current) {
         if (isPlayingProp) {
           audioRef.current.play().catch((err) => {
@@ -764,7 +763,7 @@ export const fallbackPhotos = [
 ];
 
 /* ── Helper: resolve photos ── */
-export function resolvePhotos(invitation: any) {
+export function resolvePhotos(invitation: Partial<Invitation>) {
   const photos = invitation.photoUrls && invitation.photoUrls.length > 0 ? invitation.photoUrls : fallbackPhotos;
   
   // New specific fields
@@ -871,7 +870,7 @@ export function DigitalGiftSection({
   bgColor = "bg-white", 
   textColor = "text-stone-800" 
 }: { 
-  gifts: any[]; 
+  gifts: Array<{ bankName: string; accountNumber: string; accountHolder: string } | any>; 
   bgColor?: string; 
   textColor?: string;
 }) {
@@ -957,7 +956,7 @@ export function GuestWelcome({ defaultText = "You" }: { defaultText?: string }) 
   );
 }
 
-function GuestWelcomeContent({ defaultText }: { defaultText: string }) {
+function GuestWelcomeContent({ defaultText: _defaultText }: { defaultText: string }) {
   const searchParams = useSearchParams();
   const guestName = searchParams.get('to');
 
@@ -1010,7 +1009,7 @@ export function IconMapper({ name, className, size = 20, strokeWidth = 2 }: { na
   }
 }
 
-export function DetailItem({ icon: Icon, label, value, className = "" }: { icon: any, label: string, value: string, className?: string }) {
+export function DetailItem({ icon: Icon, label, value, className = "" }: { icon: React.ElementType, label: string, value: string, className?: string }) {
   return (
     <div className={`flex items-center gap-3 ${className}`}>
       <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
@@ -1151,7 +1150,7 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
                   <button
                     key={opt.id}
                     type="button"
-                    onClick={() => setStatus(opt.id as any)}
+                    onClick={() => setStatus(opt.id as 'ATTENDING' | 'NOT_ATTENDING' | 'PENDING')}
                     className={`py-4 rounded-2xl text-xs font-bold transition-all border ${status === opt.id ? 'bg-stone-800 text-white border-stone-800' : 'bg-white text-stone-400 border-stone-100 hover:border-stone-200'}`}
                   >
                     <span className="block mb-1 text-lg">{opt.icon}</span>

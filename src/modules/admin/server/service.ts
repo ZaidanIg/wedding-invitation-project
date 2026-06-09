@@ -2,7 +2,7 @@
 // Admin Module — Service (Business Logic)
 // ============================================================
 
-import { ForbiddenError, NotFoundError, ValidationError } from '@/lib/errors';
+import { ValidationError } from '@/lib/errors';
 import ExcelJS from 'exceljs';
 import { adminRepository } from './repository';
 import {
@@ -301,7 +301,7 @@ export const adminService = {
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
-    return Buffer.from(buffer as any);
+    return Buffer.from(buffer as ArrayBuffer);
   },
 
   // ── Expenses ──

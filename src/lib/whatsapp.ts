@@ -35,7 +35,7 @@ export async function sendWhatsAppMessage(to: string, message: string, customApi
   let data;
   try {
     data = JSON.parse(text);
-  } catch (e) {
+  } catch {
     throw new Error(`Invalid gateway response: ${text.substring(0, 100)}`);
   }
 

@@ -17,20 +17,20 @@ jest.mock('next/cache', () => ({
 global.Request = class Request {
   method: string;
   url: string;
-  bodyData: any;
+  bodyData: unknown;
   headers: Headers;
 
-  constructor(url: string, init?: any) {
+  constructor(url: string, init?: RequestInit) {
     this.url = url;
     this.method = init?.method || 'GET';
     this.bodyData = init?.body;
-    this.headers = new Headers(init?.headers);
+    this.headers = new Headers(init?.headers as HeadersInit);
   }
   
   async json() {
-    return JSON.parse(this.bodyData);
+    return typeof this.bodyData === 'string' ? JSON.parse(this.bodyData) : this.bodyData;
   }
-} as any;
+} as unknown as typeof global.Request;
 
 jest.mock('next/server', () => {
   return {
@@ -47,19 +47,19 @@ jest.mock('next/server', () => {
       method: string;
       url: string;
       nextUrl: URL;
-      bodyData: any;
+      bodyData: unknown;
       headers: Headers;
 
-      constructor(url: string, init?: any) {
+      constructor(url: string, init?: RequestInit) {
         this.url = url;
         this.nextUrl = new URL(url);
         this.method = init?.method || 'GET';
         this.bodyData = init?.body;
-        this.headers = new Headers(init?.headers);
+        this.headers = new Headers(init?.headers as HeadersInit);
       }
       
       async json() {
-        return JSON.parse(this.bodyData);
+        return typeof this.bodyData === 'string' ? JSON.parse(this.bodyData) : this.bodyData;
       }
     }
   };
@@ -84,7 +84,7 @@ afterAll(async () => {
 jest.mock('../../src/lib/auth', () => ({
   auth: jest.fn(async () => {
     // Dynamically import testClient to avoid circular dependency issues
-    const { mockSessionState } = require('./testClient');
+    const { mockSessionState } = await import('./testClient');
     return mockSessionState.current;
   }),
 }));

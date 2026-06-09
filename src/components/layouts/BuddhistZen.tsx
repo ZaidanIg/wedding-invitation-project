@@ -4,15 +4,13 @@ import { getCoupleSlug } from '@/lib/utils';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Heart, Calendar, MapPin, Clock, Camera, 
-  MessageCircle, Sparkles, ChevronDown, 
-  Users, QrCode, Leaf, Wind, Home, CalendarDays, Pause
+import { MapPin, Clock, 
+  MessageCircle, ChevronDown, 
+  Users, QrCode, Leaf, Wind
 } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
-import type { Invitation, Guest } from '@/types';
-import { getEmbedUrl } from '@/lib/utils';
+import type { Invitation, Guest, ScheduleItem } from '@/types';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -127,17 +125,17 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 
 export default function BuddhistZen({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
   const { tier } = useTier();
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
   const { formattedDate } = formatEventDate(invitation.eventDate);
   const { heroPhoto, galleryPhotos } = resolvePhotos(invitation);
-  const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
+  const _mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   useEffect(() => {
@@ -145,7 +143,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
       const p = new URLSearchParams(window.location.search);
       const to = p.get('to');
       if (to) {
-        setGuestName(decodeURIComponent(to));
+        setTimeout(() => { setGuestName(decodeURIComponent(to)); }, 0);
         if (invitation.guests) {
           const decodedTo = decodeURIComponent(to).trim().toLowerCase();
           const guest = invitation.guests.find(
@@ -339,7 +337,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
              {(invitation.schedule || [
                { id: '1', label: 'Pemberkatan', time: invitation.eventTime, icon: 'heart' },
                { id: '2', label: 'Resepsi', time: '13:00 - 15:00', icon: 'utensils' }
-             ]).map((item: any, idx: number) => (
+             ]).map((item: ScheduleItem, _idx: number) => (
                <AnimatedSection key={item.id} className="p-8 rounded-[3rem] bg-[#fdfbf7] border border-[#a3b18a]/10 hover:border-[#a3b18a]/30 transition-all duration-700">
                   <div className="flex justify-between items-center mb-8">
                      <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-sm">

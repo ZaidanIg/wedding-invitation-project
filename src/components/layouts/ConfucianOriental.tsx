@@ -5,14 +5,11 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Heart, Calendar, MapPin, Clock, Camera, 
-  MessageCircle, Sparkles, ChevronDown, 
-  Music, Share2, Users, QrCode, Scroll,
-  Home, CalendarDays, Pause
+  Heart, MapPin, 
+  MessageCircle, Users, QrCode, Scroll
 } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
-import type { Invitation, Guest } from '@/types';
-import { getEmbedUrl } from '@/lib/utils';
+import type { Invitation, Guest, ScheduleItem } from '@/types';
 import { 
   formatEventDate, 
   getMapsUrl, 
@@ -24,7 +21,6 @@ import {
   AudioPlayer,
   TierGate,
   useTier,
-  ParallaxSection,
   ParallaxImage,
   DigitalGiftSection,
   IconMapper,
@@ -125,7 +121,7 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 
 export default function ConfucianOriental({ invitation, isPreview = false }: { invitation: Invitation; isPreview?: boolean }) {
   const { tier } = useTier();
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -135,7 +131,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   useEffect(() => {
@@ -143,7 +139,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
       const p = new URLSearchParams(window.location.search);
       const to = p.get('to');
       if (to) {
-        setGuestName(decodeURIComponent(to));
+        setTimeout(() => { setGuestName(decodeURIComponent(to)); }, 0);
         if (invitation.guests) {
           const decodedTo = decodeURIComponent(to).trim().toLowerCase();
           const guest = invitation.guests.find(
@@ -396,7 +392,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
              {(invitation.schedule || [
                { id: '1', label: 'Holy Union Ceremony', time: invitation.eventTime, icon: 'heart' },
                { id: '2', label: 'Grand Family Banquet', time: '18:00 - End', icon: 'utensils' }
-             ]).map((item: any, idx: number) => (
+             ]).map((item: ScheduleItem, _idx: number) => (
                <AnimatedSection key={item.id} className="p-12 rounded-[4rem] bg-[#fffcf5] border border-[#8B0000]/5 hover:border-[#FFD700]/30 transition-all duration-700 group ring-1 ring-[#8B0000]/5">
                   <div className="flex justify-between items-start mb-12">
                      <div className="p-6 rounded-[2.5rem] bg-white shadow-xl group-hover:bg-[#8B0000] transition-all group-hover:text-[#FFD700] ring-1 ring-[#8B0000]/5">

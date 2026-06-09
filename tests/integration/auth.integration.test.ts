@@ -1,5 +1,4 @@
 import request from 'supertest';
-import { prisma } from '../../src/lib/prisma';
 import { UserFactory } from '../factories/user.factory';
 
 // Note: Integration tests with Supertest against Next.js App Router 

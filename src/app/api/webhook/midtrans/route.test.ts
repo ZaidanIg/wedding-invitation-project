@@ -5,8 +5,8 @@ import { sendInvoiceEmail } from '../../../../lib/email';
 // Provide globals for Next.js Web API in Node (Jest)
 global.Request = class Request {
   method: string;
-  bodyData: any;
-  constructor(url: string, init: any) {
+  bodyData: Record<string, unknown>;
+  constructor(url: string, init: Record<string, unknown>) {
     this.method = init.method;
     this.bodyData = init.body;
   }
@@ -74,7 +74,7 @@ describe('Midtrans Webhook POST API', () => {
     jest.clearAllMocks();
   });
 
-  function createMockRequest(body: any) {
+  function createMockRequest(body: Record<string, unknown>) {
     return new Request('https://sahinaja.com/api/webhook/midtrans', {
       method: 'POST',
       body: JSON.stringify(body),
@@ -106,7 +106,7 @@ describe('Midtrans Webhook POST API', () => {
   });
 
   it('TC-E3: Should ignore duplicate webhook (Idempotency)', async () => {
-    const payload: any = {
+    const payload: Record<string, unknown> = {
       order_id: 'ORD-2',
       status_code: '200',
       gross_amount: '10000.00',
@@ -132,7 +132,7 @@ describe('Midtrans Webhook POST API', () => {
   });
 
   it('TC-P1: Should process successful settlement and upgrade tier', async () => {
-    const payload: any = {
+    const payload: Record<string, unknown> = {
       order_id: 'ORD-3',
       status_code: '200',
       gross_amount: '99000.00',
@@ -202,7 +202,7 @@ describe('Midtrans Webhook POST API', () => {
   });
 
   it('TC-N2: Should process expired transaction without upgrading tier', async () => {
-    const payload: any = {
+    const payload: Record<string, unknown> = {
       order_id: 'ORD-4',
       status_code: '407',
       gross_amount: '10000.00',

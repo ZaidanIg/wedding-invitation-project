@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import InvitationForm from './InvitationForm';
 
@@ -16,7 +16,7 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: ({ fill, priority, unoptimized, objectFit, objectPosition, ...props }: any) => <img {...props} alt={props.alt || "mocked-image"} />,
+  default: ({ _fill, _priority, _unoptimized, _objectFit, _objectPosition, ...props }: Record<string, unknown>) => <img {...props} alt={props.alt || "mocked-image"} />,
 }));
 
 // Mock Next Auth
@@ -33,10 +33,10 @@ jest.mock('framer-motion', () => {
   return {
     ...actual,
     motion: {
-      div: ({ children, whileInView, initial, animate, exit, transition, viewport, variants, whileHover, whileTap, layout, layoutId, ...props }: any) => <div {...props}>{children}</div>,
-      button: ({ children, whileInView, initial, animate, exit, transition, viewport, variants, whileHover, whileTap, layout, layoutId, ...props }: any) => <button {...props}>{children}</button>,
+      div: ({ children, _whileInView, _initial, _animate, _exit, _transition, _viewport, _variants, _whileHover, _whileTap, _layout, _layoutId, ...props }: Record<string, unknown>) => <div {...props}>{children}</div>,
+      button: ({ children, _whileInView, _initial, _animate, _exit, _transition, _viewport, _variants, _whileHover, _whileTap, _layout, _layoutId, ...props }: Record<string, unknown>) => <button {...props}>{children}</button>,
     },
-    AnimatePresence: ({ children }: any) => <>{children}</>,
+    AnimatePresence: ({ children }: Record<string, unknown>) => <>{children}</>,
   };
 });
 
@@ -94,7 +94,7 @@ const storeState = {
 };
 
 jest.mock('@/store/invitation-store', () => ({
-  useInvitationStore: (selector: any) => {
+  useInvitationStore: (selector: Record<string, unknown>) => {
     const store = {
       ...storeState,
       reset: jest.fn(),

@@ -49,7 +49,7 @@ export default function RsvpManagementPage() {
   };
 
   useEffect(() => {
-    fetchRsvps(true);
+    setTimeout(() => { fetchRsvps(true); }, 0);
     
     // Auto-open blast modal if requested via URL
     const urlParams = new URLSearchParams(window.location.search);

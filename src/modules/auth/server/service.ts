@@ -1,16 +1,17 @@
+import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import { ValidationError, ConflictError, NotFoundError, AppError } from '@/lib/errors';
+import { ValidationError, ConflictError, AppError } from '@/lib/errors';
 import { authRepository } from './repository';
 import { sendCodeSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from './validators';
 import { sendVerificationCodeEmail, sendPasswordResetEmail } from '@/lib/email';
 
-function formatZodError(error: any): string {
-  if (error?.issues && Array.isArray(error.issues)) {
-    return error.issues.map((e: any) => e.message).join(', ');
+function formatZodError(error: z.ZodError | Error | unknown): string {
+  if (error instanceof z.ZodError) {
+    return error.issues.map((e: z.ZodIssue) => e.message).join(', ');
   }
-  if (error?.errors && Array.isArray(error.errors)) {
-    return error.errors.map((e: any) => e.message).join(', ');
+  if (error instanceof Error) {
+    return error.message;
   }
   return 'Data tidak valid';
 }
@@ -46,8 +47,9 @@ export const authService = {
 
     try {
       await sendVerificationCodeEmail(email, code);
-    } catch (error: any) {
-      throw new AppError(`Email System Error: ${error.message}`, 500, 'EMAIL_ERROR');
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Unknown email error';
+      throw new AppError(`Email System Error: ${msg}`, 500, 'EMAIL_ERROR');
     }
 
     return { message: 'Kode verifikasi berhasil terkirim ke email anda' };

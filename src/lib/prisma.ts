@@ -5,15 +5,15 @@ import fs from 'fs';
 import path from 'path';
 
 const globalForPrisma = globalThis as unknown as {
-  globalForPrisma: any;
+  globalForPrisma: Record<string, unknown>;
   prisma: { client: PrismaClient; pool: Pool } | undefined;
 };
 
 // Force clear the cache for hot-reload to pick up new models
-delete (globalThis as any).prisma;
+delete (globalForPrisma as { prisma?: unknown }).prisma;
 
 function createPrismaClient() {
-  let sslConfig: any = undefined;
+  let sslConfig: Record<string, unknown> | boolean | undefined = undefined;
 
   const dbUrl = process.env.DATABASE_URL || '';
   const isLocalDb = dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1');
@@ -41,7 +41,7 @@ function createPrismaClient() {
           ca: fs.readFileSync(certPath).toString(),
         };
       }
-    } catch (e) {
+    } catch {
       console.warn('Local ca.pem not found for SSL connection.');
     }
   } else {

@@ -10,7 +10,7 @@
 import type { InvitationResponseDto, InvitationListItemDto } from './dto';
 
 function mapEntity(entity: Record<string, unknown>): Omit<InvitationResponseDto, 'guestCount'> & { guestCount?: number } {
-  if (!entity) return {} as any;
+  if (!entity) return {} as Omit<InvitationResponseDto, 'guestCount'> & { guestCount?: number };
 
   // Reconstruct flat photoUrls from InvitationPhoto relation (type GALLERY)
   const photos = (entity.photos as Array<{ url: string; type: string; sortOrder: number }> | undefined) ?? [];
@@ -102,7 +102,7 @@ function mapEntity(entity: Record<string, unknown>): Omit<InvitationResponseDto,
 
 export const invitationMapper = {
   toResponse(entity: Record<string, unknown> | null): InvitationResponseDto {
-    if (!entity) return {} as any;
+    if (!entity) return {} as InvitationResponseDto;
     const mapped = mapEntity(entity);
     const _count = entity._count as { guests?: number } | undefined;
     return {
@@ -112,7 +112,7 @@ export const invitationMapper = {
   },
 
   toListItem(entity: Record<string, unknown> | null): InvitationListItemDto {
-    if (!entity) return {} as any;
+    if (!entity) return {} as InvitationListItemDto;
     const mapped = mapEntity(entity);
     const _count = entity._count as { guests?: number } | undefined;
     return {

@@ -50,6 +50,8 @@ test-db.js
 scratch/
 scripts/
 docs/
+.cursorrules
+.windsurfrules
 AGENTS.md
 CLAUDE.md
 DESIGN.md

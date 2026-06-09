@@ -1,11 +1,10 @@
 // GET /api/admin/users  — List users with pagination
 // PATCH /api/admin/users — Update user role
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { successResponse, errorResponse, paginatedResponse } from '@/lib/api-response';
 import { handleServiceError } from '@/lib/errors';
 import { auth } from '@/lib/auth';
 import { adminService } from '@/modules/admin/server/service';
-import { ValidationError } from '@/lib/errors';
 
 export const dynamic = 'force-dynamic';
 

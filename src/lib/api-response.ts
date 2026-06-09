@@ -10,7 +10,7 @@ export interface SuccessResponseBody<T> {
   requestId: string;
   message: string;
   data: T;
-  meta: any | null;
+  meta: Record<string, unknown> | PaginationMeta | null;
   timestamp: string;
 }
 

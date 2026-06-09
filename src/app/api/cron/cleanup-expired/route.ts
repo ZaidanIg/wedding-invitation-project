@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { successResponse, errorResponse } from '@/lib/api-response';
+import { errorResponse } from '@/lib/api-response';
 import { handleServiceError } from '@/lib/errors';
 import { prisma } from '@/lib/prisma';
 import { utapi } from '@/lib/utapi';

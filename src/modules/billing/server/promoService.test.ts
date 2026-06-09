@@ -16,6 +16,8 @@ jest.mock('@/lib/prisma', () => ({
       findUnique: jest.fn(),
     },
     $transaction: jest.fn((callback) => callback(prisma)),
+    $queryRaw: jest.fn().mockResolvedValue([]),
+    $executeRawUnsafe: jest.fn().mockResolvedValue(true),
   },
 }));
 

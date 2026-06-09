@@ -1,14 +1,14 @@
+import { z } from 'zod';
 // ============================================================
 // AI Service — Groq LLM integration for invitation generation
 // ============================================================
 
 import Groq from 'groq-sdk';
 import { prisma } from '@/lib/prisma';
-import { ValidationError, ForbiddenError, NotFoundError } from '@/lib/errors';
+import { ValidationError, NotFoundError } from '@/lib/errors';
 import { generateInputSchema } from './validators';
 import { checkUserDailyAiLimit } from '@/lib/rate-limiter';
 import type { GeneratedInvitation } from '@/types';
-import type { ZodError } from 'zod';
 
 const AI_LIMITS = {
   DRAFT: 2,
@@ -33,8 +33,14 @@ const groq = new Groq({
 
 const MODEL = 'llama-3.3-70b-versatile';
 
-function formatZodError(error: any): string {
-  return error.errors.map((e: any) => e.message).join(', ');
+function formatZodError(error: z.ZodError | Error | unknown): string {
+  if (error instanceof z.ZodError) {
+    return error.issues.map((e: z.ZodIssue) => e.message).join(', ');
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'Data tidak valid';
 }
 
 function buildSystemPrompt(tone: string, language: string): string {

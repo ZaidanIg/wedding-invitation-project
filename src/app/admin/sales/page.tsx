@@ -5,12 +5,7 @@ import Card from '@/components/ui/Card';
 import { showToast } from '@/components/ui/Toast';
 import { 
   TrendingUp, 
-  RefreshCw, 
-  DollarSign, 
-  Zap, 
-  Activity, 
-  ChevronRight,
-  TrendingDown
+  RefreshCw
 } from 'lucide-react';
 import type { AdminMetricsDto } from '@/modules/admin/server/dto';
 
@@ -34,7 +29,7 @@ export default function SalesPage() {
   };
 
   useEffect(() => {
-    loadMetrics();
+    setTimeout(() => { loadMetrics(); }, 0);
   }, []);
 
   const totalRevenue = metrics?.totalRevenue ?? 0;

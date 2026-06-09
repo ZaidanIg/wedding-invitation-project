@@ -62,7 +62,7 @@ export default function PromosPage() {
   }, []);
 
   useEffect(() => {
-    loadPromos();
+    setTimeout(() => { loadPromos(); }, 0);
   }, [loadPromos]);
 
   const handleCreatePromo = async (e: React.FormEvent) => {

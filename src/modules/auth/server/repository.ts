@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import type { Prisma } from '@prisma/client';
 
 export const authRepository = {
   async findUserByEmail(email: string) {
@@ -7,7 +8,7 @@ export const authRepository = {
     });
   },
 
-  async createUser(data: any) {
+  async createUser(data: Prisma.UserCreateInput) {
     return prisma.user.create({
       data,
     });

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Smartphone, ExternalLink } from 'lucide-react';
+import { X } from 'lucide-react';
 import IframePreview from '@/components/ui/IframePreview';
 import { layouts } from '../layouts';
 import { MOCK_INVITATION } from '@/constants/demoData';
@@ -14,7 +14,7 @@ interface ThemePreviewModalProps {
   themeName: string;
 }
 
-export default function ThemePreviewModal({ layout, onClose, themeName }: ThemePreviewModalProps) {
+export default function ThemePreviewModal({ layout, onClose }: ThemePreviewModalProps) {
   if (!layout) return null;
 
   return (

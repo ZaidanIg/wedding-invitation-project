@@ -4,6 +4,7 @@
 
 import { prisma } from '@/lib/prisma';
 import type { TransactionFilterInput } from './validators';
+import type { ExpenseCategory, LeadSource, LeadStatus } from '@prisma/client';
 
 export const adminRepository = {
   /**
@@ -367,7 +368,7 @@ export const adminRepository = {
     return { expenses, total };
   },
 
-  async createExpense(data: { category: any; amount: number; description: string; date?: Date }) {
+  async createExpense(data: { category: ExpenseCategory; amount: number; description: string; date?: Date }) {
     return prisma.expense.create({
       data: {
         category: data.category,
@@ -391,7 +392,7 @@ export const adminRepository = {
     });
   },
 
-  async createLead(data: { name: string; source: any; status?: any; date?: Date }) {
+  async createLead(data: { name: string; source: LeadSource; status?: LeadStatus; date?: Date }) {
     return prisma.lead.create({
       data: {
         name: data.name,
@@ -402,7 +403,7 @@ export const adminRepository = {
     });
   },
 
-  async updateLeadStatus(id: string, status: any) {
+  async updateLeadStatus(id: string, status: LeadStatus) {
     return prisma.lead.update({
       where: { id },
       data: { status },
@@ -422,7 +423,7 @@ export const adminRepository = {
     });
   },
 
-  async createMarketingSpend(data: { channel: any; amount: number; date?: Date }) {
+  async createMarketingSpend(data: { channel: LeadSource; amount: number; date?: Date }) {
     return prisma.marketingSpend.create({
       data: {
         channel: data.channel,

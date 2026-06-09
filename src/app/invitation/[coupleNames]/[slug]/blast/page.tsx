@@ -8,32 +8,25 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { 
   ArrowLeft, 
-  MessageSquare, 
   Send, 
   Users, 
   UserPlus, 
   MessageSquareText, 
-  X, 
   Check,
-  Phone,
-  User,
-  Sparkles,
   Lock,
   Play,
   Pause,
   Square,
   Activity,
-  AlertCircle,
   CheckCircle,
-  XCircle,
-  HelpCircle
+  XCircle
 } from 'lucide-react';
 import { showToast } from '@/components/ui/Toast';
 import type { Guest } from '@/types';
 
 export default function StandaloneBlastPage() {
   const params = useParams<{ coupleNames: string; slug: string }>();
-  const router = useRouter();
+  const _router = useRouter();
   
   const [guests, setGuests] = useState<Guest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -85,11 +78,11 @@ export default function StandaloneBlastPage() {
         setGuests(data.data.guests);
         setTier(data.data.tier);
         setAccountType(data.data.accountType || 'B2C_FREE');
-        setSelectedGuests(data.data.guests.map((g: any) => g.id));
+        setSelectedGuests(data.data.guests.map((g: Guest) => g.id));
         
         // Initialize default status mapping
         const initialStatus: Record<string, 'pending' | 'sending' | 'success' | 'failed'> = {};
-        data.data.guests.forEach((g: any) => {
+        data.data.guests.forEach((g: Guest) => {
           initialStatus[g.id] = 'pending';
         });
         setSendingStatus(initialStatus);
@@ -126,8 +119,8 @@ export default function StandaloneBlastPage() {
       } else {
         throw new Error(data.message || 'Gagal menambah tamu');
       }
-    } catch (error: any) {
-      showToast('error', error.message || 'Gagal menambah tamu');
+    } catch (error: unknown) {
+      showToast('error', error instanceof Error ? error.message : 'Gagal menambah tamu');
     } finally {
       setIsAdding(false);
     }
@@ -207,7 +200,7 @@ export default function StandaloneBlastPage() {
         setSendingStatus(prev => ({ ...prev, [guestId]: 'failed' }));
         showToast('error', data.message || `Gagal mengirim ke ${guest.name}`);
       }
-    } catch (err) {
+    } catch (_err) {
       setSendingStatus(prev => ({ ...prev, [guestId]: 'failed' }));
       showToast('error', `Koneksi gagal saat mengirim ke ${guest.name}`);
     }

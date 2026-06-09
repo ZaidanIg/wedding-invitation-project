@@ -28,7 +28,7 @@ const TIER_LABELS: Record<string, string> = {
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    const d = payload[0].payload;
+    const d = payload[0].payload as { tier: string; count: number; percentage: number };
     return (
       <div className="bg-white border border-[#eceae4] rounded-2xl px-4 py-3 shadow-lg">
         <p className="text-xs font-bold text-[#6b6b6b] mb-1">{TIER_LABELS[d.tier] ?? d.tier}</p>
@@ -40,9 +40,14 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-const CustomLegend = ({ payload }: any) => (
+interface LegendPayloadItem {
+  value: string;
+  color: string;
+}
+
+const CustomLegend = ({ payload }: { payload?: LegendPayloadItem[] }) => (
   <div className="flex flex-wrap justify-center gap-3 mt-2">
-    {payload.map((entry: any) => (
+    {(payload ?? []).map((entry) => (
       <span key={entry.value} className="flex items-center gap-1.5 text-xs font-bold text-[#6b6b6b]">
         <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: entry.color }} />
         {TIER_LABELS[entry.value] ?? entry.value}

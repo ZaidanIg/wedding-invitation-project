@@ -2,7 +2,6 @@ import { testClient } from '../../setup/testClient';
 import { POST } from '../../../src/app/api/checkout/route';
 import { UserFactory } from '../../factories/user.factory';
 import { InvitationFactory } from '../../factories/invitation.factory';
-import { prisma } from '../../../src/lib/prisma';
 
 // Mock midtrans
 jest.mock('midtrans-client', () => {

@@ -3,10 +3,10 @@
 // API Version: 1.2
 // ============================================================
 
-import { ValidationError, NotFoundError, ConflictError } from '@/lib/errors';
+import { ValidationError, NotFoundError } from '@/lib/errors';
 import { billingRepository } from './repository';
 import { PRICING, type PlanKey } from './constants';
-import type { Tier, TransactionType } from '@prisma/client';
+import type { Tier, TransactionType, TransactionStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import { promoService } from './promoService';
@@ -261,7 +261,7 @@ export const billingService = {
           const transactionStatus = midtransStatus.transaction_status;
           const fraudStatus = midtransStatus.fraud_status;
 
-          let newStatus = 'PENDING' as any; // Temporary cast to bypass TS structural issues
+          let newStatus: TransactionStatus = 'PENDING';
 
           if (transactionStatus === 'capture') {
             newStatus = fraudStatus === 'accept' ? 'PAID' : 'PENDING';

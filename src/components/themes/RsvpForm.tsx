@@ -84,7 +84,7 @@ export default function RsvpForm({ slug, tier, qrEnabled, initialSubmitted, init
             guestId: data.data.id,
             status,
           }));
-        } catch (e) {
+        } catch {
           // ignore
         }
       }

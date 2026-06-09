@@ -36,7 +36,7 @@ const C = {
 } as const;
 
 // Cover-specific tokens (color-3, color-4 from cover spec)
-const COVER = {
+const _COVER = {
   namePillBg: '#EFEFEF',  // color-3
   namePillText: '#323232',  // color-4
 } as const;
@@ -57,7 +57,7 @@ const A = {
 // ─── Gold Dust Particles ──────────────────────────────────────────────────────
 function GoldDustParticles() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  setTimeout(() => { useEffect(() => setMounted(true), []); }, 0);
 
   const particles = useMemo(() =>
     [...Array(40)].map(() => ({
@@ -1057,7 +1057,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
 
   if (!data.loveStory || data.loveStory.length === 0) return null;
 
-  const { galleryPhotos } = resolvePhotos(data);
+  const { galleryPhotos: _galleryPhotos } = resolvePhotos(data);
 
   return (
     <section
@@ -1386,7 +1386,7 @@ export default function ElegantSundanese({
     if (!data.rsvpName) {
       const params = new URLSearchParams(window.location.search);
       const to = params.get('to');
-      if (to) setGuestName(to);
+      setTimeout(() => { if (to) setGuestName(to); }, 0);
     }
   }, [data.rsvpName]);
 

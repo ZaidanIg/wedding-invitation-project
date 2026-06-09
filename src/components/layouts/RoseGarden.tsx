@@ -2,7 +2,7 @@
 import { getCoupleSlug } from '@/lib/utils';
 
 import { useState, useEffect } from 'react';
-import { Heart, MapPin, Clock, Calendar, Music, Camera, ChevronDown, Glasses } from 'lucide-react';
+import { Heart, MapPin, ChevronDown } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
 import type { Invitation, Guest } from '@/types';
 import Image from 'next/image';
@@ -14,7 +14,6 @@ import {
   formatEventDate,
   getMapsUrl,
   IconMapper,
-  CurvedDivider,
   DigitalGiftSection,
   LoveStorySection,
   GuestWelcome,
@@ -64,7 +63,7 @@ function FloralBorder() {
 
 export default function RoseGarden({ invitation, isPreview = false }: LayoutProps) {
   const { tier } = useTier();
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
@@ -78,7 +77,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
         (g) => g.name.trim().toLowerCase() === decodedTo
       );
       if (guest) {
-        setMatchedGuest(guest);
+        setTimeout(() => { setMatchedGuest(guest); }, 0);
       }
     }
   }, [invitation.guests]);

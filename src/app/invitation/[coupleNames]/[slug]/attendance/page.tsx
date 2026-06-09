@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Heart, Send, Check, AlertCircle, Sparkles, User, Phone, MessageSquare, Users } from 'lucide-react';
+import { Send, Check, AlertCircle, User, Phone, MessageSquare, Users } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -23,7 +23,7 @@ export default function PublicAttendancePage() {
   
   const [result, setResult] = useState<{
     success: boolean;
-    guest?: any;
+    guest?: { name: string; isVip: boolean; attendees: number };
     message: string;
   } | null>(null);
 

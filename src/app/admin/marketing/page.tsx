@@ -1,15 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
 import { showToast } from '@/components/ui/Toast';
 import { 
-  Megaphone, 
   RefreshCw, 
-  Target, 
-  TrendingUp, 
-  Users, 
-  DollarSign
+  Target
 } from 'lucide-react';
 
 const MARKETING_CHANNELS = [

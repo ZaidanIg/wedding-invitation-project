@@ -1,10 +1,10 @@
 'use client';
 import { getCoupleSlug } from '@/lib/utils';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Check } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
-import type { Invitation, Guest } from '@/types';
+import type { Invitation, Guest, ScheduleItem } from '@/types';
 import { getEmbedUrl } from '@/lib/utils';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -34,7 +34,7 @@ import {
 function GoldParticles() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   const items = useMemo(() => {
@@ -81,7 +81,7 @@ function GoldParticles() {
 function FlyingBirds() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   const birds = useMemo(() => {
@@ -232,7 +232,7 @@ function IslamicDivider() {
 }
 
 function WishesSection({ invitation }: { invitation: Invitation }) {
-  const { tier, isPreview } = useTier();
+  const { tier } = useTier();
   const currentRank = TIER_RANK[tier] || 0;
   const requiredRank = TIER_RANK['PREMIUM'];
 
@@ -428,7 +428,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
   const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
@@ -438,7 +438,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
     const to = p.get('to');
     if (to) {
       const decoded = decodeURIComponent(to);
-      setGuestName(decoded);
+      setTimeout(() => { setGuestName(decoded); }, 0);
       if (invitation.guests) {
         const decodedTo = decoded.trim().toLowerCase();
         const guest = invitation.guests.find(
@@ -591,7 +591,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
           <AnimatedSection><h2 className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] text-center mb-10">Rundown Acara</h2></AnimatedSection>
           <div className="max-w-xs mx-auto relative">
             <div className="absolute left-[19px] top-0 bottom-0 w-px bg-gradient-to-b from-[#d4af37]/40 via-[#d4af37]/20 to-transparent" />
-            {invitation.schedule.map((item: any, idx: number) => (
+            {invitation.schedule.map((item: ScheduleItem, idx: number) => (
               <AnimatedSection key={item.id || idx} animation={idx % 2 === 0 ? 'left' : 'right'} delay={`delay-${(idx + 1) * 100}`}>
                 <div className="flex items-start gap-4 mb-6">
                   <div className="w-10 h-10 rounded-full bg-[#042f2e] border-2 border-[#d4af37]/40 flex items-center justify-center shrink-0 z-10">

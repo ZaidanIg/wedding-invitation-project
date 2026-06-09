@@ -129,10 +129,10 @@ export function R2UploadDropzone({
       if (onClientUploadComplete) {
         onClientUploadComplete(uploadedResults);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Upload error:', err);
       if (onUploadError) {
-        onUploadError(err);
+        onUploadError(err instanceof Error ? err : new Error(String(err)));
       }
     } finally {
       setIsUploading(false);

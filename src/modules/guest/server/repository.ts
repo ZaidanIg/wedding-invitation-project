@@ -3,6 +3,7 @@
 // ============================================================
 
 import { prisma } from '@/lib/prisma';
+import type { RsvpStatus } from '@prisma/client';
 
 export const guestRepository = {
   async create(data: {
@@ -21,7 +22,7 @@ export const guestRepository = {
         name: data.name,
         email: data.email ?? null,
         phone: data.phone ?? null,
-        rsvpStatus: data.rsvpStatus as any,
+        rsvpStatus: data.rsvpStatus as RsvpStatus,
         message: data.message ?? null,
         attendees: data.attendees ?? 1,
         isVip: data.isVip ?? false,

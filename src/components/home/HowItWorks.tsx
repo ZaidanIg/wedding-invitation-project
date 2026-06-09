@@ -1,8 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Sparkles, PenTool, Share2, Heart, CheckCircle2 } from 'lucide-react';
-import Link from 'next/link';
+import { Sparkles, PenTool, Share2 } from 'lucide-react';
 
 const steps = [
   {

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, Quote, Heart } from 'lucide-react';
+import { Star, Quote } from 'lucide-react';
 import Image from 'next/image';
 
 const testimonials = [

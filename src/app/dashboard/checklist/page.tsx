@@ -54,7 +54,7 @@ export default function WeddingChecklistPage() {
 
   // Load from localStorage
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {

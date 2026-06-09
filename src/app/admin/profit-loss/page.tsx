@@ -41,7 +41,7 @@ export default function ProfitLossPage() {
   }, []);
 
   useEffect(() => {
-    loadSummary();
+    setTimeout(() => { loadSummary(); }, 0);
   }, [loadSummary]);
 
   const totalRevenue = summary?.totalRevenue ?? 0;

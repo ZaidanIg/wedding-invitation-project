@@ -1,11 +1,10 @@
 'use client';
 import { getCoupleSlug } from '@/lib/utils';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { Heart, MapPin, Camera, ChevronDown, MessageCircle, Send, Home, Users, CalendarDays, Music, Pause, Check, QrCode } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Heart, MapPin, ChevronDown, MessageCircle, Send, CalendarDays, Check } from 'lucide-react';
 import SafeQRCodeSVG from '@/components/dashboard/SafeQRCodeSVG';
-import type { Invitation, Guest } from '@/types';
-import { getEmbedUrl } from '@/lib/utils';
+import type { Invitation, Guest, ScheduleItem } from '@/types';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { 
@@ -15,14 +14,9 @@ import {
   formatEventDate, 
   getMapsUrl, 
   IconMapper, 
-  WaveDivider, 
-  ParallaxImage, 
-  ParallaxSection, 
-  PhotoCarousel, 
   DigitalGiftSection, 
   QuotesSection,
   TIER_RANK,
-  TierGate,
   useTier,
   EventActionButtons,
   
@@ -35,7 +29,7 @@ import {
 function GoldDustParticles() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => { setMounted(true); }, 0);
   }, []);
 
   const particles = useMemo(() => {
@@ -174,7 +168,7 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
 
 /* ── Custom Wishes (RSVP) Section ── */
 function WishesSection({ invitation }: { invitation: Invitation }) {
-  const { tier, isPreview } = useTier();
+  const { tier } = useTier();
   const currentRank = TIER_RANK[tier] || 0;
   const requiredRank = TIER_RANK['PREMIUM'];
 
@@ -374,11 +368,11 @@ interface LayoutProps {
 }
 
 export default function PremiumCharcoal({ invitation, isPreview = false }: LayoutProps) {
-  const { tier } = useTier();
+  const { tier: _tier } = useTier();
   const [isOpened, setIsOpened] = useState(isPreview);
   const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState('Tamu Undangan');
-  const [matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
+  const [_matchedGuest, setMatchedGuest] = useState<Guest | null>(null);
   const { formattedDate, dayNumber, monthName, dayName } = formatEventDate(invitation.eventDate);
   const { heroPhoto, photo2, photo3, galleryPhotos, groomPhoto, bridePhoto } = resolvePhotos(invitation);
   const mapsUrl = getMapsUrl(invitation.venueName, invitation.venueAddress);
@@ -388,7 +382,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
     const to = p.get('to');
     if (to) {
       const decoded = decodeURIComponent(to);
-      setGuestName(decoded);
+      setTimeout(() => { setGuestName(decoded); }, 0);
       if (invitation.guests) {
         const decodedTo = decoded.trim().toLowerCase();
         const guest = invitation.guests.find(
@@ -549,12 +543,12 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
 
             {/* Vertical timeline inside warm cream block */}
             <div className="max-w-md mx-auto relative flex flex-col items-center">
-              {(invitation.loveStory || []).map((storyItem: any, idx: number) => {
+              {(invitation.loveStory || []).map((storyItem, idx) => {
                 const isLast = idx === (invitation.loveStory || []).length - 1;
                 const isEven = idx % 2 === 0;
 
                 return (
-                  <div key={storyItem.id || idx} className="w-full flex flex-col items-center relative">
+                  <div key={idx} className="w-full flex flex-col items-center relative">
                     <AnimatedSection animation="up" className="relative w-full max-w-[85%] z-10">
                       <div className="bg-white border border-[#eceae4] p-4.5 rounded-2xl shadow-sm hover:shadow-md transition-shadow relative w-full flex flex-col items-center text-center">
                         <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm bg-stone-100">
@@ -735,7 +729,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
             {/* Left timeline bar */}
             <div className="absolute left-[19px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-[#d4af37] via-[#d4af37]/35 to-transparent" />
             
-            {invitation.schedule.map((item: any, idx: number) => (
+            {invitation.schedule.map((item: ScheduleItem, idx: number) => (
               <AnimatedSection 
                 key={item.id || idx} 
                 animation={idx % 2 === 0 ? 'left' : 'right'} 

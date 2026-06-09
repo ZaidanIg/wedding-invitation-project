@@ -1,6 +1,5 @@
 import { testClient } from '../../setup/testClient';
 import { GET as getUsers } from '../../../src/app/api/admin/users/route';
-import { GET as getInvitations } from '../../../src/app/api/admin/invitations/route';
 import { GET as getMetrics } from '../../../src/app/api/admin/metrics/route';
 import { UserFactory } from '../../factories/user.factory';
 import { InvitationFactory } from '../../factories/invitation.factory';

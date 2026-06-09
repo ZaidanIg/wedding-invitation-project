@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useInvitationStore } from '@/store/invitation-store';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -22,7 +22,6 @@ import {
   Sparkles,
   Camera,
   Trash2,
-  ListChecks,
   Plus,
   Clock,
   User,
@@ -30,13 +29,11 @@ import {
   RotateCcw,
   Lock,
   Music,
-  Video,
-  CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
 import { MOCK_INVITATION } from '@/constants/demoData';
 import IframePreview from '@/components/ui/IframePreview';
-import type { Tone, Language, Layout } from '@/types';
+import type { Layout } from '@/types';
 import Image from 'next/image';
 import { R2UploadDropzone as UploadDropzone } from './R2UploadDropzone';
 import InvitationPreview from '@/components/themes/InvitationPreview';
@@ -109,7 +106,7 @@ export default function InvitationForm() {
   const { data: session } = useSession();
   const router = useRouter();
   const [subStep, setSubStep] = useState(1);
-  const [showPlanSelection, setShowPlanSelection] = useState(false);
+  const [_showPlanSelection, setShowPlanSelection] = useState(false);
   const [isAdminBypass, setIsAdminBypass] = useState(false);
   const [aiMode, setAiMode] = useState<"auto" | "custom">(
     store.stylePreferences.additionalNotes ? "custom" : "auto"
@@ -156,7 +153,7 @@ export default function InvitationForm() {
     if (typeof window !== "undefined" && session?.user?.role === 'ADMIN') {
       const hostname = window.location.hostname;
       if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'staging.sahinaja.com') {
-        setIsAdminBypass(true);
+        setTimeout(() => { setIsAdminBypass(true); }, 0);
       }
     }
   }, [session]);
@@ -174,7 +171,7 @@ export default function InvitationForm() {
       if (planParam) {
         store.setTargetTier(planParam as any);
         document.cookie = `selected_plan=${planParam}; path=/; max-age=86400`;
-        setShowPlanSelection(false);
+        setTimeout(() => { setShowPlanSelection(false); }, 0);
       }
     }
   }, []);
@@ -307,9 +304,9 @@ export default function InvitationForm() {
   const isPremium = activeTier === "PREMIUM" || isAdminBypass;
   const isUltimate = activeTier === "ULTIMATE" || isAdminBypass;
 
-  const hasBasic = true;
+  const _hasBasic = true;
   const hasPremium = activeTier === "PREMIUM" || activeTier === "ULTIMATE" || isAdminBypass;
-  const hasUltimate = activeTier === "ULTIMATE" || isAdminBypass;
+  const _hasUltimate = activeTier === "ULTIMATE" || isAdminBypass;
 
   return (
     <>

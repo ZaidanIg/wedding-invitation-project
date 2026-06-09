@@ -21,7 +21,7 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     if (!token) {
-      setStatus({ type: 'error', text: 'Token reset tidak ditemukan. Silakan minta link baru.' });
+      setTimeout(() => { setStatus({ type: 'error', text: 'Token reset tidak ditemukan. Silakan minta link baru.' }); }, 0);
     }
   }, [token]);
 
@@ -49,7 +49,7 @@ export default function ResetPasswordPage() {
       } else {
         setStatus({ type: 'error', text: data.message || 'Gagal mereset kata sandi' });
       }
-    } catch (error) {
+    } catch (_error) {
       setStatus({ type: 'error', text: 'Gagal menghubungi server' });
     } finally {
       setIsLoading(false);

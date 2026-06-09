@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Users, Heart, Clock, CreditCard, Search, Settings,
-  UserCheck, RefreshCw, CheckCircle, XCircle, Sparkles,
-  TrendingUp, BarChart2, PieChart, ArrowUpRight, ArrowDownRight,
+  UserCheck, RefreshCw, CheckCircle, Sparkles,
+  TrendingUp, BarChart2, PieChart, ArrowUpRight,
   Calendar, ChevronLeft, ChevronRight, Eye, Zap, ShieldCheck, Download,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -107,7 +107,7 @@ export default function AdminDashboardClient({
   const [timeRange, setTimeRange] = useState<TimeRange>(30);
   const [revenueChart, setRevenueChart] = useState(initialRevenueChart);
   const [userGrowthChart, setUserGrowthChart] = useState(initialUserGrowthChart);
-  const [tierDistribution, setTierDistribution] = useState(initialTierDistribution);
+  const [tierDistribution, _setTierDistribution] = useState(initialTierDistribution);
   const [isLoadingCharts, setIsLoadingCharts] = useState(false);
 
   // ── Transactions Tab ─────────────────────────────────────────
@@ -202,9 +202,9 @@ export default function AdminDashboardClient({
   }, []);
 
   // ── Effects ───────────────────────────────────────────────────
-  useEffect(() => { loadTransactions(1, ''); }, [loadTransactions]);
-  useEffect(() => { loadUsers(''); }, [loadUsers]);
-  useEffect(() => { loadInvitations(''); }, [loadInvitations]);
+  useEffect(() => { setTimeout(() => { loadTransactions(1, ''); }, 0); }, [loadTransactions]);
+  useEffect(() => { setTimeout(() => { loadUsers(''); }, 0); }, [loadUsers]);
+  useEffect(() => { setTimeout(() => { loadInvitations(''); }, 0); }, [loadInvitations]);
 
   const handleExport = async () => {
     setIsExporting(true);

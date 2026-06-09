@@ -1,6 +1,6 @@
 import { invitationService } from './service';
 import { invitationRepository } from './repository';
-import { ForbiddenError, NotFoundError } from '../../../lib/errors';
+import { ForbiddenError } from '../../../lib/errors';
 import { prisma } from '../../../lib/prisma';
 
 jest.mock('./repository');

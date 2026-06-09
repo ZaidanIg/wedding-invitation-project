@@ -1,6 +1,6 @@
 'use client';
 
-import {
+import { 
   BarChart,
   Bar,
   XAxis,

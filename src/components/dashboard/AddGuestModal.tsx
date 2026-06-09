@@ -40,8 +40,8 @@ export default function AddGuestModal({ onClose, onSuccess, invitationSlug }: Ad
       showToast('success', 'Tamu berhasil ditambahkan!');
       onSuccess();
       onClose();
-    } catch (error: any) {
-      showToast('error', error.message || 'Gagal menambahkan tamu');
+    } catch (error: unknown) {
+      showToast('error', (error as Error).message || 'Gagal menambahkan tamu');
     } finally {
       setIsSubmitting(false);
     }

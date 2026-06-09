@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Book, CreditCard, Sparkles, AlertCircle } from 'lucide-react';
+import { Book, CreditCard, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {

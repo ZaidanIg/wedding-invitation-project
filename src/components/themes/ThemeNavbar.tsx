@@ -15,7 +15,7 @@ const ITEM_DEFS = [
 export default function ThemeNavbar() {
   const [activeSection, setActiveSection] = useState('');
   const [isVisible, setIsVisible] = useState(false);
-  const [navItems, setNavItems] = useState<any[]>([]);
+  const [navItems, setNavItems] = useState<(typeof ITEM_DEFS[number] & { id: string; isButton?: boolean })[]>([]);
 
   // Ref to the navbar container — gives us correct ownerDocument (works inside iframe too)
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,7 +32,7 @@ export default function ThemeNavbar() {
     const timer = setTimeout(() => {
       const doc = getDoc();
       const elements = Array.from(doc.querySelectorAll('[id]'));
-      const foundItems: any[] = [];
+      const foundItems: (typeof ITEM_DEFS[number] & { id: string; isButton?: boolean })[] = [];
       const addedTypes = new Set<string>();
 
       elements.forEach((el) => {
@@ -59,7 +59,7 @@ export default function ThemeNavbar() {
     }, 1200);
 
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   // ── 2. Scroll spy ────────────────────────────────────────────────────────────
