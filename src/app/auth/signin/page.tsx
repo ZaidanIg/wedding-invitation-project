@@ -301,8 +301,8 @@ export default function SignInPage() {
   };
 
   return (
-    <section className="min-h-[calc(100dvh-4rem)] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
+    <section className="min-h-screen px-4 pt-28 pb-12 flex justify-center">
+      <div className="w-full max-w-md my-auto relative">
         {/* Decorative background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-rose-500/5 blur-3xl animate-float" />
