@@ -31,7 +31,11 @@ function createPrismaClient() {
       rejectUnauthorized: true,
       ca: ca,
     };
-  } else if (process.env.NODE_ENV === 'production') {
+  } else if (
+    process.env.NODE_ENV === 'production' && 
+    process.env.VERCEL_ENV !== 'preview' && 
+    process.env.DB_REJECT_UNAUTHORIZED !== 'false'
+  ) {
     // Fallback for local development
     try {
       const certPath = path.join(process.cwd(), 'prisma', 'ca.pem');
