@@ -29,12 +29,12 @@ export const adminRepository = {
       prisma.invitation.count({ where: { tier: { not: 'DRAFT' } } }),
       prisma.invitation.count({ where: { tier: 'DRAFT' } }),
       prisma.transaction.aggregate({
-        where: { status: { in: ['SUCCESS', 'SETTLEMENT'] } },
+        where: { status: 'PAID' },
         _sum: { amount: true },
       }),
       prisma.transaction.aggregate({
         where: {
-          status: { in: ['SUCCESS', 'SETTLEMENT'] },
+          status: 'PAID',
           createdAt: { gte: startOfMonth },
         },
         _sum: { amount: true },
@@ -48,8 +48,8 @@ export const adminRepository = {
       totalInvitations,
       paidInvitations,
       draftInvitations,
-      totalRevenue: totalRevenueResult._sum.amount ?? 0,
-      newRevenueThisMonth: monthlyRevenueResult._sum.amount ?? 0,
+      totalRevenue: totalRevenueResult._sum?.amount ?? 0,
+      newRevenueThisMonth: monthlyRevenueResult._sum?.amount ?? 0,
       pendingTransactions,
     };
   },
@@ -64,7 +64,7 @@ export const adminRepository = {
 
     const transactions = await prisma.transaction.findMany({
       where: {
-        status: { in: ['SUCCESS', 'SETTLEMENT'] },
+        status: 'PAID',
         createdAt: { gte: startDate },
       },
       select: {
@@ -214,7 +214,7 @@ export const adminRepository = {
             select: { invitations: true },
           },
           transactions: {
-            where: { status: { in: ['SUCCESS', 'SETTLEMENT'] } },
+            where: { status: 'PAID' },
             select: { amount: true },
           },
         },
@@ -325,7 +325,7 @@ export const adminRepository = {
           createdAt: true,
           _count: { select: { invitations: true } },
           transactions: {
-            where: { status: { in: ['SUCCESS', 'SETTLEMENT'] } },
+            where: { status: 'PAID' },
             select: { amount: true },
           },
         },

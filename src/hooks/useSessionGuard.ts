@@ -63,7 +63,7 @@ export function useSessionGuard() {
           const json = await cloned.json();
           // Only trigger for session-related errors, not general permission errors
           const isSessionError =
-            json?.error === 'UNAUTHORIZED' ||
+            json?.error === 'UNAUTHORIZED' || json?.error?.code === 'UNAUTHORIZED' ||
             json?.message?.toLowerCase().includes('session') ||
             json?.message?.toLowerCase().includes('unauthorized') ||
             json?.code === 'JWT_SESSION_ERROR';

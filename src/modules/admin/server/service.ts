@@ -367,7 +367,7 @@ export const adminService = {
     ]);
 
     const totalRevenue = transactions
-      .filter((tx) => ['SUCCESS', 'SETTLEMENT'].includes(tx.status))
+      .filter((tx) => tx.status === 'PAID')
       .reduce((sum, tx) => sum + tx.amount, 0);
 
     const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
@@ -376,7 +376,7 @@ export const adminService = {
       totalRevenue,
       totalExpenses,
       netProfit: totalRevenue - totalExpenses,
-      revenueCount: transactions.filter((tx) => ['SUCCESS', 'SETTLEMENT'].includes(tx.status)).length,
+      revenueCount: transactions.filter((tx) => tx.status === 'PAID').length,
       expenseCount: expenses.length,
     };
   },

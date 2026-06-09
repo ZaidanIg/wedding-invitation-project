@@ -2,7 +2,7 @@
 // GET  /api/invitations — List user's invitations (authenticated)
 
 import { auth } from '@/lib/auth';
-import { successResponse, errorResponse } from '@/lib/api-response';
+import { paginatedResponse, successResponse, errorResponse } from '@/lib/api-response';
 import { handleServiceError } from '@/lib/errors';
 import { invitationService } from '@/modules/invitation/server/service';
 import { billingService } from '@/modules/billing/server/service';
@@ -42,11 +42,7 @@ export async function GET(request: Request) {
 
     const result = await invitationService.list(session.user.id, page, limit);
 
-    return successResponse({
-      data: result.invitations,
-      meta: result.meta,
-      user: result.user,
-    }, 'Invitations fetched');
+    return paginatedResponse(result.invitations, result.meta, 'Invitations fetched');
   } catch (error) {
     const { message, status, code } = handleServiceError(error);
     return errorResponse(message, status, code);

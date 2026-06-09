@@ -9,8 +9,10 @@ export default function Footer() {
   const pathname = usePathname();
   if (pathname?.startsWith('/demo/')) return null;
 
+  const isStickyPage = pathname === '/auth/signin' || pathname?.startsWith('/dashboard') || pathname?.startsWith('/create');
+
   return (
-    <footer className="border-t border-rose-500/5 bg-[#fdfcf9] content-visibility-auto">
+    <footer className={`border-t border-rose-500/5 bg-[#fdfcf9] content-visibility-auto ${isStickyPage ? 'sticky bottom-0 z-[40]' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
           <Link href="/" className="flex items-center justify-center md:justify-start group">

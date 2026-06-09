@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import InvitationCard from '@/components/themes/InvitationCard';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { Plus, CheckSquare } from 'lucide-react';
+import { Plus, CheckSquare, X, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Invitation } from '@/types';
 import WeddingCountdown from '@/components/themes/WeddingCountdown';
@@ -14,12 +15,25 @@ import WeddingCountdown from '@/components/themes/WeddingCountdown';
 type InvitationWithCount = Invitation & { _count?: { guests: number } };
 
 export default function DashboardPage() {
+  const { data: session } = useSession();
   const [invitations, setInvitations] = useState<InvitationWithCount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     fetchInvitations();
+    
+    // Cek status onboarding
+    if (typeof window !== 'undefined') {
+      const dismissed = localStorage.getItem('onboarding_dismissed');
+      if (!dismissed) setShowOnboarding(true);
+    }
   }, []);
+
+  const dismissOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('onboarding_dismissed', 'true');
+  };
 
   const fetchInvitations = async () => {
     try {
@@ -52,7 +66,7 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-12 mb-12 text-center sm:text-left">
           <div>
             <h1 className="text-4xl sm:text-5xl font-display font-bold text-[#1c1c1c] tracking-tight leading-tight">
-              Dashboard Saya
+              Selamat datang kembali{session?.user?.name ? `, ${session.user.name.split(' ')[0]}` : ''}
             </h1>
             <p className="text-lg text-[#6b6b6b] mt-4 max-w-2xl">
               Kelola momen berharga Anda di satu tempat, dengan undangan premium yang mewah.
@@ -72,6 +86,51 @@ export default function DashboardPage() {
             </Link>
           </div>
         </div>
+
+        {/* Onboarding Guide */}
+        {showOnboarding && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative bg-white border border-rose-500/20 rounded-[2rem] p-8 mb-12 shadow-xl shadow-rose-500/5"
+          >
+            <button 
+              onClick={dismissOnboarding}
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-rose-50 text-[#6b6b6b] hover:text-rose-500 transition-colors"
+              title="Tutup panduan"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-xl bg-rose-500/10">
+                <Info className="h-5 w-5 text-rose-500" />
+              </div>
+              <h2 className="text-xl font-bold text-[#1c1c1c]">Panduan Memulai Sahinaja</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="space-y-2">
+                <div className="text-sm font-bold text-rose-500">Langkah 1</div>
+                <h3 className="font-bold text-[#1c1c1c]">Pilih Tema</h3>
+                <p className="text-sm text-[#6b6b6b] leading-relaxed">Pilih tema undangan eksklusif yang sesuai dengan selera pernikahan Anda.</p>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm font-bold text-rose-500">Langkah 2</div>
+                <h3 className="font-bold text-[#1c1c1c]">Generate AI</h3>
+                <p className="text-sm text-[#6b6b6b] leading-relaxed">Isi detail dasar, dan biarkan AI kami merangkai kata-kata indah untuk undangan.</p>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm font-bold text-rose-500">Langkah 3</div>
+                <h3 className="font-bold text-[#1c1c1c]">Aktivasi Pembayaran</h3>
+                <p className="text-sm text-[#6b6b6b] leading-relaxed">Upgrade ke paket Premium melalui Midtrans (Gopay/QRIS) agar undangan aktif.</p>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm font-bold text-rose-500">Langkah 4</div>
+                <h3 className="font-bold text-[#1c1c1c]">Sebarkan Undangan</h3>
+                <p className="text-sm text-[#6b6b6b] leading-relaxed">Salin tautan unik undangan Anda dan bagikan momen bahagia ke semua tamu.</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Wedding Countdown — shown for the earliest upcoming paid invitation */}
         {(() => {

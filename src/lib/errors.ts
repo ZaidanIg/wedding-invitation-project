@@ -2,6 +2,8 @@
 // Custom Error Classes
 // ============================================================
 
+import { ErrorDetail } from './api-response';
+
 export class AppError extends Error {
   public readonly statusCode: number;
   public readonly code: string;
@@ -15,8 +17,11 @@ export class AppError extends Error {
 }
 
 export class ValidationError extends AppError {
-  constructor(message = 'Validation failed') {
-    super(message, 400, 'VALIDATION_ERROR');
+  public readonly details?: ErrorDetail[];
+
+  constructor(message = 'Validation failed', details?: ErrorDetail[]) {
+    super(message, 422, 'VALIDATION_ERROR');
+    this.details = details;
   }
 }
 
@@ -46,9 +51,13 @@ export class ConflictError extends AppError {
 
 /**
  * Handle errors thrown by service layer in route handlers.
- * Returns a properly formatted error response.
+ * Returns a properly formatted error payload for errorResponse or validationErrorResponse.
  */
 export function handleServiceError(error: unknown) {
+  if (error instanceof ValidationError && error.details) {
+    return { isValidation: true, details: error.details, message: error.message };
+  }
+  
   if (error instanceof AppError) {
     return { message: error.message, status: error.statusCode, code: error.code };
   }

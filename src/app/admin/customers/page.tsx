@@ -70,7 +70,7 @@ export default function CustomersPage() {
         showToast('success', 'Role diperbarui!'); 
         loadUsers(page, debouncedSearch); 
       } else {
-        showToast('error', json.error ?? 'Gagal memperbarui role');
+        showToast('error', json.message ?? 'Gagal memperbarui role');
       }
     } catch { 
       showToast('error', 'Terjadi kesalahan sistem'); 

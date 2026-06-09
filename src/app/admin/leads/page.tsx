@@ -93,7 +93,7 @@ export default function LeadsPage() {
         setIsAdding(false);
         loadLeads();
       } else {
-        showToast('error', json.error ?? 'Gagal menambahkan lead');
+        showToast('error', json.message ?? 'Gagal menambahkan lead');
       }
     } catch {
       showToast('error', 'Terjadi kesalahan sistem');
@@ -114,7 +114,7 @@ export default function LeadsPage() {
         showToast('success', 'Status prospek diperbarui!');
         loadLeads();
       } else {
-        showToast('error', json.error ?? 'Gagal memperbarui status');
+        showToast('error', json.message ?? 'Gagal memperbarui status');
       }
     } catch {
       showToast('error', 'Terjadi kesalahan sistem');
@@ -132,7 +132,7 @@ export default function LeadsPage() {
         showToast('success', 'Lead dihapus!');
         loadLeads();
       } else {
-        showToast('error', json.error ?? 'Gagal menghapus lead');
+        showToast('error', json.message ?? 'Gagal menghapus lead');
       }
     } catch {
       showToast('error', 'Terjadi kesalahan sistem');

@@ -18,7 +18,7 @@ export type PhotoType = 'GALLERY' | 'PREWEDDING';
  * SUCCESS    = final success for credit card (capture+accept).
  * Both SETTLEMENT and EXPIRED map to "paid" in business logic.
  */
-export type TransactionStatus = 'PENDING' | 'SETTLEMENT' | 'SUCCESS' | 'FAILED' | 'EXPIRED' | 'CANCELLED';
+export type TransactionStatus = 'PENDING' | 'WAITING_PAYMENT' | 'PAID' | 'FAILED' | 'EXPIRED' | 'REFUNDED';
 export type TransactionType = 'INVITATION_UPGRADE' | 'ACCOUNT_UPGRADE';
 
 export interface ScheduleItem {

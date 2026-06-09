@@ -175,11 +175,11 @@ describe('Midtrans Webhook POST API', () => {
     expect(response.status).toBe(200);
     expect(json.success).toBe(true);
 
-    // Assert transaction updated to SETTLEMENT
+    // Assert transaction updated to PAID
     expect(prisma.transaction.update).toHaveBeenCalledWith({
       where: { id: 'ORD-3' },
       data: expect.objectContaining({
-        status: 'SETTLEMENT',
+        status: 'PAID',
         midtransId: 'trx-456',
         paymentMethod: 'gopay',
       }),
