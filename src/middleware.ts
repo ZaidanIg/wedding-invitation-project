@@ -21,11 +21,13 @@ export async function middleware(request: NextRequest) {
   // 0. Coming Soon Header (Production & Staging Domains Only)
   const isProductionDomain = (
     hostname === 'sahinaja.com' ||
-    hostname === 'www.sahinaja.com' ||
-    hostname === 'staging.sahinaja.com' ||
-    hostname.includes('satging') ||
-    hostname.includes('staging')
-  ) && !hostname.startsWith('admin.');
+    hostname === 'www.sahinaja.com'
+    // hostname === 'staging.sahinaja.com' ||
+    // hostname.includes('satging') ||
+    // hostname.includes('staging')
+  ); 
+  
+  // && !hostname.startsWith('admin.');
 
   const isLaunchReady = new Date() >= LAUNCH_DATE;
   
