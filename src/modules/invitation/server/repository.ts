@@ -254,7 +254,10 @@ export const invitationRepository = {
   },
 
   async delete(id: string) {
-    return prisma.invitation.delete({ where: { id } });
+    return prisma.invitation.update({
+      where: { id },
+      data: { deletedAt: new Date(), status: 'DELETED' },
+    });
   },
 
   async incrementViewCount(slug: string) {

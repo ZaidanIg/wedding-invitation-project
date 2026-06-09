@@ -67,7 +67,7 @@ export default function ThemesPage() {
         setSelectedInv(null);
         loadInvitations(invitationSearch);
       } else {
-        showToast('error', json.error ?? 'Gagal menyimpan perubahan');
+        showToast('error', json.message ?? 'Gagal menyimpan perubahan');
       }
     } catch { 
       showToast('error', 'Terjadi kesalahan sistem'); 

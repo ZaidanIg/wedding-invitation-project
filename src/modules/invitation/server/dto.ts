@@ -41,6 +41,9 @@ export interface InvitationResponseDto {
   // v1.2: isPaid REMOVED — use tier !== 'DRAFT' for activation check
   aiRegenCount: number;
   guestCount: number;
+  status: string;
+  expiresAt: string | null;
+  deletedAt: string | null;
   createdAt: string;
   updatedAt: string;
   transactions?: Array<{
@@ -85,6 +88,9 @@ export interface InvitationListItemDto {
   // v1.2: isPaid REMOVED
   aiRegenCount: number;
   guestCount: number;
+  status: string;
+  expiresAt: string | null;
+  deletedAt: string | null;
   createdAt: string;
   updatedAt: string;
   transactions?: Array<{

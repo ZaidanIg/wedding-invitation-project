@@ -9,14 +9,16 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const config: Config = {
   coverageProvider: 'v8',
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  testEnvironment: 'node',
+  setupFiles: ['<rootDir>/tests/setup/globals.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup/setupEnv.ts'],
+  testTimeout: 30000,
   moduleNameMapper: {
     // Handle module aliases
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
-  // Only look for tests in src directory for unit/integration tests
+  // Look for tests in src and tests directory
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/', '<rootDir>/e2e/'],
 };
 

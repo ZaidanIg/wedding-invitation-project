@@ -111,7 +111,7 @@ export default function ExpensesPage() {
         setPage(1);
         loadExpenses(1);
       } else {
-        showToast('error', json.error ?? 'Gagal menambahkan pengeluaran');
+        showToast('error', json.message ?? 'Gagal menambahkan pengeluaran');
       }
     } catch {
       showToast('error', 'Terjadi kesalahan sistem');
@@ -131,7 +131,7 @@ export default function ExpensesPage() {
         showToast('success', 'Pengeluaran dihapus!');
         loadExpenses(page);
       } else {
-        showToast('error', json.error ?? 'Gagal menghapus pengeluaran');
+        showToast('error', json.message ?? 'Gagal menghapus pengeluaran');
       }
     } catch {
       showToast('error', 'Terjadi kesalahan sistem');

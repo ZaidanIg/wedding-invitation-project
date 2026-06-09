@@ -17,7 +17,7 @@ export const updateUserRoleSchema = z.object({
 export const transactionFilterSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20),
-  status: z.enum(['PENDING', 'SETTLEMENT', 'SUCCESS', 'FAILED', 'EXPIRED', 'CANCELLED']).optional(),
+  status: z.enum(['PENDING', 'WAITING_PAYMENT', 'PAID', 'FAILED', 'EXPIRED', 'REFUNDED']).optional(),
   type: z.enum(['INVITATION_UPGRADE', 'ACCOUNT_UPGRADE']).optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),

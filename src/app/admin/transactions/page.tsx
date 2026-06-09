@@ -17,17 +17,17 @@ import {
 import type { AdminTransactionDto } from '@/modules/admin/server/dto';
 
 const TX_STATUS_STYLE: Record<string, string> = {
-  SUCCESS:    'bg-emerald-50 text-emerald-700 border-emerald-100',
-  SETTLEMENT: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  PENDING:    'bg-amber-50 text-amber-700 border-amber-100',
-  FAILED:     'bg-red-50 text-red-700 border-red-100',
-  EXPIRED:    'bg-stone-100 text-stone-600 border-stone-200',
-  CANCELLED:  'bg-stone-100 text-stone-600 border-stone-200',
+  PAID:            'bg-emerald-50 text-emerald-700 border-emerald-100',
+  WAITING_PAYMENT: 'bg-blue-50 text-blue-700 border-blue-100',
+  PENDING:         'bg-amber-50 text-amber-700 border-amber-100',
+  FAILED:          'bg-red-50 text-red-700 border-red-100',
+  EXPIRED:         'bg-stone-100 text-stone-600 border-stone-200',
+  REFUNDED:        'bg-stone-100 text-stone-600 border-stone-200',
 };
 
 const TX_STATUS_LABEL: Record<string, string> = {
-  SUCCESS: 'Sukses', SETTLEMENT: 'Settled', PENDING: 'Tertunda',
-  FAILED: 'Gagal', EXPIRED: 'Expired', CANCELLED: 'Dibatalkan',
+  PAID: 'Lunas', WAITING_PAYMENT: 'Menunggu', PENDING: 'Tertunda',
+  FAILED: 'Gagal', EXPIRED: 'Expired', REFUNDED: 'Dikembalikan',
 };
 
 const TIER_STYLE: Record<string, string> = {
@@ -97,12 +97,12 @@ export default function TransactionsPage() {
               className="bg-transparent border-none text-sm font-semibold text-[#1c1c1c] focus:outline-none"
             >
               <option value="">Semua Status</option>
-              <option value="SUCCESS">Sukses</option>
-              <option value="SETTLEMENT">Settled</option>
+              <option value="PAID">Lunas</option>
+              <option value="WAITING_PAYMENT">Menunggu Pembayaran</option>
               <option value="PENDING">Tertunda</option>
               <option value="FAILED">Gagal</option>
               <option value="EXPIRED">Expired</option>
-              <option value="CANCELLED">Dibatalkan</option>
+              <option value="REFUNDED">Dikembalikan</option>
             </select>
           </div>
         </div>

@@ -6,7 +6,13 @@ import { sendCodeSchema, registerSchema, forgotPasswordSchema, resetPasswordSche
 import { sendVerificationCodeEmail, sendPasswordResetEmail } from '@/lib/email';
 
 function formatZodError(error: any): string {
-  return error.errors.map((e: any) => e.message).join(', ');
+  if (error?.issues && Array.isArray(error.issues)) {
+    return error.issues.map((e: any) => e.message).join(', ');
+  }
+  if (error?.errors && Array.isArray(error.errors)) {
+    return error.errors.map((e: any) => e.message).join(', ');
+  }
+  return 'Data tidak valid';
 }
 
 export const authService = {
@@ -44,13 +50,16 @@ export const authService = {
       throw new AppError(`Email System Error: ${error.message}`, 500, 'EMAIL_ERROR');
     }
 
-    return { message: 'Kode verifikasi telah dikirim ke email Anda.' };
+    return { message: 'Kode verifikasi berhasil terkirim ke email anda' };
   },
 
   async register(payload: unknown) {
     const parsed = registerSchema.safeParse(payload);
     if (!parsed.success) {
-      throw new ValidationError(formatZodError(parsed.error));
+      const msg = formatZodError(parsed.error);
+      const isInvalidEmail = parsed.error.issues.some((issue) => issue.message === 'Masukan format email yang valid!');
+      const errorCode = isInvalidEmail ? 'INVALID_EMAIL' : 'VALIDATION_ERROR';
+      throw new AppError(msg, 422, errorCode);
     }
 
     const { name, email, password, code } = parsed.data;
@@ -58,7 +67,7 @@ export const authService = {
     // Check if user already exists
     const existingUser = await authRepository.findUserByEmail(email);
     if (existingUser) {
-      throw new ConflictError('User dengan email ini sudah terdaftar.');
+      throw new AppError('Email yang didaftarkan sudah dipakai, silahkan login dengan email tersebut!', 409, 'Email yang didaftarkan sudah dipakai, silahkan login dengan email tersebut!');
     }
 
     // Verify code
@@ -86,7 +95,7 @@ export const authService = {
     await authRepository.deleteVerificationToken(email, code);
 
     return {
-      message: 'Registrasi berhasil!',
+      message: 'Selamat Akun Berhasil di buat, silahkan login dengan akun tersebut!',
       user: {
         id: user.id,
         email: user.email,
@@ -136,8 +145,11 @@ export const authService = {
     const { token, password } = parsed.data;
 
     const resetToken = await authRepository.findPasswordResetToken(token);
-    if (!resetToken || resetToken.expires < new Date()) {
-      throw new ValidationError('Token reset tidak valid atau sudah kadaluarsa.');
+    if (!resetToken) {
+      throw new AppError('Token reset tidak valid.', 400, 'INVALID_CODE');
+    }
+    if (resetToken.expires < new Date()) {
+      throw new AppError('Token reset sudah kadaluarsa.', 400, 'EXPIRED_CODE');
     }
 
     // Hash new password

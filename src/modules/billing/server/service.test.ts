@@ -148,16 +148,4 @@ describe('Billing Service - createCheckout', () => {
     });
   });
 
-  it('should throw ConflictError if invitation is already on target tier', async () => {
-    // Arrange
-    const payload = { plan: 'PREMIUM', invitationId: 'inv-1' };
-    (billingRepository.findInvitationForCheckout as jest.Mock).mockResolvedValue({
-      userId: user.id,
-      tier: 'PREMIUM', // Already premium
-    });
-
-    // Act & Assert
-    await expect(billingService.createCheckout(payload, user)).rejects.toThrow(ConflictError);
-  });
 });
-

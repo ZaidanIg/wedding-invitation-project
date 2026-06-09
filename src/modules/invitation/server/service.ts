@@ -3,7 +3,7 @@
 // ============================================================
 
 import { prisma } from '@/lib/prisma';
-import { NotFoundError, ForbiddenError, ValidationError } from '@/lib/errors';
+import { NotFoundError, ForbiddenError, ValidationError, AppError } from '@/lib/errors';
 import { invitationRepository } from './repository';
 import { createInvitationSchema, updateInvitationSchema } from './validators';
 import { invitationMapper } from './mapper';
@@ -84,6 +84,13 @@ export const invitationService = {
 
     // v1.2 FIX: Force tier to DRAFT on creation. Tier will be upgraded by Midtrans Webhook upon successful payment.
     const tier = 'DRAFT';
+    
+    if (data.slug) {
+      const existingSlug = await invitationRepository.findBySlug(data.slug);
+      if (existingSlug) {
+        throw new AppError('Slug sudah digunakan', 409, 'SLUG_EXISTS');
+      }
+    }
     
     // Validate limits
     validateTierConstraints(tier, data);
@@ -238,27 +245,30 @@ export const invitationService = {
     }
 
     // Update scalar fields
-    await invitationRepository.update(id, safeData);
+    let updated = await invitationRepository.update(id, safeData);
 
     // Update normalized relations if provided in the payload
     const hasRelationalUpdates = schedule !== undefined || loveStory !== undefined || digitalGifts !== undefined || photoUrls !== undefined;
     if (hasRelationalUpdates) {
-      await invitationRepository.updateRelations(id, {
+      updated = (await invitationRepository.updateRelations(id, {
         ...(schedule !== undefined && { events: schedule }),
         ...(loveStory !== undefined && { stories: loveStory }),
         ...(digitalGifts !== undefined && { gifts: digitalGifts }),
         ...(photoUrls !== undefined && { photoUrls }),
-      });
+      })) as any;
     }
 
-    const updated = await invitationRepository.findById(id);
-
     // Revalidate cache
+    if (!updated) {
+      throw new AppError('Gagal memperbarui invitation', 500, 'UPDATE_FAILED');
+    }
+
     revalidateTag(`invitation-${id}`, {});
     if (existing.slug) {
       revalidateTag(`invitation-${existing.slug}`, {});
     }
 
+    console.log("UPDATED RECORD:", updated);
     return invitationMapper.toResponse(updated as Record<string, unknown>);
   },
 
@@ -275,8 +285,8 @@ export const invitationService = {
       throw new ForbiddenError('Unauthorized to delete this invitation');
     }
 
-    await invitationRepository.delete(id);
-    return { message: 'Invitation deleted' };
+    const deleted = await invitationRepository.delete(id);
+    return invitationMapper.toResponse(deleted as Record<string, unknown>);
   },
 
   /**

@@ -21,14 +21,16 @@ import { PRICING } from '@/modules/billing/server/constants';
 function resolveStatus(
   transactionStatus: string,
   fraudStatus: string | undefined
-): 'PENDING' | 'SETTLEMENT' | 'SUCCESS' | 'FAILED' | 'EXPIRED' | 'CANCELLED' {
+): 'PENDING' | 'WAITING_PAYMENT' | 'PAID' | 'FAILED' | 'EXPIRED' | 'REFUNDED' {
   if (transactionStatus === 'capture') {
-    return fraudStatus === 'accept' ? 'SUCCESS' : 'PENDING';
+    return fraudStatus === 'accept' ? 'PAID' : 'PENDING';
   }
-  if (transactionStatus === 'settlement') return 'SETTLEMENT';
-  if (transactionStatus === 'cancel' || transactionStatus === 'deny') return 'CANCELLED';
+  if (transactionStatus === 'settlement') return 'PAID';
+  if (transactionStatus === 'cancel' || transactionStatus === 'deny') return 'FAILED';
   if (transactionStatus === 'expire') return 'EXPIRED';
   if (transactionStatus === 'failure' || transactionStatus === 'reject') return 'FAILED';
+  if (transactionStatus === 'refund' || transactionStatus === 'partial_refund') return 'REFUNDED';
+  if (transactionStatus === 'pending') return 'WAITING_PAYMENT';
   return 'PENDING';
 }
 
@@ -91,13 +93,13 @@ export async function POST(request: Request) {
     }
 
     const newStatus = resolveStatus(transaction_status, fraud_status);
-    const isPaidStatus = newStatus === 'SUCCESS' || newStatus === 'SETTLEMENT';
+    const isPaidStatus = newStatus === 'PAID';
 
     // ── 4. Process in Atomic PostgreSQL Transaction ─────────
     let userEmail = '';
     let coupleNames = 'Upgrade Paket Layanan';
 
-    if (isPaidStatus && transaction.status !== 'SUCCESS' && transaction.status !== 'SETTLEMENT') {
+    if (isPaidStatus && transaction.status !== 'PAID') {
       const result = await prisma.$transaction(async (tx) => {
         // a. Log raw webhook payload (idempotency record)
         await tx.paymentWebhook.create({

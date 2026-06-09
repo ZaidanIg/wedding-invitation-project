@@ -5,13 +5,14 @@ import fs from 'fs';
 import path from 'path';
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+  globalForPrisma: any;
+  prisma: { client: PrismaClient; pool: Pool } | undefined;
 };
 
 // Force clear the cache for hot-reload to pick up new models
 delete (globalThis as any).prisma;
 
-function createPrismaClient(): PrismaClient {
+function createPrismaClient() {
   let sslConfig: any = undefined;
 
   const dbUrl = process.env.DATABASE_URL || '';
@@ -49,10 +50,6 @@ function createPrismaClient(): PrismaClient {
     sslConfig = { rejectUnauthorized: false };
   }
 
-  const maskedUrl = dbUrl.replace(/:[^:@]+@/, ':***@');
-  console.log(`🔌 [Prisma] DATABASE_URL: ${maskedUrl}`);
-  console.log(`🔌 [Prisma] NODE_ENV: ${process.env.NODE_ENV}`);
-  console.log(`🔌 [Prisma] sslConfig:`, sslConfig);
 
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -64,13 +61,17 @@ function createPrismaClient(): PrismaClient {
   });
   const adapter = new PrismaPg(pool);
 
-  return new PrismaClient({
+  const client = new PrismaClient({
     adapter,
   });
+
+  return { client, pool };
 }
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+const prismaInstances = globalForPrisma.prisma ?? createPrismaClient();
+export const prisma = prismaInstances.client;
+export const prismaPool = prismaInstances.pool;
 
 if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
+  globalForPrisma.prisma = prismaInstances;
 }

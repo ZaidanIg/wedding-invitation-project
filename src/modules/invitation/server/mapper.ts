@@ -10,6 +10,8 @@
 import type { InvitationResponseDto, InvitationListItemDto } from './dto';
 
 function mapEntity(entity: Record<string, unknown>): Omit<InvitationResponseDto, 'guestCount'> & { guestCount?: number } {
+  if (!entity) return {} as any;
+
   // Reconstruct flat photoUrls from InvitationPhoto relation (type GALLERY)
   const photos = (entity.photos as Array<{ url: string; type: string; sortOrder: number }> | undefined) ?? [];
   const photoUrls = photos
@@ -80,6 +82,9 @@ function mapEntity(entity: Record<string, unknown>): Omit<InvitationResponseDto,
     quotes: (entity.quotes as string | null) ?? null,
     viewCount: (entity.viewCount as number) ?? 0,
     tier: (entity.tier as string) ?? 'DRAFT',
+    status: (entity.status as string) ?? 'DRAFT',
+    expiresAt: entity.expiresAt ? new Date(entity.expiresAt as string | Date).toISOString() : null,
+    deletedAt: entity.deletedAt ? new Date(entity.deletedAt as string | Date).toISOString() : null,
     // v1.2: isPaid REMOVED — derive from: tier !== 'DRAFT'
     aiRegenCount: (entity.aiRegenCount as number) ?? 0,
     createdAt,
@@ -96,7 +101,8 @@ function mapEntity(entity: Record<string, unknown>): Omit<InvitationResponseDto,
 }
 
 export const invitationMapper = {
-  toResponse(entity: Record<string, unknown>): InvitationResponseDto {
+  toResponse(entity: Record<string, unknown> | null): InvitationResponseDto {
+    if (!entity) return {} as any;
     const mapped = mapEntity(entity);
     const _count = entity._count as { guests?: number } | undefined;
     return {
@@ -105,7 +111,8 @@ export const invitationMapper = {
     };
   },
 
-  toListItem(entity: Record<string, unknown>): InvitationListItemDto {
+  toListItem(entity: Record<string, unknown> | null): InvitationListItemDto {
+    if (!entity) return {} as any;
     const mapped = mapEntity(entity);
     const _count = entity._count as { guests?: number } | undefined;
     return {
