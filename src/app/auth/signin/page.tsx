@@ -54,6 +54,24 @@ export default function SignInPage() {
     code: '',
   });
 
+  // Initial session restore
+  useEffect(() => {
+    const savedEmail = sessionStorage.getItem('auth_email');
+    const cooldownUntil = sessionStorage.getItem('cooldown_until');
+    
+    if (savedEmail) {
+      setFormData(prev => ({ ...prev, email: savedEmail }));
+    }
+    
+    if (cooldownUntil) {
+      const until = parseInt(cooldownUntil, 10);
+      const now = Date.now();
+      if (until > now) {
+        setCooldown(Math.ceil((until - now) / 1000));
+      }
+    }
+  }, []);
+
   // Cooldown timer effect
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -77,7 +95,7 @@ export default function SignInPage() {
           errorKey === 'OAuthNotLinked' ||
           errorKey.toLowerCase().includes('oauth')
         ) {
-          setError('Email Anda sudah terdaftar menggunakan Google. Silakan masuk dengan menekan tombol "Masuk dengan Google" di bawah.');
+          setError('Email Anda sudah terdaftar. Silakan masuk menggunakan kata sandi yang Anda buat sebelumnya.');
         } else if (errorKey === 'USER_NOT_FOUND') {
           setError('Akun dengan email ini tidak terdaftar. Silakan daftar terlebih dahulu.');
         } else if (errorKey === 'EMAIL_NOT_VERIFIED') {
@@ -153,6 +171,8 @@ export default function SignInPage() {
       } else {
         setSuccessMsg(data.message || 'Kode verifikasi berhasil dikirim! Silakan periksa email Anda.');
         setCooldown(60);
+        sessionStorage.setItem('auth_email', formData.email);
+        sessionStorage.setItem('cooldown_until', (Date.now() + 60 * 1000).toString());
       }
     } catch (err) {
       setError('Terjadi kesalahan saat mengirimkan kode verifikasi.');
@@ -162,6 +182,7 @@ export default function SignInPage() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (isLoading) return;
     setIsLoading(true);
     setError('');
     try {
@@ -174,6 +195,7 @@ export default function SignInPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
     setIsLoading(true);
     setError('');
     setSuccessMsg('');
@@ -224,7 +246,7 @@ export default function SignInPage() {
             errorCode === 'OAuthNotLinked' ||
             (typeof errorCode === 'string' && errorCode.toLowerCase().includes('oauth'))
           ) {
-            setError('Email ini sudah terdaftar menggunakan Google. Silakan masuk menggunakan tombol "Masuk dengan Google" di bawah.');
+            setError('Email Anda sudah terdaftar. Silakan masuk menggunakan kata sandi yang Anda buat sebelumnya.');
           } else {
             // Catch-all: jangan tampilkan error teknis seperti 'CallbackRouteError' ke user
             setError('Terjadi kesalahan saat masuk. Silakan coba lagi atau hubungi dukungan.');
@@ -266,19 +288,11 @@ export default function SignInPage() {
           return;
         }
 
-        // Auto login after successful registration
-        const loginRes = await signIn('credentials', {
-          redirect: false,
-          email: formData.email,
-          password: formData.password,
-        });
-
-        if (loginRes?.error) {
-          setError('Registrasi berhasil, tetapi gagal masuk otomatis. Silakan masuk secara manual.');
-          setIsLoading(false);
-        } else {
-          router.push('/dashboard');
-        }
+        // Auto redirect to login after successful registration
+        setIsLogin(true);
+        setFormData(prev => ({ ...prev, password: '', confirmPassword: '', code: '' }));
+        setSuccessMsg('Registrasi berhasil! Silakan masuk dengan email dan kata sandi Anda.');
+        setIsLoading(false);
       }
     } catch (err) {
       setError('Terjadi kesalahan yang tidak terduga.');
@@ -296,7 +310,7 @@ export default function SignInPage() {
         </div>
 
         {/* Card */}
-        <div className="relative bg-white/5 backdrop-blur-2xl rounded-3xl border border-white/10 p-8 shadow-2xl shadow-rose-500/5">
+        <div className="relative bg-white/5 backdrop-blur-2xl rounded-3xl border border-white/10 p-8 shadow-[0_0_50px_rgba(225,29,72,0.15)]">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex p-3 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 mb-4 shadow-lg shadow-rose-500/25">
