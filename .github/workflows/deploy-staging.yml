@@ -58,10 +58,17 @@ jobs:
         run: npm run type-check
 
       - name: 🗄️ Setup Test Database
-        run: npx dotenv-cli -e .env.test -- npx prisma db push --accept-data-loss
+        run: npx prisma db push --accept-data-loss
+        env:
+          DATABASE_URL: "postgresql://postgres:sahinaja@localhost:5435/sahinajadb"
 
       - name: 🧪 Run Unit Tests
         run: npm run test -- --passWithNoTests
+        env:
+          DATABASE_URL: "postgresql://postgres:sahinaja@localhost:5435/sahinajadb"
+          NEXTAUTH_SECRET: "ci-test-secret"
+          NEXTAUTH_URL: "http://localhost:3000"
+          NODE_ENV: "test"
 
       - name: 🔧 Install Vercel CLI
         run: npm install --global vercel@latest
