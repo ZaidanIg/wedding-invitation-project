@@ -393,7 +393,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
         </section>
 
         {/* Video Embed */}
-        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#1a2b23]" textColor="text-[#c5a059]" title="Wedding Video" />
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#1a2b23]" textColor="text-[#c5a059]" title="Video Pernikahan" />
 
         {/* Gallery */}
         <GallerySection
@@ -413,19 +413,19 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
           <section className="py-24 px-8 bg-white text-center">
              <AnimatedSection className="mb-12">
                 <Sparkles className="h-10 w-10 text-[#c5a059] mx-auto mb-6" />
-                <h2 className="text-3xl font-display font-bold text-[#1a2b23] mb-4">VIP Guest Experience</h2>
+                <h2 className="text-3xl font-display font-bold text-[#1a2b23] mb-4">Pengalaman Digital VIP</h2>
                 <p className="text-xs text-stone-400 max-w-sm mx-auto">Sistem manajemen tamu eksklusif untuk kemudahan registrasi dan personalisasi undangan Anda.</p>
              </AnimatedSection>
              
              <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
                 <div className="p-8 rounded-[2.5rem] bg-stone-50 border border-stone-100 text-left">
                    <QrCode className="h-8 w-8 text-[#c5a059] mb-4" />
-                   <h4 className="text-lg font-bold text-[#1a2b23] mb-2">Digital Check-in</h4>
+                   <h4 className="text-lg font-bold text-[#1a2b23] mb-2">Buku Tamu Digital</h4>
                    <p className="text-xs text-stone-500 leading-relaxed">Gunakan QR Code eksklusif Anda untuk registrasi cepat di lokasi acara. Praktis, modern, dan tanpa antrean buku tamu fisik.</p>
                 </div>
                 <div className="p-8 rounded-[2.5rem] bg-stone-50 border border-stone-100 text-left">
                    <Users className="h-8 w-8 text-[#c5a059] mb-4" />
-                   <h4 className="text-lg font-bold text-[#1a2b23] mb-2">Personalized Greeting</h4>
+                   <h4 className="text-lg font-bold text-[#1a2b23] mb-2">Penyambutan Personal</h4>
                    <p className="text-xs text-stone-500 leading-relaxed">Nama tamu Anda akan muncul secara personal di halaman pembuka, memberikan kesan penyambutan yang hangat dan eksklusif.</p>
                 </div>
              </div>
@@ -439,7 +439,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
         <section id="wishes" className="py-24 px-8 bg-stone-50">
            <div className="text-center mb-16">
              <MessageCircle className="h-10 w-10 text-[#c5a059] mx-auto mb-6 opacity-30" />
-             <h2 className="text-3xl font-display font-bold text-[#1a2b23] mb-4">RSVP & Wishes</h2>
+             <h2 className="text-3xl font-display font-bold text-[#1a2b23] mb-4">RSVP & Ucapan</h2>
              <p className="text-xs text-stone-400">Kehadiran dan doa restu Anda adalah kado terindah bagi kami.</p>
            </div>
            <WishesSection invitation={invitation} />

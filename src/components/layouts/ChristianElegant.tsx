@@ -74,7 +74,7 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
             <Heart className="text-rose-400 animate-heartbeat" fill="currentColor" size={40} />
           </div>
 
-          <p className="text-[10px] uppercase tracking-[0.5em] text-stone-400 mb-8 font-bold">God Joined Us</p>
+          <p className="text-[10px] uppercase tracking-[0.5em] text-stone-400 mb-8 font-bold">Tuhan Mempersatukan Kami</p>
           <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 mb-2 italic drop-shadow-sm leading-tight">{groomName}</h1>
           <span className="text-2xl font-serif italic text-rose-300 block my-3">&</span>
           <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 italic drop-shadow-sm leading-tight">{brideName}</h1>
@@ -171,7 +171,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
               <Heart className="text-rose-400 animate-heartbeat" fill="currentColor" size={40} />
             </div>
 
-            <p className="text-[10px] uppercase tracking-[0.5em] text-stone-400 mb-8 font-bold">God Joined Us</p>
+            <p className="text-[10px] uppercase tracking-[0.5em] text-stone-400 mb-8 font-bold">Tuhan Mempersatukan Kami</p>
             <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 mb-2 italic drop-shadow-sm leading-tight">{invitation.groomName}</h1>
             <span className="text-2xl font-serif italic text-rose-300 block my-3">&</span>
             <h1 className="text-4xl sm:text-5xl font-display font-bold text-stone-800 italic drop-shadow-sm leading-tight">{invitation.brideName}</h1>
@@ -214,7 +214,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
            
            <div className="relative z-10 text-white mt-auto pb-40">
               <AnimatedSection animation="up">
-                <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/70 mb-6">In God's Grace</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/70 mb-6">Atas Kasih Karunia Tuhan</p>
                 <h1 className="text-7xl font-display font-bold mb-6 drop-shadow-2xl italic leading-tight">
                   {invitation.groomName.split(' ')[0]} <br/>
                   <span className="text-rose-300 font-serif">&amp;</span> <br/>
@@ -240,11 +240,11 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
                 <BookOpen className="text-rose-300 opacity-60" size={32} />
               </div>
               <p className="text-stone-500 text-lg leading-relaxed italic mb-8 px-4 font-serif">
-                {invitation.quotes || '"Therefore what God has joined together, let no one separate."'}
+                {invitation.quotes || '"Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia."'}
               </p>
               <div className="flex items-center justify-center gap-6">
                  <div className="h-[1px] w-8 bg-rose-200" />
-                 <span className="text-xs font-black uppercase tracking-[0.3em] text-rose-400">Mark 10:9</span>
+                 <span className="text-xs font-black uppercase tracking-[0.3em] text-rose-400">Markus 10:9</span>
                  <div className="h-[1px] w-8 bg-rose-200" />
               </div>
            </AnimatedSection>
@@ -252,16 +252,16 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
 
         {/* Couple Details */}
         <section id="couple" className="py-32 px-8 bg-white text-center">
-           <AnimatedSection className="mb-20"><p className="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold">The Holy Union</p></AnimatedSection>
+           <AnimatedSection className="mb-20"><p className="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold">Penyatuan Suci</p></AnimatedSection>
            <div className="space-y-32">
               <AnimatedSection animation="left">
                  <div className="relative w-56 h-72 mx-auto mb-10 rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white rotate-[-3deg]">
                     <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" unoptimized />
                  </div>
                  <h3 className="text-4xl font-display font-bold text-stone-800 mb-2 italic">{invitation.groomName}</h3>
-                 <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] mb-4">The Groom</p>
+                 <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] mb-4">Mempelai Pria</p>
                  <p className="text-xs text-stone-400 leading-relaxed max-w-xs mx-auto italic">
-                   Son of {invitation.groomParents || 'Mr. & Mrs. Parents'}
+                   Putra dari {invitation.groomParents || 'Bapak & Ibu'}
                  </p>
               </AnimatedSection>
 
@@ -276,9 +276,9 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
                     <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" unoptimized />
                  </div>
                  <h3 className="text-4xl font-display font-bold text-stone-800 mb-2 italic">{invitation.brideName}</h3>
-                 <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] mb-4">The Bride</p>
+                 <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] mb-4">Mempelai Wanita</p>
                  <p className="text-xs text-stone-400 leading-relaxed max-w-xs mx-auto italic">
-                   Daughter of {invitation.brideParents || 'Mr. & Mrs. Parents'}
+                   Putri dari {invitation.brideParents || 'Bapak & Ibu'}
                  </p>
               </AnimatedSection>
            </div>
@@ -306,8 +306,8 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
         {/* Agenda */}
         <section className="py-32 px-8 bg-white relative">
           <div className="text-center mb-20">
-             <p className="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold mb-4">God's Appointment</p>
-             <h2 className="text-4xl font-display font-bold text-stone-800 italic">Wedding Event</h2>
+             <p className="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold mb-4">Rencana Indah Tuhan</p>
+             <h2 className="text-4xl font-display font-bold text-stone-800 italic">Acara Pernikahan</h2>
           </div>
 
           <AnimatedSection animation="scale" className="mb-20">
@@ -322,8 +322,8 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
           
           <div className="space-y-8">
              {(invitation.schedule || [
-               { id: '1', label: 'Holy Matrimony', time: invitation.eventTime, icon: 'heart' },
-               { id: '2', label: 'Wedding Reception', time: '18:00 - End', icon: 'utensils' }
+               { id: '1', label: 'Pemberkatan Nikah', time: invitation.eventTime, icon: 'heart' },
+               { id: '2', label: 'Resepsi Pernikahan', time: '18:00 - Selesai', icon: 'utensils' }
              ]).map((item: ScheduleItem, _idx: number) => (
                <AnimatedSection key={item.id} className="p-10 rounded-[3rem] bg-stone-50 border border-stone-100 hover:shadow-2xl transition-all duration-700 group">
                   <div className="flex justify-between items-start mb-10">
@@ -346,7 +346,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
         </section>
 
         {/* Video Embed */}
-        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#f8f7f4]" textColor="text-rose-400" title="Wedding Video" />
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#f8f7f4]" textColor="text-rose-400" title="Video Pernikahan" />
 
         {/* Gallery */}
         <GallerySection
@@ -354,7 +354,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
           bgColor="bg-[#faf9f6]"
           textColor="text-stone-800"
           borderColor="border-rose-300"
-          title="Cherished Moments"
+          title="Momen Bahagia"
         />
 
         {/* Ultimate: VIP Guest Management */}
@@ -370,18 +370,18 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
                   <div className="inline-flex p-6 rounded-[2.5rem] bg-rose-50 mb-10 shadow-2xl border border-rose-100">
                     <QrCode className="h-10 w-10 text-rose-400" />
                   </div>
-                  <h2 className="text-4xl font-display font-bold text-stone-800 mb-4 italic leading-tight">Digital Grace Access</h2>
-                  <p className="text-stone-400 text-[10px] uppercase tracking-widest mb-10 font-black">Ultimate Recognition</p>
+                  <h2 className="text-4xl font-display font-bold text-stone-800 mb-4 italic leading-tight">Akses Digital VIP</h2>
+                  <p className="text-stone-400 text-[10px] uppercase tracking-widest mb-10 font-black">Akses Utama / Eksklusif</p>
                   <p className="text-stone-400 text-xs mx-auto leading-relaxed px-6 italic">
-                    Ensuring a seamless welcome for our most honored guests through God's grace and modern excellence.
+                    Memastikan sambutan yang hangat dan mudah bagi para tamu kehormatan kami dengan pelayanan terbaik.
                   </p>
                 </AnimatedSection>
 
                 <div className="grid grid-cols-1 gap-8">
                    <div className="p-12 rounded-[3.5rem] bg-stone-50 border border-stone-100 flex flex-col items-center text-center shadow-xl group">
                       <QrCode className="h-16 w-16 text-rose-200 mb-10 group-hover:scale-110 transition-transform duration-700" />
-                      <h4 className="text-2xl font-display font-bold text-stone-800 mb-3 italic">Smart Digital Check-in</h4>
-                      <p className="text-xs text-stone-500 leading-relaxed mb-12 italic">Present your personalized seal for immediate entry into the celebration.</p>
+                      <h4 className="text-2xl font-display font-bold text-stone-800 mb-3 italic">Buku Tamu Digital</h4>
+                      <p className="text-xs text-stone-500 leading-relaxed mb-12 italic">Tunjukkan kode QR Anda untuk proses penerimaan tamu yang mudah.</p>
                       <div className="w-48 h-48 bg-white p-8 rounded-[3rem] shadow-inner flex items-center justify-center border border-rose-50">
                          <QrCode className="h-24 w-24 text-stone-100" />
                       </div>
@@ -389,8 +389,8 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
 
                    <div className="p-12 rounded-[3.5rem] bg-[#1c1c1c] text-white flex flex-col items-center text-center shadow-2xl ring-1 ring-white/10">
                       <Share2 className="h-12 w-12 text-rose-300 mb-10" />
-                      <h4 className="text-2xl font-display font-bold mb-3 italic">Personalized Invitation</h4>
-                      <p className="text-xs text-white/40 mb-12 leading-relaxed px-6 italic">Individualized digital experiences crafted uniquely for every guest on our list.</p>
+                      <h4 className="text-2xl font-display font-bold mb-3 italic">Undangan Personal</h4>
+                      <p className="text-xs text-white/40 mb-12 leading-relaxed px-6 italic">Tautan undangan digital yang dirancang secara khusus untuk setiap tamu kehormatan.</p>
                       <div className="px-8 py-4 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-rose-200 w-full truncate text-center">
                          sahinaja.com/u/alex-emily?to=The+Simpsons
                       </div>
@@ -408,8 +408,8 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
              <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
                 <MessageCircle className="text-rose-400" size={32} />
              </div>
-             <h2 className="text-4xl font-display font-bold text-stone-800 italic mb-4">Prayers & Wishes</h2>
-             <p className="text-[10px] text-stone-400 uppercase tracking-[0.3em] font-black">Blessings from the Heart</p>
+             <h2 className="text-4xl font-display font-bold text-stone-800 italic mb-4">Doa & Ucapan</h2>
+             <p className="text-[10px] text-stone-400 uppercase tracking-[0.3em] font-black">Doa Restu dari Hati</p>
            </div>
            <WishesSection invitation={invitation} />
         </section>
@@ -420,7 +420,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
           <AnimatedSection>
             <Heart className="mx-auto text-rose-300 mb-12 animate-heartbeat" fill="currentColor" size={32} />
             <p className="text-lg italic text-stone-400 mb-20 max-w-sm mx-auto px-6 font-serif leading-relaxed">
-              "And over all these virtues put on love, which binds them all together in perfect unity."
+              "Dan di atas semuanya itu: kenakanlah kasih, sebagai pengikat yang mempersatukan dan menyempurnakan."
             </p>
             <h3 className="text-6xl font-display font-bold text-stone-800 mb-6 italic leading-tight">
               {invitation.groomName.split(' ')[0]} <br/>

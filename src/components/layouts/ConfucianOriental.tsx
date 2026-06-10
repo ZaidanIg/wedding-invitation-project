@@ -229,7 +229,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
            <div className="relative z-10 mt-auto pb-40 text-[#8B0000]">
               <AnimatedSection animation="up">
                 <Scroll className="mx-auto text-[#8B0000] mb-8 opacity-60" size={56} />
-                <p className="text-[10px] uppercase tracking-[0.6em] mb-6 font-black italic">The Oriental Celebration</p>
+                <p className="text-[10px] uppercase tracking-[0.6em] mb-6 font-black italic">Perayaan Pernikahan</p>
                 <h1 className="text-7xl font-display font-bold mb-8 drop-shadow-sm leading-tight italic">
                   {invitation.groomName.split(' ')[0]} & {invitation.brideName.split(' ')[0]}
                 </h1>
@@ -311,7 +311,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
         {/* Couple Section */}
         <section id="couple" className="py-40 px-8 bg-white">
            <AnimatedSection className="text-center mb-24">
-             <p className="text-[10px] uppercase tracking-[0.5em] text-[#8B0000] font-black">Family Union</p>
+             <p className="text-[10px] uppercase tracking-[0.5em] text-[#8B0000] font-black">Penyatuan Kedua Keluarga</p>
            </AnimatedSection>
            <div className="space-y-40">
               <AnimatedSection animation="left" className="text-center relative">
@@ -323,7 +323,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                     </div>
                  </div>
                  <h3 className="text-4xl font-display font-bold text-[#8B0000] mb-3 italic">{invitation.groomName}</h3>
-                 <p className="text-[10px] font-black text-[#FFD700] bg-[#8B0000] px-6 py-2 inline-block rounded-full uppercase tracking-[0.4em] mb-6 shadow-xl">The Groom</p>
+                 <p className="text-[10px] font-black text-[#FFD700] bg-[#8B0000] px-6 py-2 inline-block rounded-full uppercase tracking-[0.4em] mb-6 shadow-xl">Mempelai Pria</p>
                  <p className="text-xs text-[#8B0000]/50 leading-relaxed max-w-xs mx-auto italic font-medium">
                    Putra Tercinta dari {invitation.groomParents || 'Bapak & Ibu Parents'}
                  </p>
@@ -342,7 +342,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                     </div>
                  </div>
                  <h3 className="text-4xl font-display font-bold text-[#8B0000] mb-3 italic">{invitation.brideName}</h3>
-                 <p className="text-[10px] font-black text-[#FFD700] bg-[#8B0000] px-6 py-2 inline-block rounded-full uppercase tracking-[0.4em] mb-6 shadow-xl">The Bride</p>
+                 <p className="text-[10px] font-black text-[#FFD700] bg-[#8B0000] px-6 py-2 inline-block rounded-full uppercase tracking-[0.4em] mb-6 shadow-xl">Mempelai Wanita</p>
                  <p className="text-xs text-[#8B0000]/50 leading-relaxed max-w-xs mx-auto italic font-medium">
                    Putri Tercinta dari {invitation.brideParents || 'Bapak & Ibu Parents'}
                  </p>
@@ -374,8 +374,8 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
           <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/chinese-lanterns.png')]" />
           <div className="text-center mb-24 relative z-10">
              <Scroll className="mx-auto text-[#FFD700] mb-8 drop-shadow-md animate-pulse" size={56} />
-             <p className="text-[10px] uppercase tracking-[0.5em] text-[#8B0000] font-black mb-4">Heavenly Appointment</p>
-             <h2 className="text-4xl font-display font-bold text-[#8B0000] italic leading-tight">Wedding Agenda</h2>
+             <p className="text-[10px] uppercase tracking-[0.5em] text-[#8B0000] font-black mb-4">Rencana Indah Surga</p>
+             <h2 className="text-4xl font-display font-bold text-[#8B0000] italic leading-tight">Agenda Pernikahan</h2>
           </div>
 
           <AnimatedSection animation="scale" className="mb-24 relative z-10">
@@ -390,8 +390,8 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
           
           <div className="grid grid-cols-1 gap-10 relative z-10">
              {(invitation.schedule || [
-               { id: '1', label: 'Holy Union Ceremony', time: invitation.eventTime, icon: 'heart' },
-               { id: '2', label: 'Grand Family Banquet', time: '18:00 - End', icon: 'utensils' }
+               { id: '1', label: 'Pemberkatan Nikah', time: invitation.eventTime, icon: 'heart' },
+               { id: '2', label: 'Resepsi Pernikahan', time: '18:00 - Selesai', icon: 'utensils' }
              ]).map((item: ScheduleItem, _idx: number) => (
                <AnimatedSection key={item.id} className="p-12 rounded-[4rem] bg-[#fffcf5] border border-[#8B0000]/5 hover:border-[#FFD700]/30 transition-all duration-700 group ring-1 ring-[#8B0000]/5">
                   <div className="flex justify-between items-start mb-12">
@@ -412,7 +412,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                        onClick={() => window.open(mapsUrl)}
                        className="w-full py-6 rounded-3xl bg-[#8B0000] text-[#FFD700] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-[#8B0000] border border-[#8B0000]/10 transition-all shadow-3xl"
                      >
-                       Locate Banquet
+                       Petunjuk Lokasi
                      </motion.button>
                   </div>
                </AnimatedSection>
@@ -421,7 +421,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
         </section>
 
         {/* Video Embed */}
-        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#fffcf9]" textColor="text-[#8B0000]" title="Wedding Video" />
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#fffcf9]" textColor="text-[#8B0000]" title="Video Pernikahan" />
 
         {/* Gallery Section */}
         <GallerySection
@@ -429,7 +429,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
           bgColor="bg-[#fffcf5]"
           textColor="text-[#8B0000]"
           borderColor="border-[#FFD700]"
-          title="Oriental Memories"
+          title="Momen Bahagia"
         />
 
         {/* Ultimate: VIP Oriental Management */}
@@ -445,10 +445,10 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                   <div className="inline-flex p-8 rounded-[3rem] bg-[#8B0000] shadow-3xl mb-10 border border-[#FFD700]/20 ring-4 ring-[#8B0000]/5">
                     <QrCode className="h-12 w-12 text-[#FFD700]" />
                   </div>
-                  <h2 className="text-4xl font-display font-bold text-[#8B0000] mb-6 italic leading-tight">Exclusive Digital Scroll</h2>
-                  <p className="text-[10px] uppercase tracking-[0.4em] text-[#8B0000]/40 font-black mb-10">The Ultimate Experience</p>
+                  <h2 className="text-4xl font-display font-bold text-[#8B0000] mb-6 italic leading-tight">Akses Digital VIP</h2>
+                  <p className="text-[10px] uppercase tracking-[0.4em] text-[#8B0000]/40 font-black mb-10">Akses Eksklusif</p>
                   <p className="text-[#8B0000]/50 text-xs mx-auto leading-relaxed px-8 italic font-medium">
-                    Ensuring a journey of honor and tradition for every distinguished guest through our digital excellence.
+                    Memastikan sambutan yang khidmat dan mudah bagi para tamu kehormatan melalui layanan digital kami.
                   </p>
                 </AnimatedSection>
 
@@ -457,14 +457,14 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                       <div className="w-56 h-56 bg-white p-10 rounded-[4rem] shadow-inner mb-12 flex items-center justify-center border border-[#8B0000]/5 group-hover:scale-105 transition-transform duration-700">
                          <QrCode className="h-28 w-28 text-[#8B0000]/10" />
                       </div>
-                      <h4 className="text-2xl font-display font-bold text-[#8B0000] mb-4 italic leading-tight">Digital Seal Check-in</h4>
-                      <p className="text-xs text-[#8B0000]/50 leading-relaxed italic font-medium">Seamless entrance with your unique imperial digital seal.</p>
+                      <h4 className="text-2xl font-display font-bold text-[#8B0000] mb-4 italic leading-tight">Buku Tamu Digital</h4>
+                      <p className="text-xs text-[#8B0000]/50 leading-relaxed italic font-medium">Tunjukkan kode QR Anda untuk proses penerimaan tamu yang mudah.</p>
                    </div>
 
                    <div className="p-12 rounded-[4rem] bg-[#8B0000] text-white flex flex-col items-center text-center shadow-3xl ring-1 ring-white/10">
                       <Users className="h-14 w-14 text-[#FFD700] mb-12 drop-shadow-md" />
-                      <h4 className="text-2xl font-display font-bold mb-4 italic leading-tight">Personal Imperial Invite</h4>
-                      <p className="text-xs text-white/40 mb-12 leading-relaxed px-8 italic">Every digital scroll is individualized to honor your specific presence.</p>
+                      <h4 className="text-2xl font-display font-bold mb-4 italic leading-tight">Undangan Personal</h4>
+                      <p className="text-xs text-white/40 mb-12 leading-relaxed px-8 italic">Tautan undangan digital yang dirancang secara khusus untuk setiap tamu kehormatan.</p>
                       <div className="w-full px-8 py-5 rounded-3xl bg-white/5 border border-white/10 text-[10px] font-mono text-[#FFD700] truncate shadow-inner text-center">
                          sahinaja.com/u/li-wei-meiling?to=The+Chen+Family
                       </div>
@@ -482,8 +482,8 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
              <div className="w-24 h-24 bg-[#8B0000] rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-3xl border border-[#FFD700]/20 rotate-45 group">
                <MessageCircle className="text-[#FFD700] -rotate-45 group-hover:scale-110 transition-transform" size={40} />
              </div>
-             <h2 className="text-4xl font-display font-bold text-[#8B0000] italic mb-6 leading-tight">Prayers & Good Fortune</h2>
-             <p className="text-[10px] text-[#8B0000]/40 uppercase tracking-[0.4em] font-black italic">Blessings from the Heart</p>
+             <h2 className="text-4xl font-display font-bold text-[#8B0000] italic mb-6 leading-tight">Doa & Ucapan</h2>
+             <p className="text-[10px] text-[#8B0000]/40 uppercase tracking-[0.4em] font-black italic">Doa Restu dari Hati</p>
            </div>
            <WishesSection invitation={invitation} />
         </section>
@@ -494,7 +494,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
           <AnimatedSection>
             <Scroll className="mx-auto text-[#FFD700] mb-16 opacity-60 animate-pulse" size={64} />
             <p className="text-lg italic text-white/60 mb-20 max-w-sm mx-auto px-10 font-serif leading-relaxed drop-shadow-lg">
-              "To be in one accord with one another is the beginning of all goodness. May your journey together be blessed with endless harmony and prosperity."
+              "Saling seia sekata adalah awal dari segala kebaikan. Semoga perjalanan hidup bersama ini diberkahi dengan keharmonisan dan kebahagiaan yang tiada akhir."
             </p>
             <h3 className="text-7xl font-display font-bold text-white mb-6 italic leading-tight drop-shadow-2xl">
               {invitation.groomName.split(' ')[0]} <br/>

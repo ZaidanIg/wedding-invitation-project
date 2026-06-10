@@ -54,7 +54,7 @@ const languageOptions = [
 const iconOptions = [
   { value: 'clock', label: 'Jam' },
   { value: 'heart', label: 'Hati' },
-  { value: 'glasses', label: 'Toast' },
+  { value: 'glasses', label: 'Gelas / Bersulang' },
   { value: 'calendar', label: 'Kalender' },
   { value: 'music', label: 'Musik' },
   { value: 'camera', label: 'Kamera' },
@@ -96,9 +96,9 @@ const steps = [
 ];
 
 const tiers = [
-  { id: 'BASIC', name: 'Minimalist Plan', price: 'Rp 75.000', description: 'Sangat cocok untuk undangan minimalis yang elegan.', features: ['Hapus Watermark', '2 Foto Mempelai', '3 Foto Galeri', 'Aktif Selamanya', 'Semua Tema Klasik'], color: 'text-blue-500', bg: 'bg-blue-50' },
-  { id: 'PREMIUM', name: 'Premium Plan', price: 'Rp 150.000', description: 'Fitur lengkap untuk momen pernikahan yang tak terlupakan.', features: ['6 Foto Galeri', 'Love Story Section', 'Countdown Timer', 'Musik Latar Kustom', 'Akses Tema Klasik'], color: 'text-rose-500', bg: 'bg-rose-50' },
-  { id: 'ULTIMATE', name: 'Ultimate Plan', price: 'Rp 250.000', description: 'Justifikasi termewah dengan fitur manajemen tamu modern.', features: ['Akses Tema Premium', 'Sistem QR Check-in', 'Link Per Tamu', 'WA Blast Integration', '10 Foto Galeri', 'Video Embed'], color: 'text-amber-500', bg: 'bg-amber-50/50' },
+  { id: 'BASIC', name: 'Paket Minimalis', price: 'Rp 75.000', description: 'Sangat cocok untuk undangan minimalis yang elegan.', features: ['Hapus Watermark', '2 Foto Mempelai', '3 Foto Galeri', 'Aktif Selamanya', 'Semua Tema Klasik'], color: 'text-blue-500', bg: 'bg-blue-50' },
+  { id: 'PREMIUM', name: 'Paket Premium', price: 'Rp 150.000', description: 'Fitur lengkap untuk momen pernikahan yang tak terlupakan.', features: ['6 Foto Galeri', 'Kisah Cinta (Love Story)', 'Hitung Mundur (Countdown)', 'Musik Latar Kustom', 'Akses Tema Klasik'], color: 'text-rose-500', bg: 'bg-rose-50' },
+  { id: 'ULTIMATE', name: 'Paket Ultimate', price: 'Rp 250.000', description: 'Justifikasi termewah dengan fitur manajemen tamu modern.', features: ['Akses Tema Premium', 'Sistem QR Check-in', 'Link Per Tamu', 'Integrasi WhatsApp Blast', '10 Foto Galeri', 'Sematkan Video'], color: 'text-amber-500', bg: 'bg-amber-50/50' },
 ];
 
 export default function InvitationForm() {
@@ -442,7 +442,7 @@ export default function InvitationForm() {
                                   <button className="absolute top-3 right-3 p-2 bg-white rounded-full text-red-500 shadow-xl" onClick={() => store.setHeaderPhotoUrl('')}><Trash2 className="h-4 w-4" /></button>
                                 </div>
                               ) : (
-                                <UploadDropzone endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-wider px-4 py-2 rounded-xl w-auto max-w-full truncate', container: 'p-6 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setHeaderPhotoUrl(res[0].ufsUrl); }} />
+                                <UploadDropzone accept="image/*" onUploadError={(err) => showToast("error", `Gagal mengunggah foto sampul: ${err.message}`)} endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-wider px-4 py-2 rounded-xl w-auto max-w-full truncate', container: 'p-6 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setHeaderPhotoUrl(res[0].ufsUrl); }} />
                               )}
                             </div>
                           )}
@@ -459,7 +459,7 @@ export default function InvitationForm() {
                                   <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setGroomPhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button>
                                 </div>
                               ) : (
-                                <UploadDropzone endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-3 py-1.5 rounded-lg w-auto max-w-full truncate', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setGroomPhotoUrl(res[0].ufsUrl); }} />
+                                <UploadDropzone accept="image/*" onUploadError={(err) => showToast("error", `Gagal mengunggah foto mempelai pria: ${err.message}`)} endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-3 py-1.5 rounded-lg w-auto max-w-full truncate', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setGroomPhotoUrl(res[0].ufsUrl); }} />
                               )}
                              </div>
                           </div>
@@ -481,7 +481,7 @@ export default function InvitationForm() {
                                   <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setBridePhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button>
                                 </div>
                               ) : (
-                                <UploadDropzone endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-3 py-1.5 rounded-lg w-auto max-w-full truncate', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setBridePhotoUrl(res[0].ufsUrl); }} />
+                                <UploadDropzone accept="image/*" onUploadError={(err) => showToast("error", `Gagal mengunggah foto mempelai wanita: ${err.message}`)} endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[9px] px-3 py-1.5 rounded-lg w-auto max-w-full truncate', container: 'p-2 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res?.[0]) store.setBridePhotoUrl(res[0].ufsUrl); }} />
                               )}
                              </div>
                           </div>
@@ -573,7 +573,7 @@ export default function InvitationForm() {
                                         </div>
                                       ) : (
                                         <div className="w-full">
-                                          <UploadDropzone endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-xs px-4 py-1.5 rounded-full w-auto max-w-[120px] truncate mx-auto', container: 'py-6 px-4 border-none bg-transparent flex flex-col items-center justify-center gap-2 w-full h-auto m-0' }} onClientUploadComplete={(res) => { if (res?.[0]) { const newStory = [...store.eventDetails.loveStory]; newStory[index].photoUrl = res[0].ufsUrl; store.setEventDetails({ ...store.eventDetails, loveStory: newStory }); } }} />
+                                          <UploadDropzone accept="image/*" onUploadError={(err) => showToast("error", `Gagal mengunggah foto momen kisah cinta: ${err.message}`)} endpoint="weddingPhotos" content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-xs px-4 py-1.5 rounded-full w-auto max-w-[120px] truncate mx-auto', container: 'py-6 px-4 border-none bg-transparent flex flex-col items-center justify-center gap-2 w-full h-auto m-0' }} onClientUploadComplete={(res) => { if (res?.[0]) { const newStory = [...store.eventDetails.loveStory]; newStory[index].photoUrl = res[0].ufsUrl; store.setEventDetails({ ...store.eventDetails, loveStory: newStory }); } }} />
                                         </div>
                                       )}
                                     </div>
@@ -640,7 +640,7 @@ export default function InvitationForm() {
                               </div>
                             ) : (
                               <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] p-8 rounded-3xl">
-                                <UploadDropzone endpoint="weddingPhotos" multiple={true} content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl w-auto max-w-full truncate', container: 'p-4 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res) res.forEach(f => store.addPhotoUrl(f.ufsUrl)); }} />
+                                <UploadDropzone accept="image/*" onUploadError={(err) => showToast("error", `Gagal mengunggah galeri: ${err.message}`)} endpoint="weddingPhotos" multiple={true} content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl w-auto max-w-full truncate', container: 'p-4 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res) res.forEach(f => store.addPhotoUrl(f.ufsUrl)); }} />
                               </div>
                             )}
                               <div className="grid grid-cols-4 gap-2 mt-4">{store.photoUrls.map((u, i) => (<div key={i} className="relative aspect-square rounded-xl overflow-hidden border shadow-sm group"><Image src={u} alt="G" fill className="object-cover group-hover:scale-110 transition-transform" sizes="(max-width: 768px) 25vw, 15vw" /><button className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" onClick={() => store.removePhotoUrl(u)}><Trash2 className="h-3.5 w-3.5 text-white" /></button></div>))}</div>
@@ -698,6 +698,8 @@ export default function InvitationForm() {
                                 ) : (
                                   <div className="bg-[#fcfbf8] border-2 border-dashed border-[#eceae4] rounded-2xl overflow-hidden">
                                     <UploadDropzone
+                                      accept="audio/*"
+                                      maxSize={16 * 1024 * 1024}
                                       endpoint="weddingMusic"
                                       appearance={{ button: 'bg-rose-500 text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl w-auto max-w-full truncate', container: 'p-6 border-none bg-transparent', label: 'text-stone-500 text-xs', allowedContent: 'text-stone-400 text-[10px]' }}
                                       content={{ button: 'Unggah Musik', label: 'Seret file audio ke sini, atau klik', allowedContent: 'MP3, WAV, AAC — Maks 16 MB' }}

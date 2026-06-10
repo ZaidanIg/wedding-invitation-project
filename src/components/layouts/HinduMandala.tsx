@@ -354,7 +354,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
                       onClick={() => window.open(mapsUrl)}
                       className="w-full py-6 rounded-[2.5rem] bg-white border border-amber-200 text-[10px] font-black uppercase tracking-[0.3em] text-amber-900 hover:bg-amber-900 hover:text-white transition-all shadow-2xl"
                     >
-                      Locate Venue
+                      Petunjuk Lokasi
                     </motion.button>
                   </div>
                </AnimatedSection>
@@ -363,7 +363,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
         </section>
 
         {/* Video Embed */}
-        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#fff8f0]" textColor="text-[#d4af37]" title="Wedding Video" />
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#fff8f0]" textColor="text-[#d4af37]" title="Video Pernikahan" />
 
         {/* Gallery Section */}
         <GallerySection
@@ -371,7 +371,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
           bgColor="bg-[#fffcf5]"
           textColor="text-amber-900"
           borderColor="border-amber-600"
-          title="Sacred Moments"
+          title="Momen Bahagia"
         />
 
         {/* Ultimate: VIP Mandala Experience */}
@@ -387,18 +387,18 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
                   <div className="inline-flex p-8 rounded-[3rem] bg-amber-50 mb-10 border border-amber-100 shadow-2xl ring-1 ring-amber-900/5">
                     <QrCode className="h-12 w-12 text-amber-600" />
                   </div>
-                  <h2 className="text-4xl font-display font-bold text-amber-900 mb-6 italic leading-tight">VIP Digital Mandala</h2>
-                  <p className="text-amber-700/60 text-[10px] uppercase tracking-[0.4em] mb-10 font-black">Ultimate Enlightenment</p>
+                  <h2 className="text-4xl font-display font-bold text-amber-900 mb-6 italic leading-tight">Akses Digital VIP</h2>
+                  <p className="text-amber-700/60 text-[10px] uppercase tracking-[0.4em] mb-10 font-black">Akses Eksklusif</p>
                   <p className="text-amber-900/40 text-xs mx-auto leading-relaxed px-8 italic font-medium">
-                    Ensuring every distinguished guest is welcomed with the highest honor through our integrated digital experience.
+                    Memastikan sambutan hangat dengan penghormatan tertinggi bagi para tamu kehormatan melalui layanan digital kami.
                   </p>
                 </AnimatedSection>
 
                 <div className="grid grid-cols-1 gap-10">
                    <div className="p-12 rounded-[4rem] bg-[#fffcf5] border border-amber-100 flex flex-col items-center text-center shadow-2xl group ring-1 ring-amber-900/5">
                       <QrCode className="h-20 w-20 text-amber-400 mb-12 group-hover:scale-110 transition-transform duration-700" />
-                      <h4 className="text-2xl font-display font-bold text-amber-900 mb-4 italic leading-tight">Digital RSVP Pass</h4>
-                      <p className="text-xs text-amber-900/50 leading-relaxed mb-12 italic font-medium px-4">Seamless entrance with your unique digital mandala seal.</p>
+                      <h4 className="text-2xl font-display font-bold text-amber-900 mb-4 italic leading-tight">Buku Tamu Digital</h4>
+                      <p className="text-xs text-amber-900/50 leading-relaxed mb-12 italic font-medium px-4">Tunjukkan kode QR Anda untuk kemudahan pengisian buku tamu.</p>
                       <div className="w-56 h-56 bg-white p-10 rounded-[3.5rem] shadow-inner flex items-center justify-center border border-amber-50 ring-1 ring-amber-900/5">
                          <QrCode className="h-28 w-28 text-stone-100" />
                       </div>
@@ -406,8 +406,8 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
 
                    <div className="p-12 rounded-[4rem] bg-amber-900 text-white flex flex-col items-center text-center shadow-3xl ring-1 ring-white/10">
                       <Users className="h-14 w-14 text-amber-400 mb-12" />
-                      <h4 className="text-2xl font-display font-bold mb-4 italic leading-tight">Exclusive Guest Recognition</h4>
-                      <p className="text-xs text-white/50 leading-relaxed mb-12 px-8 italic">Every digital invitation is uniquely crafted to reflect your importance to us.</p>
+                      <h4 className="text-2xl font-display font-bold mb-4 italic leading-tight">Undangan Personal</h4>
+                      <p className="text-xs text-white/50 leading-relaxed mb-12 px-8 italic">Tautan undangan digital yang dirancang secara khusus untuk setiap tamu kehormatan.</p>
                       <div className="w-full px-8 py-5 rounded-3xl bg-white/5 border border-white/10 text-[10px] font-mono text-amber-200 truncate shadow-inner">
                          sahinaja.com/u/arya-shanti?to=The+Royal+Family
                       </div>
@@ -425,7 +425,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
              <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-2xl border border-amber-100 ring-1 ring-amber-900/5">
                <MessageCircle className="text-amber-600" size={40} />
              </div>
-             <h2 className="text-4xl font-display font-bold text-amber-900 italic mb-6 leading-tight">Blessings & Prayers</h2>
+             <h2 className="text-4xl font-display font-bold text-amber-900 italic mb-6 leading-tight">Doa & Ucapan</h2>
              <p className="text-[10px] text-amber-700 uppercase tracking-[0.4em] font-black italic">Doa dari Sahabat & Keluarga</p>
            </div>
            <WishesSection invitation={invitation} />
@@ -437,7 +437,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
           <AnimatedSection>
             <Flower2 className="mx-auto text-amber-600 mb-12 animate-spin-slow opacity-80" size={64} />
             <p className="text-lg italic text-amber-900/50 mb-20 max-w-sm mx-auto px-10 font-serif leading-relaxed drop-shadow-sm">
-              "When you find a partner who helps you focus on your growth, cherish that person. Marriage is a journey of two souls merging into one divine purpose."
+              "Ketika Anda menemukan pasangan yang mendukung perkembangan hidup Anda, hargailah orang itu. Pernikahan adalah perjalanan dua jiwa yang menyatu dalam satu tujuan suci."
             </p>
             <h3 className="text-6xl font-display font-bold text-amber-900 mb-6 italic leading-tight">
               {invitation.groomName.split(' ')[0]} <br/>

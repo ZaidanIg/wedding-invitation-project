@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { createHash } from 'crypto';
 // ============================================================
 // AI Service — Groq LLM integration for invitation generation
 // ============================================================
@@ -17,14 +18,93 @@ const AI_LIMITS = {
   ULTIMATE: 30,
 };
 
-function getFallbackTemplate(groom: string, bride: string): GeneratedInvitation {
-  return {
-    greeting: "Dengan memohon rahmat dan ridho Tuhan Yang Maha Esa,",
-    mainBody: `Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir untuk memberikan doa restu pada pernikahan ${groom} & ${bride}.`,
-    eventInfo: "Detail waktu dan lokasi tercantum pada bagian informasi acara.",
-    closing: "Atas kehadiran dan doa restunya, kami ucapkan terima kasih.",
-    fullText: `Dengan memohon rahmat dan ridho Tuhan Yang Maha Esa,\nMerupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir untuk memberikan doa restu pada pernikahan ${groom} & ${bride}.\nDetail waktu dan lokasi tercantum pada bagian informasi acara.\nAtas kehadiran dan doa restunya, kami ucapkan terima kasih.`
-  };
+function getLocalTemplate(input: {
+  groomName: string;
+  brideName: string;
+  eventDate: string;
+  eventTime: string;
+  venueName: string;
+  venueAddress: string;
+}, tone: string, language: string): GeneratedInvitation {
+  const groom = input.groomName;
+  const bride = input.brideName;
+  const venue = input.venueName;
+  const dateStr = input.eventDate;
+  const timeStr = input.eventTime;
+
+  if (language === 'id') {
+    switch (tone) {
+      case 'romantic':
+        return {
+          greeting: "Dengan penuh rasa syukur dan cinta kasih,",
+          mainBody: `Tuhan telah mempersatukan dua hati kami dalam ikatan suci pernikahan. Merupakan suatu kehormatan bagi kami apabila Anda berkenan hadir untuk memberikan doa restu pada hari bahagia pernikahan ${groom} & ${bride}.`,
+          eventInfo: `Pernikahan diselenggarakan pada hari ${dateStr} pukul ${timeStr} bertempat di ${venue}, ${input.venueAddress}.`,
+          closing: "Kehadiran dan doa restu Anda adalah kado terindah dalam perjalanan cinta kami. Terima kasih.",
+          fullText: `Dengan penuh rasa syukur dan cinta kasih,\nTuhan telah mempersatukan dua hati kami dalam ikatan suci pernikahan. Merupakan suatu kehormatan bagi kami apabila Anda berkenan hadir untuk memberikan doa restu pada hari bahagia pernikahan ${groom} & ${bride}.\nPernikahan diselenggarakan pada hari ${dateStr} pukul ${timeStr} bertempat di ${venue}, ${input.venueAddress}.\nKehadiran dan doa restu Anda adalah kado terindah dalam perjalanan cinta kami. Terima kasih.`
+        };
+      case 'modern':
+        return {
+          greeting: "Awal dari sebuah lembaran hidup baru untuk melangkah bersama,",
+          mainBody: `Kami mengundang Anda untuk merayakan cinta dan awal komitmen baru kami. Kehadiran Anda pada hari pernikahan ${groom} & ${bride} akan melengkapi kebahagiaan kami.`,
+          eventInfo: `Pernikahan diselenggarakan pada hari ${dateStr} pukul ${timeStr} bertempat di ${venue}, ${input.venueAddress}.`,
+          closing: "Terima kasih atas segala dukungan hangat dan doa tulus yang Anda berikan.",
+          fullText: `Awal dari sebuah lembaran hidup baru untuk melangkah bersama,\nKami mengundang Anda untuk merayakan cinta dan awal komitmen baru kami. Kehadiran Anda pada hari pernikahan ${groom} & ${bride} akan melengkapi kebahagiaan kami.\nPernikahan diselenggarakan pada hari ${dateStr} pukul ${timeStr} bertempat di ${venue}, ${input.venueAddress}.\nTerima kasih atas segala dukungan hangat dan doa tulus yang Anda berikan.`
+        };
+      case 'playful':
+        return {
+          greeting: "Kabar gembira! Hari yang ditunggu-tunggu akhirnya tiba,",
+          mainBody: `Kami, ${groom} & ${bride}, akan meresmikan ikatan janji suci kami! Kami sangat menantikan kehadiran Anda untuk ikut merayakan, bersenang-senang, dan berbagi tawa bersama di hari istimewa kami.`,
+          eventInfo: `Acara diadakan pada hari ${dateStr} pukul ${timeStr} bertempat di ${venue}, ${input.venueAddress}.`,
+          closing: "Sampai jumpa di sana! Pastikan Anda membawa senyuman terbaik Anda.",
+          fullText: `Kabar gembira! Hari yang ditunggu-tunggu akhirnya tiba,\nKami, ${groom} & ${bride}, akan meresmikan ikatan janji suci kami! Kami sangat menantikan kehadiran Anda untuk ikut merayakan, bersenang-senang, dan berbagi tawa bersama di hari istimewa kami.\nAcara diadakan pada hari ${dateStr} pukul ${timeStr} bertempat di ${venue}, ${input.venueAddress}.\nSampai jumpa di sana! Pastikan Anda membawa senyuman terbaik Anda.`
+        };
+      case 'formal':
+      default:
+        return {
+          greeting: "Dengan memohon rahmat dan ridho Tuhan Yang Maha Esa,",
+          mainBody: `Kami bermaksud menyelenggarakan resepsi pernikahan putra-putri kami. Merupakan suatu kehormatan dan kebahagiaan apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu kepada kedua mempelai ${groom} & ${bride}.`,
+          eventInfo: `Acara diselenggarakan pada hari ${dateStr} pukul ${timeStr} bertempat di ${venue}, ${input.venueAddress}.`,
+          closing: "Atas kehadiran serta doa restunya, kami ucapkan terima kasih yang sebesar-besarnya.",
+          fullText: `Dengan memohon rahmat dan ridho Tuhan Yang Maha Esa,\nKami bermaksud menyelenggarakan resepsi pernikahan putra-putri kami. Merupakan suatu kehormatan dan kebahagiaan apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu kepada kedua mempelai ${groom} & ${bride}.\nAcara diselenggarakan pada hari ${dateStr} pukul ${timeStr} bertempat di ${venue}, ${input.venueAddress}.\nAtas kehadiran serta doa restunya, kami ucapkan terima kasih yang sebesar-besarnya.`
+        };
+    }
+  } else {
+    switch (tone) {
+      case 'romantic':
+        return {
+          greeting: "Love has united our hearts into a sacred promise,",
+          mainBody: `We invite you to share our joy as we exchange our vows. Your presence at the wedding ceremony of ${groom} & ${bride} will make our day truly unforgettable.`,
+          eventInfo: `The wedding will be held on ${dateStr} at ${timeStr} at ${venue}, ${input.venueAddress}.`,
+          closing: "Your blessings and warm wishes are the greatest gift we could ask for.",
+          fullText: `Love has united our hearts into a sacred promise,\nWe invite you to share our joy as we exchange our vows. Your presence at the wedding ceremony of ${groom} & ${bride} will make our day truly unforgettable.\nThe wedding will be held on ${dateStr} at ${timeStr} at ${venue}, ${input.venueAddress}.\nYour blessings and warm wishes are the greatest gift we could ask for.`
+        };
+      case 'modern':
+        return {
+          greeting: "A new beginning, a lifetime journey together,",
+          mainBody: `Please join us as we, ${groom} & ${bride}, celebrate our love and commitment. Your support and presence on our special day would mean the world to us.`,
+          eventInfo: `To be held on ${dateStr} at ${timeStr} at ${venue}, ${input.venueAddress}.`,
+          closing: "We look forward to celebrating this joyful beginning with you.",
+          fullText: `A new beginning, a lifetime journey together,\nPlease join us as we, ${groom} & ${bride}, celebrate our love and commitment. Your support and presence on our special day would mean the world to us.\nTo be held on ${dateStr} at ${timeStr} at ${venue}, ${input.venueAddress}.\nWe look forward to celebrating this joyful beginning with you.`
+        };
+      case 'playful':
+        return {
+          greeting: "The wait is over, we are finally tying the knot!",
+          mainBody: `Get ready to celebrate with us as ${groom} & ${bride} start our grand adventure! We can't wait to share laughs, drinks, and happy memories with you on our big day.`,
+          eventInfo: `Join the celebration on ${dateStr} at ${timeStr} at ${venue}, ${input.venueAddress}.`,
+          closing: "See you there! Make sure to put on your dancing shoes.",
+          fullText: `The wait is over, we are finally tying the knot!\nGet ready to celebrate with us as ${groom} & ${bride} start our grand adventure! We can't wait to share laughs, drinks, and happy memories with you on our big day.\nJoin the celebration on ${dateStr} at ${timeStr} at ${venue}, ${input.venueAddress}.\nSee you there! Make sure to put on your dancing shoes.`
+        };
+      case 'formal':
+      default:
+        return {
+          greeting: "Together with our families, we cordially invite you,",
+          mainBody: `To celebrate the marriage of ${groom} & ${bride}. We would be honored by your presence and blessings as we embark on this new chapter of our lives.`,
+          eventInfo: `The ceremony will commence on ${dateStr} at ${timeStr} at ${venue}, ${input.venueAddress}.`,
+          closing: "Thank you for your kind support and wishes. We hope to see you there.",
+          fullText: `Together with our families, we cordially invite you,\nTo celebrate the marriage of ${groom} & ${bride}. We would be honored by your presence and blessings as we embark on this new chapter of our lives.\nThe ceremony will commence on ${dateStr} at ${timeStr} at ${venue}, ${input.venueAddress}.\nThank you for your kind support and wishes. We hope to see you there.`
+        };
+    }
+  }
 }
 
 const groq = new Groq({
@@ -45,7 +125,7 @@ function formatZodError(error: z.ZodError | Error | unknown): string {
 
 function buildSystemPrompt(tone: string, language: string): string {
   const lang = language === 'id' 
-    ? 'Bahasa Indonesia, culturally appropriate.' 
+    ? 'Bahasa Indonesia, culturally appropriate. Use Indonesian wedding terms like "Mempelai Pria", "Mempelai Wanita", "Kedua Mempelai", "Akad Nikah", "Resepsi", etc. Do NOT use English terms like "Groom", "Bride", "Wedding", "Save the Date", "Rundown" in the Indonesian text.' 
     : 'English, elegant/modern.';
   
   const tones: Record<string, string> = {
@@ -79,8 +159,15 @@ function buildUserPrompt(input: {
   venueName: string;
   venueAddress: string;
   additionalNotes?: string;
-}): string {
+}, language: string): string {
   const note = input.additionalNotes ? `\nInstructions: ${input.additionalNotes}` : '';
+  if (language === 'id') {
+    return `Pasangan: Mempelai Pria ${input.groomName} & Mempelai Wanita ${input.brideName}.
+Acara: Tanggal ${input.eventDate} pukul ${input.eventTime}.
+Lokasi: ${input.venueName}, ${input.venueAddress}.${note}
+
+Output JSON only.`;
+  }
   return `Couple: Groom ${input.groomName} & Bride ${input.brideName}.
 Event: ${input.eventDate} @ ${input.eventTime}.
 Venue: ${input.venueName}, ${input.venueAddress}.${note}
@@ -129,7 +216,24 @@ export const aiService = {
     }
     const input = parsed.data;
 
-    // Check user limits
+    // 1. Calculate input hash for caching
+    const hashData = `${input.tone}:${input.language}:${input.groomName}:${input.brideName}:${input.eventDate}:${input.eventTime}:${input.venueName}:${input.venueAddress}:${input.additionalNotes || ''}`;
+    const hash = createHash('sha256').update(hashData).digest('hex');
+
+    // 2. Check cache first
+    try {
+      const cached = await prisma.aiCache.findUnique({
+        where: { hash },
+      });
+      if (cached) {
+        console.log(`[AI Service] Cache hit for hash: ${hash}`);
+        return cached.response as unknown as GeneratedInvitation;
+      }
+    } catch (cacheError) {
+      console.error('[AI Service] Failed to read from cache:', cacheError);
+    }
+
+    // 3. Check user limits
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { role: true },
@@ -139,31 +243,52 @@ export const aiService = {
       throw new NotFoundError('User not found');
     }
 
-    // Check invitation AI regen count if invitationId is provided
-    if (input.invitationId) {
-      const invitation = await prisma.invitation.findUnique({
-        where: { id: input.invitationId },
-        select: { tier: true, aiRegenCount: true },
-      });
+    let quotaExhausted = false;
 
-      if (invitation) {
-        const tier = invitation.tier as keyof typeof AI_LIMITS;
-        const maxLimit = AI_LIMITS[tier] || AI_LIMITS.DRAFT;
-        
-        if (invitation.aiRegenCount >= maxLimit) {
-          throw new ValidationError(`Batas regenerasi teks AI untuk paket ${tier} telah habis (Maks ${maxLimit}x). Silakan upgrade paket Anda.`);
+    // Check user limits if not an admin
+    if (user.role !== 'ADMIN') {
+      // Check invitation AI regen count if invitationId is provided
+      if (input.invitationId) {
+        const invitation = await prisma.invitation.findUnique({
+          where: { id: input.invitationId },
+          select: { tier: true, aiRegenCount: true },
+        });
+
+        if (invitation) {
+          const tier = invitation.tier as keyof typeof AI_LIMITS;
+          const maxLimit = AI_LIMITS[tier] || AI_LIMITS.DRAFT;
+          
+          if (invitation.aiRegenCount >= maxLimit) {
+            quotaExhausted = true;
+          }
         }
-      }
-    } else {
-      // Unsaved invitation: limit to 2 per day globally for the user
-      if (!checkUserDailyAiLimit(userId, 2)) {
-        throw new ValidationError("Batas uji coba AI tanpa menyimpan (2x/hari) telah habis. Silakan simpan undangan ini sebagai Draf terlebih dahulu.");
+      } else {
+        // Unsaved invitation: limit to 2 per day globally for the user
+        if (!checkUserDailyAiLimit(userId, 2)) {
+          quotaExhausted = true;
+        }
       }
     }
 
-    // Call AI with Fallback
+    // If quota is exhausted, serve local template instead of blocking
+    if (quotaExhausted) {
+      console.log(`[AI Service] Quota exhausted for user ${userId}, serving local template.`);
+      const generated = getLocalTemplate(input, input.tone, input.language);
+      
+      try {
+        await prisma.aiCache.create({
+          data: { hash, response: generated as any },
+        });
+      } catch (cacheWriteError) {
+        console.error('[AI Service] Failed to write local template to cache:', cacheWriteError);
+      }
+
+      return generated;
+    }
+
+    // 4. Call AI with Fallback
     const systemPrompt = buildSystemPrompt(input.tone, input.language);
-    const userPrompt = buildUserPrompt(input);
+    const userPrompt = buildUserPrompt(input, input.language);
 
     let generated: GeneratedInvitation;
 
@@ -185,11 +310,27 @@ export const aiService = {
       }
 
       generated = parseAiResponse(content);
+
+      // Save to cache
+      try {
+        await prisma.aiCache.create({
+          data: { hash, response: generated as any },
+        });
+      } catch (cacheWriteError) {
+        console.error('[AI Service] Failed to write response to cache:', cacheWriteError);
+      }
     } catch (error) {
       console.error('[AI Service] Groq API failed, using fallback:', error);
-      generated = getFallbackTemplate(input.groomName, input.brideName);
-      // We also add a special flag so frontend knows it's a fallback, though optional.
-      // (generated as any)._isFallback = true;
+      generated = getLocalTemplate(input, input.tone, input.language);
+
+      // Save fallback to cache
+      try {
+        await prisma.aiCache.create({
+          data: { hash, response: generated as any },
+        });
+      } catch (cacheWriteError) {
+        console.error('[AI Service] Failed to write fallback to cache:', cacheWriteError);
+      }
     }
 
     // On successful generation (including fallback), increment AI count

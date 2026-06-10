@@ -477,3 +477,14 @@ model AuditLog {
   @@index([entityId])
   @@index([action])
 }
+
+// ── AI Generation Cache ───────────────────────────────────────
+model AiCache {
+  id        String   @id @default(cuid())
+  hash      String   @unique
+  response  Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([hash])
+}

@@ -80,7 +80,7 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
         <div className="absolute top-32 right-4 opacity-20 animate-float-delayed"><FloralAccent /></div>
 
         <div className="relative z-10 text-center pb-16 px-6">
-          <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-blue-200/80 mb-2 animate-fade-in-down">The Wedding of</p>
+          <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-blue-200/80 mb-2 animate-fade-in-down">Pernikahan</p>
           <h1 className="animate-fade-in-up" style={{ animationDelay: '300ms', animationFillMode: 'both' }}>
             <span className="block text-4xl sm:text-6xl font-display font-bold text-white drop-shadow-lg">{invitation.groomName}</span>
             <span className="block text-2xl sm:text-3xl font-display italic font-normal text-blue-200 my-2">&</span>
@@ -201,7 +201,7 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
 
       {/* Timeline */}
       <section className="py-14 px-8 bg-[#e8f0fe]">
-        <AnimatedSection><h2 className="text-2xl font-display font-bold text-blue-800 text-center mb-10">The Wedding Program</h2></AnimatedSection>
+        <AnimatedSection><h2 className="text-2xl font-display font-bold text-blue-800 text-center mb-10">Susunan Acara</h2></AnimatedSection>
         <div className="max-w-xs mx-auto space-y-0">
           {invitation.schedule && invitation.schedule.length > 0 ? (
             invitation.schedule.map((item, idx) => (
@@ -270,10 +270,10 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
         bgColor="bg-[#e8f0fe]"
         textColor="text-blue-800"
         borderColor="border-blue-200"
-        title="Gallery"
+        title="Galeri Foto"
       />
 
-      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-slate-900" textColor="text-white" title="Our Story" />
+      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-slate-900" textColor="text-white" title="Kisah Kami" />
 
       {/* Quotes */}
       <QuotesSection text={invitation.quotes || ''} bgColor="bg-slate-50" textColor="text-blue-900" />

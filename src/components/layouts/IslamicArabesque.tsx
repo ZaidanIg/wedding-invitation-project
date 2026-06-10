@@ -205,10 +205,10 @@ export default function IslamicArabesque({ invitation, isPreview = false }: { in
           bgColor="bg-[#f0fdfa]"
           textColor="text-[#0f766e]"
           borderColor="border-[#2dd4bf]"
-          title="Our Moments"
+          title="Momen Bahagia"
         />
 
-        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#0f766e]" textColor="text-[#2dd4bf]" title="Our Story" />
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#0f766e]" textColor="text-[#2dd4bf]" title="Kisah Kami" />
 
         {/* RSVP & Wishes */}
         <section id="wishes" className="py-24 px-8 bg-white">
