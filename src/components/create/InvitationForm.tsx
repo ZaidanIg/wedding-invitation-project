@@ -438,7 +438,7 @@ export default function InvitationForm() {
                             <div className="bg-white border-2 border-dashed border-[#eceae4] p-4 rounded-2xl">
                               {store.headerPhotoUrl ? (
                                 <div className="relative aspect-video rounded-xl overflow-hidden shadow-sm">
-                                  <Image src={store.headerPhotoUrl} alt="Header" fill className="object-cover" unoptimized />
+                                  <Image src={store.headerPhotoUrl} alt="Header" fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
                                   <button className="absolute top-3 right-3 p-2 bg-white rounded-full text-red-500 shadow-xl" onClick={() => store.setHeaderPhotoUrl('')}><Trash2 className="h-4 w-4" /></button>
                                 </div>
                               ) : (
@@ -455,7 +455,7 @@ export default function InvitationForm() {
                              <div className="bg-white border-2 border-dashed border-[#eceae4] p-2 rounded-2xl h-[180px] flex items-center justify-center">
                               {store.groomPhotoUrl ? (
                                 <div className="relative w-full h-full rounded-xl overflow-hidden shadow-sm">
-                                  <Image src={store.groomPhotoUrl} alt="Groom" fill className="object-cover" unoptimized />
+                                  <Image src={store.groomPhotoUrl} alt="Groom" fill className="object-cover" sizes="(max-width: 768px) 50vw, 20vw" />
                                   <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setGroomPhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button>
                                 </div>
                               ) : (
@@ -477,7 +477,7 @@ export default function InvitationForm() {
                              <div className="bg-white border-2 border-dashed border-[#eceae4] p-2 rounded-2xl h-[180px] flex items-center justify-center">
                               {store.bridePhotoUrl ? (
                                 <div className="relative w-full h-full rounded-xl overflow-hidden shadow-sm">
-                                  <Image src={store.bridePhotoUrl} alt="Bride" fill className="object-cover" unoptimized />
+                                  <Image src={store.bridePhotoUrl} alt="Bride" fill className="object-cover" sizes="(max-width: 768px) 50vw, 20vw" />
                                   <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500" onClick={() => store.setBridePhotoUrl('')}><Trash2 className="h-3.5 w-3.5" /></button>
                                 </div>
                               ) : (
@@ -568,7 +568,7 @@ export default function InvitationForm() {
                                     <div className="bg-white border-2 border-dashed border-[#eceae4] rounded-xl w-full min-h-[80px] flex items-center justify-center overflow-hidden">
                                       {item.photoUrl ? (
                                         <div className="relative w-full h-32 rounded-lg overflow-hidden shadow-sm">
-                                          <Image src={item.photoUrl} alt="Moment" fill className="object-cover" unoptimized />
+                                          <Image src={item.photoUrl} alt="Moment" fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
                                           <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full text-red-500 shadow-sm hover:scale-110 transition-transform" onClick={() => { const newStory = [...store.eventDetails.loveStory]; delete newStory[index].photoUrl; store.setEventDetails({ ...store.eventDetails, loveStory: newStory }); }}><Trash2 className="h-4 w-4" /></button>
                                         </div>
                                       ) : (
@@ -643,7 +643,7 @@ export default function InvitationForm() {
                                 <UploadDropzone endpoint="weddingPhotos" multiple={true} content={{ button: 'Unggah Foto', label: 'Pilih File', allowedContent: 'Maks 4MB' }} appearance={{ button: 'bg-[#1c1c1c] text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl w-auto max-w-full truncate', container: 'p-4 border-none bg-transparent' }} onClientUploadComplete={(res) => { if (res) res.forEach(f => store.addPhotoUrl(f.ufsUrl)); }} />
                               </div>
                             )}
-                              <div className="grid grid-cols-4 gap-2 mt-4">{store.photoUrls.map((u, i) => (<div key={i} className="relative aspect-square rounded-xl overflow-hidden border shadow-sm group"><Image src={u} alt="G" fill className="object-cover group-hover:scale-110 transition-transform" unoptimized /><button className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" onClick={() => store.removePhotoUrl(u)}><Trash2 className="h-3.5 w-3.5 text-white" /></button></div>))}</div>
+                              <div className="grid grid-cols-4 gap-2 mt-4">{store.photoUrls.map((u, i) => (<div key={i} className="relative aspect-square rounded-xl overflow-hidden border shadow-sm group"><Image src={u} alt="G" fill className="object-cover group-hover:scale-110 transition-transform" sizes="(max-width: 768px) 25vw, 15vw" /><button className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" onClick={() => store.removePhotoUrl(u)}><Trash2 className="h-3.5 w-3.5 text-white" /></button></div>))}</div>
                             </div>
                           </div>
                         </div>
