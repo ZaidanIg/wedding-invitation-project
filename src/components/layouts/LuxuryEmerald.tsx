@@ -197,7 +197,7 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
         </svg>
       ))}
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }} className="text-center px-8 relative z-10">
-        <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37]/60 mb-6">The Wedding of</p>
+        <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37]/60 mb-6">Pernikahan</p>
         <h1 className="text-4xl sm:text-5xl font-display font-bold text-white mb-1">{groomName}</h1>
         <span className="text-2xl font-display italic text-[#d4af37]/70 block my-2">&amp;</span>
         <h1 className="text-4xl sm:text-5xl font-display font-bold text-white">{brideName}</h1>
@@ -315,9 +315,9 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
     <div className="max-w-sm mx-auto">
       <form onSubmit={handleSubmit} className="space-y-4 mb-6 text-left">
         {invitation.rsvpSubmitted ? (
-          <div className="p-4 bg-[#042f2e]/5 border border-[#d4af37]/20 rounded-2xl text-center mb-4">
+          <div className="p-4 bg-[#042f2e]/10 border border-[#d4af37]/35 rounded-2xl text-center mb-4">
             <p className="text-xs font-bold text-[#042f2e] mb-1">✓ Anda Telah Mengisi RSVP</p>
-            <p className="text-[10px] text-[#042f2e]/70 font-medium">
+            <p className="text-[10px] text-[#042f2e]/85 font-semibold">
               Nama: <span className="font-bold text-[#042f2e]">{invitation.rsvpName}</span> • Kehadiran: <span className="font-bold text-[#042f2e]">{invitation.rsvpStatus === 'ATTENDING' ? 'Hadir' : 'Absen'}</span>
             </p>
           </div>
@@ -361,7 +361,7 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
                     className={`py-2.5 rounded-none text-xs font-bold transition-all border flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
                       status === opt.id 
                         ? 'bg-[#042f2e] text-[#d4af37] border-[#042f2e]' 
-                        : 'bg-white text-[#042f2e]/50 border-[#d4af37]/25 hover:border-[#d4af37]'
+                        : 'bg-white text-[#042f2e]/75 border-[#d4af37]/35 hover:border-[#d4af37]'
                     }`}
                   >
                     <span className="text-sm">{opt.icon}</span>
@@ -407,7 +407,7 @@ function WishesSection({ invitation }: { invitation: Invitation }) {
                 </span>
               </div>
               <p className="text-xs font-semibold text-[#042f2e]">{w.name}</p>
-              <p className="text-sm text-[#042f2e]/70 mt-1.5 leading-relaxed">{w.message}</p>
+              <p className="text-sm text-[#042f2e]/85 mt-1.5 leading-relaxed">{w.message}</p>
             </div>
           ))}
         </div>
@@ -476,7 +476,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
           <div className="absolute inset-0 bg-gradient-to-t from-[#042f2e]/80 via-[#042f2e]/30 to-transparent" />
         </div>
         <div className="relative z-10 text-center pb-16 px-6">
-          <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37]/70 mb-3">The Wedding of</p>
+          <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37]/70 mb-3">Pernikahan</p>
           <motion.h1 initial={{ opacity: 0, y: 30 }} animate={isOpened ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.5, duration: 0.8 }}>
             <span className="block text-4xl sm:text-6xl font-display font-bold text-white drop-shadow-lg">{invitation.groomName}</span>
             <span className="block text-2xl font-display italic text-[#d4af37] my-2">&amp;</span>
@@ -497,7 +497,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
       </section>
 
       <section id="couple" className="py-14 px-8 bg-[#faf7f0] text-center">
-        <AnimatedSection><p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-8">The Groom & Bride</p></AnimatedSection>
+        <AnimatedSection><p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-8">Mempelai Pria & Wanita</p></AnimatedSection>
         <div className="grid grid-cols-1 gap-10">
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
@@ -505,8 +505,8 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
                 <Image src={groomPhoto} alt="Groom" fill className="object-cover" unoptimized />
               </div>
               <h3 className="text-2xl font-display font-bold text-[#042f2e]">{invitation.groomName}</h3>
-              <p className="text-xs text-[#042f2e]/50 mt-1">Putra dari</p>
-              <p className="text-sm text-[#042f2e]/70">{invitation.groomParents || 'Bapak & Ibu'}</p>
+              <p className="text-xs text-[#042f2e]/70 mt-1">Putra dari</p>
+              <p className="text-sm text-[#042f2e]/85">{invitation.groomParents || 'Bapak & Ibu'}</p>
             </div>
           </AnimatedSection>
           <AnimatedSection animation="scale"><Heart className="h-6 w-6 text-[#d4af37] mx-auto" fill="currentColor" /></AnimatedSection>
@@ -516,8 +516,8 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
                 <Image src={bridePhoto} alt="Bride" fill className="object-cover" unoptimized />
               </div>
               <h3 className="text-2xl font-display font-bold text-[#042f2e]">{invitation.brideName}</h3>
-              <p className="text-xs text-[#042f2e]/50 mt-1">Putri dari</p>
-              <p className="text-sm text-[#042f2e]/70">{invitation.brideParents || 'Bapak & Ibu'}</p>
+              <p className="text-xs text-[#042f2e]/70 mt-1">Putri dari</p>
+              <p className="text-sm text-[#042f2e]/85">{invitation.brideParents || 'Bapak & Ibu'}</p>
             </div>
           </AnimatedSection>
         </div>
@@ -540,7 +540,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
         <WaveDivider fill="#042f2e" position="top" />
         <div className="mt-12">
           <TierGate tier={tier} minTier="PREMIUM">
-          <AnimatedSection><p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-8">Counting Down</p></AnimatedSection>
+          <AnimatedSection><p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-8">Hitung Mundur</p></AnimatedSection>
           <AnimatedSection delay="delay-200">
             <CountdownTimer targetDate={invitation.eventDate} textColor="text-[#042f2e]" labelColor="text-[#042f2e]/40" separatorColor="text-[#d4af37]" />
           </AnimatedSection>
@@ -568,7 +568,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
         <WaveDivider fill="#faf7f0" position="top" />
         <div className="mt-12">
           <AnimatedSection>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-2">The Ceremony</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-2">Acara Pernikahan</p>
             <h2 className="text-2xl font-display font-bold text-white mb-6">Akad & Resepsi</h2>
           </AnimatedSection>
           <AnimatedSection delay="delay-200">
@@ -599,7 +599,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
                   </div>
                   <div className="pt-2">
                     {item.time && <p className="text-xs font-bold text-[#042f2e] uppercase tracking-wider">{item.time}</p>}
-                    <p className="text-sm text-[#042f2e]/70">{item.label}</p>
+                    <p className="text-sm text-[#042f2e]/85">{item.label}</p>
                   </div>
                 </div>
               </AnimatedSection>
@@ -638,7 +638,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
                 src={getEmbedUrl((invitation as any).videoUrl)}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen 
-                title="Wedding Video" 
+                title="Video Pernikahan" 
               />
             </div>
           </AnimatedSection>
@@ -655,7 +655,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
                 <div className="h-px w-8 bg-[#d4af37]/30" />
               </div>
               <Camera className="h-5 w-5 text-[#d4af37] mx-auto mb-3" />
-              <p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-8">Our Moments</p>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-8">Momen Indah Kami</p>
             </AnimatedSection>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -675,7 +675,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
         <AnimatedSection>
           <MessageCircle className="h-5 w-5 text-[#d4af37] mx-auto mb-3" />
           <p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-2">Ucapan & Doa</p>
-          <p className="text-sm text-[#042f2e]/50 mb-6">Sampaikan ucapan dan doa untuk kedua mempelai</p>
+          <p className="text-sm text-[#042f2e]/75 mb-6">Sampaikan ucapan dan doa untuk kedua mempelai</p>
         </AnimatedSection>
         <AnimatedSection delay="delay-200">
           <WishesSection invitation={invitation} />
@@ -688,11 +688,11 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
         <WaveDivider fill="#faf7f0" position="top" />
         <div className="absolute inset-6 border border-[#d4af37]/15 pointer-events-none" />
         <AnimatedSection><Heart className="h-6 w-6 text-[#d4af37] mx-auto mb-6" fill="currentColor" /></AnimatedSection>
-        <AnimatedSection delay="delay-200"><p className="text-base font-serif italic text-white/70 leading-relaxed max-w-sm mx-auto">{invitation.closing}</p></AnimatedSection>
+        <AnimatedSection delay="delay-200"><p className="text-base font-serif italic text-white/90 leading-relaxed max-w-sm mx-auto">{invitation.closing}</p></AnimatedSection>
         <AnimatedSection delay="delay-400">
           <div className="mt-10">
-            <h3 className="text-3xl font-display font-bold">{invitation.groomName} & {invitation.brideName}</h3>
-            <p className="text-xs uppercase tracking-[0.3em] text-white/40 mt-4">{formattedDate}</p>
+            <h3 className="text-3xl font-display font-bold text-white">{invitation.groomName} & {invitation.brideName}</h3>
+            <p className="text-xs uppercase tracking-[0.3em] text-white/60 mt-4">{formattedDate}</p>
           </div>
         </AnimatedSection>
 
@@ -715,7 +715,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
             </div>
           </AnimatedSection>
         )}
-        <AnimatedSection delay="delay-500"><p className="text-xs text-white/30">Merupakan suatu kehormatan dan kebahagiaan apabila Bapak/Ibu/Saudara/i berkenan hadir</p></AnimatedSection>
+        <AnimatedSection delay="delay-500"><p className="text-xs text-white/60">Merupakan suatu kehormatan dan kebahagiaan apabila Bapak/Ibu/Saudara/i berkenan hadir</p></AnimatedSection>
       </section>
 
       <div className="h-20 bg-[#042f2e]" />

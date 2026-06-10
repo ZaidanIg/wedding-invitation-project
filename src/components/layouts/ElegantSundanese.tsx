@@ -525,7 +525,7 @@ function HeroSection({ data }: { data: Invitation }) {
           className="text-[10px] sm:text-xs uppercase font-bold mb-4 tracking-[0.3em] sm:tracking-[0.5em]"
           style={{ color: '#000000' }}
         >
-          The Wedding Of
+          Pernikahan
         </motion.p>
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -880,7 +880,7 @@ function DateSection({ data }: { data: Invitation }) {
         }}
       >
         <div className="relative z-10 px-6 py-14 flex flex-col items-center">
-          <p className="text-[10px] uppercase tracking-[0.3em] font-bold mb-6" style={{ color: C.goldDark }}>Save The Date</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] font-bold mb-6" style={{ color: C.goldDark }}>Simpan Tanggal</p>
 
           <SimpleCountdown targetDate={data.eventDate} />
 
@@ -1082,7 +1082,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
         transition={{ duration: 0.8 }}
         className="text-center w-full mb-16 relative z-10"
       >
-        <h2 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-4xl sm:text-5xl mb-2">Love Story</h2>
+        <h2 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-4xl sm:text-5xl mb-2">Kisah Cinta</h2>
         <p className="text-[10px] tracking-widest mt-0 uppercase font-semibold" style={{ color: C.text }}>Perjalanan cinta kami</p>
       </motion.div>
 
@@ -1106,7 +1106,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
                   </div>
                   <span className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: C.goldDark }}>{story.year}</span>
                   <h4 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-xl mb-1">{story.title}</h4>
-                  <p className="text-xs sm:text-sm leading-relaxed italic" style={{ color: `${C.text}90` }}>{story.description}</p>
+                  <p className="text-xs sm:text-sm leading-relaxed italic break-words whitespace-pre-line" style={{ color: `${C.text}90` }}>{story.description}</p>
                 </div>
               </motion.div>
 
@@ -1193,7 +1193,7 @@ function GiftSection({ data }: { data: Invitation }) {
         <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: C.creamHeavy }}>
           <Gift className="w-8 h-8" style={{ color: C.goldDark }} />
         </div>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-3xl sm:text-4xl mb-2">Wedding Gift</h2>
+        <h2 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-3xl sm:text-4xl mb-2">Kado Pernikahan</h2>
         <GoldDivider />
         <p className="text-sm italic max-w-xs mx-auto" style={{ color: `${C.text}80` }}>
           Doa restu Anda merupakan karunia yang sangat berarti. Namun jika berkenan memberikan tanda kasih:

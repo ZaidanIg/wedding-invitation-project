@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import useSWR from 'swr';
 import { Music, Pause, Clock, Heart, Glasses, Calendar, Camera, BookOpen, MapPin, Coffee, Utensils, CalendarDays, ChevronsDown } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
@@ -180,7 +181,7 @@ export function LoveStorySection({
           <div className="inline-flex p-3 rounded-full bg-white/10 mb-4">
             <BookOpen className={`h-5 w-5 ${accentColor}`} />
           </div>
-          <h2 className={`text-2xl font-display font-bold ${textColor} mb-2`}>Our Love Story</h2>
+          <h2 className={`text-2xl font-display font-bold ${textColor} mb-2`}>Kisah Cinta Kami</h2>
           <p className={`text-[10px] uppercase tracking-[0.3em] ${accentColor} opacity-60 mb-16`}>Perjalanan Cinta Kami</p>
         </AnimatedSection>
 
@@ -198,7 +199,7 @@ export function LoveStorySection({
                     </div>
                     <span className={`text-[10px] font-bold tracking-widest uppercase mb-1 ${accentColor}`}>{item.year}</span>
                     <h3 className={`text-lg font-display font-bold ${textColor} mb-2`}>{item.title}</h3>
-                    <p className={`text-sm ${textColor} opacity-60 leading-relaxed italic`}>&ldquo;{item.description}&rdquo;</p>
+                    <p className={`text-sm ${textColor} opacity-60 leading-relaxed italic break-words whitespace-pre-line`}>&ldquo;{item.description}&rdquo;</p>
                   </div>
                 </AnimatedSection>
 
@@ -491,10 +492,10 @@ export function CountdownTimer({
   if (currentRank < requiredRank) return null;
 
   const blocks = [
-    { value: timeLeft.days, label: 'Days' },
-    { value: timeLeft.hours, label: 'Hours' },
-    { value: timeLeft.minutes, label: 'Minutes' },
-    { value: timeLeft.seconds, label: 'Seconds' },
+    { value: timeLeft.days, label: 'Hari' },
+    { value: timeLeft.hours, label: 'Jam' },
+    { value: timeLeft.minutes, label: 'Menit' },
+    { value: timeLeft.seconds, label: 'Detik' },
   ];
 
   return (
@@ -899,7 +900,7 @@ export function DigitalGiftSection({
           <div className="inline-flex p-3 rounded-full bg-current opacity-5 mb-4 relative">
             <Heart className="h-5 w-5 text-rose-500 relative z-10" fill="currentColor" />
           </div>
-          <h2 className={`text-2xl font-display font-bold ${textColor} mb-2`}>Wedding Gift</h2>
+          <h2 className={`text-2xl font-display font-bold ${textColor} mb-2`}>Kado Pernikahan</h2>
           <p className="text-sm opacity-60 mb-12 leading-relaxed max-w-xs mx-auto">
             Doa restu Anda sudah lebih dari cukup. Namun bagi Anda yang ingin memberikan tanda kasih, dapat melalui:
           </p>
@@ -1022,12 +1023,24 @@ export function DetailItem({ icon: Icon, label, value, className = "" }: { icon:
     </div>
   );
 }
+const wishesFetcher = (url: string) => fetch(url).then((res) => res.json().then((data) => data.data));
+
 export function WishesSection({ invitation }: { invitation: Invitation }) {
   const { tier, isPreview } = useTier();
   const currentRank = TIER_RANK[tier] || 0;
   const requiredRank = TIER_RANK['PREMIUM'];
 
-  const [wishes, setWishes] = useState<Guest[]>(invitation.guests || []);
+  const { data: wishesData, mutate } = useSWR<Guest[]>(
+    invitation.slug ? `/api/invitations/${invitation.slug}/rsvp` : null,
+    wishesFetcher,
+    {
+      fallbackData: invitation.guests || [],
+      refreshInterval: 15000,
+    }
+  );
+
+  const wishes = wishesData || invitation.guests || [];
+
   const [name, setName] = useState(invitation.rsvpName || '');
   const [phone, setPhone] = useState(invitation.rsvpPhone || '');
   const [message, setMessage] = useState('');
@@ -1060,7 +1073,7 @@ export function WishesSection({ invitation }: { invitation: Invitation }) {
       });
       const data = await res.json();
       if (data.success) {
-        setWishes([data.data, ...wishes]);
+        mutate([data.data, ...wishes], false);
         setGuestId(data.data.id);
         setIsSubmitted(true);
         setName(data.data.name);
@@ -1211,7 +1224,7 @@ export function GallerySection({
   bgColor = 'bg-white',
   textColor = 'text-stone-800',
   borderColor = 'border-stone-200',
-  title = 'Our Moments',
+  title = 'Momen Indah',
   children,
 }: {
   photos: string[];

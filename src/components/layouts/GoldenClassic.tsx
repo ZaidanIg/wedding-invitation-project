@@ -243,10 +243,10 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
         bgColor="bg-white"
         textColor="text-zinc-800"
         borderColor="border-[#D4AF37]/20"
-        title="Captured Moments"
+        title="Momen Bahagia"
       />
 
-      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-zinc-900" textColor="text-[#D4AF37]" title="Our Story" />
+      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-zinc-900" textColor="text-[#D4AF37]" title="Kisah Kami" />
 
       {/* Quotes */}
       <QuotesSection text={invitation.quotes || ''} bgColor="bg-stone-50" textColor="text-[#D4AF37]" />

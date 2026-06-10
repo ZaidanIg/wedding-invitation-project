@@ -227,7 +227,7 @@ function HeroSection({ data }: { data: Invitation }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.8 }}
           className="text-xs uppercase tracking-[0.4em] text-white font-bold mb-6"
-        >The Wedding Of</motion.p>
+        >Pernikahan</motion.p>
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -498,7 +498,7 @@ function DateSection({ data }: { data: Invitation }) {
         <div className="absolute top-4 w-32 h-32 pointer-events-none opacity-80 z-20">
           <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Mandala" fill className="object-contain" unoptimized />
         </div>
-        <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2 mt-12">Save The Date</p>
+        <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2 mt-12">Simpan Tanggal</p>
         <p className="font-display text-3xl text-[#4A3728] mb-8 text-center" style={{ fontFamily: "'Playfair Display', serif" }}>
           {(() => {
             try {
@@ -612,7 +612,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
       >
         <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2">Perjalanan Kami</p>
         <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-          Love Story
+          Kisah Cinta
         </h2>
         <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
       </motion.div>
@@ -637,7 +637,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
                   </div>
                   <span className="text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase mb-1">{story.year}</span>
                   <h4 className="text-xl font-display text-[#4A3728] mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
-                  <p className="text-xs sm:text-sm text-[#4A3728]/70 leading-relaxed italic">{story.description}</p>
+                  <p className="text-xs sm:text-sm text-[#4A3728]/70 leading-relaxed italic break-words whitespace-pre-line">{story.description}</p>
                 </div>
               </motion.div>
 
@@ -736,7 +736,7 @@ function GiftSection({ data }: { data: Invitation }) {
           <Gift className="w-8 h-8 text-[#D4AF37]" />
         </div>
         <h2 className="text-4xl sm:text-5xl font-display text-[#4A3728] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-          Wedding Gift
+          Kado Pernikahan
         </h2>
         <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full mb-6 opacity-60"></div>
         <p className="text-sm sm:text-base text-[#4A3728]/80 font-serif italic max-w-md mx-auto">
@@ -825,7 +825,7 @@ export default function PremiumJavanese({ invitation: data, isPreview = false }:
       <GroomSection data={data} />
       <DateSection data={data} />
 
-      <VideoEmbedSection videoUrl={data.videoUrl} bgColor="bg-white" textColor="text-[#4A3728]" title="Our Memories" />
+      <VideoEmbedSection videoUrl={data.videoUrl} bgColor="bg-white" textColor="text-[#4A3728]" title="Kenangan Indah" />
 
       {data.loveStory && data.loveStory.length > 0 && (
         <LoveStorySection data={data} />

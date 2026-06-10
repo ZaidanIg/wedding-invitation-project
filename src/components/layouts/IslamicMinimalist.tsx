@@ -205,16 +205,16 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
           bgColor="bg-white"
           textColor="text-stone-800"
           borderColor="border-[#d4af37]"
-          title="Our Moments"
+          title="Momen Bahagia"
         />
 
-        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-stone-900" textColor="text-[#d4af37]" title="Our Story" />
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-stone-900" textColor="text-[#d4af37]" title="Kisah Kami" />
 
         {/* RSVP Section */}
         <section id="wishes" className="py-24 px-8 bg-stone-50">
            <div className="text-center mb-12">
              <MessageCircle className="mx-auto text-[#d4af37] opacity-20 mb-6" size={40} />
-             <h2 className="text-2xl font-display font-bold text-stone-800 mb-2">RSVP & Wishes</h2>
+             <h2 className="text-2xl font-display font-bold text-stone-800 mb-2">RSVP & Ucapan</h2>
              <p className="text-xs text-stone-400">Kehadiran Anda adalah kado terindah bagi kami.</p>
            </div>
            <WishesSection invitation={invitation} />

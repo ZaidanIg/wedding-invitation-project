@@ -329,8 +329,8 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
         <section className="py-24 px-8 bg-white">
           <div className="text-center mb-16">
              <LotusIcon className="mx-auto text-[#a3b18a] mb-4 opacity-40" size={32} />
-             <p className="text-[10px] uppercase tracking-[0.3em] text-[#a3b18a] font-bold mb-2">Save the Date</p>
-             <h2 className="text-3xl font-display font-bold text-[#3d4432]">Sacred Union</h2>
+             <p className="text-[10px] uppercase tracking-[0.3em] text-[#a3b18a] font-bold mb-2">Simpan Tanggal</p>
+             <h2 className="text-3xl font-display font-bold text-[#3d4432]">Penyatuan Suci</h2>
           </div>
           
           <div className="grid grid-cols-1 gap-6">
@@ -359,7 +359,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
         </section>
 
         {/* Video Embed */}
-        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#fdfbf7]" textColor="text-[#a3b18a]" title="Wedding Video" />
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#fdfbf7]" textColor="text-[#a3b18a]" title="Video Pernikahan" />
 
         {/* Gallery Section */}
         <GallerySection
@@ -367,7 +367,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
           bgColor="bg-[#fdfbf7]"
           textColor="text-[#3d4432]"
           borderColor="border-[#a3b18a]"
-          title="Zen Gallery"
+          title="Galeri Foto"
         />
 
         {/* Ultimate: VIP Zen Management */}
@@ -382,10 +382,10 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
                   <div className="w-16 h-16 rounded-[2rem] bg-[#3d4432] flex items-center justify-center mx-auto mb-8 shadow-xl">
                     <QrCode className="h-8 w-8 text-[#a3b18a]" />
                   </div>
-                  <h2 className="text-3xl font-display font-bold text-[#3d4432] mb-6">VIP Digital Experience</h2>
-                  <p className="text-[#a3b18a] text-[10px] uppercase tracking-widest mb-6">Ultimate Access</p>
+                  <h2 className="text-3xl font-display font-bold text-[#3d4432] mb-6">Pengalaman Digital VIP</h2>
+                  <p className="text-[#a3b18a] text-[10px] uppercase tracking-widest mb-6">Akses Utama / Eksklusif</p>
                   <p className="text-[#3d4432]/40 text-xs leading-relaxed max-w-xs mx-auto px-4">
-                    Seamless digital integration for our most distinguished guests.
+                    Integrasi digital yang lancar untuk para tamu kehormatan kami.
                   </p>
                 </AnimatedSection>
 
@@ -394,15 +394,15 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
                       <div className="w-48 h-48 bg-white p-8 rounded-[3rem] shadow-sm mb-10 flex items-center justify-center border border-[#a3b18a]/5">
                          <QrCode className="h-24 w-24 text-[#a3b18a]/20" />
                       </div>
-                      <h4 className="text-xl font-bold text-[#3d4432] mb-3 italic">Zen Check-in</h4>
-                      <p className="text-[10px] text-[#a3b18a] font-bold uppercase tracking-widest mb-2">Digital Pass System</p>
-                      <p className="text-xs text-[#3d4432]/40 leading-relaxed">Present your unique code for an effortless welcoming experience.</p>
+                      <h4 className="text-xl font-bold text-[#3d4432] mb-3 italic">Buku Tamu Digital</h4>
+                      <p className="text-[10px] text-[#a3b18a] font-bold uppercase tracking-widest mb-2">Sistem Masuk Digital</p>
+                      <p className="text-xs text-[#3d4432]/40 leading-relaxed">Tunjukkan kode unik Anda untuk proses penerimaan tamu yang mudah.</p>
                    </div>
 
                    <div className="p-10 rounded-[3rem] bg-[#3d4432] text-white flex flex-col items-center text-center shadow-2xl">
                       <Users className="h-12 w-12 text-[#a3b18a] mb-8" />
-                      <h4 className="text-xl font-bold mb-3 italic">Personal Recognition</h4>
-                      <p className="text-xs text-white/40 mb-10 leading-relaxed px-4">Each invitation link is individually tailored for every guest.</p>
+                      <h4 className="text-xl font-bold mb-3 italic">Pengenalan Tamu</h4>
+                      <p className="text-xs text-white/40 mb-10 leading-relaxed px-4">Setiap tautan undangan dirancang secara khusus untuk setiap tamu.</p>
                       <div className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-[9px] font-mono text-[#a3b18a] truncate">
                          sahinaja.com/u/siddharta-vasanti?to=Bodhi+Family
                       </div>

@@ -97,7 +97,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
 
         <div className="relative z-10 text-center pb-16 px-6">
           <FloralBorder />
-          <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-pink-200 mb-3 animate-fade-in-down mt-2">Together with their families</p>
+          <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-pink-200 mb-3 animate-fade-in-down mt-2">Bersama keluarga tercinta</p>
           <h1 className="animate-fade-in-up" style={{ animationDelay: '300ms', animationFillMode: 'both' }}>
             <span className="block text-4xl sm:text-5xl font-display font-bold text-white drop-shadow-lg">{invitation.groomName}</span>
             <span className="block text-2xl sm:text-3xl font-display italic font-normal text-pink-200 my-2">&</span>
@@ -118,7 +118,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
         <TierGate tier={tier} minTier="PREMIUM">
         <AnimatedSection>
           <FloralBorder />
-          <p className="text-xs uppercase tracking-[0.25em] text-pink-400 mb-8 mt-2">Counting the days</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-pink-400 mb-8 mt-2">Menuju Hari Bahagia</p>
         </AnimatedSection>
         <AnimatedSection delay="delay-200">
           <CountdownTimer targetDate={invitation.eventDate} textColor="text-rose-800" labelColor="text-pink-400" separatorColor="text-pink-300" />
@@ -178,7 +178,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
       <section className="py-14 px-8 bg-[#fdf2f4] text-center">
         <AnimatedSection>
           <FloralBorder />
-          <h2 className="text-2xl font-display font-bold text-rose-800 mt-2 mb-6">Ceremony</h2>
+          <h2 className="text-2xl font-display font-bold text-rose-800 mt-2 mb-6">Acara Pernikahan</h2>
         </AnimatedSection>
         <AnimatedSection delay="delay-200">
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-pink-200 shadow-sm max-w-sm mx-auto">
@@ -187,7 +187,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
             <p className="text-xs text-pink-500 mt-1">{invitation.venueAddress}</p>
                   <EventActionButtons eventName="Acara Pernikahan" eventDate={invitation.eventDate} eventTime={invitation.eventTime} venueName={invitation.venueName} venueAddress={invitation.venueAddress} />
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-4 px-5 py-2 bg-rose-500 text-white text-xs font-semibold uppercase tracking-widest rounded-full hover:bg-rose-600 transition-all duration-300 shadow-md">
-              <MapPin className="h-3.5 w-3.5" />View on Map
+              <MapPin className="h-3.5 w-3.5" />Buka di Peta
             </a>
           </div>
         </AnimatedSection>
@@ -197,7 +197,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
       <section className="py-14 px-8 bg-[#fdf2f4]">
         <AnimatedSection>
           <FloralBorder />
-          <h2 className="text-2xl font-display font-bold text-rose-800 text-center mt-2 mb-10">Itinerary</h2>
+          <h2 className="text-2xl font-display font-bold text-rose-800 text-center mt-2 mb-10">Susunan Acara</h2>
         </AnimatedSection>
         <div className="max-w-xs mx-auto relative">
           <div className="absolute left-[19px] top-5 bottom-5 w-px bg-gradient-to-b from-pink-300 via-pink-200 to-transparent" />
@@ -216,7 +216,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
               </AnimatedSection>
             ))
           ) : (
-            <p className="text-sm text-rose-700/70 text-center italic mt-6">No schedule available.</p>
+            <p className="text-sm text-rose-700/70 text-center italic mt-6">Jadwal tidak tersedia.</p>
           )}
         </div>
       </section>
@@ -231,7 +231,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
       <section className="py-14 px-8 bg-[#fdf2f4] text-center">
         <AnimatedSection animation="scale">
           <div className="inline-flex p-3 rounded-full bg-pink-100 border border-pink-200 mb-4"><MapPin className="h-5 w-5 text-rose-500" /></div>
-          <h2 className="text-2xl font-display font-bold text-rose-800 mb-6">Location</h2>
+          <h2 className="text-2xl font-display font-bold text-rose-800 mb-6">Lokasi Acara</h2>
         </AnimatedSection>
         <AnimatedSection delay="delay-200">
           <div className="rounded-2xl overflow-hidden border border-pink-200 shadow-sm h-[280px]">
@@ -256,10 +256,10 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
         bgColor="bg-[#fdf2f4]"
         textColor="text-rose-800"
         borderColor="border-pink-200"
-        title="Our Moments"
+        title="Momen Bahagia"
       />
 
-      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-rose-950" textColor="text-white" title="Our Story" />
+      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-rose-950" textColor="text-white" title="Kisah Kami" />
 
       {/* Quotes */}
       <QuotesSection text={invitation.quotes || ''} bgColor="bg-white" textColor="text-rose-900" />

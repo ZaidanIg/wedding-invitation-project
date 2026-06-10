@@ -107,7 +107,7 @@ function CoverPage({ groomName, brideName, guestName, onOpen }: {
         transition={{ delay: 0.2, duration: 0.8 }} 
         className="text-center relative z-10"
       >
-        <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37]/80 font-semibold mb-2">The Wedding of</p>
+        <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37]/80 font-semibold mb-2">Pernikahan</p>
         <div className="h-0.5 w-12 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto" />
       </motion.div>
 
@@ -424,7 +424,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
           <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/30 to-transparent" />
         </div>
         <div className="relative z-10 text-center px-6">
-          <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37] mb-3 font-semibold">The Wedding of</p>
+          <p className="text-[10px] uppercase tracking-[0.4em] text-[#d4af37] mb-3 font-semibold">Pernikahan</p>
           <motion.h1 
             initial={{ opacity: 0, y: 30 }} 
             animate={isOpened ? { opacity: 1, y: 0 } : {}} 
@@ -538,7 +538,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
                 <Heart className="h-5 w-5 text-[#d4af37]" fill="currentColor" />
               </div>
               <h2 className="text-2xl font-display font-bold tracking-tight" style={{ fontFamily: 'var(--font-cinzel), serif' }}>Kisah Cinta Kami</h2>
-              <p className="text-[9px] uppercase tracking-[0.30em] text-stone-500 font-bold mb-14">The Chapters of Our Hearts</p>
+              <p className="text-[9px] uppercase tracking-[0.30em] text-stone-500 font-bold mb-14">Lembaran Kisah Cinta Kami</p>
             </AnimatedSection>
 
             {/* Vertical timeline inside warm cream block */}
@@ -558,7 +558,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
                         <h3 className="text-sm font-display font-bold text-[#111111] mb-1.5" style={{ fontFamily: 'var(--font-playfair), serif' }}>
                           {storyItem.title}
                         </h3>
-                        <p className="text-[11px] text-stone-600 leading-relaxed font-sans font-medium italic">
+                        <p className="text-[11px] text-stone-600 leading-relaxed font-sans font-medium italic break-words whitespace-pre-line">
                           "{storyItem.description}"
                         </p>
                       </div>
@@ -661,7 +661,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
       </section>
 
       {/* Video Embed */}
-      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#161616]" textColor="text-[#d4af37]" title="Wedding Video" />
+      <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#161616]" textColor="text-[#d4af37]" title="Video Pernikahan" />
 
       {/* Gallery Section */}
       <GallerySection
@@ -669,7 +669,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
         bgColor="bg-[#111111]"
         textColor="text-[#d4af37]"
         borderColor="border-[#d4af37]"
-        title="Our Gallery"
+        title="Galeri Foto"
       />
 
       {/* Section 7: Ceremony & Reception Details */}
@@ -677,7 +677,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
         <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#d4af37]/30 to-transparent" />
         
         <AnimatedSection>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-2 font-bold">The Ceremony</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-2 font-bold">Acara Pernikahan</p>
           <h2 className="text-2xl font-display font-bold text-white mb-10" style={{ fontFamily: 'var(--font-cinzel), serif' }}>Akad & Resepsi</h2>
         </AnimatedSection>
 

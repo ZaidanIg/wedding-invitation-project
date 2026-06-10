@@ -241,16 +241,16 @@ export default function IslamicMidnight({ invitation, isPreview = false }: { inv
           bgColor="bg-[#0d1411]"
           textColor="text-white"
           borderColor="border-[#c5a059]"
-          title="Captured Moments"
+          title="Momen Bahagia"
         />
 
-        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#0a0f0d]" textColor="text-[#c5a059]" title="Our Story" />
+        <VideoEmbedSection videoUrl={invitation.videoUrl} bgColor="bg-[#0a0f0d]" textColor="text-[#c5a059]" title="Kisah Kami" />
 
         {/* RSVP & Wishes */}
         <section id="wishes" className="py-32 px-8">
            <div className="text-center mb-16">
              <Sparkles className="mx-auto text-[#c5a059] mb-6" size={32} />
-             <h2 className="text-3xl font-display font-bold text-white mb-4 italic">RSVP & Wishes</h2>
+             <h2 className="text-3xl font-display font-bold text-white mb-4 italic">RSVP & Ucapan</h2>
              <p className="text-sm text-white/40 italic">Berikan doa terbaik Anda untuk kami.</p>
            </div>
            <WishesSection invitation={invitation} />

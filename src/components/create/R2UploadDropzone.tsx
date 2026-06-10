@@ -19,6 +19,8 @@ interface R2UploadDropzoneProps {
   };
   multiple?: boolean;
   endpoint?: string; // Ignored, but kept for compatibility with legacy UploadThing props
+  accept?: string;
+  maxSize?: number;
 }
 
 export function R2UploadDropzone({
@@ -27,6 +29,8 @@ export function R2UploadDropzone({
   content,
   appearance,
   multiple = false,
+  accept = 'image/*',
+  maxSize,
 }: R2UploadDropzoneProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -71,8 +75,22 @@ export function R2UploadDropzone({
     try {
       const filesToUpload = multiple ? files : [files[0]];
       
+      // Validate file size (defaults to 4MB)
+      const limit = maxSize || 4 * 1024 * 1024;
+      for (const file of filesToUpload) {
+        if (file.size > limit) {
+          const limitMB = Math.round(limit / (1024 * 1024));
+          throw new Error(`Ukuran file "${file.name || 'Pilihan'}" melebihi batas maksimal ${limitMB}MB`);
+        }
+      }
+      
       for (let i = 0; i < filesToUpload.length; i++) {
         const file = filesToUpload[i];
+        
+        const fallbackExt = accept.includes('audio') ? 'mp3' : 'jpg';
+        const fallbackType = accept.includes('audio') ? 'audio/mpeg' : 'image/jpeg';
+        const finalFilename = file.name || `upload-${Date.now()}-${i}.${fallbackExt}`;
+        const finalFileType = file.type || fallbackType;
         
         // 1. Request presigned URL from API
         const response = await fetch('/api/upload/r2-presigned', {
@@ -81,8 +99,8 @@ export function R2UploadDropzone({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            filename: file.name,
-            fileType: file.type,
+            filename: finalFilename,
+            fileType: finalFileType,
           }),
         });
 
@@ -155,9 +173,9 @@ export function R2UploadDropzone({
         type="file"
         ref={fileInputRef}
         onChange={handleFileInputChange}
-        className="hidden"
+        className="sr-only"
         multiple={multiple}
-        accept="image/*,audio/*"
+        accept={accept}
       />
 
       {isUploading ? (

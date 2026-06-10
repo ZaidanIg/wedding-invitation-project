@@ -69,7 +69,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
         <div className="absolute top-40 right-8 w-32 h-32 rounded-full bg-white/5 blur-2xl animate-float-delayed" />
 
         <div className="relative z-10 text-center pb-16 px-6">
-          <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-white/70 mb-3 animate-fade-in-down">We are getting married</p>
+          <p className="text-xs sm:text-sm uppercase tracking-[0.3em] text-white/70 mb-3 animate-fade-in-down">Kami Segera Menikah</p>
           <h1 className="animate-fade-in-up" style={{ animationDelay: '300ms', animationFillMode: 'both' }}>
             <span className="block text-4xl sm:text-6xl font-display font-bold text-white drop-shadow-lg">{invitation.groomName}</span>
             <span className="block text-2xl sm:text-3xl font-serif italic font-normal text-white/80 my-2">&</span>
@@ -92,7 +92,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
       {/* Countdown */}
       <section className="py-14 px-4 sm:px-6 text-center bg-[#f5f0eb]">
         <TierGate tier={tier} minTier="PREMIUM">
-        <AnimatedSection><p className="text-xs uppercase tracking-[0.25em] text-stone-400 mb-8">Counting down to</p></AnimatedSection>
+        <AnimatedSection><p className="text-xs uppercase tracking-[0.25em] text-stone-400 mb-8">Menuju Hari Bahagia</p></AnimatedSection>
         <AnimatedSection delay="delay-200"><CountdownTimer targetDate={invitation.eventDate} /></AnimatedSection>
       </TierGate>
         <AnimatedSection delay="delay-300">
@@ -101,7 +101,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
             <Heart className="h-4 w-4 text-stone-400 animate-heartbeat" />
             <div className="h-px w-12 bg-stone-300 animate-shimmer" />
           </div>
-          <p className="text-sm text-stone-500 mt-6 leading-relaxed max-w-xs mx-auto">We invite you to celebrate our wedding</p>
+          <p className="text-sm text-stone-500 mt-6 leading-relaxed max-w-xs mx-auto">Kami mengundang Anda untuk merayakan pernikahan kami</p>
         </AnimatedSection>
         <AnimatedSection animation="scale" delay="delay-400">
           <div className="mt-6 inline-flex items-center gap-4 border border-stone-300 rounded-sm px-6 py-3">
@@ -169,7 +169,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
         <WaveDivider fill="#f5f0eb" position="top" />
         <div className="mt-12">
           <AnimatedSection animation="scale"><div className="inline-flex p-3 rounded-full border border-stone-300 mb-4"><Heart className="h-5 w-5 text-stone-500" /></div></AnimatedSection>
-          <AnimatedSection delay="delay-100"><h2 className="text-2xl font-display font-bold text-stone-800 mb-4">Ceremony</h2></AnimatedSection>
+          <AnimatedSection delay="delay-100"><h2 className="text-2xl font-display font-bold text-stone-800 mb-4">Acara Pernikahan</h2></AnimatedSection>
           <AnimatedSection delay="delay-200">
             <p className="text-sm text-stone-600 leading-relaxed">{invitation.eventTime}</p>
             <p className="text-sm text-stone-600 mt-1 font-medium">{invitation.venueName}</p>
@@ -178,7 +178,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
           </AnimatedSection>
           <AnimatedSection delay="delay-300">
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-6 px-6 py-2.5 border border-stone-800 text-stone-800 text-xs font-semibold uppercase tracking-widest rounded-sm hover:bg-stone-800 hover:text-[#f5f0eb] transition-all duration-300">
-              <MapPin className="h-3.5 w-3.5" />How to Get There
+              <MapPin className="h-3.5 w-3.5" />Petunjuk Lokasi
             </a>
           </AnimatedSection>
         </div>
@@ -187,7 +187,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
       {/* Timeline */}
       <section className="py-20 px-8 bg-[#f5f0eb] relative">
         <WaveDivider fill="#fff" position="top" />
-        <AnimatedSection><h2 className="text-2xl font-display font-bold text-stone-800 text-center mb-10">Event Schedule</h2></AnimatedSection>
+        <AnimatedSection><h2 className="text-2xl font-display font-bold text-stone-800 text-center mb-10">Susunan Acara</h2></AnimatedSection>
         <div className="max-w-xs mx-auto space-y-0">
           {invitation.schedule && invitation.schedule.length > 0 ? (
             invitation.schedule.map((item, idx) => (
@@ -207,7 +207,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
               </AnimatedSection>
             ))
           ) : (
-            <p className="text-sm text-stone-500 text-center italic">No schedule available.</p>
+            <p className="text-sm text-stone-500 text-center italic">Jadwal tidak tersedia.</p>
           )}
         </div>
       </section>
@@ -223,7 +223,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
       <section className="py-14 px-8 bg-[#f5f0eb] text-center">
         <AnimatedSection animation="scale">
           <div className="inline-flex p-3 rounded-full border border-stone-300 mb-4"><MapPin className="h-5 w-5 text-stone-500" /></div>
-          <h2 className="text-2xl font-display font-bold text-stone-800 mb-6">Location</h2>
+          <h2 className="text-2xl font-display font-bold text-stone-800 mb-6">Lokasi Acara</h2>
         </AnimatedSection>
         <AnimatedSection delay="delay-200">
           <div className="rounded-xl overflow-hidden border border-stone-200 shadow-sm h-[280px]">
@@ -232,7 +232,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
         </AnimatedSection>
         <AnimatedSection delay="delay-300">
           <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-6 px-6 py-2.5 bg-stone-800 text-[#f5f0eb] text-xs font-semibold uppercase tracking-widest rounded-sm hover:bg-stone-700 transition-all duration-300">
-            <MapPin className="h-3.5 w-3.5" />Open in Google Maps
+            <MapPin className="h-3.5 w-3.5" />Buka di Google Maps
           </a>
         </AnimatedSection>
       </section>
@@ -249,7 +249,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
         bgColor="bg-[#f5f0eb]"
         textColor="text-stone-800"
         borderColor="border-stone-300"
-        title="Our Moments"
+        title="Momen Bahagia"
       />
 
       {/* Video Embed — ULTIMATE only, shared component */}
@@ -257,7 +257,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
         videoUrl={invitation.videoUrl}
         bgColor="bg-stone-900"
         textColor="text-white"
-        title="Our Story"
+        title="Kisah Kami"
       />
 
       {/* Quotes */}
