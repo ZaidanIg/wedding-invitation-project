@@ -445,7 +445,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
           (g) => g.name.trim().toLowerCase() === decodedTo
         );
         if (guest) {
-          setMatchedGuest(guest);
+          setTimeout(() => setMatchedGuest(guest), 0);
         }
       }
     }

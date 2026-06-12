@@ -8,12 +8,12 @@ import { motion } from 'framer-motion';
 import { Heart, Menu, X, LogOut, User } from 'lucide-react';
 import Image from 'next/image';
 
-export default function Navbar() {
+export default function Navbar({ isComingSoon = false }: { isComingSoon?: boolean }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [_isUserMenuOpen, _setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [hasBanner, setHasBanner] = useState(false);
-  const { data: session } = useSession();
+  const [hasBanner, setHasBanner] = useState(isComingSoon);
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   
   const isDemoRoute = pathname?.startsWith('/demo/');
@@ -99,7 +99,9 @@ export default function Navbar() {
 
           {/* Desktop Auth - Always visible */}
           <div className="hidden md:flex items-center gap-3">
-            {session?.user ? (
+            {status === 'loading' ? (
+              <div className="h-[38px] w-24 bg-rose-500/5 animate-pulse rounded-xl border border-rose-500/10" />
+            ) : session?.user ? (
               <div className="relative">
                 <button
                   popoverTarget="user-menu-popover"

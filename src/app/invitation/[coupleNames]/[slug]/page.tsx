@@ -8,6 +8,8 @@ import RsvpForm from '@/components/themes/RsvpForm';
 import type { Invitation } from '@/types';
 import { ForbiddenError } from '@/lib/errors';
 import { getCoupleSlug } from '@/lib/utils';
+import { prisma } from '@/lib/prisma';
+import { layouts } from '@/components/layouts';
 
 
 interface PageProps {
@@ -130,11 +132,19 @@ export default async function InvitationPage({ params, searchParams }: PageProps
     rsvpPhone: '',        // Handled client-side
   };
 
+  const isHardcodedLayout = serialized.layout in layouts;
+  let themeTemplate = null;
+  if (!isHardcodedLayout) {
+    themeTemplate = await prisma.themeTemplate.findUnique({
+      where: { slug: serialized.layout },
+    });
+  }
+
   const showRsvp = serialized.tier !== 'BASIC' && serialized.tier !== 'DRAFT';
 
   return (
     <div className={`min-h-screen ${['luxury-emerald', 'premium-charcoal'].includes(serialized.layout) ? 'bg-[#111111]' : 'bg-[#f7f4ed]'}`}>
-      <InvitationPreview invitation={serialized} isPreview={false} />
+      <InvitationPreview invitation={serialized} isPreview={false} themeTemplate={themeTemplate} />
 
       {/* Hide external RSVP for themes that have their own integrated version or if tier doesn't support it */}
       {showRsvp && !['luxury-emerald', 'islamic-grace', 'islamic-minimalist', 'islamic-midnight', 'islamic-arabesque', 'christian-elegant', 'hindu-mandala', 'buddhist-zen', 'confucian-oriental', 'premium-charcoal', 'premium-javanese', 'elegant-sundanese'].includes(serialized.layout) && (

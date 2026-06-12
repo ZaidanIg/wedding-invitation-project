@@ -14,18 +14,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <>{children}</>;
   }
 
+  const isBuilderPage = pathname === '/admin/themes/builder';
+
   return (
     <div className="h-screen bg-[#f7f5f2] flex overflow-hidden">
       {/* Fixed sidebar */}
       <AdminSidebar />
 
       {/* Main content area — offset by sidebar width */}
-      <div className="flex-1 ml-64 flex flex-col h-screen min-w-0 overflow-y-auto relative">
+      <div className={`flex-1 ml-64 flex flex-col h-screen min-w-0 relative ${isBuilderPage ? 'overflow-hidden' : 'overflow-y-auto'}`}>
         {/* Sticky header */}
-        <AdminHeader />
+        {!isBuilderPage && <AdminHeader />}
 
         {/* Page content */}
-        <main className="flex-1 p-6 lg:p-8 min-w-0">
+        <main className={`flex-1 min-w-0 ${isBuilderPage ? 'p-0 flex flex-col overflow-hidden h-full' : 'p-6 lg:p-8'}`}>
           {children}
         </main>
       </div>

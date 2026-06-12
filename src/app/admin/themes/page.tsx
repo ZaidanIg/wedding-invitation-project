@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
@@ -86,13 +87,22 @@ export default function ThemesPage() {
           <h1 className="text-3xl font-display font-bold text-[#1c1c1c]">Performa & Lisensi Tema</h1>
           <p className="text-sm text-[#6b6b6b] mt-1">Pantau statistik kunjungan undangan, tipe tema yang digunakan, dan lakukan override paket layanan.</p>
         </div>
-        <button 
-          onClick={() => loadInvitations(invitationSearch)}
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-[#eceae4] rounded-xl text-sm font-bold text-[#1c1c1c] hover:bg-stone-50 transition-colors"
-        >
-          <RefreshCw className={`w-4 h-4 ${isLoadingInvitations ? 'animate-spin' : ''}`} />
-          Segarkan
-        </button>
+        <div className="flex items-center gap-3 shrink-0">
+          <Link
+            href="/admin/themes/builder"
+            className="flex items-center gap-2 px-4.5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition-colors shadow-sm"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            Theme Builder (Elementor)
+          </Link>
+          <button 
+            onClick={() => loadInvitations(invitationSearch)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#eceae4] rounded-xl text-xs font-bold text-[#1c1c1c] hover:bg-stone-50 transition-colors"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoadingInvitations ? 'animate-spin' : ''}`} />
+            Segarkan
+          </button>
+        </div>
       </div>
 
       <div className="flex items-center gap-4 max-w-md bg-white border border-[#eceae4] px-4 py-2.5 rounded-2xl shadow-sm">

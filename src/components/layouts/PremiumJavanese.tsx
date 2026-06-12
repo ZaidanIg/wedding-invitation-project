@@ -146,10 +146,11 @@ function EnvelopeSection({ data, onOpen, guestName }: { data: Invitation; onOpen
     </motion.section>
   );
 }
-
 function FallingSparkles() {
   const [mounted, setMounted] = useState(false);
-  setTimeout(() => { useEffect(() => setMounted(true), []); }, 0);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const sparkles = useMemo(() => {
     return [...Array(35)].map(() => ({

@@ -146,7 +146,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
             (g) => g.name.trim().toLowerCase() === decodedTo
           );
           if (guest) {
-            setMatchedGuest(guest);
+            setTimeout(() => setMatchedGuest(guest), 0);
           }
         }
       }

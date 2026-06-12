@@ -90,7 +90,7 @@ export default function IslamicArabesque({ invitation, isPreview = false }: { in
           (g) => g.name.trim().toLowerCase() === decodedTo
         );
         if (guest) {
-          setMatchedGuest(guest);
+          setTimeout(() => setMatchedGuest(guest), 0);
         }
       }
     }

@@ -1,3 +1,5 @@
+'use client';
+
 import { getCoupleSlug } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { Heart, MapPin, ChevronDown } from 'lucide-react';

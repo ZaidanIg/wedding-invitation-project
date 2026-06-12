@@ -192,7 +192,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
           (g) => g.name.trim().toLowerCase() === decodedTo
         );
         if (guest) {
-          setMatchedGuest(guest);
+          setTimeout(() => setMatchedGuest(guest), 0);
         }
       }
     }

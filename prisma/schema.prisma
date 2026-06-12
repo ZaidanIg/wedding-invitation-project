@@ -488,3 +488,19 @@ model AiCache {
 
   @@index([hash])
 }
+
+// ── Theme Templates ───────────────────────────────────────────
+model ThemeTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  thumbnail   String?
+  category    String   @default("Modern")
+  isPremium   Boolean  @default(false)
+  config      Json     // Stores JSON configuration of style, layouts, and custom CSS
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([category])
+}
