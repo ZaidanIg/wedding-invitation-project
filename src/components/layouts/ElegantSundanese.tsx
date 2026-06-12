@@ -114,28 +114,28 @@ function MegaMendungOrnaments() {
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute top-10 -right-16 w-52 h-36 opacity-30 pointer-events-none z-0"
       >
-        <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" unoptimized />
+        <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
       <motion.div
         animate={{ y: [0, -8, 0], x: [0, -5, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
         className="absolute top-32 -left-16 w-52 h-36 opacity-25 pointer-events-none z-0 -scale-x-100"
       >
-        <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" unoptimized />
+        <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
       <motion.div
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
         className="absolute bottom-32 -right-10 w-44 h-28 opacity-20 pointer-events-none z-0"
       >
-        <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" unoptimized />
+        <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
       <motion.div
         animate={{ y: [0, -9, 0], x: [0, -4, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
         className="absolute bottom-8 -left-12 w-48 h-32 opacity-20 pointer-events-none z-0 -scale-x-100"
       >
-        <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" unoptimized />
+        <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
     </>
   );
@@ -146,16 +146,16 @@ function CornerOrnaments() {
   return (
     <>
       <div className="absolute -top-2 -left-2 w-40 h-40 pointer-events-none z-10 -scale-y-100 -scale-x-100">
-        <Image src={A.corner} alt="Corner TL" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner TL" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
       <div className="absolute -top-2 -right-2 w-40 h-40 pointer-events-none z-10 -scale-y-100">
-        <Image src={A.corner} alt="Corner TR" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner TR" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
       <div className="absolute -bottom-2 -left-2 w-40 h-40 pointer-events-none z-10 -scale-x-100">
-        <Image src={A.corner} alt="Corner BL" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner BL" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
       <div className="absolute -bottom-2 -right-2 w-40 h-40 pointer-events-none z-10">
-        <Image src={A.corner} alt="Corner BR" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner BR" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
     </>
   );
@@ -171,7 +171,7 @@ function GoldDivider() {
         transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
         className="w-8 h-8 relative opacity-80"
       >
-        <Image src={A.mandala} alt="Mandala" fill className="object-contain" unoptimized />
+        <Image src={A.mandala} alt="Mandala" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
       <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${C.gold})` }} />
     </div>
@@ -189,7 +189,7 @@ function RingDecoration() {
       className="flex justify-center my-8"
     >
       <div className="relative w-20 h-20">
-        <Image src={A.cincin} alt="Wedding Rings" fill className="object-contain" unoptimized />
+        <Image src={A.cincin} alt="Wedding Rings" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
     </motion.div>
   );
@@ -235,7 +235,7 @@ function EnvelopeSection({
 
         {/* ── Batik texture across full background ── */}
         <div className="absolute inset-0 z-0" style={{ opacity: 0.1 }}>
-          <Image src={A.batik2} alt="Batik Background" fill className="object-cover" unoptimized />
+          <Image src={A.batik2} alt="Batik Background" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
 
         {/* ── MandalaGold1: left side, behind arch (z-10) ── */}
@@ -252,7 +252,7 @@ function EnvelopeSection({
             transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
             className="relative w-full h-full"
           >
-            <Image src={A.mandala} alt="Mandala Left" fill className="object-contain" style={{ opacity: 0.85 }} unoptimized />
+            <Image src={A.mandala} alt="Mandala Left" fill className="object-contain" style={{ opacity: 0.85 }} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           </motion.div>
         </motion.div>
 
@@ -270,7 +270,7 @@ function EnvelopeSection({
             transition={{ duration: 33, repeat: Infinity, ease: 'linear' }}
             className="relative w-full h-full"
           >
-            <Image src={A.mandala} alt="Mandala Right" fill className="object-contain" style={{ opacity: 0.85 }} unoptimized />
+            <Image src={A.mandala} alt="Mandala Right" fill className="object-contain" style={{ opacity: 0.85 }} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           </motion.div>
         </motion.div>
 
@@ -288,7 +288,7 @@ function EnvelopeSection({
             transition={{ duration: 48, repeat: Infinity, ease: 'linear' }}
             className="relative w-full h-full"
           >
-            <Image src={A.mandala} alt="Mandala Bottom" fill className="object-contain" style={{ opacity: 0.55 }} unoptimized />
+            <Image src={A.mandala} alt="Mandala Bottom" fill className="object-contain" style={{ opacity: 0.55 }} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           </motion.div>
         </motion.div>
 
@@ -313,7 +313,7 @@ function EnvelopeSection({
             fill
             className="object-cover object-center"
             priority
-            unoptimized
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div
             className="absolute bottom-0 inset-x-0 h-24 pointer-events-none"
@@ -337,7 +337,7 @@ function EnvelopeSection({
             transition={{ delay: 0.55, duration: 0.9, ease: 'backOut' }}
             className="relative w-full h-full"
           >
-            <Image src={A.cincin} alt="Wedding Rings" fill className="object-contain" unoptimized />
+            <Image src={A.cincin} alt="Wedding Rings" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           </motion.div>
         </div>
 
@@ -473,7 +473,7 @@ function HeroSection({ data }: { data: Invitation }) {
       className="relative min-h-[100dvh] flex flex-col items-center justify-between overflow-hidden py-16"
     >
       <div className="absolute inset-0">
-        <Image src={A.header} alt="Hero" fill className="object-cover blur-sm scale-110" priority unoptimized />
+        <Image src={A.header} alt="Hero" fill className="object-cover blur-sm scale-110" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         {/* Dark overlay for contrast */}
         <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.15)' }} />
         {/* White transparent gradient from bottom to top (40% height) for text readability */}
@@ -492,7 +492,7 @@ function HeroSection({ data }: { data: Invitation }) {
         transition={{ duration: 0.8 }}
         className="absolute top-0 left-0 w-50 h-50 sm:w-72 sm:h-72 pointer-events-none z-10 rotate-180 -translate-x-[8%] -translate-y-[8%]"
       >
-        <Image src={A.corner} alt="Corner TL" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner TL" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -501,7 +501,7 @@ function HeroSection({ data }: { data: Invitation }) {
         transition={{ duration: 0.8 }}
         className="absolute bottom-0 right-0 w-50 h-50 sm:w-72 sm:h-72 pointer-events-none z-10 translate-x-[8%] translate-y-[8%]"
       >
-        <Image src={A.corner} alt="Corner BR" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner BR" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
 
       {/* ── Center Rectangle Photo ── */}
@@ -515,7 +515,7 @@ function HeroSection({ data }: { data: Invitation }) {
           boxShadow: `0 0 30px ${C.gold}80, 0 4px 15px rgba(0, 0, 0, 0.3)`
         }}
       >
-        <Image src={heroPhoto} alt="Couple Photo" fill className="object-cover" unoptimized />
+        <Image src={heroPhoto} alt="Couple Photo" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
 
       <div className="relative z-20 text-center px-6 shrink-0 mt-2">
@@ -591,7 +591,7 @@ function CoupleSection({ data }: { data: Invitation }) {
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute top-[10%] -left-12 w-48 h-32"
         >
-          <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" unoptimized />
+          <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
 
         <motion.div
@@ -599,7 +599,7 @@ function CoupleSection({ data }: { data: Invitation }) {
           transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
           className="absolute top-[35%] -right-12 w-48 h-32 -scale-x-100"
         >
-          <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" unoptimized />
+          <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
 
         <motion.div
@@ -607,7 +607,7 @@ function CoupleSection({ data }: { data: Invitation }) {
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
           className="absolute top-[60%] -left-12 w-48 h-32"
         >
-          <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" unoptimized />
+          <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
 
         <motion.div
@@ -615,7 +615,7 @@ function CoupleSection({ data }: { data: Invitation }) {
           transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
           className="absolute bottom-[10%] -right-12 w-48 h-32 -scale-x-100"
         >
-          <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" unoptimized />
+          <Image src={A.megaMendung} alt="Mega Mendung" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
       </motion.div>
 
@@ -627,7 +627,7 @@ function CoupleSection({ data }: { data: Invitation }) {
         transition={{ duration: 0.8 }}
         className="absolute top-0 right-0 w-50 h-50 sm:w-72 sm:h-72 pointer-events-none z-10 -scale-y-100 translate-x-[8%] -translate-y-[8%]"
       >
-        <Image src={A.corner} alt="Corner TR" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner TR" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -636,7 +636,7 @@ function CoupleSection({ data }: { data: Invitation }) {
         transition={{ duration: 0.8 }}
         className="absolute bottom-0 left-0 w-50 h-50 sm:w-72 sm:h-72 pointer-events-none z-10 -scale-x-100 -translate-x-[8%] translate-y-[8%]"
       >
-        <Image src={A.corner} alt="Corner BL" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner BL" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
 
       <motion.div
@@ -672,7 +672,7 @@ function CoupleSection({ data }: { data: Invitation }) {
       >
         {/* Inner background: batik, opacity 20, blend mode lighten */}
         <div className="absolute inset-0 opacity-70 pointer-events-none">
-          <Image src={A.batik} alt="Batik Card" fill className="object-cover" unoptimized />
+          <Image src={A.batik} alt="Batik Card" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
 
         {/* Mandala TL and BR */}
@@ -682,7 +682,7 @@ function CoupleSection({ data }: { data: Invitation }) {
           className="absolute w-80 h-80 opacity-20 pointer-events-none"
           style={{ top: -150, left: -150 }}
         >
-          <Image src={A.mandala} alt="Mandala TL" fill className="object-contain" unoptimized />
+          <Image src={A.mandala} alt="Mandala TL" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
         <motion.div
           animate={{ rotate: [360, 0] }}
@@ -690,7 +690,7 @@ function CoupleSection({ data }: { data: Invitation }) {
           className="absolute w-80 h-80 opacity-20 pointer-events-none"
           style={{ bottom: -150, right: -150 }}
         >
-          <Image src={A.mandala} alt="Mandala BR" fill className="object-contain" unoptimized />
+          <Image src={A.mandala} alt="Mandala BR" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
 
         {/* Groom */}
@@ -703,10 +703,10 @@ function CoupleSection({ data }: { data: Invitation }) {
         >
           <div className="relative w-36 h-36 mb-4">
             <div className="absolute inset-0 rounded-full overflow-hidden z-0">
-              <Image src={groomPhoto} alt="Groom" fill className="object-cover" unoptimized />
+              <Image src={groomPhoto} alt="Groom" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] pointer-events-none z-10">
-              <Image src={A.circle} alt="Circle Frame" fill className="object-contain" unoptimized />
+              <Image src={A.circle} alt="Circle Frame" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
             <motion.div
               animate={{ boxShadow: [`0 0 12px ${C.gold}60`, `0 0 28px ${C.gold}aa`, `0 0 12px ${C.gold}60`] }}
@@ -740,10 +740,10 @@ function CoupleSection({ data }: { data: Invitation }) {
         >
           <div className="relative w-36 h-36 mb-4">
             <div className="absolute inset-0 rounded-full overflow-hidden z-0">
-              <Image src={bridePhoto} alt="Bride" fill className="object-cover" unoptimized />
+              <Image src={bridePhoto} alt="Bride" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] pointer-events-none z-10">
-              <Image src={A.circle} alt="Circle Frame" fill className="object-contain" unoptimized />
+              <Image src={A.circle} alt="Circle Frame" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
             <motion.div
               animate={{ boxShadow: [`0 0 12px ${C.gold}60`, `0 0 28px ${C.gold}aa`, `0 0 12px ${C.gold}60`] }}
@@ -933,7 +933,7 @@ function DateSection({ data }: { data: Invitation }) {
           className="absolute left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-x-100 -translate-x-[24%] -translate-y-[70%]"
           style={{ top: 0 }}
         >
-          <Image src={A.corner} alt="Separator Corner Left" fill className="object-contain object-left" unoptimized />
+          <Image src={A.corner} alt="Separator Corner Left" fill className="object-contain object-left" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
 
         <motion.div
@@ -944,7 +944,7 @@ function DateSection({ data }: { data: Invitation }) {
           className="absolute right-0 w-50 h-50 sm:w-72 sm:h-72 translate-x-[24%] -translate-y-[70%]"
           style={{ top: 0 }}
         >
-          <Image src={A.corner} alt="Separator Corner Right" fill className="object-contain object-left" unoptimized />
+          <Image src={A.corner} alt="Separator Corner Right" fill className="object-contain object-left" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
       </div>
 
@@ -957,7 +957,7 @@ function DateSection({ data }: { data: Invitation }) {
           className="absolute left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-x-100 -scale-y-100 -translate-x-[24%] -translate-y-[28%]"
           style={{ top: 0 }}
         >
-          <Image src={A.corner} alt="Separator Corner Left Flipped" fill className="object-contain object-left" unoptimized />
+          <Image src={A.corner} alt="Separator Corner Left Flipped" fill className="object-contain object-left" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
 
         <motion.div
@@ -968,7 +968,7 @@ function DateSection({ data }: { data: Invitation }) {
           className="absolute right-0 w-50 h-50 sm:w-72 sm:h-72 -scale-y-100 translate-x-[24%] -translate-y-[28%]"
           style={{ top: 0 }}
         >
-          <Image src={A.corner} alt="Separator Corner Right Flipped" fill className="object-contain object-left" unoptimized />
+          <Image src={A.corner} alt="Separator Corner Right Flipped" fill className="object-contain object-left" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
       </div>
 
@@ -1033,7 +1033,7 @@ function DateSection({ data }: { data: Invitation }) {
           className="absolute left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-x-100 -translate-x-[24%] translate-y-[55%]"
           style={{ bottom: 0 }}
         >
-          <Image src={A.corner} alt="Separator Corner Left" fill className="object-contain object-left" unoptimized />
+          <Image src={A.corner} alt="Separator Corner Left" fill className="object-contain object-left" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
 
         <motion.div
@@ -1044,7 +1044,7 @@ function DateSection({ data }: { data: Invitation }) {
           className="absolute right-0 w-50 h-50 sm:w-72 sm:h-72 translate-x-[24%] translate-y-[55%]"
           style={{ bottom: 0 }}
         >
-          <Image src={A.corner} alt="Separator Corner Right" fill className="object-contain object-left" unoptimized />
+          <Image src={A.corner} alt="Separator Corner Right" fill className="object-contain object-left" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
       </div>
 
@@ -1073,7 +1073,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
         className="absolute w-[120%] max-w-[600px] aspect-square opacity-[0.08] pointer-events-none"
         style={{ top: '15%', right: '-50%' }}
       >
-        <Image src={A.mandala} alt="Mandala Background" fill className="object-contain" unoptimized />
+        <Image src={A.mandala} alt="Mandala Background" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
 
       <motion.div
@@ -1103,7 +1103,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
               >
                 <div className="bg-white border p-5 rounded-2xl shadow-lg w-full flex flex-col items-center text-center" style={{ borderColor: `${C.gold}40` }}>
                   <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: `${C.gold}10` }}>
-                    <Image src={story.photoUrl || '/images/hero-image.jpg'} alt={story.title} fill className="object-cover" unoptimized />
+                    <Image src={story.photoUrl || '/images/hero-image.jpg'} alt={story.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                   </div>
                   <span className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: C.goldDark }}>{story.year}</span>
                   <h4 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-xl mb-1">{story.title}</h4>
@@ -1224,7 +1224,7 @@ function GiftSection({ data }: { data: Invitation }) {
               transition={{ duration: 0.8, delay: 0.3 + (idx * 0.1) }}
               className="absolute top-0 left-0 w-40 h-40 opacity-15 pointer-events-none -translate-x-[50%] -translate-y-[50%]"
             >
-              <Image src={A.mandala} alt="Mandala" fill className="object-contain" unoptimized />
+              <Image src={A.mandala} alt="Mandala" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
@@ -1233,7 +1233,7 @@ function GiftSection({ data }: { data: Invitation }) {
               transition={{ duration: 0.8, delay: 0.4 + (idx * 0.1) }}
               className="absolute bottom-0 right-0 w-40 h-40 opacity-15 pointer-events-none translate-x-[50%] translate-y-[50%]"
             >
-              <Image src={A.mandala} alt="Mandala" fill className="object-contain" unoptimized />
+              <Image src={A.mandala} alt="Mandala" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </motion.div>
             <h3 className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: C.text }}>{gift.bankName}</h3>
             <p className="text-2xl font-mono mb-2" style={{ color: C.goldDark }}>{gift.accountNumber}</p>
@@ -1268,21 +1268,21 @@ function RsvpSection({ data }: { data: Invitation }) {
       style={{ background: '#FAF1DB' }}
     >
       <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <Image src={A.batik} alt="Batik Texture" fill className="object-cover" unoptimized />
+        <Image src={A.batik} alt="Batik Texture" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
       <MegaMendungOrnaments />
       {/* Custom Rotated Corners for RSVP */}
       <div className="absolute top-0 left-0 w-50 h-50 sm:w-72 sm:h-72 pointer-events-none z-10 -scale-y-100 -scale-x-100 -translate-x-[10%] -translate-y-[10%]">
-        <Image src={A.corner} alt="Corner TL" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner TL" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
       <div className="absolute top-0 right-0 w-50 h-50 sm:w-72 sm:h-72 pointer-events-none z-10 -scale-y-100 translate-x-[10%] -translate-y-[10%]">
-        <Image src={A.corner} alt="Corner TR" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner TR" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
       <div className="absolute bottom-0 right-0 w-50 h-50 sm:w-72 sm:h-72 pointer-events-none z-10 translate-x-[10%] translate-y-[10%]">
-        <Image src={A.corner} alt="Corner BR" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner BR" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
       <div className="absolute bottom-0 left-0 w-50 h-50 sm:w-72 sm:h-72 pointer-events-none z-10 -scale-x-100 -translate-x-[10%] translate-y-[10%]">
-        <Image src={A.corner} alt="Corner BL" fill className="object-contain object-left-top" unoptimized />
+        <Image src={A.corner} alt="Corner BL" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
 
       <motion.div
@@ -1317,7 +1317,7 @@ function RsvpSection({ data }: { data: Invitation }) {
       >
         <div className="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none">
           <div className="relative w-64 h-64">
-            <Image src={A.mandala} alt="Mandala Watermark" fill className="object-contain" unoptimized />
+            <Image src={A.mandala} alt="Mandala Watermark" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           </div>
         </div>
         <div className="relative z-10 p-3">
@@ -1337,7 +1337,7 @@ function FooterSection({ data }: { data: Invitation }) {
     >
       <CornerOrnaments />
       <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <Image src={A.batik} alt="Batik" fill className="object-cover" unoptimized />
+        <Image src={A.batik} alt="Batik" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </div>
 
       <motion.div
@@ -1352,7 +1352,7 @@ function FooterSection({ data }: { data: Invitation }) {
           transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
           className="relative w-20 h-20 opacity-70 mb-6"
         >
-          <Image src={A.mandala} alt="Mandala" fill className="object-contain" unoptimized />
+          <Image src={A.mandala} alt="Mandala" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
         <p className="text-xs uppercase tracking-[0.4em] mb-3" style={{ color: C.goldBright }}>With Love</p>
         <h2 style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }} className="text-2xl sm:text-3xl leading-tight mb-1">
@@ -1457,7 +1457,7 @@ export default function ElegantSundanese({
               transition={{ duration: 0.7 }}
               className="absolute top-0 left-0 w-50 h-50 sm:w-72 sm:h-72 -scale-y-100 -scale-x-100 -translate-x-[10%] -translate-y-[10%]"
             >
-              <Image src={A.corner} alt="Separator Corner Left" fill className="object-contain object-left-top" unoptimized />
+              <Image src={A.corner} alt="Separator Corner Left" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </motion.div>
 
             <motion.div
@@ -1467,7 +1467,7 @@ export default function ElegantSundanese({
               transition={{ duration: 0.7 }}
               className="absolute top-0 right-0 w-50 h-50 sm:w-72 sm:h-72 -scale-y-100 translate-x-[10%] -translate-y-[10%]"
             >
-              <Image src={A.corner} alt="Separator Corner Right" fill className="object-contain object-left-top" unoptimized />
+              <Image src={A.corner} alt="Separator Corner Right" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </motion.div>
           </div>
         </GallerySection>

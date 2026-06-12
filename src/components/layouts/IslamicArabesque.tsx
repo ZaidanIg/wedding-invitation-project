@@ -107,7 +107,7 @@ export default function IslamicArabesque({ invitation, isPreview = false }: { in
         {/* Hero */}
         <section id="home" className="relative h-[90vh] flex items-end justify-center pb-24 overflow-hidden">
            <div className="absolute inset-0">
-              <Image src={heroPhoto} alt="Couple" fill className="object-cover" priority unoptimized />
+              <Image src={heroPhoto} alt="Couple" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#f0fdfa] via-[#f0fdfa]/40 to-transparent" />
            </div>
            

@@ -119,11 +119,11 @@ export function FloralDivider({ color = "#8b5e3c", imageSrc, className = "" }: {
     return (
       <div className={`flex items-center justify-between w-full px-2 sm:px-6 ${className}`}>
         <div className="relative w-24 h-24 opacity-80 rotate-[15deg]" style={{ filter: 'sepia(100%) saturate(300%) brightness(40%) hue-rotate(5deg)' }}>
-          <Image src={imageSrc} alt="Flower" fill className="object-contain" unoptimized />
+          <Image src={imageSrc} alt="Flower" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
         <div className="flex-1 h-px bg-gradient-to-r from-transparent via-current to-transparent opacity-10 mx-2" style={{ color }} />
         <div className="relative w-24 h-24 opacity-80 scale-x-[-1] -rotate-[15deg]" style={{ filter: 'sepia(100%) saturate(300%) brightness(40%) hue-rotate(5deg)' }}>
-          <Image src={imageSrc} alt="Flower" fill className="object-contain" unoptimized />
+          <Image src={imageSrc} alt="Flower" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
       </div>
     );
@@ -195,7 +195,7 @@ export function LoveStorySection({
                 <AnimatedSection animation="up" className="relative w-full max-w-[85%] z-10">
                   <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-5 rounded-2xl flex flex-col items-center text-center w-full relative">
                     <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-md bg-white/5">
-                      <Image src={item.photoUrl || '/images/hero-image.jpg'} alt={item.title} fill className="object-cover" unoptimized />
+                      <Image src={item.photoUrl || '/images/hero-image.jpg'} alt={item.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     </div>
                     <span className={`text-[10px] font-bold tracking-widest uppercase mb-1 ${accentColor}`}>{item.year}</span>
                     <h3 className={`text-lg font-display font-bold ${textColor} mb-2`}>{item.title}</h3>
@@ -1284,7 +1284,7 @@ export function GallerySection({
                 alt={`Momen ${idx + 1}`}
                 fill
                 className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                unoptimized
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             </div>
           </AnimatedSection>

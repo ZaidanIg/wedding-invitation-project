@@ -207,7 +207,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
-             <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom scale-105 opacity-50 grayscale-[0.2]" priority unoptimized />
+             <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom scale-105 opacity-50 grayscale-[0.2]" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
              <div className="absolute inset-0 bg-gradient-to-b from-amber-900/20 via-transparent to-[#fffcf5]" />
            </div>
            
@@ -259,7 +259,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
                     <div className="absolute inset-[-15px] border border-amber-100 rounded-full animate-spin-slow" />
                     <div className="absolute inset-[-8px] border border-amber-200 rounded-full animate-spin-slow [animation-duration:12s]" />
                     <div className="absolute inset-0 rounded-full overflow-hidden border-8 border-white shadow-2xl ring-1 ring-amber-100">
-                      <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" unoptimized />
+                      <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     </div>
                  </div>
                  <h3 className="text-4xl font-display font-bold text-amber-900 mb-3 italic">{invitation.groomName}</h3>
@@ -278,7 +278,7 @@ export default function HinduMandala({ invitation, isPreview = false }: { invita
                     <div className="absolute inset-[-15px] border border-amber-100 rounded-full animate-spin-slow [animation-direction:reverse]" />
                     <div className="absolute inset-[-8px] border border-amber-200 rounded-full animate-spin-slow [animation-duration:12s] [animation-direction:reverse]" />
                     <div className="absolute inset-0 rounded-full overflow-hidden border-8 border-white shadow-2xl ring-1 ring-amber-100">
-                      <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" unoptimized />
+                      <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     </div>
                  </div>
                  <h3 className="text-4xl font-display font-bold text-amber-900 mb-3 italic">{invitation.brideName}</h3>

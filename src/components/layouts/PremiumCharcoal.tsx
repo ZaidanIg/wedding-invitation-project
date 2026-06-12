@@ -420,7 +420,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
       {/* Section 1: Hero Cover */}
       <section id="home" className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden pb-20">
         <div className="absolute inset-0">
-          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority unoptimized />
+          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/30 to-transparent" />
         </div>
         <div className="relative z-10 text-center px-6">
@@ -473,7 +473,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
               <div className="w-36 h-36 rounded-full overflow-hidden border-4 border-[#d4af37]/50 shadow-2xl mb-5 relative">
-                <Image src={groomPhoto} alt="Groom" fill className="object-cover scale-105 hover:scale-110 transition-transform duration-500" unoptimized />
+                <Image src={groomPhoto} alt="Groom" fill className="object-cover scale-105 hover:scale-110 transition-transform duration-500" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
               </div>
               <h3 className="text-2xl font-display font-bold text-[#d4af37] tracking-tight" style={{ fontFamily: 'var(--font-playfair), serif' }}>
                 {invitation.groomName}
@@ -498,7 +498,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
           <AnimatedSection animation="right">
             <div className="flex flex-col items-center">
               <div className="w-36 h-36 rounded-full overflow-hidden border-4 border-[#d4af37]/50 shadow-2xl mb-5 relative">
-                <Image src={bridePhoto} alt="Bride" fill className="object-cover scale-105 hover:scale-110 transition-transform duration-500" unoptimized />
+                <Image src={bridePhoto} alt="Bride" fill className="object-cover scale-105 hover:scale-110 transition-transform duration-500" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
               </div>
               <h3 className="text-2xl font-display font-bold text-[#d4af37] tracking-tight" style={{ fontFamily: 'var(--font-playfair), serif' }}>
                 {invitation.brideName}
@@ -522,7 +522,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
               alt="Story Cover Top" 
               fill 
               className="object-cover" 
-              unoptimized 
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
             />
             {/* Dark Overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/30" />
@@ -552,7 +552,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
                     <AnimatedSection animation="up" className="relative w-full max-w-[85%] z-10">
                       <div className="bg-white border border-[#eceae4] p-4.5 rounded-2xl shadow-sm hover:shadow-md transition-shadow relative w-full flex flex-col items-center text-center">
                         <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm bg-stone-100">
-                          <Image src={storyItem.photoUrl || '/images/hero-image.jpg'} alt={storyItem.title} fill className="object-cover" unoptimized />
+                          <Image src={storyItem.photoUrl || '/images/hero-image.jpg'} alt={storyItem.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                         </div>
                         <span className="text-[10px] font-bold tracking-widest text-[#d4af37] mb-1">{storyItem.year}</span>
                         <h3 className="text-sm font-display font-bold text-[#111111] mb-1.5" style={{ fontFamily: 'var(--font-playfair), serif' }}>
@@ -593,7 +593,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
                 alt="Story Cover Bottom" 
                 fill 
                 className="object-cover scale-105" 
-                unoptimized 
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
               />
               <div className="absolute inset-0 bg-[#111111]/45" />
             </div>
