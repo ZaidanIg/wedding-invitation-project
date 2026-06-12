@@ -355,7 +355,7 @@ function EnvelopeSection({
               className="not-italic"
               style={{
                 fontFamily: "'Playfair Display', serif",
-                fontSize: 'clamp(24px, 9vw, 42px)',
+                fontSize: 'clamp(0.875rem, 7vw, 2.5rem)',
                 fontWeight: 700,
                 fontStyle: 'normal',
                 color: '#000000',
@@ -377,7 +377,7 @@ function EnvelopeSection({
           >
             <p
               style={{
-                fontSize: 'clamp(14px, 5vw, 20px)',
+                fontSize: 'clamp(0.75rem, 4vw, 1.25rem)',
                 fontWeight: 400,
                 color: '#000000',
                 textAlign: 'center',
@@ -388,7 +388,7 @@ function EnvelopeSection({
             </p>
             <p
               style={{
-                fontSize: 'clamp(11px, 3.5vw, 15px)',
+                fontSize: 'clamp(0.625rem, 3vw, 0.875rem)',
                 fontWeight: 400,
                 color: '#000000',
                 textAlign: 'center',
@@ -411,7 +411,7 @@ function EnvelopeSection({
             >
               <p
                 style={{
-                  fontSize: 'clamp(13px, 4vw, 16px)',
+                  fontSize: 'clamp(0.75rem, 4vw, 1rem)',
                   fontWeight: 400,
                   color: '#323232',
                   textAlign: 'center',
