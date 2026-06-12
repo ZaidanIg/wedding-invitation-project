@@ -72,9 +72,8 @@ export async function POST(request: Request, { params }: RouteParams) {
       return errorResponse(`Tamu ${guest.name} tidak memiliki nomor WhatsApp yang valid.`, 400, 'BAD_REQUEST');
     }
 
-    // 5. Send message via Fonnte with 15-second dispatch delay/throttle backend guardrail
+    // 5. Send message via Fonnte
     try {
-      await new Promise((resolve) => setTimeout(resolve, 15000));
       await sendWhatsAppMessage(guest.phone, message);
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : '';

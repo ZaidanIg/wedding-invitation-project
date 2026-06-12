@@ -231,78 +231,24 @@ function EnvelopeSection({
       className="fixed inset-0 z-[100] flex justify-center overflow-hidden"
     >
       {/* ── Root container: silver-gray background like reference ── */}
-      <div className="relative w-full max-w-lg h-full overflow-hidden" style={{ background: '#D9D9D9' }}>
-
+      {/* ── Root container: flex layout to prevent overlap ── */}
+      <div className="relative w-full max-w-lg h-[100dvh] flex flex-col items-center justify-start bg-[#D9D9D9] overflow-hidden">
+        
         {/* ── Batik texture across full background ── */}
         <div className="absolute inset-0 z-0" style={{ opacity: 0.1 }}>
           <Image src={A.batik2} alt="Batik Background" fill className="object-cover" />
         </div>
 
-        {/* ── MandalaGold1: left side, behind arch (z-10) ── */}
-        <motion.div
-          initial={{ x: '-100%', opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: '-100%', opacity: 0, transition: { duration: 0.7, ease: 'easeIn' } }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
-          className="absolute pointer-events-none z-10"
-          style={{ top: '34%', left: '-34%', width: '80%', aspectRatio: '1/1' }}
-        >
-          <motion.div
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
-            className="relative w-full h-full"
-          >
-            <Image src={A.mandala} alt="Mandala Left" fill className="object-contain" style={{ opacity: 0.85 }} />
-          </motion.div>
-        </motion.div>
-
-        {/* ── MandalaGold3: right side, behind arch (z-10) ── */}
-        <motion.div
-          initial={{ x: '100%', opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: '100%', opacity: 0, transition: { duration: 0.7, ease: 'easeIn' } }}
-          transition={{ duration: 1.2, ease: 'easeOut', delay: 0.2 }}
-          className="absolute pointer-events-none z-10"
-          style={{ top: '34%', right: '-34%', width: '80%', aspectRatio: '1/1' }}
-        >
-          <motion.div
-            animate={{ rotate: [360, 0] }}
-            transition={{ duration: 33, repeat: Infinity, ease: 'linear' }}
-            className="relative w-full h-full"
-          >
-            <Image src={A.mandala} alt="Mandala Right" fill className="object-contain" style={{ opacity: 0.85 }} />
-          </motion.div>
-        </motion.div>
-
-        {/* ── MandalaGold2: large bottom mandala, behind arch (z-10) ── */}
-        <motion.div
-          initial={{ y: '100%', opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: '100%', opacity: 0, transition: { duration: 0.7, ease: 'easeIn' } }}
-          transition={{ duration: 1.2, ease: 'easeOut', delay: 0.4 }}
-          className="absolute pointer-events-none z-10 -translate-x-1/2"
-          style={{ top: '80%', left: '50%', width: '105%', aspectRatio: '1/1' }}
-        >
-          <motion.div
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 48, repeat: Infinity, ease: 'linear' }}
-            className="relative w-full h-full"
-          >
-            <Image src={A.mandala} alt="Mandala Bottom" fill className="object-contain" style={{ opacity: 0.55 }} />
-          </motion.div>
-        </motion.div>
-
-        {/* ── Hero photo: fills top ~58%, with OVAL ARCH bottom edge (z-20) ── */}
+        {/* ── Hero photo: taking up top ~55% of the screen ── */}
         <motion.div
           initial={{ opacity: 0, y: '-100%' }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ y: '-100%', opacity: 0, transition: { duration: 0.7, ease: 'easeIn' } }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
-          className="absolute top-0 left-0 right-0 z-20"
+          className="relative w-full shrink-0 z-20 bg-black"
           style={{
-            height: '58%',
-            /* Deep arch curve */
-            borderRadius: '0 0 50% 50% / 0 0 250px 250px',
+            height: '55vh',
+            borderRadius: '0 0 50% 50% / 0 0 15vh 15vh',
             overflow: 'hidden',
             boxShadow: '0px 6px 20px rgba(0,0,0,0.30)',
           }}
@@ -313,146 +259,107 @@ function EnvelopeSection({
             fill
             className="object-cover object-center"
             priority
-           
           />
           <div
-            className="absolute bottom-0 inset-x-0 h-24 pointer-events-none"
-            style={{ background: 'linear-gradient(to top, rgba(217,217,217,0.50) 0%, transparent 100%)' }}
+            className="absolute bottom-0 inset-x-0 h-32 pointer-events-none"
+            style={{ background: 'linear-gradient(to top, rgba(217,217,217,0.7) 0%, transparent 100%)' }}
           />
+          
+          {/* Decorative Mandalas behind the arch curve */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
+            className="absolute -bottom-20 -left-20 w-64 h-64 opacity-60 mix-blend-overlay pointer-events-none"
+          >
+            <Image src={A.mandala} alt="Mandala" fill className="object-contain" />
+          </motion.div>
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
+            className="absolute -bottom-20 -right-20 w-64 h-64 opacity-60 mix-blend-overlay pointer-events-none"
+          >
+            <Image src={A.mandala} alt="Mandala" fill className="object-contain" />
+          </motion.div>
         </motion.div>
 
-        {/* ── Cincin: wedding ring, exact center over the arch curve (z-30) ── */}
-        <div
-          className="absolute z-30 pointer-events-none -translate-x-1/2 -translate-y-1/2"
-          style={{
-            top: '58%', /* Aligned to the bottom of the 58% height arch */
-            left: '50%',
-            width: '22%',
-            aspectRatio: '1/1',
-          }}
-        >
+        {/* ── Content Area: remaining 45% of the screen ── */}
+        <div className="relative flex-1 w-full flex flex-col items-center justify-start pt-14 pb-8 px-6 z-30">
+          
+          {/* Cincin overlap arch */}
+          <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 sm:w-28 sm:h-28 z-30">
+            <motion.div
+              initial={{ scale: 0.4, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.55, duration: 0.9, ease: 'backOut' }}
+              className="relative w-full h-full"
+            >
+              <Image src={A.cincin} alt="Wedding Rings" fill className="object-contain drop-shadow-xl" />
+            </motion.div>
+          </div>
+
           <motion.div
-            initial={{ scale: 0.4, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.55, duration: 0.9, ease: 'backOut' }}
-            className="relative w-full h-full"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.9 }}
+            className="w-full text-center flex flex-col items-center gap-1 mb-auto"
           >
-            <Image src={A.cincin} alt="Wedding Rings" fill className="object-contain" />
+            <h1
+              className="not-italic"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 'clamp(24px, 8vw, 36px)',
+                fontWeight: 700,
+                color: '#000000',
+                lineHeight: 1.2,
+                textTransform: 'uppercase',
+              }}
+            >
+              {data.groomName} &amp; {data.brideName}
+            </h1>
+            
+            <div className="mt-2 flex flex-col items-center gap-1">
+              <p style={{ fontSize: 'clamp(14px, 4vw, 18px)', color: '#000000' }}>
+                Kami Mengundang
+              </p>
+              <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#000000' }}>
+                saudara/i
+              </p>
+            </div>
+
+            <div
+              className="mt-4 bg-[#EFEFEF] rounded-full shadow-md px-6 py-2.5 w-full max-w-[240px]"
+            >
+              <p className="text-sm sm:text-base font-medium text-[#323232] text-center truncate">
+                {guestName}
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.7 }}
+            className="w-full flex justify-center mt-6"
+          >
+            <motion.button
+              onClick={onOpen}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              className="relative overflow-hidden text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-xl px-10 py-3.5"
+              style={{ background: C.goldDark, border: `1px solid ${C.gold}` }}
+            >
+              <span className="relative z-10">Buka Undangan</span>
+              <motion.div
+                className="absolute inset-0"
+                style={{ background: C.gold, borderRadius: '9999px' }}
+                initial={{ scaleX: 0, originX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.button>
           </motion.div>
         </div>
 
-        {/* ── Couple Names: bold uppercase, below ring (z-40) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.9 }}
-          className="absolute left-0 right-0 z-40 text-center px-6"
-          style={{ top: '64%' }}
-        >
-          <h1
-            className="not-italic"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(28px, 10.5vw, 46px)',
-              fontWeight: 700,
-              fontStyle: 'normal',
-              color: '#000000',
-              letterSpacing: '0.02em',
-              lineHeight: 1.1,
-              textTransform: 'uppercase',
-            }}
-          >
-            {data.groomName} &amp; {data.brideName}
-          </h1>
-        </motion.div>
-
-        {/* ── "Kami Mengundang" block (z-40) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="absolute z-40 left-0 right-0 flex flex-col items-center"
-          style={{ top: '74%' }}
-        >
-          {/* "Kami Mengundang" — h2-regular 24px — centred */}
-          <p
-            style={{
-              fontSize: 'clamp(16px, 5.5vw, 24px)',
-              fontWeight: 400,
-              color: '#000000',
-              textAlign: 'center',
-              lineHeight: 1.3,
-            }}
-          >
-            Kami Mengundang
-          </p>
-
-          {/* "saudara/i" — body-md-regular 15px — centred */}
-          <p
-            style={{
-              fontSize: 'clamp(11px, 3.5vw, 15px)',
-              fontWeight: 400,
-              color: '#000000',
-              textAlign: 'center',
-              marginTop: 2,
-            }}
-          >
-            saudara/i
-          </p>
-
-          {/* NamaTamu pill — white/light, radius-37, prominent shadow, full width pill */}
-          <div
-            style={{
-              marginTop: 10,
-              backgroundColor: '#EFEFEF',
-              borderRadius: 37,
-              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-              padding: '11px 28px',
-              minWidth: 'min(200px, 50%)',
-              maxWidth: '60%',
-            }}
-          >
-            <p
-              style={{
-                fontSize: 'clamp(13px, 4vw, 16px)',
-                fontWeight: 400,
-                color: '#323232',
-                textAlign: 'center',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {guestName}
-            </p>
-          </div>
-        </motion.div>
-
-        {/* ── CTA Button (z-50) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.7 }}
-          className="absolute z-50 left-0 right-0 flex justify-center"
-          style={{ bottom: '5.5%' }}
-        >
-          <motion.button
-            onClick={onOpen}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            className="relative overflow-hidden text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-xl px-10 py-3.5"
-            style={{ background: C.goldDark, border: `1px solid ${C.gold}` }}
-          >
-            <span className="relative z-10">Buka Undangan</span>
-            <motion.div
-              className="absolute inset-0"
-              style={{ background: C.gold, borderRadius: '9999px' }}
-              initial={{ scaleX: 0, originX: 0 }}
-              whileHover={{ scaleX: 1 }}
-              transition={{ duration: 0.3 }}
-            />
-          </motion.button>
-        </motion.div>
 
         {/* ── Gold dust particles (z-50) ── */}
         <div className="absolute inset-0 z-50 pointer-events-none">
@@ -1102,9 +1009,11 @@ function LoveStorySection({ data }: { data: Invitation }) {
                 className="relative w-full max-w-[85%] z-10"
               >
                 <div className="bg-white border p-5 rounded-2xl shadow-lg w-full flex flex-col items-center text-center" style={{ borderColor: `${C.gold}40` }}>
-                  <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: `${C.gold}10` }}>
-                    <Image src={story.photoUrl || '/images/hero-image.jpg'} alt={story.title} fill className="object-cover" />
-                  </div>
+                  {story.photoUrl && (
+                    <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: `${C.gold}10` }}>
+                      <Image src={story.photoUrl} alt={story.title} fill className="object-cover" />
+                    </div>
+                  )}
                   <span className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: C.goldDark }}>{story.year}</span>
                   <h4 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-xl mb-1">{story.title}</h4>
                   <p className="text-xs sm:text-sm leading-relaxed italic break-words whitespace-pre-line" style={{ color: `${C.text}90` }}>{story.description}</p>

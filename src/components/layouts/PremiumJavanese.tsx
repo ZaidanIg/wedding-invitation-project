@@ -633,9 +633,11 @@ function LoveStorySection({ data }: { data: Invitation }) {
                 className="relative w-full max-w-[85%] z-10"
               >
                 <div className="bg-white border border-[#D4AF37]/20 p-5 rounded-2xl shadow-lg w-full flex flex-col items-center text-center">
-                  <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm bg-[#D4AF37]/5">
-                    <Image src={story.photoUrl || '/images/hero-image.jpg'} alt={story.title} fill className="object-cover" />
-                  </div>
+                  {story.photoUrl && (
+                    <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm bg-[#D4AF37]/5">
+                      <Image src={story.photoUrl} alt={story.title} fill className="object-cover" />
+                    </div>
+                  )}
                   <span className="text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase mb-1">{story.year}</span>
                   <h4 className="text-xl font-display text-[#4A3728] mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
                   <p className="text-xs sm:text-sm text-[#4A3728]/70 leading-relaxed italic break-words whitespace-pre-line">{story.description}</p>
