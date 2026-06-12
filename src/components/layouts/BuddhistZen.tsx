@@ -225,7 +225,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
-             <Image src={heroPhoto} alt="Couple" fill className="object-cover opacity-30 animate-gentle-zoom grayscale-[0.3]" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+             <Image src={heroPhoto} alt="Couple" fill className="object-cover opacity-30 animate-gentle-zoom grayscale-[0.3]" priority />
              <div className="absolute inset-0 bg-gradient-to-b from-[#fdfbf7]/50 via-transparent to-[#fdfbf7]" />
            </div>
            
@@ -281,7 +281,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
                  <div className="relative w-52 h-52 mx-auto mb-10">
                     <div className="absolute inset-0 rounded-full border border-[#a3b18a]/20 animate-spin-slow" />
                     <div className="absolute inset-2 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                      <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                      <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" />
                     </div>
                  </div>
                  <h3 className="text-3xl font-display font-bold text-[#3d4432] mb-2">{invitation.groomName}</h3>
@@ -302,7 +302,7 @@ export default function BuddhistZen({ invitation, isPreview = false }: { invitat
                  <div className="relative w-52 h-52 mx-auto mb-10">
                     <div className="absolute inset-0 rounded-full border border-[#a3b18a]/20 animate-spin-slow [animation-direction:reverse]" />
                     <div className="absolute inset-2 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                      <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                      <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" />
                     </div>
                  </div>
                  <h3 className="text-3xl font-display font-bold text-[#3d4432] mb-2">{invitation.brideName}</h3>

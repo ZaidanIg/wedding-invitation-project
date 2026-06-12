@@ -296,7 +296,7 @@ export default function DynamicThemeRenderer({
             return (
               <section key={sect.id} className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden" style={sectionCustomStyle}>
                 <div className="absolute inset-0">
-                  <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                  <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                 </div>
                 <div className="relative z-10 text-center pb-16 px-6">
@@ -363,7 +363,7 @@ export default function DynamicThemeRenderer({
                       <div className="relative w-40 h-40 mb-6 group">
                         <div className="absolute inset-0 bg-[var(--accent-color)]/5 rounded-full scale-110 blur-xl opacity-50" />
                         <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                          <Image src={groomPhoto} alt="Groom" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                          <Image src={groomPhoto} alt="Groom" fill className="object-cover" />
                         </div>
                       </div>
                       <h3 className="text-2xl sm:text-3xl font-display font-bold mb-2">{invitation.groomName}</h3>
@@ -382,7 +382,7 @@ export default function DynamicThemeRenderer({
                       <div className="relative w-40 h-40 mb-6 group">
                         <div className="absolute inset-0 bg-[var(--accent-color)]/5 rounded-full scale-110 blur-xl opacity-50" />
                         <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                          <Image src={bridePhoto} alt="Bride" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                          <Image src={bridePhoto} alt="Bride" fill className="object-cover" />
                         </div>
                       </div>
                       <h3 className="text-2xl sm:text-3xl font-display font-bold mb-2">{invitation.brideName}</h3>

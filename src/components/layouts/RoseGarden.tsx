@@ -35,7 +35,7 @@ interface LayoutProps {
 function ArchPhoto({ src, className = '' }: { src: string; className?: string }) {
   return (
     <div className={`relative overflow-hidden ${className}`} style={{ borderRadius: '50% 50% 4% 4% / 40% 40% 4% 4%' }}>
-      <Image src={src} alt="Photo" fill className="object-cover animate-gentle-zoom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+      <Image src={src} alt="Photo" fill className="object-cover animate-gentle-zoom" />
     </div>
   );
 }
@@ -87,7 +87,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
       {/* Hero */}
       <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority />
           <div className="absolute inset-0 bg-gradient-to-t from-pink-950/60 via-pink-900/20 to-transparent" />
         </div>
 
@@ -223,7 +223,7 @@ export default function RoseGarden({ invitation, isPreview = false }: LayoutProp
 
       {/* Full-width photo */}
       <section className="relative w-full h-[350px] sm:h-[450px] overflow-hidden">
-        <Image src={photo3} alt="Couple photo" fill className="object-cover animate-gentle-zoom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+        <Image src={photo3} alt="Couple photo" fill className="object-cover animate-gentle-zoom" />
         <div className="absolute inset-0 bg-gradient-to-t from-pink-950/30 to-transparent" />
       </section>
 

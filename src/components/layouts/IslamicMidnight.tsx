@@ -136,7 +136,7 @@ export default function IslamicMidnight({ invitation, isPreview = false }: { inv
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6">
            <div className="absolute inset-0">
-             <Image src={heroPhoto} alt="Couple" fill className="object-cover opacity-30" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+             <Image src={heroPhoto} alt="Couple" fill className="object-cover opacity-30" priority />
              <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f0d] via-transparent to-[#0a0f0d]" />
              <StarField />
            </div>

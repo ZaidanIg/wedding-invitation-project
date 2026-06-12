@@ -230,7 +230,7 @@ export default function ShowcaseSection({ fullGallery = false }: { fullGallery?:
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
 
   return (
-    <section ref={sectionRef} className={`${fullGallery ? 'py-12 bg-[#fdfcf9]' : 'py-32'} px-4 overflow-hidden relative content-visibility-auto`}>
+    <section ref={sectionRef} className={`${fullGallery ? 'py-12 bg-[#fdfcf9]' : 'py-32'} px-4 overflow-hidden relative`}>
       {/* Parallax Background for Homepage */}
       {!fullGallery && (
         <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">

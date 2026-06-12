@@ -208,7 +208,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
-             <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom scale-105" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+             <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom scale-105" priority />
              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/10 to-white" />
            </div>
            
@@ -256,7 +256,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
            <div className="space-y-32">
               <AnimatedSection animation="left">
                  <div className="relative w-56 h-72 mx-auto mb-10 rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white rotate-[-3deg]">
-                    <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                    <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" />
                  </div>
                  <h3 className="text-4xl font-display font-bold text-stone-800 mb-2 italic">{invitation.groomName}</h3>
                  <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] mb-4">Mempelai Pria</p>
@@ -273,7 +273,7 @@ export default function ChristianElegant({ invitation, isPreview = false }: { in
 
               <AnimatedSection animation="right">
                  <div className="relative w-56 h-72 mx-auto mb-10 rounded-[4rem] overflow-hidden shadow-2xl border-4 border-white rotate-[3deg]">
-                    <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                    <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" />
                  </div>
                  <h3 className="text-4xl font-display font-bold text-stone-800 mb-2 italic">{invitation.brideName}</h3>
                  <p className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] mb-4">Mempelai Wanita</p>

@@ -269,7 +269,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0">
-             <Image src={heroPhoto} alt="Couple" fill className="object-cover brightness-[0.7]" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+             <Image src={heroPhoto} alt="Couple" fill className="object-cover brightness-[0.7]" priority />
              <div className="absolute inset-0 bg-gradient-to-b from-[#1a2b23]/40 via-transparent to-[#fdfcf9]" />
           </div>
           
@@ -319,7 +319,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
                  <div className="flex flex-col items-center text-center">
                     <AnimatedSection animation="scale" className="relative mb-8">
                        <div className="w-48 h-64 rounded-[3rem] overflow-hidden border-8 border-[#c5a059]/10 shadow-2xl">
-                          <Image src={groomPhoto} alt="Groom" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                          <Image src={groomPhoto} alt="Groom" fill className="object-cover" />
                        </div>
                        <IslamicPattern className="absolute -bottom-6 -left-6 w-24 h-24 text-[#c5a059]" />
                     </AnimatedSection>
@@ -333,7 +333,7 @@ export default function IslamicGrace({ invitation, isPreview = false }: LayoutPr
                  <div className="flex flex-col items-center text-center">
                     <AnimatedSection animation="scale" className="relative mb-8">
                        <div className="w-48 h-64 rounded-[3rem] overflow-hidden border-8 border-[#c5a059]/10 shadow-2xl">
-                          <Image src={bridePhoto} alt="Bride" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                          <Image src={bridePhoto} alt="Bride" fill className="object-cover" />
                        </div>
                        <IslamicPattern className="absolute -top-6 -right-6 w-24 h-24 text-[#c5a059] rotate-90" />
                     </AnimatedSection>

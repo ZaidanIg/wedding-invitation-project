@@ -109,7 +109,7 @@ export default function IslamicClassic({ invitation, isPreview = false }: { invi
         {/* Hero Section */}
         <section id="home" className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-stone-50">
            <div className="absolute inset-0">
-             <Image src={heroPhoto} alt="Couple" fill className="object-cover opacity-40 grayscale-[0.5]" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+             <Image src={heroPhoto} alt="Couple" fill className="object-cover opacity-40 grayscale-[0.5]" priority />
              <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-[#fdfcf9]" />
            </div>
            

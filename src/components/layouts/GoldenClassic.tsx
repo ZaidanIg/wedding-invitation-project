@@ -68,7 +68,7 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
       {/* Hero */}
       <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col overflow-hidden pt-12 pb-8 px-6">
         <div className="absolute inset-0 z-0">
-          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom opacity-15" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom opacity-15" priority />
           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm" />
         </div>
 
@@ -121,7 +121,7 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
 
       {/* Full Bleed Photo 2 */}
       <section className="relative w-full h-[400px] overflow-hidden">
-        <Image src={photo2} alt="Couple photo" fill className="object-cover animate-gentle-zoom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+        <Image src={photo2} alt="Couple photo" fill className="object-cover animate-gentle-zoom" />
       </section>
 
       {/* Greeting */}
@@ -143,7 +143,7 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
               <div className="relative w-32 h-40 mb-6 bg-zinc-200 border border-[#D4AF37]/20 overflow-hidden shadow-md">
-                <Image src={groomPhoto} alt="Groom" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-700" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                <Image src={groomPhoto} alt="Groom" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-700" />
               </div>
               <h3 className="text-3xl font-light uppercase tracking-widest text-zinc-800 mb-2">{invitation.groomName}</h3>
               <p className="text-[10px] text-[#D4AF37] uppercase tracking-[0.2em] mb-1">Putra dari</p>
@@ -157,7 +157,7 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
           <AnimatedSection animation="right">
             <div className="flex flex-col items-center">
               <div className="relative w-32 h-40 mb-6 bg-zinc-200 border border-[#D4AF37]/20 overflow-hidden shadow-md">
-                <Image src={bridePhoto} alt="Bride" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-700" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                <Image src={bridePhoto} alt="Bride" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-700" />
               </div>
               <h3 className="text-3xl font-light uppercase tracking-widest text-zinc-800 mb-2">{invitation.brideName}</h3>
               <p className="text-[10px] text-[#D4AF37] uppercase tracking-[0.2em] mb-1">Putri dari</p>
@@ -214,7 +214,7 @@ export default function GoldenClassic({ invitation, isPreview = false }: LayoutP
 
       {/* Full Bleed Photo 3 */}
       <section className="relative w-full h-[400px] overflow-hidden">
-        <Image src={photo3} alt="Couple photo" fill className="object-cover animate-gentle-zoom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+        <Image src={photo3} alt="Couple photo" fill className="object-cover animate-gentle-zoom" />
       </section>
 
       {/* Map */}
