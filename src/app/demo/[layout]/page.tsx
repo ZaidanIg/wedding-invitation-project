@@ -59,7 +59,7 @@ export default function DemoPage({ params }: PageProps) {
       </div>
 
       <div className="w-full max-w-lg relative bg-white shadow-[0_0_100px_rgba(0,0,0,0.1)]">
-        <InvitationPreview invitation={invitation} isPreview={true} />
+        <InvitationPreview invitation={invitation} isPreview={false} />
       </div>
 
     </div>

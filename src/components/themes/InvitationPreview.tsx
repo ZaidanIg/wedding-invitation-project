@@ -30,7 +30,7 @@ export default function InvitationPreview({ invitation, isPreview = false, theme
   const [loadingTheme, setLoadingTheme] = useState(!isHardcoded && !themeTemplate);
 
   useEffect(() => {
-    if (!isPreview && invitation.slug) {
+    if (!isPreview && invitation.slug && invitation.slug !== 'demo-invitation') {
       fetch('/api/invitations/view', {
         method: 'POST',
         headers: {
