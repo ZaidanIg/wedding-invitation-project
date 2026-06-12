@@ -26,7 +26,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const invitation = invitationMapper.toResponse(entity as Record<string, unknown>);
     const title = `The Wedding of ${invitation.groomName} & ${invitation.brideName}`;
     const description = invitation.greeting || `Undangan pernikahan digital ${invitation.groomName} & ${invitation.brideName}. Mohon doa restu dan kehadirannya.`;
-    const ogImage = invitation.headerPhotoUrl || (invitation.photoUrls && invitation.photoUrls.length > 0 ? invitation.photoUrls[0] : '/images/hero-bg.png');
+    const rawOgImage = invitation.headerPhotoUrl || (invitation.photoUrls && invitation.photoUrls.length > 0 ? invitation.photoUrls[0] : '/images/hero-bg.png');
+    
+    // Create an optimized thumbnail URL using Next.js Image Optimization API
+    // WhatsApp requires OG images to be < 300KB, so we must compress raw user uploads
+    const ogImage = rawOgImage.startsWith('http') && !rawOgImage.includes(process.env.NEXT_PUBLIC_APP_URL || '')
+      ? rawOgImage // External URLs might not be allowed in next/image unless configured
+      : `/_next/image?url=${encodeURIComponent(rawOgImage)}&w=1200&q=75`;
 
     const correctCoupleSlug = getCoupleSlug(invitation.groomName, invitation.brideName);
 

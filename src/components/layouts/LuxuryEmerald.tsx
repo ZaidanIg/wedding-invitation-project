@@ -472,7 +472,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
 
       <section id="home" className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority unoptimized />
+          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#042f2e]/80 via-[#042f2e]/30 to-transparent" />
         </div>
         <div className="relative z-10 text-center pb-16 px-6">
@@ -502,7 +502,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#d4af37]/30 shadow-lg mb-4 relative">
-                <Image src={groomPhoto} alt="Groom" fill className="object-cover" unoptimized />
+                <Image src={groomPhoto} alt="Groom" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
               </div>
               <h3 className="text-2xl font-display font-bold text-[#042f2e]">{invitation.groomName}</h3>
               <p className="text-xs text-[#042f2e]/70 mt-1">Putra dari</p>
@@ -513,7 +513,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
           <AnimatedSection animation="right">
             <div className="flex flex-col items-center">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#d4af37]/30 shadow-lg mb-4 relative">
-                <Image src={bridePhoto} alt="Bride" fill className="object-cover" unoptimized />
+                <Image src={bridePhoto} alt="Bride" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
               </div>
               <h3 className="text-2xl font-display font-bold text-[#042f2e]">{invitation.brideName}</h3>
               <p className="text-xs text-[#042f2e]/70 mt-1">Putri dari</p>
@@ -662,7 +662,7 @@ export default function LuxuryEmerald({ invitation, isPreview = false }: LayoutP
             {galleryPhotos.map((src: string, idx: number) => (
               <AnimatedSection key={idx} animation="scale" delay={`delay-${(idx + 1) * 100}`} className={idx === 0 ? 'col-span-2' : ''}>
                 <div className={`relative overflow-hidden group border border-[#d4af37]/20 ${idx === 0 ? 'h-[250px]' : 'h-[180px]'}`}>
-                  <Image src={src} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-700" unoptimized />
+                  <Image src={src} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-700" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                 </div>
               </AnimatedSection>
             ))}

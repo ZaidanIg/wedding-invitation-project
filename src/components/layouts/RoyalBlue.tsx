@@ -75,7 +75,7 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
       {/* Hero */}
       <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority unoptimized />
+          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-blue-900/70 via-blue-900/30 to-blue-900/10" />
         </div>
         <div className="absolute top-16 left-4 opacity-20 animate-float"><FloralAccent /></div>
@@ -132,7 +132,7 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
           <AnimatedSection animation="left">
             <div className="flex flex-col items-center">
               <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-blue-400 shadow-lg mb-4 relative">
-                <Image src={groomPhoto} alt="Groom" fill className="object-cover" unoptimized />
+                <Image src={groomPhoto} alt="Groom" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
               </div>
               <h3 className="text-2xl font-display font-bold text-blue-800">{invitation.groomName}</h3>
               <p className="text-[10px] text-blue-400 uppercase tracking-widest mt-2">Putra dari</p>
@@ -146,7 +146,7 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
           <AnimatedSection animation="right">
             <div className="flex flex-col items-center">
               <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-blue-400 shadow-lg mb-4 relative">
-                <Image src={bridePhoto} alt="Bride" fill className="object-cover" unoptimized />
+                <Image src={bridePhoto} alt="Bride" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
               </div>
               <h3 className="text-2xl font-display font-bold text-blue-800">{invitation.brideName}</h3>
               <p className="text-[10px] text-blue-400 uppercase tracking-widest mt-2">Putri dari</p>
@@ -173,7 +173,7 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
             <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="#e8f0fe" />
           </svg>
         </div>
-        <Image src={photo2} alt="Couple photo" fill className="object-cover animate-gentle-zoom" unoptimized />
+        <Image src={photo2} alt="Couple photo" fill className="object-cover animate-gentle-zoom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         <WaveDivider />
         <div className="absolute bottom-0 left-0 right-0 h-8 z-10">
           <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="w-full h-full">
@@ -235,7 +235,7 @@ export default function RoyalBlue({ invitation, isPreview = false }: LayoutProps
             <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="#e8f0fe" />
           </svg>
         </div>
-        <Image src={photo3} alt="Couple photo" fill className="object-cover animate-gentle-zoom" unoptimized />
+        <Image src={photo3} alt="Couple photo" fill className="object-cover animate-gentle-zoom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         <div className="absolute bottom-0 left-0 right-0 h-8 z-10">
           <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="w-full h-full">
             <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="#e8f0fe" />

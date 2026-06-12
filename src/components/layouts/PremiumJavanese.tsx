@@ -16,13 +16,13 @@ function FloatingOrnaments() {
   return (
     <>
       <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="absolute top-60 w-80 h-40 opacity-40 -right-20 pointer-events-none z-0">
-        <Image src="/assets/javaneseTheme/Assets/ornament-27.png" alt="Ornament 27" fill className="object-contain object-right" unoptimized />
+        <Image src="/assets/javaneseTheme/Assets/ornament-27.png" alt="Ornament 27" fill className="object-contain object-right" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
       <motion.div animate={{ y: [0, -15, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute top-40 w-80 h-40 opacity-30 -left-20 pointer-events-none -scale-x-100 z-0">
-        <Image src="/assets/javaneseTheme/Assets/ornament-28.png" alt="Ornament 28" fill className="object-contain object-right" unoptimized />
+        <Image src="/assets/javaneseTheme/Assets/ornament-28.png" alt="Ornament 28" fill className="object-contain object-right" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
       <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} className="absolute top-20 w-80 h-40 opacity-40 -right-40 pointer-events-none z-0">
-        <Image src="/assets/javaneseTheme/Assets/ornament-29.png" alt="Ornament 29" fill className="object-contain object-top" unoptimized />
+        <Image src="/assets/javaneseTheme/Assets/ornament-29.png" alt="Ornament 29" fill className="object-contain object-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
     </>
   );
@@ -47,23 +47,23 @@ function EnvelopeSection({ data, onOpen, guestName }: { data: Invitation; onOpen
           transition={{ duration: 3, ease: 'easeOut' }}
           className="absolute bottom-0 left-0 w-full h-[50vh] opacity-40 pointer-events-none"
         >
-          <Image src="/assets/javaneseTheme/Assets/width_150.webp" alt="Background Envelope" fill className="object-cover object-bottom" unoptimized />
+          <Image src="/assets/javaneseTheme/Assets/width_150.webp" alt="Background Envelope" fill className="object-cover object-bottom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
 
         <FloatingOrnaments />
 
         {/* Corner Ornaments */}
         <div className="absolute top-0 left-0 w-32 h-32 md:w-40 md:h-40">
-          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament TL" fill className="object-contain object-left-top" unoptimized />
+          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament TL" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
         <div className="absolute top-0 right-0 w-32 h-32 md:w-40 md:h-40 -scale-x-100">
-          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament TR" fill className="object-contain object-left-top" unoptimized />
+          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament TR" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
         <div className="absolute bottom-0 right-0 w-32 h-32 md:w-40 md:h-40 rotate-180">
-          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament BR" fill className="object-contain object-left-top" unoptimized />
+          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament BR" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
         <div className="absolute bottom-0 left-0 w-32 h-32 md:w-40 md:h-40 -scale-y-100">
-          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament BL" fill className="object-contain object-left-top" unoptimized />
+          <Image src="/assets/javaneseTheme/Assets/ornament-36.png" alt="Ornament BL" fill className="object-contain object-left-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
         {/* Content */}
         <motion.div
@@ -83,12 +83,12 @@ function EnvelopeSection({ data, onOpen, guestName }: { data: Invitation; onOpen
             
             {/* Main Photo */}
             <div className="absolute inset-0 rounded-[80px] overflow-hidden z-10 bg-[#F8F5F0]">
-              <Image src={heroPhoto} alt="Couple Photo" fill className="object-cover" unoptimized />
+              <Image src={heroPhoto} alt="Couple Photo" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
 
             {/* Ornament at the bottom edge */}
             <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-28 h-28 z-30 pointer-events-none">
-              <Image src="/assets/javaneseTheme/Assets/ornament-30.png" alt="Ornament 30" fill className="object-contain" unoptimized />
+              <Image src="/assets/javaneseTheme/Assets/ornament-30.png" alt="Ornament 30" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
           </motion.div>
           <motion.p
@@ -201,7 +201,7 @@ function SectionBottomDivider() {
         width={800}
         height={150}
         className="w-full h-auto opacity-80"
-        unoptimized
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
     </div>
   );
@@ -214,7 +214,7 @@ function HeroSection({ data }: { data: Invitation }) {
     <section id="hero-section" className="relative min-h-screen flex flex-col items-center justify-end bg-[#F8F5F0] overflow-hidden pb-20">
       <FloatingOrnaments />
       <div className="absolute inset-0">
-        <Image src={heroPhoto} alt="Couple" fill className="object-cover" priority unoptimized />
+        <Image src={heroPhoto} alt="Couple" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         <div className="absolute inset-0 bg-black/40" />
         {/* White Gradient at the bottom */}
         <div className="absolute bottom-0 inset-x-0 h-48 bg-gradient-to-t from-[#F8F5F0]/80 to-transparent" />
@@ -280,7 +280,7 @@ function GroomSection({ data }: { data: Invitation }) {
         transition={{ duration: 1, ease: "easeOut" }}
         className="relative w-48 h-12 sm:w-64 sm:h-16 mb-12"
       >
-        <Image src="/assets/javaneseTheme/Assets/ornament-26.png" alt="Divider" fill className="object-contain" unoptimized />
+        <Image src="/assets/javaneseTheme/Assets/ornament-26.png" alt="Divider" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
 
       {/* Teks Awal */}
@@ -301,7 +301,7 @@ function GroomSection({ data }: { data: Invitation }) {
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         className="absolute top-60 w-80 h-40 opacity-40 -right-20 pointer-events-none"
       >
-        <Image src="/assets/javaneseTheme/Assets/ornament-27.png" alt="Ornament 27" fill className="object-contain object-right" unoptimized />
+        <Image src="/assets/javaneseTheme/Assets/ornament-27.png" alt="Ornament 27" fill className="object-contain object-right" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
 
 
@@ -310,7 +310,7 @@ function GroomSection({ data }: { data: Invitation }) {
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         className="absolute top-40 w-80 h-40 opacity-30 -left-20 pointer-events-none -scale-x-100"
       >
-        <Image src="/assets/javaneseTheme/Assets/ornament-28.png" alt="Ornament 28" fill className="object-contain object-right" unoptimized />
+        <Image src="/assets/javaneseTheme/Assets/ornament-28.png" alt="Ornament 28" fill className="object-contain object-right" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
 
       {/* Wrapper Profil & Ornamen */}
@@ -324,7 +324,7 @@ function GroomSection({ data }: { data: Invitation }) {
             transition={{ duration: 0.8 }}
             className="relative w-36 h-36 sm:w-48 sm:h-48 -translate-y-6 sm:-translate-y-10 z-20"
           >
-            <Image src="/assets/javaneseTheme/Assets/burung.png" alt="Burung Kiri" fill className="object-contain object-bottom" unoptimized />
+            <Image src="/assets/javaneseTheme/Assets/burung.png" alt="Burung Kiri" fill className="object-contain object-bottom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           </motion.div>
 
           {/* Mandala */}
@@ -334,7 +334,7 @@ function GroomSection({ data }: { data: Invitation }) {
             transition={{ duration: 0.8 }}
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-40 sm:h-40 z-10"
           >
-            <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Mandala" fill className="object-contain" unoptimized />
+            <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Mandala" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           </motion.div>
 
           {/* Burung Kanan */}
@@ -350,7 +350,7 @@ function GroomSection({ data }: { data: Invitation }) {
               fill
               className="object-contain object-bottom"
               style={{ transform: 'scaleX(-1)' }}
-              unoptimized
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </motion.div>
         </div>
@@ -370,7 +370,7 @@ function GroomSection({ data }: { data: Invitation }) {
           transition={{ duration: 3, ease: 'easeOut' }}
           className="absolute bottom-0 left-0 w-full h-[50vh] pointer-events-none"
         >
-          <Image src="/assets/javaneseTheme/Assets/width_150.webp" alt="Background Envelope" fill className="object-cover object-bottom" unoptimized />
+          <Image src="/assets/javaneseTheme/Assets/width_150.webp" alt="Background Envelope" fill className="object-cover object-bottom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </motion.div>
 
         {/* Groom */}
@@ -389,11 +389,11 @@ function GroomSection({ data }: { data: Invitation }) {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="absolute top-1/2 -right-16 sm:-right-24 w-28 h-48 sm:w-36 sm:h-64 pointer-events-none z-0"
             >
-              <Image src="/assets/javaneseTheme/Assets/ornament-34.png" alt="Ornament Kanan" fill className="object-contain object-left" unoptimized />
+              <Image src="/assets/javaneseTheme/Assets/ornament-34.png" alt="Ornament Kanan" fill className="object-contain object-left" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </motion.div>
 
             <div className="w-44 h-44 sm:w-56 sm:h-56 rounded-full overflow-hidden border-4 border-[#D4AF37]/50 shadow-xl relative z-10">
-              <Image src={groomPhoto} alt="Groom" fill className="object-cover" unoptimized />
+              <Image src={groomPhoto} alt="Groom" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
           </div>
           <h3 className="font-display text-4xl sm:text-5xl text-[#4A3728] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>{data.groomName}</h3>
@@ -429,11 +429,11 @@ function GroomSection({ data }: { data: Invitation }) {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="absolute top-1/2 -left-16 sm:-left-24 w-28 h-48 sm:w-36 sm:h-64 pointer-events-none z-0"
             >
-              <Image src="/assets/javaneseTheme/Assets/ornament-35.png" alt="Ornament Kiri" fill className="object-contain object-right" unoptimized />
+              <Image src="/assets/javaneseTheme/Assets/ornament-35.png" alt="Ornament Kiri" fill className="object-contain object-right" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </motion.div>
 
             <div className="w-44 h-44 sm:w-56 sm:h-56 rounded-full overflow-hidden border-4 border-[#D4AF37]/50 shadow-xl relative z-10">
-              <Image src={bridePhoto} alt="Bride" fill className="object-cover" unoptimized />
+              <Image src={bridePhoto} alt="Bride" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
           </div>
           <h3 className="font-display text-4xl sm:text-5xl text-[#4A3728] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>{data.brideName}</h3>
@@ -497,7 +497,7 @@ function DateSection({ data }: { data: Invitation }) {
 
         {/* Restored Mandala */}
         <div className="absolute top-4 w-32 h-32 pointer-events-none opacity-80 z-20">
-          <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Mandala" fill className="object-contain" unoptimized />
+          <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Mandala" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
         <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold mb-2 mt-12">Simpan Tanggal</p>
         <p className="font-display text-3xl text-[#4A3728] mb-8 text-center" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -546,7 +546,7 @@ function DateSection({ data }: { data: Invitation }) {
         transition={{ duration: 0.8 }}
         className="w-full max-w-sm h-12 relative mb-12 z-10"
       >
-        <Image src="/assets/javaneseTheme/Assets/cover-1.png" alt="Ornament Bottom" fill className="object-contain" unoptimized />
+        <Image src="/assets/javaneseTheme/Assets/cover-1.png" alt="Ornament Bottom" fill className="object-contain" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
       </motion.div>
 
       {/* Location */}
@@ -634,7 +634,7 @@ function LoveStorySection({ data }: { data: Invitation }) {
               >
                 <div className="bg-white border border-[#D4AF37]/20 p-5 rounded-2xl shadow-lg w-full flex flex-col items-center text-center">
                   <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-sm bg-[#D4AF37]/5">
-                    <Image src={story.photoUrl || '/images/hero-image.jpg'} alt={story.title} fill className="object-cover" unoptimized />
+                    <Image src={story.photoUrl || '/images/hero-image.jpg'} alt={story.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                   </div>
                   <span className="text-[10px] font-bold tracking-widest text-[#D4AF37] uppercase mb-1">{story.year}</span>
                   <h4 className="text-xl font-display text-[#4A3728] mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{story.title}</h4>
@@ -697,7 +697,7 @@ function RsvpSection({ data }: { data: Invitation }) {
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden relative">
           {/* Subtle floral bg inside RSVP */}
           <div className="absolute inset-0 opacity-5 pointer-events-none">
-            <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Background Texture" fill className="object-cover" unoptimized />
+            <Image src="/assets/javaneseTheme/Assets/mandala.png" alt="Background Texture" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
           </div>
 
           <div className="relative z-10 p-2">

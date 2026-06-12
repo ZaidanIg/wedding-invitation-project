@@ -222,7 +222,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
            <div className="absolute inset-0">
-             <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom scale-105 opacity-60 grayscale-[0.1]" priority unoptimized />
+             <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom scale-105 opacity-60 grayscale-[0.1]" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
              <div className="absolute inset-0 bg-gradient-to-b from-[#8B0000]/50 via-transparent to-[#fffcf5]" />
            </div>
            
@@ -319,7 +319,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                     <div className="absolute inset-[-15px] border-2 border-[#FFD700]/20 rounded-[4rem] rotate-[-6deg]" />
                     <div className="absolute inset-[-8px] border-2 border-[#8B0000]/10 rounded-[3.5rem] rotate-[-3deg]" />
                     <div className="absolute inset-0 rounded-[3rem] overflow-hidden border-8 border-white shadow-3xl ring-1 ring-amber-100">
-                      <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" unoptimized />
+                      <Image src={invitation.groomPhotoUrl || heroPhoto} alt="G" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     </div>
                  </div>
                  <h3 className="text-4xl font-display font-bold text-[#8B0000] mb-3 italic">{invitation.groomName}</h3>
@@ -338,7 +338,7 @@ export default function ConfucianOriental({ invitation, isPreview = false }: { i
                     <div className="absolute inset-[-15px] border-2 border-[#FFD700]/20 rounded-[4rem] rotate-[6deg]" />
                     <div className="absolute inset-[-8px] border-2 border-[#8B0000]/10 rounded-[3.5rem] rotate-[3deg]" />
                     <div className="absolute inset-0 rounded-[3rem] overflow-hidden border-8 border-white shadow-3xl ring-1 ring-amber-100">
-                      <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" unoptimized />
+                      <Image src={invitation.bridePhotoUrl || heroPhoto} alt="B" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     </div>
                  </div>
                  <h3 className="text-4xl font-display font-bold text-[#8B0000] mb-3 italic">{invitation.brideName}</h3>

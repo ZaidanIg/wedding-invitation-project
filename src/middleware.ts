@@ -70,8 +70,9 @@ export async function middleware(request: NextRequest) {
   if (pathname === '/create') {
     const isComingSoon = request.headers.get('x-is-coming-soon') === 'true' || (!isLaunchReady && isProductionDomain);
     if (!isComingSoon) {
+      const isEditing = url.searchParams.has('edit');
       const plan = url.searchParams.get('plan') || request.cookies.get('selected_plan')?.value;
-      if (!plan) {
+      if (!plan && !isEditing) {
         return NextResponse.redirect(new URL('/pricing', request.url));
       }
     }
