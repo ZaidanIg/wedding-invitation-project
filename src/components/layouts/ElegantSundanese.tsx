@@ -341,118 +341,116 @@ function EnvelopeSection({
           </motion.div>
         </div>
 
-        {/* ── Couple Names: bold uppercase, below ring (z-40) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.9 }}
-          className="absolute left-0 right-0 z-40 text-center px-6"
-          style={{ top: '63%' }}
-        >
-          <h1
-            className="not-italic"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(28px, 10.5vw, 46px)',
-              fontWeight: 700,
-              fontStyle: 'normal',
-              color: '#000000',
-              letterSpacing: '0.02em',
-              lineHeight: 1.1,
-              textTransform: 'uppercase',
-            }}
+        {/* ── Dynamic Text Area (Flex container to prevent overlap for long names) ── */}
+        <div className="absolute left-0 right-0 z-40 flex flex-col items-center justify-between px-6 pb-2" style={{ top: '56%', bottom: '2%' }}>
+          
+          {/* ── Couple Names ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.9 }}
+            className="w-full text-center mt-3"
           >
-            {data.groomName} &amp; {data.brideName}
-          </h1>
-        </motion.div>
+            <h1
+              className="not-italic"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 'clamp(24px, 9vw, 42px)',
+                fontWeight: 700,
+                fontStyle: 'normal',
+                color: '#000000',
+                letterSpacing: '0.02em',
+                lineHeight: 1.1,
+                textTransform: 'uppercase',
+              }}
+            >
+              {data.groomName} &amp; {data.brideName}
+            </h1>
+          </motion.div>
 
-        {/* ── "Kami Mengundang" block (z-40) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="absolute z-40 left-0 right-0 flex flex-col items-center"
-          style={{ top: '74%' }}
-        >
-          {/* "Kami Mengundang" — h2-regular 24px — centred */}
-          <p
-            style={{
-              fontSize: 'clamp(16px, 5.5vw, 24px)',
-              fontWeight: 400,
-              color: '#000000',
-              textAlign: 'center',
-              lineHeight: 1.3,
-            }}
-          >
-            Kami Mengundang
-          </p>
-
-          {/* "saudara/i" — body-md-regular 15px — centred */}
-          <p
-            style={{
-              fontSize: 'clamp(11px, 3.5vw, 15px)',
-              fontWeight: 400,
-              color: '#000000',
-              textAlign: 'center',
-              marginTop: 2,
-            }}
-          >
-            saudara/i
-          </p>
-
-          {/* NamaTamu pill — white/light, radius-37, prominent shadow, full width pill */}
-          <div
-            style={{
-              marginTop: 10,
-              backgroundColor: '#EFEFEF',
-              borderRadius: 37,
-              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-              padding: '11px 28px',
-              minWidth: 'min(200px, 50%)',
-              maxWidth: '60%',
-            }}
+          {/* ── "Kami Mengundang" block ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="w-full flex flex-col items-center my-auto py-2"
           >
             <p
               style={{
-                fontSize: 'clamp(13px, 4vw, 16px)',
+                fontSize: 'clamp(14px, 5vw, 20px)',
                 fontWeight: 400,
-                color: '#323232',
+                color: '#000000',
                 textAlign: 'center',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
+                lineHeight: 1.3,
               }}
             >
-              {guestName}
+              Kami Mengundang
             </p>
-          </div>
-        </motion.div>
+            <p
+              style={{
+                fontSize: 'clamp(11px, 3.5vw, 15px)',
+                fontWeight: 400,
+                color: '#000000',
+                textAlign: 'center',
+                marginTop: 2,
+              }}
+            >
+              saudara/i
+            </p>
 
-        {/* ── CTA Button (z-50) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.7 }}
-          className="absolute z-50 left-0 right-0 flex justify-center"
-          style={{ bottom: '4.5%' }}
-        >
-          <motion.button
-            onClick={onOpen}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            className="relative overflow-hidden text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-xl px-10 py-3.5"
-            style={{ background: C.goldDark, border: `1px solid ${C.gold}` }}
+            <div
+              style={{
+                marginTop: 10,
+                backgroundColor: '#EFEFEF',
+                borderRadius: 37,
+                boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                padding: '10px 24px',
+                minWidth: 'min(200px, 60%)',
+                maxWidth: '80%',
+              }}
+            >
+              <p
+                style={{
+                  fontSize: 'clamp(13px, 4vw, 16px)',
+                  fontWeight: 400,
+                  color: '#323232',
+                  textAlign: 'center',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {guestName}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* ── CTA Button ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.7 }}
+            className="w-full flex justify-center shrink-0 mb-2"
           >
-            <span className="relative z-10">Buka Undangan</span>
-            <motion.div
-              className="absolute inset-0"
-              style={{ background: C.gold, borderRadius: '9999px' }}
-              initial={{ scaleX: 0, originX: 0 }}
-              whileHover={{ scaleX: 1 }}
-              transition={{ duration: 0.3 }}
-            />
-          </motion.button>
-        </motion.div>
+            <motion.button
+              onClick={onOpen}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              className="relative overflow-hidden text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-xl px-10 py-3.5"
+              style={{ background: C.goldDark, border: `1px solid ${C.gold}` }}
+            >
+              <span className="relative z-10">Buka Undangan</span>
+              <motion.div
+                className="absolute inset-0"
+                style={{ background: C.gold, borderRadius: '9999px' }}
+                initial={{ scaleX: 0, originX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.button>
+          </motion.div>
+
+        </div>
 
 
         {/* ── Gold dust particles (z-50) ── */}
