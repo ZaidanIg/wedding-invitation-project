@@ -68,15 +68,18 @@ export default function ThemePreviewModal({ layout, onClose }: ThemePreviewModal
               </div>
             </div>
           </div>
-
-          {/* Close Button */}
-          <button 
-            onClick={onClose}
-            className="absolute top-6 right-6 p-3 rounded-full bg-white/20 hover:bg-white/40 text-[#1c1c1c] backdrop-blur-md transition-all z-[110]"
-          >
-            <X className="h-6 w-6" />
-          </button>
         </motion.div>
+
+        {/* Close Button - Positioned fixed to the viewport so it's always accessible */}
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className="fixed top-4 right-4 md:top-8 md:right-8 p-3 rounded-full bg-black/50 hover:bg-black/70 text-white backdrop-blur-md transition-all shadow-xl z-[110]"
+        >
+          <X className="h-6 w-6" />
+        </button>
       </motion.div>
     </AnimatePresence>
   );

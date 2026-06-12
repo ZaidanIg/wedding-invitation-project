@@ -62,7 +62,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
       {/* Hero */}
       <section className="relative w-full h-[100dvh] min-h-[600px] flex flex-col items-center justify-end overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+          <Image src={heroPhoto} alt="Couple" fill className="object-cover animate-gentle-zoom" priority />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         </div>
         <div className="absolute top-20 left-6 w-24 h-24 rounded-full bg-white/5 blur-2xl animate-float" />
@@ -127,7 +127,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
               <div className="relative w-40 h-40 mb-8 group">
                 <div className="absolute inset-0 bg-stone-200 rounded-full scale-110 blur-xl opacity-50 group-hover:opacity-80 transition-opacity" />
                 <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-2xl">
-                  <Image src={groomPhoto} alt="Groom" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                  <Image src={groomPhoto} alt="Groom" fill className="object-cover" />
                 </div>
               </div>
               <h3 className="text-3xl font-display font-bold text-stone-800 mb-2">{invitation.groomName}</h3>
@@ -150,7 +150,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
               <div className="relative w-40 h-40 mb-8 group">
                 <div className="absolute inset-0 bg-rose-100 rounded-full scale-110 blur-xl opacity-50 group-hover:opacity-80 transition-opacity" />
                 <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-2xl">
-                  <Image src={bridePhoto} alt="Bride" fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                  <Image src={bridePhoto} alt="Bride" fill className="object-cover" />
                 </div>
               </div>
               <h3 className="text-3xl font-display font-bold text-stone-800 mb-2">{invitation.brideName}</h3>
@@ -215,7 +215,7 @@ export default function ElegantCream({ invitation, isPreview = false }: LayoutPr
       {/* Photo divider */}
       <section className="relative w-full h-[350px] sm:h-[450px] overflow-hidden">
         <TornEdgeTop />
-        <Image src={photo3} alt="Couple photo" fill className="object-cover animate-gentle-zoom" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+        <Image src={photo3} alt="Couple photo" fill className="object-cover animate-gentle-zoom" />
         <TornEdgeBottom />
       </section>
 
