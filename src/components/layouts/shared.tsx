@@ -194,9 +194,11 @@ export function LoveStorySection({
               <div key={item.id} className="w-full flex flex-col items-center relative">
                 <AnimatedSection animation="up" className="relative w-full max-w-[85%] z-10">
                   <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-5 rounded-2xl flex flex-col items-center text-center w-full relative">
-                    <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-md bg-white/5">
-                      <Image src={item.photoUrl || '/images/hero-image.jpg'} alt={item.title} fill className="object-cover" />
-                    </div>
+                    {item.photoUrl && (
+                      <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden shadow-md bg-white/5">
+                        <Image src={item.photoUrl} alt={item.title} fill className="object-cover" />
+                      </div>
+                    )}
                     <span className={`text-[10px] font-bold tracking-widest uppercase mb-1 ${accentColor}`}>{item.year}</span>
                     <h3 className={`text-lg font-display font-bold ${textColor} mb-2`}>{item.title}</h3>
                     <p className={`text-sm ${textColor} opacity-60 leading-relaxed italic break-words whitespace-pre-line`}>&ldquo;{item.description}&rdquo;</p>

@@ -9,7 +9,7 @@ const ITEM_DEFS = [
   { type: 'date', icon: CalendarDays, label: 'Date', possibleIds: ['date', 'event', 'events', 'date-section', 'ceremony'] },
   { type: 'gallery', icon: ImageIcon, label: 'Gallery', possibleIds: ['gallery', 'gallery-section', 'photos'] },
   { type: 'rsvp', icon: Send, label: 'RSVP', possibleIds: ['rsvp', 'wishes', 'rsvp-section', 'guestbook'] },
-  { type: 'gift', icon: Gift, label: 'Gift', isButton: true, possibleIds: ['gift', 'digital-gift', 'gift-section', 'angpao', 'envelope-section'] },
+  { type: 'gift', icon: Gift, label: 'Gift', isButton: true, possibleIds: ['gift', 'digital-gift', 'gift-section', 'angpao'] },
 ];
 
 export default function ThemeNavbar() {
@@ -74,14 +74,18 @@ export default function ThemeNavbar() {
       const win = getWin();
       const viewH = win.innerHeight;
       let current = navItems[0].id;
+      let minDistance = Infinity;
 
       for (const item of navItems) {
         const el = doc.getElementById(item.id);
         if (el) {
           const rect = el.getBoundingClientRect();
+          const distance = Math.abs(rect.top - viewH / 3);
+          
           if (rect.top <= viewH / 2 && rect.bottom >= viewH / 2) {
             current = item.id;
-          } else if (rect.top <= 150 && rect.bottom >= 150) {
+          } else if (rect.top >= -viewH / 2 && rect.top <= viewH && distance < minDistance) {
+            minDistance = distance;
             current = item.id;
           }
         }
