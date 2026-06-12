@@ -277,7 +277,7 @@ export function AnimatedSection({
 }: {
   children: React.ReactNode;
   className?: string;
-  animation?: 'up' | 'left' | 'right' | 'scale';
+  animation?: 'up' | 'left' | 'right' | 'scale' | 'fade' | 'down' | 'flip' | 'rotate';
   delay?: string;
 }) {
   const delayNum = delay && delay.startsWith('delay-') 
@@ -300,6 +300,26 @@ export function AnimatedSection({
         return {
           hidden: { opacity: 0, scale: 0.8, rotateX: 20 },
           visible: { opacity: 1, scale: 1, rotateX: 0 }
+        };
+      case 'fade':
+        return {
+          hidden: { opacity: 0 },
+          visible: { opacity: 1 }
+        };
+      case 'down':
+        return {
+          hidden: { opacity: 0, y: -60, rotateX: 20, scale: 0.95 },
+          visible: { opacity: 1, y: 0, rotateX: 0, scale: 1 }
+        };
+      case 'flip':
+        return {
+          hidden: { opacity: 0, rotateY: 180 },
+          visible: { opacity: 1, rotateY: 0 }
+        };
+      case 'rotate':
+        return {
+          hidden: { opacity: 0, rotate: -45, scale: 0.9 },
+          visible: { opacity: 1, rotate: 0, scale: 1 }
         };
       case 'up':
       default:

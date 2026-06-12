@@ -239,7 +239,6 @@ export default function InvitationForm() {
       const isOwner = session?.user?.role !== "ADMIN";
       
       if (isOwner) {
-        showToast("success", "Undangan disimpan! Menyiapkan tagihan...");
         try {
           await fetch("/api/checkout", {
             method: "POST",
@@ -249,11 +248,13 @@ export default function InvitationForm() {
         } catch (err) {
           console.error("Failed to pre-create checkout:", err);
         }
+        
+        document.cookie = "selected_plan=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        window.location.href = `/checkout?plan=${store.targetTier}&invitationId=${data.data.id}`;
+        
         setTimeout(() => {
           store.reset();
-          document.cookie = "selected_plan=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-          window.location.href = `/checkout?plan=${store.targetTier}&invitationId=${data.data.id}`;
-        }, 1500);
+        }, 100);
         return;
       }
       showToast("success", "Undangan disimpan! Mengalihkan...");

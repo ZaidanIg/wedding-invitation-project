@@ -389,7 +389,7 @@ export default function PremiumCharcoal({ invitation, isPreview = false }: Layou
           (g) => g.name.trim().toLowerCase() === decodedTo
         );
         if (guest) {
-          setMatchedGuest(guest);
+          setTimeout(() => setMatchedGuest(guest), 0);
         }
       }
     }

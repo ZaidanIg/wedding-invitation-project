@@ -54,10 +54,11 @@ const A = {
   cincin: '/assets/ElegantSundanesseTheme/assets/cincin.png',
 } as const;
 
-// ─── Gold Dust Particles ──────────────────────────────────────────────────────
 function GoldDustParticles() {
   const [mounted, setMounted] = useState(false);
-  setTimeout(() => { useEffect(() => setMounted(true), []); }, 0);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const particles = useMemo(() =>
     [...Array(40)].map(() => ({

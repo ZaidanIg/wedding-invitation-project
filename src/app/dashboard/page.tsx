@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import InvitationCard from '@/components/themes/InvitationCard';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import Skeleton from '@/components/ui/Skeleton';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { Plus, CheckSquare, X, Info } from 'lucide-react';
@@ -40,7 +40,7 @@ export default function DashboardPage() {
       const res = await fetch('/api/invitations?limit=50');
       const data = await res.json();
       if (data.success) {
-        setInvitations(data.data?.data || []);
+        setInvitations(data.data || []);
       }
     } catch (error) {
       console.error('Failed to fetch invitations:', error);
@@ -154,7 +154,14 @@ export default function DashboardPage() {
         })()}
 
         {/* Stats for B2C Users */}
-        {invitations.length > 0 && (
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+            <Skeleton variant="stats" />
+            <Skeleton variant="stats" />
+            <Skeleton variant="stats" />
+            <Skeleton variant="stats" />
+          </div>
+        ) : invitations.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-20">
             <Card className="p-8 bg-white border-[#eceae4] rounded-[2.5rem] shadow-sm hover:shadow-md transition-all">
               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#6b6b6b] mb-5">Total Undangan</div>
@@ -186,13 +193,14 @@ export default function DashboardPage() {
               <p className="text-[#6b6b6b] text-xs font-medium">Sudah diaktifkan</p>
             </Card>
           </div>
-        )}
+        ) : null}
 
 
         {/* Content */}
         {isLoading ? (
-          <div className="py-24 flex justify-center">
-            <LoadingSpinner size="lg" />
+          <div className="space-y-8">
+            <Skeleton variant="card" />
+            <Skeleton variant="card" />
           </div>
         ) : invitations.length === 0 ? (
           <motion.div 

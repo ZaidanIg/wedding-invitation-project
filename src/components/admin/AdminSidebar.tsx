@@ -17,6 +17,7 @@ import {
   Repeat,
   Map,
   Ticket,
+  Sparkles,
 } from 'lucide-react';
 
 const MENU_GROUPS = [
@@ -50,6 +51,7 @@ const MENU_GROUPS = [
       { href: '/admin/marketing', label: 'Marketing Dashboard', icon: Megaphone },
       { href: '/admin/promos', label: 'Voucher & Promo', icon: Ticket },
       { href: '/admin/themes', label: 'Theme Performance', icon: Palette },
+      { href: '/admin/themes/builder', label: 'Theme Builder', icon: Sparkles },
       { href: '/admin/roadmap', label: 'Product Roadmap', icon: Map },
     ],
   },

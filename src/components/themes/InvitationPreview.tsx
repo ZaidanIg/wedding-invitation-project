@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { Invitation } from '@/types';
 import { layouts } from '../layouts';
 import Link from 'next/link';
 import { TierProvider } from '../layouts/shared';
 import ThemeNavbar from './ThemeNavbar';
+import DynamicThemeRenderer from '../layouts/DynamicThemeRenderer';
 
 const PREMIUM_LAYOUTS = [
   'golden-classic', 'luxury-emerald', 'forest-grace', 'garden-chapel', 
@@ -17,12 +18,16 @@ const PREMIUM_LAYOUTS = [
 interface InvitationPreviewProps {
   invitation: Invitation;
   isPreview?: boolean;
+  themeTemplate?: any;
 }
 
-export default function InvitationPreview({ invitation, isPreview = false }: InvitationPreviewProps) {
-  const LayoutComponent = (layouts as Record<string, React.ElementType>)[invitation.layout] || layouts['elegant-cream'];
-  // v1.2: isPaid removed — derive from tier
+export default function InvitationPreview({ invitation, isPreview = false, themeTemplate }: InvitationPreviewProps) {
+  const isHardcoded = invitation.layout in layouts;
+  const LayoutComponent = isHardcoded ? (layouts as Record<string, React.ElementType>)[invitation.layout] : null;
   const isDraft = invitation.tier === 'DRAFT';
+
+  const [dbTheme, setDbTheme] = useState<any>(themeTemplate || null);
+  const [loadingTheme, setLoadingTheme] = useState(!isHardcoded && !themeTemplate);
 
   useEffect(() => {
     if (!isPreview && invitation.slug) {
@@ -38,11 +43,50 @@ export default function InvitationPreview({ invitation, isPreview = false }: Inv
     }
   }, [isPreview, invitation.slug]);
 
+  useEffect(() => {
+    if (!isHardcoded && !themeTemplate) {
+      // loadingTheme is already `true` from useState initialization — no need to call setLoadingTheme(true)
+      fetch(`/api/themes/${invitation.layout}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.data) {
+            setDbTheme(data.data);
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to fetch dynamic theme template:', err);
+        })
+        .finally(() => {
+          setLoadingTheme(false);
+        });
+    } else if (themeTemplate) {
+      setTimeout(() => setDbTheme(themeTemplate), 0);
+    }
+  }, [invitation.layout, isHardcoded, themeTemplate]);
+
+  if (loadingTheme) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#fdfcf9]">
+        <div className="w-8 h-8 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  const isPremiumTheme = PREMIUM_LAYOUTS.includes(invitation.layout) || dbTheme?.isPremium;
+
   return (
     <TierProvider tier={invitation.tier} isPreview={isPreview}>
       <div className="relative min-h-screen flex flex-col justify-between">
         <div className="flex-1 w-full">
-          <LayoutComponent invitation={invitation} isPreview={isPreview} />
+          {!isHardcoded && dbTheme ? (
+            <DynamicThemeRenderer invitation={invitation} config={dbTheme.config} isPreview={isPreview} />
+          ) : LayoutComponent ? (
+            <LayoutComponent invitation={invitation} isPreview={isPreview} />
+          ) : (
+            <div className="min-h-screen flex items-center justify-center bg-[#fdfcf9] text-sm text-stone-500">
+              Template tema tidak didukung.
+            </div>
+          )}
         </div>
         
         {isDraft && (
@@ -57,7 +101,7 @@ export default function InvitationPreview({ invitation, isPreview = false }: Inv
           </div>
         )}
         
-        {PREMIUM_LAYOUTS.includes(invitation.layout) && <ThemeNavbar />}
+        {isPremiumTheme && <ThemeNavbar />}
       </div>
     </TierProvider>
   );

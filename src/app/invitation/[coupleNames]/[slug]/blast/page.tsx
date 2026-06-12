@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import Skeleton from '@/components/ui/Skeleton';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { 
@@ -279,7 +279,49 @@ export default function StandaloneBlastPage() {
     ? `${Math.ceil(estimatedTimeSec / 60)} menit` 
     : `${Math.round(estimatedTimeSec)} detik`;
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-[#fdfcf9]"><LoadingSpinner size="lg" /></div>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#fdfcf9] py-24 px-10 sm:px-20 mt-10 w-full">
+        <div className="w-full max-w-7xl mx-auto space-y-12">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-12 mb-16">
+            <Skeleton variant="rectangular" className="w-44 h-10 rounded-2xl" />
+            <Skeleton variant="rectangular" className="w-40 h-12 rounded-xl" />
+          </div>
+          
+          {/* Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            {/* Left side: Stats & Editor */}
+            <div className="lg:col-span-4 space-y-8">
+              <Skeleton variant="stats" className="h-44" />
+              <div className="bg-white border border-[#eceae4] p-8 rounded-[2rem] space-y-4">
+                <Skeleton variant="text" className="w-1/3 h-5" />
+                <Skeleton variant="rectangular" className="h-40 w-full rounded-2xl" />
+              </div>
+            </div>
+            {/* Right side: Table list */}
+            <div className="lg:col-span-8 bg-white border border-[#eceae4] p-8 rounded-[2.5rem] space-y-6">
+              <div className="flex justify-between items-center">
+                <Skeleton variant="text" className="w-1/4 h-6" />
+                <Skeleton variant="rectangular" className="w-36 h-10 rounded-xl" />
+              </div>
+              <div className="space-y-4">
+                {[1, 2, 3, 4, 5].map(i => (
+                  <div key={i} className="flex items-center justify-between p-4 border border-stone-100 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                      <Skeleton variant="circular" className="w-6 h-6" />
+                      <Skeleton variant="text" className="w-32 h-4" />
+                    </div>
+                    <Skeleton variant="rectangular" className="w-20 h-8 rounded-lg" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section className="min-h-screen bg-[#fdfcf9] flex flex-col items-center justify-center py-24 px-10 sm:px-20 mt-10">

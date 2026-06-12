@@ -13,7 +13,7 @@ import type { ReactNode } from 'react';
  * On admin routes (/admin/*) these chrome elements are suppressed so the
  * admin layout's own sidebar + header take full control of the viewport.
  */
-export default function PublicShell({ children }: { children: ReactNode }) {
+export default function PublicShell({ children, isComingSoon }: { children: ReactNode; isComingSoon?: boolean }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
 
@@ -24,7 +24,7 @@ export default function PublicShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-col min-h-screen w-full overflow-x-clip relative">
-      <Navbar />
+      <Navbar isComingSoon={isComingSoon} />
       <main className="flex-1 w-full overflow-x-clip">{children}</main>
       <Footer />
       <WhatsAppFloat />

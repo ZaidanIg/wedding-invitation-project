@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { Send, Check, AlertCircle, User, Phone, MessageSquare, Users } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import Skeleton from '@/components/ui/Skeleton';
 import { showToast } from '@/components/ui/Toast';
 
 export default function PublicAttendancePage() {
@@ -97,8 +97,19 @@ export default function PublicAttendancePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#fcfbf8] flex items-center justify-center">
-        <LoadingSpinner size="lg" />
+      <div className="min-h-screen bg-[#fcfbf8] flex items-center justify-center p-6 w-full">
+        <div className="w-full max-w-md bg-white border border-[#eceae4] p-8 rounded-[2.5rem] shadow-sm space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-3">
+            <Skeleton variant="circular" className="w-16 h-16 mx-auto" />
+            <Skeleton variant="text" className="w-2/3 h-6 mx-auto" />
+            <Skeleton variant="text" className="w-1/2 h-4 mx-auto" />
+          </div>
+          {/* Form Fields */}
+          <Skeleton variant="form" />
+          {/* Button */}
+          <Skeleton variant="rectangular" className="h-14 w-full rounded-2xl" />
+        </div>
       </div>
     );
   }

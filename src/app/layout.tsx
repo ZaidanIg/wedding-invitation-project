@@ -5,6 +5,7 @@ import ToastContainer from '@/components/ui/Toast';
 import ErrorBoundary from '@/components/shared/ErrorBoundary';
 import Providers from '@/components/shared/Providers';
 import PublicShell from '@/components/shared/PublicShell';
+import { headers } from 'next/headers';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -119,13 +120,16 @@ export const metadata: Metadata = {
 };
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const isComingSoon = headersList.get('x-is-coming-soon') === 'true';
+
   return (
-    <html lang="id" className={`${inter.variable} ${playfair.variable} ${dancingScript.variable} ${cinzel.variable} ${montserrat.variable} ${outfit.variable} ${cormorant.variable} h-full antialiased`}>
+    <html lang="id" className={`${inter.variable} ${playfair.variable} ${dancingScript.variable} ${cinzel.variable} ${montserrat.variable} ${outfit.variable} ${cormorant.variable} h-full antialiased ${isComingSoon ? 'has-promo-banner' : ''}`}>
       <body className="min-h-full flex flex-col bg-[#f7f4ed] text-[#1c1c1c] overflow-x-clip">
         {/* Polyfills for Popover and Anchor Positioning */}
         <script type="module" dangerouslySetInnerHTML={{ __html: `
@@ -138,7 +142,7 @@ export default function RootLayout({
         ` }} />
         <Providers>
           <ErrorBoundary>
-            <PublicShell>{children}</PublicShell>
+            <PublicShell isComingSoon={isComingSoon}>{children}</PublicShell>
             <ToastContainer />
           </ErrorBoundary>
         </Providers>

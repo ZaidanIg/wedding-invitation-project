@@ -15,7 +15,7 @@ export default function ComingSoonBanner() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => { setMounted(true); }, 0);
+    setTimeout(() => setMounted(true), 0);
     const timer = setInterval(() => {
       const now = new Date().getTime();
       const distance = LAUNCH_DATE - now;
@@ -45,7 +45,7 @@ export default function ComingSoonBanner() {
     };
   }, []);
 
-  if (!mounted || (timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0)) {
+  if (mounted && timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0) {
     return null;
   }
 
@@ -56,11 +56,17 @@ export default function ComingSoonBanner() {
           <Sparkles className="w-4 h-4 text-yellow-300" />
           <span>Grand Launching Sahinaja dalam:</span>
         </div>
-        <div className="flex items-center gap-2 font-bold bg-black/10 px-3 py-1 rounded-full backdrop-blur-sm">
-          <span>{timeLeft.days}h</span>
-          <span>{timeLeft.hours}j</span>
-          <span>{timeLeft.minutes}m</span>
-          <span>{timeLeft.seconds}d</span>
+        <div className="flex items-center gap-2 font-bold bg-black/10 px-3 py-1 rounded-full backdrop-blur-sm min-w-[120px] justify-center">
+          {mounted ? (
+            <>
+              <span>{timeLeft.days}h</span>
+              <span>{timeLeft.hours}j</span>
+              <span>{timeLeft.minutes}m</span>
+              <span>{timeLeft.seconds}d</span>
+            </>
+          ) : (
+            <span className="opacity-50 animate-pulse font-mono tracking-widest text-[10px] sm:text-xs">--h --j --m --d</span>
+          )}
         </div>
       </div>
     </div>
