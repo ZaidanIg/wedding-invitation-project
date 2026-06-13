@@ -88,13 +88,6 @@ export default function ThemesPage() {
           <p className="text-sm text-[#6b6b6b] mt-1">Pantau statistik kunjungan undangan, tipe tema yang digunakan, dan lakukan override paket layanan.</p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
-          <Link
-            href="/admin/themes/builder"
-            className="flex items-center gap-2 px-4.5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition-colors shadow-sm"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            Theme Builder (Elementor)
-          </Link>
           <button 
             onClick={() => loadInvitations(invitationSearch)}
             className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#eceae4] rounded-xl text-xs font-bold text-[#1c1c1c] hover:bg-stone-50 transition-colors"
